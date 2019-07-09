@@ -1,0 +1,59 @@
+{
+  "name": "heidel/payment",
+  "description": "Heidelpay payment integration for Shopware 6",
+  "version": "v1.0.0",
+  "type": "shopware-platform-plugin",
+  "license": "Commercial",
+  "authors": [
+    {
+      "name": "heidelpay GmbH",
+      "email": "info@heidelpay.com",
+      "homepage": "https://www.heidelpay.com"
+    },
+    {
+      "name": "Kellerkinder GmbH",
+      "email": "hallo@kellerkinder.de",
+      "homepage": "https://www.kellerkinder.de/",
+      "role": "Contributor"
+    }
+  ],
+  "config": {
+    "sort-packages": true
+  },
+  "require": {
+    "shopware/platform": "dev-master",
+    "heidelpay/heidelpay-php": "dev-develop"
+  },
+  "require-dev": {
+    "k10r/codestyle": "^1.0",
+    "phpstan/phpstan": "^0.11.5",
+    "phpstan/phpstan-phpunit": "^0.11.0",
+    "phpunit/phpunit": "^8.1"
+  },
+  "extra": {
+    "shopware-plugin-class": "HeidelPayment\\HeidelPayment",
+    "plugin-icon": "src/Resources/config/plugin.png",
+    "copyright": "(c) heidelpay GmbH",
+    "label": {
+      "de-DE": "Heidelpay",
+      "en-GB": "Heidelpay"
+    },
+    "description": {
+      "de-DE": "Heidelpay Zahlungsarten für Shopware 6",
+      "en-GB": "Heidelpay payment integration for Shopware 6 "
+    },
+    "manufacturerLink": {
+      "de-DE": "https://www.heidelpay.com/de/",
+      "en-GB": "https://www.heidelpay.com/en/"
+    },
+    "supportLink": {
+      "de-DE": "https://www.heidelpay.com/de/",
+      "en-GB": "https://www.heidelpay.com/en/"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "HeidelPayment\\": "src/"
+    }
+  }
+}

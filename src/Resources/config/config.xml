@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>API Settings</title>
+        <title lang="de-DE">API Konfiguration</title>
+        <input-field>
+            <name>publicKey</name>
+            <label>Public key</label>
+            <label lang="de-DE">Public key</label>
+        </input-field>
+        <input-field>
+            <name>privateKey</name>
+            <label>Private key</label>
+            <label lang="de-DE">Private key</label>
+        </input-field>
+    </card>
+</config>
