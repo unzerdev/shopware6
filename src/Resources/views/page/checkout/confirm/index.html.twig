@@ -1,0 +1,26 @@
+{% sw_extends '@Storefront/page/checkout/confirm/index.html.twig' %}
+
+{% block page_checkout_confirm_product_table %}
+    {% if context.paymentMethod.customFields.heidelpay_frame %}
+        {% block heidelpay_checkout_confirm_frame %}
+            <div class="heidelpay-card"
+                 data-heidelpay-base="true"
+                 data-heidelpay-base-options='{
+                     "publicKey": "{{ shopware.config.HeidelPayment.config.publicKey }}",
+                     "locale": "{{ app.request.locale }}"
+                 }'>
+                <div class="card-body">
+                    <div class="card-title">
+                        {{ context.paymentMethod.translated.name }}
+                    </div>
+
+                    <div class="heidelpay-frame">
+                        {% sw_include context.paymentMethod.customFields.heidelpay_frame ignore missing %}
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

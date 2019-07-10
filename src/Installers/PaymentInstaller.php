@@ -4,11 +4,7 @@ namespace HeidelPayment\Installers;
 
 use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Plugin\Context\ActivateContext;
-use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
-use Shopware\Core\Framework\Plugin\Context\UninstallContext;
-use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 
 class PaymentInstaller implements InstallerInterface
 {
@@ -29,6 +25,9 @@ class PaymentInstaller implements InstallerInterface
                     'description' => 'Credit card payments with heidelpay',
                 ],
             ],
+            'customFields' => [
+                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/credit-card.html.twig',
+            ],
         ],
     ];
     /** @var EntityRepositoryInterface */
@@ -41,25 +40,25 @@ class PaymentInstaller implements InstallerInterface
 
     public function install(InstallContext $context): void
     {
-        $this->paymentMethodRepository->create(self::PAYMENT_METHODS, $context->getContext());
+        $this->paymentMethodRepository->upsert(self::PAYMENT_METHODS, $context->getContext());
     }
 
-    public function update(UpdateContext $context): void
+    public function update(InstallContext $context): void
     {
         $this->paymentMethodRepository->upsert(self::PAYMENT_METHODS, $context->getContext());
     }
 
-    public function uninstall(UninstallContext $context): void
+    public function uninstall(InstallContext $context): void
     {
         $this->setAllPaymentMethodsActive(false, $context);
     }
 
-    public function activate(ActivateContext $context): void
+    public function activate(InstallContext $context): void
     {
         $this->setAllPaymentMethodsActive(true, $context);
     }
 
-    public function deactivate(DeactivateContext $context): void
+    public function deactivate(InstallContext $context): void
     {
         $this->setAllPaymentMethodsActive(false, $context);
     }

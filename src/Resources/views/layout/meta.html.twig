@@ -1,0 +1,7 @@
+{% sw_extends '@Storefront/layout/meta.html.twig' %}
+
+{% block layout_head_stylesheet %}
+    {{ parent() }}
+
+    <link rel="stylesheet" href="{{ asset('bundles/heidelpayment/storefront/css/heidel-payment.css') }}" />
+{% endblock %}

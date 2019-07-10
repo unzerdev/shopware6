@@ -1,5 +1,5 @@
 .php_cs.cache
 vendor
 .phpunit.result.cache
-src/Resources/public/static/
+src/Resources/public
 .idea

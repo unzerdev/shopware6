@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment;
 
+use HeidelPayment\Installers\CustomFieldInstaller;
 use HeidelPayment\Installers\PaymentInstaller;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin;
@@ -19,10 +20,14 @@ class HeidelPayment extends Plugin
      */
     public function install(InstallContext $installContext): void
     {
-        /** @var EntityRepository $repository */
-        $repository = $this->container->get('payment_method.repository');
+        /** @var EntityRepository $paymentRepository */
+        $paymentRepository = $this->container->get('payment_method.repository');
 
-        (new PaymentInstaller($repository))->install($installContext);
+        /** @var EntityRepository $customFieldRepository */
+        $customFieldRepository = $this->container->get('custom_field_set.repository');
+
+        (new PaymentInstaller($paymentRepository))->install($installContext);
+        (new CustomFieldInstaller($customFieldRepository))->install($installContext);
     }
 
     /**
@@ -30,10 +35,14 @@ class HeidelPayment extends Plugin
      */
     public function activate(ActivateContext $activateContext): void
     {
-        /** @var EntityRepository $repository */
-        $repository = $this->container->get('payment_method.repository');
+        /** @var EntityRepository $paymentRepository */
+        $paymentRepository = $this->container->get('payment_method.repository');
 
-        (new PaymentInstaller($repository))->activate($activateContext);
+        /** @var EntityRepository $customFieldRepository */
+        $customFieldRepository = $this->container->get('custom_field_set.repository');
+
+        (new PaymentInstaller($paymentRepository))->activate($activateContext);
+        (new CustomFieldInstaller($customFieldRepository))->activate($activateContext);
     }
 
     /**
@@ -41,10 +50,14 @@ class HeidelPayment extends Plugin
      */
     public function deactivate(DeactivateContext $deactivateContext): void
     {
-        /** @var EntityRepository $repository */
-        $repository = $this->container->get('payment_method.repository');
+        /** @var EntityRepository $paymentRepository */
+        $paymentRepository = $this->container->get('payment_method.repository');
 
-        (new PaymentInstaller($repository))->deactivate($deactivateContext);
+        /** @var EntityRepository $customFieldRepository */
+        $customFieldRepository = $this->container->get('custom_field_set.repository');
+
+        (new PaymentInstaller($paymentRepository))->deactivate($deactivateContext);
+        (new CustomFieldInstaller($customFieldRepository))->deactivate($deactivateContext);
     }
 
     /**
@@ -52,9 +65,13 @@ class HeidelPayment extends Plugin
      */
     public function uninstall(UninstallContext $uninstallContext): void
     {
-        /** @var EntityRepository $repository */
-        $repository = $this->container->get('payment_method.repository');
+        /** @var EntityRepository $paymentRepository */
+        $paymentRepository = $this->container->get('payment_method.repository');
 
-        (new PaymentInstaller($repository))->uninstall($uninstallContext);
+        /** @var EntityRepository $customFieldRepository */
+        $customFieldRepository = $this->container->get('custom_field_set.repository');
+
+        (new PaymentInstaller($paymentRepository))->uninstall($uninstallContext);
+        (new CustomFieldInstaller($customFieldRepository))->uninstall($uninstallContext);
     }
 }
