@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HeidelPayment;
 
 use HeidelPayment\Installers\PaymentInstaller;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
@@ -18,7 +19,10 @@ class HeidelPayment extends Plugin
      */
     public function install(InstallContext $installContext): void
     {
-        (new PaymentInstaller($this->container->get('payment_method.repository')))->install($installContext);
+        /** @var EntityRepository $repository */
+        $repository = $this->container->get('payment_method.repository');
+
+        (new PaymentInstaller($repository))->install($installContext);
     }
 
     /**
@@ -26,7 +30,10 @@ class HeidelPayment extends Plugin
      */
     public function activate(ActivateContext $activateContext): void
     {
-        (new PaymentInstaller($this->container->get('payment_method.repository')))->activate($activateContext);
+        /** @var EntityRepository $repository */
+        $repository = $this->container->get('payment_method.repository');
+
+        (new PaymentInstaller($repository))->activate($activateContext);
     }
 
     /**
@@ -34,7 +41,10 @@ class HeidelPayment extends Plugin
      */
     public function deactivate(DeactivateContext $deactivateContext): void
     {
-        (new PaymentInstaller($this->container->get('payment_method.repository')))->deactivate($deactivateContext);
+        /** @var EntityRepository $repository */
+        $repository = $this->container->get('payment_method.repository');
+
+        (new PaymentInstaller($repository))->deactivate($deactivateContext);
     }
 
     /**
@@ -42,6 +52,9 @@ class HeidelPayment extends Plugin
      */
     public function uninstall(UninstallContext $uninstallContext): void
     {
-        (new PaymentInstaller($this->container->get('payment_method.repository')))->uninstall($uninstallContext);
+        /** @var EntityRepository $repository */
+        $repository = $this->container->get('payment_method.repository');
+
+        (new PaymentInstaller($repository))->uninstall($uninstallContext);
     }
 }

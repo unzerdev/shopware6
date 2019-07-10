@@ -25,14 +25,18 @@ class PreCommitChecks
             echo 'Not on branch' . PHP_EOL;
             return 0;
         }
+
         $this->runPhpLint($this->getCommittedFileList());
         $this->runPhpCsFixer($this->getCommittedFileList());
+        $this->runPhpStan($this->getCommittedFileList());
         $this->runEsLint($this->getCommittedFileList('js'));
+
         if ($this->error) {
             $this->writeln("If you are ABSOLUTELY sure your code is correct, you can use 'git commit --no-verify' to bypass this validation", 0);
         }
         exit((int) $this->error);
     }
+
     /**
      * @param string $output
      * @param int    $level
@@ -42,6 +46,7 @@ class PreCommitChecks
         $this->write($output, $level);
         echo PHP_EOL;
     }
+
     /**
      * @param string $output
      * @param int    $level
@@ -51,6 +56,7 @@ class PreCommitChecks
         $spaces = $level * 3;
         echo str_pad($output, strlen($output) + $spaces, ' ', STR_PAD_LEFT);
     }
+
     /**
      * @return bool
      */
@@ -60,6 +66,7 @@ class PreCommitChecks
         exec('git symbolic-ref --short -q HEAD', $output);
         return empty($output);
     }
+
     /**
      * @param string $extension
      * @return string[]
@@ -69,6 +76,7 @@ class PreCommitChecks
         exec("git diff --name-only --diff-filter=ACMRTUXB \"HEAD\" | grep -e '\." . $extension . "$'", $fileList);
         return $fileList;
     }
+
     /**
      * @param array $fileList
      */
@@ -85,6 +93,39 @@ class PreCommitChecks
         }
         $this->writeln();
     }
+
+    private function runPhpStan(array $fileList)
+    {
+        $this->writeln('# Statically analyzing php code');
+        $this->writeln('> ./vendor/bin/phpstan analyse --no-progress -l 5 -c phpstan.neon');
+
+        if (!$this->isPHPStanAvailable()) {
+            $this->error = true;
+            $this->writeln('- phpstan is NOT installed. Please install composer with dev dependencies.', 2);
+            $this->writeln();
+        }
+
+        $outputLines = [];
+        $exitCode = 0;
+
+        foreach ($fileList as $file) {
+            exec('./vendor/bin/phpstan analyse --no-progress -l 5 -c phpstan.neon ' . escapeshellarg($file) . ' 2>&1', $output, $return);
+
+            $outputLines = array_merge($outputLines, $output);
+            $exitCode = $return;
+        }
+
+        if ($exitCode !== 0) {
+            foreach ($outputLines as $line) {
+                $this->writeln($line, 3);
+            }
+
+            $this->error = true;
+        }
+
+        $this->writeln();
+    }
+
     /**
      * @param array $fileList
      */
@@ -115,6 +156,7 @@ class PreCommitChecks
         }
         $this->writeln();
     }
+
     /**
      * @param array $fileList
      */
@@ -130,6 +172,7 @@ class PreCommitChecks
         $this->checkESLint($fileList);
         $this->writeln();
     }
+
     /**
      * @return bool
      */
@@ -140,6 +183,12 @@ class PreCommitChecks
         exec('command -v ./vendor/k10r/codestyle/php-cs-fixer >/dev/null 2>&1', $output, $return);
         return !(bool) $return;
     }
+
+    private function isPHPStanAvailable()
+    {
+        return file_exists('./vendor/bin/phpstan');
+    }
+
     /**
      * @return bool
      */
@@ -150,6 +199,7 @@ class PreCommitChecks
         exec('command -v ./../../../themes/node_modules/eslint/bin/eslint.js >/dev/null 2>&1', $output, $return);
         return !(bool) $return;
     }
+
     /**
      * @param array $fileList
      */
