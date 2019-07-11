@@ -30,6 +30,7 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
     ];
+
     /** @var EntityRepositoryInterface */
     private $paymentMethodRepository;
 

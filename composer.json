@@ -21,7 +21,6 @@
     "sort-packages": true
   },
   "require": {
-    "shopware/platform": "dev-master",
     "heidelpay/heidelpay-php": "dev-develop"
   },
   "require-dev": {

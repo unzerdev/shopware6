@@ -1,35 +1,36 @@
 import Plugin from 'src/script/plugin-system/plugin.class';
+import DomAccess from 'src/script/helper/dom-access.helper';
 
 export default class HeidelpayCreditCardPlugin extends Plugin {
     static options = {
         numberFieldId: 'heidelpay-credit-card-number',
         expiryFieldId: 'heidelpay-credit-card-expiry',
         cvcFieldId: 'heidelpay-credit-card-cvc',
-
         invalidClass: 'is-invalid',
     };
 
     /**
-     * @type { Object }
+     * @type {Object}
      *
      * @public
      */
-    creditCard;
+    static creditCard;
 
     /**
-     * @type { HeidelpayBasePlugin }
+     * @type {HeidelpayBasePlugin}
      *
      * @private
      */
-    _heidelpayPlugin = null;
+    static _heidelpayPlugin = null;
 
     init() {
         this._heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
 
-        this.createForm();
+        this._createForm();
+        this._registerEvents();
     }
 
-    createForm() {
+    _createForm() {
         this.creditCard = this._heidelpayPlugin.heidelpayInstance.Card();
 
         this.creditCard.create('number', {
@@ -47,10 +48,86 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
             onlyIframe: true
         });
 
-        this.creditCard.addEventListener('change', this._onChangeForm);
+        this.creditCard.addEventListener('change', this._onChangeForm.bind(this));
     }
 
+    _registerEvents() {
+        this._heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
+            scope: this
+        });
+    }
+
+    /**
+     * @param {Object} event
+     *
+     * @private
+     */
     _onChangeForm(event) {
-        //TODO: Handle change event
+        if (!event.type) {
+            return;
+        }
+
+        let inputElement = this._getInputElementByEvent(event);
+        let errorElement = this._getErrorElementByEvent(event);
+
+        if (event.success === false) {
+            inputElement.classList.add(this.options.invalidClass);
+            errorElement.hidden = false;
+        } else if(event.success === true) {
+            inputElement.classList.remove(this.options.invalidClass);
+            errorElement.hidden = true;
+        }
+
+        if (event.error) {
+            let errorMessageElement = errorElement.getElementsByClassName('heidelpay-error-message')[0];
+            errorMessageElement.innerText = event.error;
+        }
+    }
+
+    _onCreateResource() {
+        this.creditCard.createResource()
+            .then((resource) => this._submitPayment(resource))
+            .catch((error) => this._handleError(error));
+    }
+
+    /**
+     * @param {Object} event
+     * @returns {HTMLElement}
+     *
+     * @private
+     */
+    _getInputElementByEvent(event) {
+        let selector = `#heidelpay-credit-card-${event.type}`;
+
+        return DomAccess.querySelector(this.el, selector);
+    }
+
+    /**
+     * @param {Object} event
+     * @returns {HTMLElement}
+     *
+     * @private
+     */
+    _getErrorElementByEvent(event) {
+        let selector = `#heidelpay-credit-card-${event.type}-error`;
+
+        return DomAccess.querySelector(this.el, selector);
+    }
+
+    /**
+     * @param {Object} resource
+     * @private
+     */
+    _submitPayment(resource) {
+        this._heidelpayPlugin.submit(resource);
+    }
+
+    /**
+     * @param {Object} error
+     *
+     * @private
+     */
+    _handleError(error) {
+        console.log(error);
     }
 }

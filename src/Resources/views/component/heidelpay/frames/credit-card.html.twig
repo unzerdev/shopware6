@@ -1,20 +1,40 @@
 {% block heidelpay_frame_credit_card %}
     <div class="heidelpay-credit-card-wrapper"
          data-heidelpay-credit-card="true">
-        <label for="heidelpay-credit-card-number">
-            Card-Number:
-        </label>
 
-        <div id="heidelpay-credit-card-number" class="heidelpay-text-input form-control"></div>
+        <h3>5453010000059543</h3>
 
-        <label for="heidelpay-credit-card-expiry">
-            Ablauf:
-        </label>
-        <div id="heidelpay-credit-card-expiry" class="heidelpay-text-input form-control"></div>
+        {% block heidelpay_frame_credit_card_number %}
+            <div class="heidelpay-frame-row">
+                <label for="heidelpay-credit-card-number">Card-Number:</label>
+                <div id="heidelpay-credit-card-number" class="heidelpay-text-input form-control"></div>
+                <div id="heidelpay-credit-card-number-error" class="heidelpay-error" hidden>
+                    <div class="heidelpay-error-message">
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
 
-        <label for="heidelpay-credit-card-cvc">
-            CVC:
-        </label>
-        <div id="heidelpay-credit-card-cvc" class="heidelpay-text-input form-control"></div>
+        {% block heidelpay_frame_credit_card_expiry %}
+            <div class="heidelpay-frame-row">
+                <label for="heidelpay-credit-card-expiry">Expiry:</label>
+                <div id="heidelpay-credit-card-expiry" class="heidelpay-text-input form-control"></div>
+                <div id="heidelpay-credit-card-expiry-error" class="heidelpay-error" hidden>
+                    <div class="heidelpay-error-message">
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+
+        {% block heidelpay_frame_credit_card_cvc %}
+            <div class="heidelpay-frame-row">
+                <label for="heidelpay-credit-card-cvc">CVC:</label>
+                <div id="heidelpay-credit-card-cvc" class="heidelpay-text-input form-control"></div>
+                <div id="heidelpay-credit-card-cvc-error" class="heidelpay-error" hidden>
+                    <div class="heidelpay-error-message">
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
     </div>
 {% endblock %}
