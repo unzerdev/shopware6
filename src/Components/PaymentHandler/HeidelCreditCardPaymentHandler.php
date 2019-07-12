@@ -31,10 +31,14 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
         }
 
         try {
-            $payment = $this->paymentType->charge(
+            // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
+            // As soon as it's shorter, use $transaction->getReturnUrl() instead!
+            $returnUrl = $this->getReturnUrl();
+
+            $charge = $this->paymentType->charge(
                 $this->heidelpayBasket->getAmountTotal(),
                 $this->heidelpayBasket->getCurrencyCode(),
-                $transaction->getReturnUrl(),
+                $returnUrl,
                 $this->heidelpayCustomer,
                 $transaction->getOrderTransaction()->getId(),
                 $this->heidelpayMetadata,
@@ -42,8 +46,11 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
                 true
             );
 
-            return new RedirectResponse(empty($payment->getReturnUrl()) ? $transaction->getReturnUrl() : $payment->getReturnUrl());
+            $this->session->set('heidelpayMetadataId', $charge->getPayment()->getMetadata()->getId());
+
+            return new RedirectResponse(empty($charge->getReturnUrl()) ? $returnUrl : $charge->getReturnUrl());
         } catch (HeidelpayApiException $apiException) {
+            //TODO: Error-handling
             dump($apiException);
             die();
         }
@@ -57,7 +64,11 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
         Request $request,
         SalesChannelContext $salesChannelContext
     ): void {
-        dump('OKAY BABY!!');
-        die();
+        parent::finalize($transaction, $request, $salesChannelContext);
+
+        $payment = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
+
+        //TODO: Update the order state corresponding to the state of the payment. Use $payment->isPending..isCanceled and so on.
+        //Please keep the StateMachine in mind. Do not update it in the database directly!
     }
 }

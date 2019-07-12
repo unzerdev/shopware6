@@ -9,7 +9,11 @@
             <argument type="service" id="HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayCustomerHydrator"/>
             <argument type="service" id="HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayMetadataHydrator"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="router.default"/>
+            <argument type="service" id="session"/>
+
             <tag name="shopware.payment.method.async" />
+
         </service>
     </services>
 </container>

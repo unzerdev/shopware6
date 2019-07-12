@@ -28,7 +28,7 @@ class HeidelpayCustomerHydrator implements HeidelpayHydratorInterface
             $customer->getFirstName(),
             $customer->getLastName()
         ))
-            ->setSalutation($customer->getSalutation()->getSalutationKey())
+            ->setSalutation($customer->getSalutation() !== null ? $customer->getSalutation()->getSalutationKey() : null)
             ->setEmail($customer->getEmail())
             ->setCompany($customer->getCompany())
             ->setBirthDate($customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null);

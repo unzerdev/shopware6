@@ -14,6 +14,10 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInterface
 {
@@ -32,6 +36,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var Metadata */
     protected $heidelpayMetadata;
 
+    /** @var SessionInterface */
+    protected $session;
+
     /** @var HeidelpayHydratorInterface */
     private $basketHydrator;
 
@@ -47,16 +54,23 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var string */
     private $resourceId;
 
+    /** @var RouterInterface */
+    private $router;
+
     public function __construct(
         HeidelpayHydratorInterface $basketHydrator,
         HeidelpayHydratorInterface $customerHydrator,
         HeidelpayHydratorInterface $metadataHydrator,
-        SystemConfigService $configService
+        SystemConfigService $configService,
+        RouterInterface $router, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
+        SessionInterface $session // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
     ) {
         $this->basketHydrator   = $basketHydrator;
         $this->customerHydrator = $customerHydrator;
         $this->metadataHydrator = $metadataHydrator;
         $this->configService    = $configService;
+        $this->router           = $router;
+        $this->session          = $session;
     }
 
     public function pay(
@@ -78,13 +92,31 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         return new RedirectResponse($transaction->getReturnUrl());
     }
 
+    public function finalize(
+        AsyncPaymentTransactionStruct $transaction,
+        Request $request,
+        SalesChannelContext $salesChannelContext
+    ): void {
+        $this->heidelpayClient = $this->getHeidelpayClient($salesChannelContext);
+    }
+
     protected function getHeidelpayClient(SalesChannelContext $context): Heidelpay
     {
         $privateKey = $this->configService->get('HeidelPayment.config.privateKey', $context->getSalesChannel()->getId());
 
-        //TODO: Check if we can get the current locale code
+        //TODO: Check if we can get the current locale code | Not relevant for this early phase. TBD before 01.08.2019
         $locale = 'en_GB';
 
         return new Heidelpay($privateKey, $locale);
+    }
+
+    /**
+     * @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
+     *
+     * @return string
+     */
+    protected function getReturnUrl(): string
+    {
+        return $this->router->generate('heidelpay_finalize_payment', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

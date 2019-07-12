@@ -21,7 +21,7 @@
     "sort-packages": true
   },
   "require": {
-    "heidelpay/heidelpay-php": "dev-develop"
+    "heidelpay/heidelpay-php": "dev-master"
   },
   "require-dev": {
     "k10r/codestyle": "^1.0",

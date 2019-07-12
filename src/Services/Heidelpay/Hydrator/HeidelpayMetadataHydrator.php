@@ -14,8 +14,13 @@ class HeidelpayMetadataHydrator implements HeidelpayHydratorInterface
         SalesChannelContext $channelContext,
         ?AsyncPaymentTransactionStruct $transaction = null
     ): AbstractHeidelpayResource {
-        return (new Metadata())
+        $metadata = (new Metadata())
             ->setShopType('Shopware 6')
             ->setShopVersion(Kernel::SHOPWARE_FALLBACK_VERSION);
+
+        //TODO: @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
+        $metadata->addMetadata('returnUrl', $transaction->getReturnUrl());
+
+        return $metadata;
     }
 }

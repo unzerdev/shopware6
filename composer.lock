@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fc06bdaf2c4283682d1b5fd7452a0cdc",
+    "content-hash": "c3aed02d73648b43b1a8bde6b1c75235",
     "packages": [
         {
             "name": "heidelpay/heidelpay-php",
-            "version": "dev-develop",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/heidelpay/heidelpayPHP.git",
-                "reference": "789fdbd44be92e707021efb84e22114d668b667e"
+                "reference": "809612388beedcdbc7ae65abc6beba3d10b72c7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/heidelpay/heidelpayPHP/zipball/789fdbd44be92e707021efb84e22114d668b667e",
-                "reference": "789fdbd44be92e707021efb84e22114d668b667e",
+                "url": "https://api.github.com/repos/heidelpay/heidelpayPHP/zipball/809612388beedcdbc7ae65abc6beba3d10b72c7d",
+                "reference": "809612388beedcdbc7ae65abc6beba3d10b72c7d",
                 "shasum": ""
             },
             "require": {
@@ -50,7 +50,7 @@
                 }
             ],
             "description": "This is the php sdk to connect to the heidelpay rest api.",
-            "time": "2019-07-08T13:19:55+00:00"
+            "time": "2019-07-08T13:29:26+00:00"
         }
     ],
     "packages-dev": [

@@ -26,6 +26,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
     init() {
         this._heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
 
+        this._heidelpayPlugin.setSubmitButtonActive(false);
         this._createForm();
         this._registerEvents();
     }
@@ -82,6 +83,20 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
             let errorMessageElement = errorElement.getElementsByClassName('heidelpay-error-message')[0];
             errorMessageElement.innerText = event.error;
         }
+
+        if (event.type === 'cvc') {
+            this.cvcValid = event.success;
+        } else if (event.type === 'number') {
+            this.numberValid = event.success;
+        } else if (event.type === 'expiry') {
+            this.expiryValid = event.success;
+        }
+
+        this._heidelpayPlugin.setSubmitButtonActive(
+            this.cvcValid === true &&
+            this.numberValid === true &&
+            this.expiryValid === true
+        );
     }
 
     _onCreateResource() {
