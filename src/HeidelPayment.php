@@ -12,11 +12,11 @@ use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
-//Load the heidelpay-php SDK
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require __DIR__ . '/../vendor/autoload.php';
 }
@@ -44,6 +44,21 @@ class HeidelPayment extends Plugin
 
         (new PaymentInstaller($paymentRepository))->install($installContext);
         (new CustomFieldInstaller($customFieldRepository))->install($installContext);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function update(UpdateContext $updateContext): void
+    {
+        /** @var EntityRepository $paymentRepository */
+        $paymentRepository = $this->container->get('payment_method.repository');
+
+        /** @var EntityRepository $customFieldRepository */
+        $customFieldRepository = $this->container->get('custom_field_set.repository');
+
+        (new PaymentInstaller($paymentRepository))->update($updateContext);
+        (new CustomFieldInstaller($customFieldRepository))->update($updateContext);
     }
 
     /**
