@@ -6,7 +6,7 @@
     <services>
         <defaults public="true"/>
 
-        <service id="HeidelPayment\Controller\HeidelpayController">
+        <service id="HeidelPayment\Controllers\HeidelpayRedirectController">
             <argument type="service" id="session"/>
             <argument type="service" id="HeidelPayment\Components\Client\ClientFactory" />
         </service>
