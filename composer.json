@@ -21,10 +21,10 @@
     "sort-packages": true
   },
   "require": {
-    "shopware/platform": "dev-master",
     "heidelpay/heidelpay-php": "dev-develop"
   },
   "require-dev": {
+    "shopware/core": "dev-master",
     "k10r/codestyle": "^1.0",
     "phpstan/phpstan": "^0.11.5",
     "phpstan/phpstan-phpunit": "^0.11.0",
