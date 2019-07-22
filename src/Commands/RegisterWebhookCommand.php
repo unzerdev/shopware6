@@ -24,7 +24,7 @@ class RegisterWebhookCommand extends Command
     public function __construct(ClientFactory $clientFactory, Router $router)
     {
         $this->clientFactory = $clientFactory;
-        $this->router = $router;
+        $this->router        = $router;
 
         parent::__construct();
     }
@@ -45,7 +45,7 @@ class RegisterWebhookCommand extends Command
             $client = $this->clientFactory->createClient();
             $client->deleteAllWebhooks();
 
-            $result = $client->createWebhook($this->router->generate('heidelpay_webhook'), 'all');
+            $result  = $client->createWebhook($this->router->generate('heidelpay_webhook'), 'all');
             $message = sprintf('The webhooks have been registered to the following URL: %s', $result->getUrl());
 
             $style->success($message);

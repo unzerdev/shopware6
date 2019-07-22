@@ -23,9 +23,5 @@
         <service id="HeidelPayment\Components\Client\ClientFactory">
             <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader" />
         </service>
-
-        <service id="HeidelPayment\Components\PaymentStatusMapper\PaymentStatusMapper">
-            <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry" />
-        </service>
     </services>
 </container>

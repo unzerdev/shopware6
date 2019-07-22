@@ -7,7 +7,6 @@ namespace HeidelPayment\Controllers;
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment\Components\Struct\Webhook;
 use HeidelPayment\Services\Heidelpay\Webhooks\Handlers\WebhookHandlerInterface;
-use PayonePayment\Payone\Webhook\Processor\WebhookProcessorInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +24,7 @@ class WebhookController extends StorefrontController
 
     public function __construct(array $handlers, ConfigReaderInterface $configReader)
     {
-        $this->handlers = $handlers;
+        $this->handlers     = $handlers;
         $this->configReader = $configReader;
     }
 
