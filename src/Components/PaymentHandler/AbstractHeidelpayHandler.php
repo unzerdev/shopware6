@@ -110,24 +110,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $this->heidelpayClient = $this->getHeidelpayClient($salesChannelContext);
         $this->payment         = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
 
-        try {
-            $this->paymentStateFactory->transformTransactionState($salesChannelContext->getContext(), $transaction, $this->payment);
-        } catch (\Throwable $ex) {
-            dump($ex);
-            die();
-        }
+        $this->paymentStateFactory->transformTransactionState($salesChannelContext->getContext(), $transaction, $this->payment);
 
         $this->session->remove('heidelpayMetadataId');
-    }
-
-    protected function getHeidelpayClient(SalesChannelContext $context): Heidelpay
-    {
-        $privateKey = $this->configService->get('HeidelPayment.config.privateKey', $context->getSalesChannel()->getId());
-
-        //TODO: Check if we can get the current locale code | Not relevant for this early phase. TBD before 01.08.2019
-        $locale = 'en_GB';
-
-        return new Heidelpay($privateKey, $locale);
     }
 
     /**
@@ -138,5 +123,13 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     protected function getReturnUrl(): string
     {
         return $this->router->generate('heidelpay_finalize_payment', [], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    private function getHeidelpayClient(SalesChannelContext $context): Heidelpay
+    {
+        $privateKey = $this->configService->get('HeidelPayment.config.privateKey', $context->getSalesChannel()->getId());
+        $locale     = 'en_GB';
+
+        return new Heidelpay($privateKey, $locale);
     }
 }
