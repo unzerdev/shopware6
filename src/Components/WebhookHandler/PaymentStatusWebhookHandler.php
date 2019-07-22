@@ -17,8 +17,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
  */
 class PaymentStatusWebhookHandler implements WebhookHandlerInterface
 {
-    /** @var TransactionStateHandlerInterface
-     */
+    /** @var TransactionStateHandlerInterface */
     private $transactionStateHandler;
 
     /** @var ClientFactory */
@@ -46,8 +45,8 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
     }
 
     /**
-     * TODO: use stateMachineRegistry->transition for the actual write process
-     * TODO: transition needs StateMachineTransitionActions, we need to map these instead of the payment status
+     * TODO: Decide if stateMachineRegistry->transition for the actual write process should be used
+     * TODO: transition needs StateMachineTransitionActions, we need to map actions instead of the payment status
      *
      * {@inheritdoc}
      */

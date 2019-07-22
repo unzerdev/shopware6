@@ -8,7 +8,7 @@
         <import resource="hydrators.xml"/>
         <import resource="commands.xml" />
         <import resource="controllers.xml" />
-        <import resource="handlers.xml" />
+        <import resource="webhook_handlers.xml" />
     </imports>
 
     <services>

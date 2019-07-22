@@ -22,6 +22,6 @@ class ClientFactory
     {
         $config = $this->configReader->read($salesChannelId);
 
-        return new Heidelpay($config['privateKey'], $locale);
+        return new Heidelpay($config->get('privateKey'), $locale);
     }
 }

@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 use Throwable;
 
@@ -45,7 +46,9 @@ class RegisterWebhookCommand extends Command
             $client = $this->clientFactory->createClient();
             $client->deleteAllWebhooks();
 
-            $result  = $client->createWebhook($this->router->generate('heidelpay_webhook'), 'all');
+            $url = $this->router->generate('heidelpay_webhook', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            $result  = $client->createWebhook($url, 'all');
             $message = sprintf('The webhooks have been registered to the following URL: %s', $result->getUrl());
 
             $style->success($message);

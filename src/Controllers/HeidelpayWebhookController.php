@@ -38,7 +38,7 @@ class HeidelpayWebhookController extends StorefrontController
         $config = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
         foreach ($this->handlers as $handler) {
-            if ($webhook->getPublicKey() !== $config['publicKey']) {
+            if ($webhook->getPublicKey() !== $config->get('publicKey')) {
                 throw new UnauthorizedHttpException('Heidelpay Webhooks');
             }
 
