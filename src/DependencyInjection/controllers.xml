@@ -11,7 +11,7 @@
             <argument type="service" id="HeidelPayment\Components\Client\ClientFactory" />
         </service>
 
-        <service id="HeidelPayment\Controllers\WebhookController">
+        <service id="HeidelPayment\Controllers\HeidelpayWebhookController">
             <argument type="tagged" tag="heidelpay.webhook_handler" />
             <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader" />
         </service>
