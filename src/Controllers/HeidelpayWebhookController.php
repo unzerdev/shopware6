@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment\Controllers;
 
+use Generator;
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment\Components\Struct\Webhook;
 use HeidelPayment\Services\Heidelpay\Webhooks\Handlers\WebhookHandlerInterface;
@@ -22,7 +23,7 @@ class HeidelpayWebhookController extends StorefrontController
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    public function __construct(array $handlers, ConfigReaderInterface $configReader)
+    public function __construct(iterable $handlers, ConfigReaderInterface $configReader)
     {
         $this->handlers     = $handlers;
         $this->configReader = $configReader;
@@ -33,7 +34,7 @@ class HeidelpayWebhookController extends StorefrontController
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {
-        $webhook = new Webhook($this->request->getRawBody());
+        $webhook = new Webhook($request->getContent());
 
         $config = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 

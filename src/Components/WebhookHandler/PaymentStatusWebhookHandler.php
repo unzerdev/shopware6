@@ -1,6 +1,6 @@
 <?php
 
-namespace HeidelPayment\Services\Heidelpay\Webhooks\Handlers;
+namespace HeidelPayment\Components\WebhookHandler;
 
 use HeidelPayment\Components\Client\ClientFactory;
 use HeidelPayment\Components\Struct\Webhook;

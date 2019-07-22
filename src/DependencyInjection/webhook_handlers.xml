@@ -4,7 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment\Services\Heidelpay\Webhooks\Handlers\PaymentStatusWebhookHandler">
+        <service id="HeidelPayment\Components\WebhookHandler\PaymentStatusWebhookHandler">
             <argument type="service" id="HeidelPayment\Services\TransactionStateHandler" />
             <argument type="service" id="HeidelPayment\Components\Client\ClientFactory" />
             <argument type="service" id="order_transaction.repository" />

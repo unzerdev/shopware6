@@ -15,18 +15,16 @@ class Webhook
 
     public function __construct(string $jsonData)
     {
-        if ($jsonData) {
-            $this->fromJson($jsonData);
-        }
+        $this->fromJson($jsonData);
     }
 
     public function fromJson(string $jsonData): void
     {
         $webhookData = json_decode($jsonData, true);
 
-        $this->event       = $webhookData['event'];
-        $this->publicKey   = $webhookData['publicKey'];
-        $this->retrieveUrl = $webhookData['retrieveUrl'];
+        $this->event       = $webhookData['event'] ?? '';
+        $this->publicKey   = $webhookData['publicKey'] ?? '';
+        $this->retrieveUrl = $webhookData['retrieveUrl'] ?? '';
     }
 
     public function getEvent(): string
