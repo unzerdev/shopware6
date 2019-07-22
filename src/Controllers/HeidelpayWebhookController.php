@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace HeidelPayment\Controllers;
 
-use Generator;
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment\Components\Struct\Webhook;
-use HeidelPayment\Services\Heidelpay\Webhooks\Handlers\WebhookHandlerInterface;
+use HeidelPayment\Components\WebhookHandler\WebhookHandlerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,6 +49,6 @@ class HeidelpayWebhookController extends StorefrontController
             $handler->execute($webhook, $salesChannelContext);
         }
 
-        return $this->webhookProcessor->process($salesChannelContext, $request->request->all());
+        return new Response();
     }
 }

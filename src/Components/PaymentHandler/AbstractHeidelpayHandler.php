@@ -42,6 +42,12 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var Metadata */
     protected $heidelpayMetadata;
 
+    /** @var SystemConfigService */
+    protected $configService;
+
+    /** @var SessionInterface */
+    protected $session;
+
     /** @var HeidelpayHydratorInterface */
     private $basketHydrator;
 
@@ -51,9 +57,6 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var HeidelpayHydratorInterface */
     private $metadataHydrator;
 
-    /** @var SystemConfigService */
-    protected $configService;
-
     /** @var TransactionStateHandlerInterface */
     private $transactionStateHandler;
 
@@ -62,9 +65,6 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
 
     /** @var RouterInterface */
     private $router;
-
-    /** @var SessionInterface */
-    protected $session;
 
     /** @var string */
     private $resourceId;
