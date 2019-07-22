@@ -8,4 +8,10 @@
         <import resource="hydrators.xml"/>
         <import resource="controllers.xml" />
     </imports>
+
+    <services>
+        <service id="HeidelPayment\Services\TransactionStateHandler">
+            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+        </service>
+    </services>
 </container>

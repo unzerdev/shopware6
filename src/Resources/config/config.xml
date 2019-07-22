@@ -16,4 +16,31 @@
             <label lang="de-DE">Private key</label>
         </input-field>
     </card>
+
+    <card>
+        <title>Payment Settings</title>
+        <title lang="de-DE">Zahlungsarten Einstellungen</title>
+        <input-field type="single-select">
+            <name>bookingModeCreditCard</name>
+            <label>Booking mode credit card</label>
+            <label lang="de-DE">Buchungsmodus für Kreditkarte</label>
+            <options>
+                <option>
+                    <id>charge</id>
+                    <name>charge</name>
+                    <name lang="de-DE">Direkt</name>
+                </option>
+                <option>
+                    <id>authorize</id>
+                    <name>authorize</name>
+                    <name lang="de-DE">Authorisierung</name>
+                </option>
+            </options>
+        </input-field>
+        <input-field type="bool">
+            <name>registerCreditCard</name>
+            <label>Register credit cards</label>
+            <label lang="de-DE">Kreditkarten registrieren</label>
+        </input-field>
+    </card>
 </config>

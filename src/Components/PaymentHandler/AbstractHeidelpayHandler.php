@@ -3,10 +3,12 @@
 namespace HeidelPayment\Components\PaymentHandler;
 
 use HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayHydratorInterface;
+use HeidelPayment\Services\TransactionStateHandlerInterface;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Resources\Basket;
 use heidelpayPHP\Resources\Customer;
 use heidelpayPHP\Resources\Metadata;
+use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -24,6 +26,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var BasePaymentType */
     protected $paymentType;
 
+    /** @var Payment */
+    protected $payment;
+
     /** @var Heidelpay */
     protected $heidelpayClient;
 
@@ -39,6 +44,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var SessionInterface */
     protected $session;
 
+    /** @var SystemConfigService */
+    protected $configService;
+
     /** @var HeidelpayHydratorInterface */
     private $basketHydrator;
 
@@ -48,29 +56,31 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var HeidelpayHydratorInterface */
     private $metadataHydrator;
 
-    /** @var SystemConfigService */
-    private $configService;
-
     /** @var string */
     private $resourceId;
 
     /** @var RouterInterface */
     private $router;
 
+    /** @var TransactionStateHandlerInterface */
+    private $paymentStateFactory;
+
     public function __construct(
         HeidelpayHydratorInterface $basketHydrator,
         HeidelpayHydratorInterface $customerHydrator,
         HeidelpayHydratorInterface $metadataHydrator,
         SystemConfigService $configService,
+        TransactionStateHandlerInterface $transactionStateHandler,
         RouterInterface $router, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
         SessionInterface $session // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
     ) {
-        $this->basketHydrator   = $basketHydrator;
-        $this->customerHydrator = $customerHydrator;
-        $this->metadataHydrator = $metadataHydrator;
-        $this->configService    = $configService;
-        $this->router           = $router;
-        $this->session          = $session;
+        $this->basketHydrator      = $basketHydrator;
+        $this->customerHydrator    = $customerHydrator;
+        $this->metadataHydrator    = $metadataHydrator;
+        $this->configService       = $configService;
+        $this->paymentStateFactory = $transactionStateHandler;
+        $this->router              = $router;
+        $this->session             = $session;
     }
 
     public function pay(
@@ -98,6 +108,16 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         SalesChannelContext $salesChannelContext
     ): void {
         $this->heidelpayClient = $this->getHeidelpayClient($salesChannelContext);
+        $this->payment         = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
+
+        try {
+            $this->paymentStateFactory->transformTransactionState($salesChannelContext->getContext(), $transaction, $this->payment);
+        } catch (\Throwable $ex) {
+            dump($ex);
+            die();
+        }
+
+        $this->session->remove('heidelpayMetadataId');
     }
 
     protected function getHeidelpayClient(SalesChannelContext $context): Heidelpay
