@@ -24,6 +24,7 @@
     "heidelpay/heidelpay-php": "dev-master"
   },
   "require-dev": {
+    "shopware/core": "dev-master",
     "k10r/codestyle": "^1.0",
     "phpstan/phpstan": "^0.11.5",
     "phpstan/phpstan-phpunit": "^0.11.0",

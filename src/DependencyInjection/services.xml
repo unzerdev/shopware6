@@ -6,12 +6,26 @@
     <imports>
         <import resource="payment_handlers.xml"/>
         <import resource="hydrators.xml"/>
+        <import resource="commands.xml" />
         <import resource="controllers.xml" />
+        <import resource="handlers.xml" />
     </imports>
 
     <services>
         <service id="HeidelPayment\Services\TransactionStateHandler">
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+        </service>
+
+        <service id="HeidelPayment\Components\ConfigReader\ConfigReader">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+        </service>
+
+        <service id="HeidelPayment\Components\Client\ClientFactory">
+            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
+        <service id="HeidelPayment\Components\PaymentStatusMapper\PaymentStatusMapper">
+            <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry" />
         </service>
     </services>
 </container>
