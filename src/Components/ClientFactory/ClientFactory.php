@@ -1,15 +1,12 @@
 <?php
 
-namespace HeidelPayment\Components\Client;
+namespace HeidelPayment\Components\ClientFactory;
 
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
 use heidelpayPHP\Heidelpay;
 
-class ClientFactory
+class ClientFactory implements ClientFactoryInterface
 {
-    /** @var string */
-    private const DEFAULT_LOCALE = 'en_GB';
-
     /** @var ConfigReaderInterface */
     private $configReader;
 

@@ -2,7 +2,7 @@
 
 namespace HeidelPayment\Components\PaymentHandler;
 
-use HeidelPayment\Components\Client\ClientFactory;
+use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayHydratorInterface;
 use HeidelPayment\Services\TransactionStateHandlerInterface;
 use heidelpayPHP\Heidelpay;
@@ -60,7 +60,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var TransactionStateHandlerInterface */
     private $transactionStateHandler;
 
-    /** @var ClientFactory */
+    /** @var ClientFactoryInterface */
     private $clientFactory;
 
     /** @var RouterInterface */
@@ -75,7 +75,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         HeidelpayHydratorInterface $metadataHydrator,
         SystemConfigService $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactory $clientFactory,
+        ClientFactoryInterface $clientFactory,
         RouterInterface $router, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
         SessionInterface $session // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
     ) {

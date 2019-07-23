@@ -2,7 +2,7 @@
 
 namespace HeidelPayment\Components\WebhookHandler;
 
-use HeidelPayment\Components\Client\ClientFactory;
+use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment\Components\Struct\Webhook;
 use HeidelPayment\Services\TransactionStateHandlerInterface;
 use heidelpayPHP\Resources\Payment;
@@ -20,7 +20,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
     /** @var TransactionStateHandlerInterface */
     private $transactionStateHandler;
 
-    /** @var ClientFactory */
+    /** @var ClientFactoryInterface */
     private $clientFactory;
 
     /** @var EntityRepositoryInterface */
@@ -28,7 +28,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
 
     public function __construct(
         TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactory $clientFactory,
+        ClientFactoryInterface $clientFactory,
         EntityRepositoryInterface $orderTransactionRepository
     ) {
         $this->transactionStateHandler    = $transactionStateHandler;
@@ -41,7 +41,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
      */
     public function supports(Webhook $webhook, SalesChannelContext $context): bool
     {
-        return true;
+        return stripos($webhook->getEvent(), 'payment.') !== false;
     }
 
     /**

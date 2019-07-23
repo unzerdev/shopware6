@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment\Commands;
 
-use HeidelPayment\Components\Client\ClientFactory;
+use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,13 +16,13 @@ use Throwable;
 
 class RegisterWebhookCommand extends Command
 {
-    /** @var ClientFactory */
+    /** @var ClientFactoryInterface */
     private $clientFactory;
 
     /** @var Router */
     private $router;
 
-    public function __construct(ClientFactory $clientFactory, Router $router)
+    public function __construct(ClientFactoryInterface $clientFactory, Router $router)
     {
         $this->clientFactory = $clientFactory;
         $this->router        = $router;
@@ -53,7 +53,7 @@ class RegisterWebhookCommand extends Command
 
             $style->success($message);
         } catch (HeidelpayApiException $exception) {
-            $style->error($exception->getClientMessage());
+            $style->error($exception->getMerchantMessage());
         } catch (Throwable $exception) {
             $style->error($exception->getMessage());
         }

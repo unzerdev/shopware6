@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment\Controllers;
 
-use HeidelPayment\Components\Client\ClientFactory;
+use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -15,12 +15,12 @@ class HeidelpayRedirectController extends StorefrontController
     /** @var SessionInterface */
     private $session;
 
-    /** @var ClientFactory */
+    /** @var ClientFactoryInterface */
     private $clientFactory;
 
     public function __construct(
         SessionInterface $session,
-        ClientFactory $clientFactory
+        ClientFactoryInterface $clientFactory
     ) {
         $this->session       = $session;
         $this->clientFactory = $clientFactory;
