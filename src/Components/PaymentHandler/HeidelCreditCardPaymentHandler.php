@@ -69,9 +69,7 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
-            //TODO: Error-handling
-            dump($apiException);
-            die();
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         }
     }
 }
