@@ -5,7 +5,7 @@
 
     <services>
         <service id="HeidelPayment\Commands\RegisterWebhookCommand" >
-            <argument type="service" id="HeidelPayment\Components\Client\ClientFactory" />
+            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="router.default" />
 
             <tag name="console.command" />

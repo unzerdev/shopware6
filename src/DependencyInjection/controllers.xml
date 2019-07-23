@@ -8,7 +8,7 @@
 
         <service id="HeidelPayment\Controllers\HeidelpayRedirectController">
             <argument type="service" id="session"/>
-            <argument type="service" id="HeidelPayment\Components\Client\ClientFactory" />
+            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
         </service>
 
         <service id="HeidelPayment\Controllers\HeidelpayWebhookController">
