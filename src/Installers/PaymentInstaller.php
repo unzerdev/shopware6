@@ -9,6 +9,7 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 class PaymentInstaller implements InstallerInterface
 {
     public const PAYMENT_ID_CREDIT_CARD = '4673044aff79424a938d42e9847693c3';
+    public const PAYMENT_ID_SOFORT      = '95aa098aac8f11e9a2a32a2ae2dbcce4';
 
     public const PAYMENT_METHODS = [
         [
@@ -27,6 +28,21 @@ class PaymentInstaller implements InstallerInterface
             ],
             'customFields' => [
                 'heidelpay_frame' => '@Storefront/component/heidelpay/frames/credit-card.html.twig',
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_SOFORT,
+            'handlerIdentifier' => HeidelCreditCardPaymentHandler::class,
+            'name'              => 'Sofort (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Sofort (heidelpay)',
+                    'description' => 'Sofort mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'Sofort (heidelpay)',
+                    'description' => 'Sofort with heidelpay',
+                ],
             ],
         ],
     ];
