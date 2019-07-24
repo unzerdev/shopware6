@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HeidelPayment\Installers;
 
 use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelSofortPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
@@ -38,7 +39,7 @@ class PaymentInstaller implements InstallerInterface
         ],
         [
             'id'                => self::PAYMENT_ID_SOFORT,
-            'handlerIdentifier' => HeidelCreditCardPaymentHandler::class,
+            'handlerIdentifier' => HeidelSofortPaymentHandler::class,
             'name'              => 'Sofort (heidelpay)',
             'translations'      => [
                 'de-DE' => [
