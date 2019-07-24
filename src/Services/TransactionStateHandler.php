@@ -3,8 +3,8 @@
 namespace HeidelPayment\Services;
 
 use heidelpayPHP\Resources\Payment;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 
 class TransactionStateHandler implements TransactionStateHandlerInterface
@@ -20,9 +20,12 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function transformTransactionState(Context $context, AsyncPaymentTransactionStruct $transaction, Payment $payment): void
-    {
-        $transactionId = $transaction->getOrderTransaction()->getId();
+    public function transformTransactionState(
+        OrderTransactionEntity $transaction,
+        Payment $payment,
+        Context $context
+    ): void {
+        $transactionId = $transaction->getId();
 
         if ($payment->isPending()) {
             $this->orderTransactionStateHandler->open($transactionId, $context);

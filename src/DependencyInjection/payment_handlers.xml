@@ -10,6 +10,7 @@
             <argument type="service" id="HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayMetadataHydrator"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="HeidelPayment\Services\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="router.default"/>
             <argument type="service" id="session"/>
 

@@ -4,16 +4,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults public="true"/>
-
-        <service id="HeidelPayment\Controllers\HeidelpayRedirectController">
-            <argument type="service" id="session"/>
+        <service id="HeidelPayment\Components\WebhookHandler\PaymentStatusWebhookHandler">
+            <argument type="service" id="HeidelPayment\Services\TransactionStateHandler" />
             <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-        </service>
+            <argument type="service" id="order_transaction.repository" />
 
-        <service id="HeidelPayment\Controllers\HeidelpayWebhookController">
-            <argument type="tagged" tag="heidelpay.webhook_handler" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader" />
+            <tag name="heidelpay.webhook_handler" />
         </service>
     </services>
 </container>
