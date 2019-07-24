@@ -5,14 +5,12 @@ namespace HeidelPayment\Components\PaymentHandler;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\Sofort;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-/**
- * @property Sofort $paymentType
- */
-class HeidelSofotPaymentHandler extends AbstractHeidelpayHandler
+class HeidelSofortPaymentHandler extends AbstractHeidelpayHandler
 {
     /**
      * {@inheritdoc}
@@ -22,6 +20,11 @@ class HeidelSofotPaymentHandler extends AbstractHeidelpayHandler
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
+        parent::pay($transaction, $dataBag, $salesChannelContext);
+
+        $this->paymentType =  new Sofort();
+        $this->paymentType->setParentResource($this->heidelpayClient);
+
         try {
             // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
             // As soon as it's shorter, use $transaction->getReturnUrl() instead!
@@ -37,11 +40,15 @@ class HeidelSofotPaymentHandler extends AbstractHeidelpayHandler
                 $this->heidelpayBasket
             );
 
-            $redirectUrl = $result->getPayment()->getRedirectUrl();
-        } catch (HeidelpayApiException $apiException) {
-            $redirectUrl = $this->getHeidelpayErrorUrl($apiException->getClientMessage());
-        }
+            $this->session->set('heidelpayMetadataId', $result->getPayment()->getMetadata()->getId());
 
-        return new RedirectResponse($redirectUrl);
+            if ($result->getPayment() && !empty($result->getRedirectUrl())) {
+                $returnUrl = $result->getRedirectUrl();
+            }
+
+            return new RedirectResponse($returnUrl);
+        } catch (HeidelpayApiException $apiException) {
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        }
     }
 }
