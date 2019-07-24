@@ -108,7 +108,7 @@ class HeidelPayment extends Plugin
 
     public function getViewPaths(): array
     {
-        $viewPaths = parent::getViewPaths();
+        $viewPaths   = parent::getViewPaths();
         $viewPaths[] = 'Resources/views/storefront';
 
         return $viewPaths;

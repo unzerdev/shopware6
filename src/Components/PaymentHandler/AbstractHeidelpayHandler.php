@@ -117,10 +117,10 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $client  = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
         $payment = $client->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
 
-        $this->paymentStateFactory->transformTransactionState(
-            $salesChannelContext->getContext(),
-            $transaction,
-            $payment
+        $this->transactionStateHandler->transformTransactionState(
+            $transaction->getOrderTransaction(),
+            $payment,
+            $salesChannelContext->getContext()
         );
 
         $this->session->remove('heidelpayMetadataId');
