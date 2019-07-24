@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HeidelPayment\Installers;
 
 use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelInvoicePaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelSofortPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -17,6 +18,7 @@ class PaymentInstaller implements InstallerInterface
 {
     public const PAYMENT_ID_CREDIT_CARD = '4673044aff79424a938d42e9847693c3';
     public const PAYMENT_ID_SOFORT      = '95aa098aac8f11e9a2a32a2ae2dbcce4';
+    public const PAYMENT_ID_INVOICE     = '08fb8d9a72ab4ca62b811e74f2eca79f';
 
     public const PAYMENT_METHODS = [
         [
@@ -35,6 +37,24 @@ class PaymentInstaller implements InstallerInterface
             ],
             'customFields' => [
                 'heidelpay_frame' => '@Storefront/component/heidelpay/frames/credit-card.html.twig',
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_INVOICE,
+            'handlerIdentifier' => HeidelInvoicePaymentHandler::class,
+            'name'              => 'Invoice (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Rechnung (heidelpay)',
+                    'description' => 'Rechnungskauf mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'Invoice (heidelpay)',
+                    'description' => 'Invoice payments with heidelpay',
+                ],
+            ],
+            'customFields' => [
+                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/invoice.html.twig',
             ],
         ],
         [
