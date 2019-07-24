@@ -2,27 +2,28 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Controller;
+namespace HeidelPayment\Controllers;
 
-use heidelpayPHP\Heidelpay;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
+use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class HeidelpayController extends StorefrontController
+class HeidelpayRedirectController extends StorefrontController
 {
-    /** @var SystemConfigService */
-    protected $configService;
-
     /** @var SessionInterface */
     private $session;
 
-    public function __construct(SystemConfigService $configService, SessionInterface $session)
-    {
-        $this->configService = $configService;
+    /** @var ClientFactoryInterface */
+    private $clientFactory;
+
+    public function __construct(
+        SessionInterface $session,
+        ClientFactoryInterface $clientFactory
+    ) {
         $this->session       = $session;
+        $this->clientFactory = $clientFactory;
     }
 
     /**
@@ -33,7 +34,7 @@ class HeidelpayController extends StorefrontController
     public function finalizePayment(): RedirectResponse
     {
         $metadataId      = $this->session->get('heidelpayMetadataId');
-        $heidelpayClient = new Heidelpay($this->configService->get('HeidelPayment.config.privateKey'));
+        $heidelpayClient = $this->clientFactory->createClient();
 
         $metadata          = $heidelpayClient->fetchMetadata($metadataId);
         $actualRedirectUrl = $metadata->getMetadata('returnUrl');

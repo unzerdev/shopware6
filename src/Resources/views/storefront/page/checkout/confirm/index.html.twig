@@ -1,5 +1,16 @@
 {% sw_extends '@Storefront/page/checkout/confirm/index.html.twig' %}
 
+{% block page_checkout_confirm_errors %}
+    {{ parent() }}
+
+    <div class="heidelpay-error-wrapper" hidden="hidden">
+        {% sw_include '@Storefront/utilities/alert.html.twig' with {
+            type: "danger",
+            content: ""
+        } %}
+    </div>
+{% endblock %}
+
 {% block page_checkout_confirm_product_table %}
     {% if context.paymentMethod.customFields.heidelpay_frame %}
         {% block heidelpay_checkout_confirm_frame %}

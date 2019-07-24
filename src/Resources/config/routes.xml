@@ -4,5 +4,6 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
     http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <import resource="@HeidelPayment/Controller/HeidelpayController.php" type="annotation" />
+    <import resource="@HeidelPayment/Controllers/HeidelpayRedirectController.php" type="annotation" />
+    <import resource="@HeidelPayment/Controllers/HeidelpayWebhookController.php" type="annotation" />
 </routes>

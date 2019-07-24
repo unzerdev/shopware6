@@ -17,6 +17,11 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
     static creditCard;
 
     /**
+     * @type {Boolean}
+     */
+    static submitting = false;
+
+    /**
      * @type {HeidelpayBasePlugin}
      *
      * @private
@@ -64,7 +69,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
      * @private
      */
     _onChangeForm(event) {
-        if (!event.type) {
+        if (!event.type || this.submitting) {
             return;
         }
 
@@ -100,6 +105,9 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
     }
 
     _onCreateResource() {
+        this.submitting = true;
+        this._heidelpayPlugin.setSubmitButtonActive(false);
+
         this.creditCard.createResource()
             .then((resource) => this._submitPayment(resource))
             .catch((error) => this._handleError(error));
@@ -143,6 +151,6 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
      * @private
      */
     _handleError(error) {
-        console.log(error);
+        this._heidelpayPlugin.showError(error);
     }
 }
