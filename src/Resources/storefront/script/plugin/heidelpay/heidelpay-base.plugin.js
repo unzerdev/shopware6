@@ -7,7 +7,9 @@ export default class HeidelpayBasePlugin extends Plugin {
         submitButtonId: 'confirmFormSubmit',
         disabledClass: 'disabled',
         resourceIdElementId: 'heidelpayResourceId',
-        confirmFormId: 'confirmOrderForm'
+        confirmFormId: 'confirmOrderForm',
+        errorWrapperClass: 'heidelpay-error-wrapper',
+        errorContentSelector: '.heidelpay-error-wrapper .alert-content'
     };
 
     /**
@@ -48,9 +50,20 @@ export default class HeidelpayBasePlugin extends Plugin {
         let resourceIdElement = document.getElementById(this.options.resourceIdElementId);
         resourceIdElement.value = resource.id;
 
-        this.setSubmitButtonActive(false);
-
         this.confirmForm.submit();
+    }
+
+    /**
+     * @param { Object } error
+     */
+    showError(error) {
+        let errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
+            errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+
+        errorContent.innerText = error.message;
+
+        errorWrapper.hidden = false;
+        errorWrapper.scrollIntoView({ block: 'end', behavior: 'smooth' });
     }
 
     /**
@@ -66,6 +79,7 @@ export default class HeidelpayBasePlugin extends Plugin {
     _onSubmitButtonClick(event) {
         event.preventDefault();
 
+        this.setSubmitButtonActive(false);
         this.$emitter.publish('heidelpayBase_createResource');
     }
 }
