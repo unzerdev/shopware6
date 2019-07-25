@@ -1,10 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment\Installers;
 
 use Shopware\Core\Framework\CustomField\CustomFieldTypes;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\Plugin\Context\ActivateContext;
+use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
+use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 
 class CustomFieldInstaller implements InstallerInterface
 {
@@ -54,7 +60,7 @@ class CustomFieldInstaller implements InstallerInterface
     /**
      * {@inheritdoc}
      */
-    public function update(InstallContext $context): void
+    public function update(UpdateContext $context): void
     {
         $this->customFieldRepository->upsert(self::CUSTOM_FIELDS, $context->getContext());
     }
@@ -62,7 +68,7 @@ class CustomFieldInstaller implements InstallerInterface
     /**
      * {@inheritdoc}
      */
-    public function uninstall(InstallContext $context): void
+    public function uninstall(UninstallContext $context): void
     {
         $this->customFieldRepository->delete(self::CUSTOM_FIELDS, $context->getContext());
     }
@@ -70,7 +76,7 @@ class CustomFieldInstaller implements InstallerInterface
     /**
      * {@inheritdoc}
      */
-    public function activate(InstallContext $context): void
+    public function activate(ActivateContext $context): void
     {
         //Nothing to do here
     }
@@ -78,7 +84,7 @@ class CustomFieldInstaller implements InstallerInterface
     /**
      * {@inheritdoc}
      */
-    public function deactivate(InstallContext $context): void
+    public function deactivate(DeactivateContext $context): void
     {
         //Nothing to do here
     }

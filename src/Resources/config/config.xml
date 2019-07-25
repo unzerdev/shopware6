@@ -24,6 +24,8 @@
             <name>bookingModeCreditCard</name>
             <label>Booking mode credit card</label>
             <label lang="de-DE">Buchungsmodus für Kreditkarte</label>
+            <helpText>If you select the charge option, the amount is debited immediately; if you select the Authorization option, the amount must be collected manually later.</helpText>
+            <helpText lang="de-DE">Bei der Option Direkt wird der Betrag sofort abgebucht, wählen Sie hingegen die Option Authorisierung muss der Betrag später manuell eingezogen werden.</helpText>
             <options>
                 <option>
                     <id>charge</id>

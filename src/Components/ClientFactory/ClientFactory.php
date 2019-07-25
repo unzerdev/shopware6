@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment\Components\ClientFactory;
 
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;

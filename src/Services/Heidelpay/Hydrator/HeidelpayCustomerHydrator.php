@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment\Services\Heidelpay\Hydrator;
 
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
@@ -24,17 +26,18 @@ class HeidelpayCustomerHydrator implements HeidelpayHydratorInterface
         $billingAddress  = $customer->getActiveBillingAddress();
         $shippingAddress = $customer->getActiveShippingAddress();
 
-        $result = (new Customer(
+        $heidelCustomer = new Customer(
             $customer->getFirstName(),
             $customer->getLastName()
-        ))
-            ->setSalutation($customer->getSalutation() !== null ? $customer->getSalutation()->getSalutationKey() : null)
-            ->setEmail($customer->getEmail())
-            ->setCompany($customer->getCompany())
-            ->setBirthDate($customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null);
+        );
+
+        $heidelCustomer->setSalutation($customer->getSalutation() !== null ? $customer->getSalutation()->getSalutationKey() : null);
+        $heidelCustomer->setEmail($customer->getEmail());
+        $heidelCustomer->setCompany($customer->getCompany());
+        $heidelCustomer->setBirthDate($customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null);
 
         if ($shippingAddress) {
-            $result->setShippingAddress((new Address())
+            $heidelCustomer->setShippingAddress((new Address())
                 ->setCountry($shippingAddress->getCountry() !== null ? $shippingAddress->getCountry()->getIso() : null)
                 ->setState($shippingAddress->getCountryState() !== null ? $shippingAddress->getCountryState()->getShortCode() : null)
                 ->setZip($shippingAddress->getZipcode())
@@ -45,7 +48,7 @@ class HeidelpayCustomerHydrator implements HeidelpayHydratorInterface
         }
 
         if ($billingAddress) {
-            $result->setBillingAddress((new Address())
+            $heidelCustomer->setBillingAddress((new Address())
                 ->setCountry($shippingAddress->getCountry() !== null ? $shippingAddress->getCountry()->getIso() : null)
                 ->setState($shippingAddress->getCountryState() !== null ? $shippingAddress->getCountryState()->getShortCode() : null)
                 ->setZip($shippingAddress->getZipcode())
@@ -55,6 +58,6 @@ class HeidelpayCustomerHydrator implements HeidelpayHydratorInterface
             );
         }
 
-        return $result;
+        return $heidelCustomer;
     }
 }

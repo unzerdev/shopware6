@@ -14,6 +14,10 @@
 {% block page_checkout_confirm_product_table %}
     {% if context.paymentMethod.customFields.heidelpay_frame %}
         {% block heidelpay_checkout_confirm_frame %}
+            {% block page_checkout_heidelpay_form_elements %}
+                <input type="hidden" id="heidelpayResourceId" name="heidelpayResourceId" form="confirmOrderForm">
+            {% endblock %}
+
             <div class="heidelpay-card"
                  data-heidelpay-base="true"
                  data-heidelpay-base-options='{
@@ -36,21 +40,3 @@
     {{ parent() }}
 {% endblock %}
 
-{% block page_checkout_aside_actions %}
-    {% if context.paymentMethod.customFields.heidelpay_frame %}
-        <div class="checkout-aside-action">
-            <form id="confirmOrderForm"
-                  action="{{ path('frontend.checkout.finish.order') }}"
-                  method="post">
-
-                <input type="hidden" id="heidelpayResourceId" name="heidelpayResourceId">
-
-                {% block page_checkout_confirm_form_submit %}
-                    {{ parent() }}
-                {% endblock %}
-            </form>
-        </div>
-    {% else %}
-        {{ parent() }}
-    {% endif %}
-{% endblock %}

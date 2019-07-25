@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment\Components\PaymentHandler;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayHydratorInterface;
 use HeidelPayment\Services\TransactionStateHandlerInterface;
 use heidelpayPHP\Heidelpay;
+use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Basket;
 use heidelpayPHP\Resources\Customer;
 use heidelpayPHP\Resources\Metadata;
@@ -24,7 +27,7 @@ use Symfony\Component\Routing\RouterInterface;
 
 abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var BasePaymentType */
+    /** @var AbstractHeidelpayResource|BasePaymentType */
     protected $paymentType;
 
     /** @var Payment */
@@ -34,12 +37,15 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     protected $heidelpayClient;
 
     /** @var Customer */
+    // phpstan-ignore-next-line
     protected $heidelpayCustomer;
 
     /** @var Basket */
+    // phpstan-ignore-next-line
     protected $heidelpayBasket;
 
     /** @var Metadata */
+    // phpstan-ignore-next-line
     protected $heidelpayMetadata;
 
     /** @var SystemConfigService */

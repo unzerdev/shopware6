@@ -1,10 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment\Installers;
 
 use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\Plugin\Context\ActivateContext;
+use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
+use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 
 class PaymentInstaller implements InstallerInterface
 {
@@ -44,22 +50,22 @@ class PaymentInstaller implements InstallerInterface
         $this->paymentMethodRepository->upsert(self::PAYMENT_METHODS, $context->getContext());
     }
 
-    public function update(InstallContext $context): void
+    public function update(UpdateContext $context): void
     {
         $this->paymentMethodRepository->upsert(self::PAYMENT_METHODS, $context->getContext());
     }
 
-    public function uninstall(InstallContext $context): void
+    public function uninstall(UninstallContext $context): void
     {
         $this->setAllPaymentMethodsActive(false, $context);
     }
 
-    public function activate(InstallContext $context): void
+    public function activate(ActivateContext $context): void
     {
         $this->setAllPaymentMethodsActive(true, $context);
     }
 
-    public function deactivate(InstallContext $context): void
+    public function deactivate(DeactivateContext $context): void
     {
         $this->setAllPaymentMethodsActive(false, $context);
     }

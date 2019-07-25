@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment\Services\Heidelpay\Hydrator;
 
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
@@ -18,17 +20,22 @@ class HeidelpayBasketHydrator implements HeidelpayHydratorInterface
         if ($transaction === null) {
             throw new InvalidArgumentException('Transaction struct can not be null');
         }
+
         $amountTotalVat = $transaction->getOrder()->getAmountTotal() - $transaction->getOrder()->getAmountNet();
 
-        $result = (new Basket(
+        $heidelBasket = new Basket(
             $transaction->getOrderTransaction()->getId(),
             $transaction->getOrder()->getAmountTotal(),
             $channelContext->getCurrency()->getIsoCode()
-        ))->setAmountTotalVat($amountTotalVat);
+        );
+
+        $heidelBasket->setAmountTotalVat($amountTotalVat);
 
         foreach ($transaction->getOrder()->getLineItems() as $lineItem) {
             if ($lineItem->getPrice() === null) {
-                return new BasketItem($lineItem->getLabel(), $lineItem->getTotalPrice(), $lineItem->getUnitPrice(), $lineItem->getQuantity());
+                $heidelBasket->addBasketItem(new BasketItem($lineItem->getLabel(), $lineItem->getTotalPrice(), $lineItem->getUnitPrice(), $lineItem->getQuantity()));
+
+                continue;
             }
 
             $amountTax = 0;
@@ -41,19 +48,21 @@ class HeidelpayBasketHydrator implements HeidelpayHydratorInterface
             $amountGross = $lineItem->getTotalPrice();
             $amountNet   = $amountGross - $amountTax;
 
-            $basketItem = (new BasketItem(
+            $basketItem = new BasketItem(
                 $lineItem->getLabel(),
                 $amountNet,
                 $lineItem->getUnitPrice(),
                 $lineItem->getQuantity()
-            ))->setVat($taxRate)
-                ->setAmountVat($amountTax)
-                ->setAmountGross($lineItem->getTotalPrice())
-                ->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
+            );
 
-            $result->addBasketItem($basketItem);
+            $basketItem->setVat($taxRate);
+            $basketItem->setAmountVat($amountTax);
+            $basketItem->setAmountGross($lineItem->getTotalPrice());
+            $basketItem->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
+
+            $heidelBasket->addBasketItem($basketItem);
         }
 
-        return $result;
+        return $heidelBasket;
     }
 }

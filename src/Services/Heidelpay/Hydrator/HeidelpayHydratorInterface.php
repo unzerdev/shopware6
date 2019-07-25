@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment\Services\Heidelpay\Hydrator;
 
 use heidelpayPHP\Resources\AbstractHeidelpayResource;

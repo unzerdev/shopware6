@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment\Services\Heidelpay\Hydrator;
 
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
@@ -14,13 +16,13 @@ class HeidelpayMetadataHydrator implements HeidelpayHydratorInterface
         SalesChannelContext $channelContext,
         ?AsyncPaymentTransactionStruct $transaction = null
     ): AbstractHeidelpayResource {
-        $metadata = (new Metadata())
-            ->setShopType('Shopware 6')
-            ->setShopVersion(Kernel::SHOPWARE_FALLBACK_VERSION);
+        $heidelMetadata = new Metadata();
+        $heidelMetadata->setShopType('Shopware 6');
+        $heidelMetadata->setShopVersion(Kernel::SHOPWARE_FALLBACK_VERSION);
 
         //TODO: @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-        $metadata->addMetadata('returnUrl', $transaction->getReturnUrl());
+        $heidelMetadata->addMetadata('returnUrl', $transaction->getReturnUrl());
 
-        return $metadata;
+        return $heidelMetadata;
     }
 }
