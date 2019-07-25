@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment\Installers;
 
 use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
@@ -29,8 +31,12 @@ class PaymentInstaller implements InstallerInterface
                     'description' => 'Credit card payments with heidelpay',
                 ],
             ],
+            'customFields' => [
+                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/credit-card.html.twig',
+            ],
         ],
     ];
+
     /** @var EntityRepositoryInterface */
     private $paymentMethodRepository;
 
@@ -41,7 +47,7 @@ class PaymentInstaller implements InstallerInterface
 
     public function install(InstallContext $context): void
     {
-        $this->paymentMethodRepository->create(self::PAYMENT_METHODS, $context->getContext());
+        $this->paymentMethodRepository->upsert(self::PAYMENT_METHODS, $context->getContext());
     }
 
     public function update(UpdateContext $context): void

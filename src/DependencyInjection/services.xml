@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <imports>
+        <import resource="payment_handlers.xml"/>
+        <import resource="hydrators.xml"/>
+        <import resource="commands.xml" />
+        <import resource="controllers.xml" />
+        <import resource="webhook_handlers.xml" />
+    </imports>
+
+    <services>
+        <service id="HeidelPayment\Services\TransactionStateHandler">
+            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+        </service>
+
+        <service id="HeidelPayment\Components\ConfigReader\ConfigReader">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+        </service>
+
+        <service id="HeidelPayment\Components\ClientFactory\ClientFactory">
+            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader" />
+        </service>
+    </services>
+</container>
