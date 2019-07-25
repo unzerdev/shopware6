@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace HeidelPayment\Components\PaymentHandler;
 
@@ -22,7 +22,7 @@ class HeidelSofortPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $this->paymentType =  new Sofort();
+        $this->paymentType = new Sofort();
         $this->paymentType->setParentResource($this->heidelpayClient);
 
         try {

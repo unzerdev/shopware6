@@ -100,7 +100,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
-        $client = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
+        $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
 
         $this->resourceId = $dataBag->get('heidelpayResourceId');
 
@@ -109,7 +109,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $this->heidelpayMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
 
         if (!empty($this->resourceId)) {
-            $this->paymentType = $client->fetchPaymentType($this->resourceId);
+            $this->paymentType = $this->heidelpayClient->fetchPaymentType($this->resourceId);
         }
 
         return new RedirectResponse($transaction->getReturnUrl());
@@ -120,8 +120,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         Request $request,
         SalesChannelContext $salesChannelContext
     ): void {
-        $client  = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
-        $payment = $client->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
+        $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
+        $payment               = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
 
         $this->transactionStateHandler->transformTransactionState(
             $transaction->getOrderTransaction(),
