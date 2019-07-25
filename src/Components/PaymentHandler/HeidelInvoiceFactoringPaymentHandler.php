@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace HeidelPayment\Components\PaymentHandler;
 
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Resources\PaymentTypes\Invoice;
+use heidelpayPHP\Resources\PaymentTypes\InvoiceFactoring;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class HeidelInvoicePaymentHandler extends AbstractHeidelpayHandler
+class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
 {
-    /** @var Invoice */
+    /** @var InvoiceFactoring */
     protected $paymentType;
 
     /**
@@ -39,8 +39,7 @@ class HeidelInvoicePaymentHandler extends AbstractHeidelpayHandler
                 $this->heidelpayCustomer,
                 $transaction->getOrderTransaction()->getId(),
                 $this->heidelpayMetadata,
-                $this->heidelpayBasket,
-                true
+                $this->heidelpayBasket
             );
 
             $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());

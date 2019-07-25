@@ -1,0 +1,13 @@
+{
+  "HeidelPayment": {
+    "transferInformation": {
+      "message": "Bitte überweisen Sie den Betrag %amount% auf das nachfolgende Bankkonto:",
+      "title": "Überweisungsinformationen",
+      "bic": "BIC",
+      "iban": "IBAN",
+      "holder": "Kontoinhaber",
+      "descriptor": "Verwendungszweck",
+      "amount": "Betrag"
+    }
+  }
+}

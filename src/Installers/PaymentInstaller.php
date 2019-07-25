@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace HeidelPayment\Installers;
 
 use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoicePaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelSofortPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -19,6 +22,8 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_CREDIT_CARD = '4673044aff79424a938d42e9847693c3';
     public const PAYMENT_ID_SOFORT      = '95aa098aac8f11e9a2a32a2ae2dbcce4';
     public const PAYMENT_ID_INVOICE     = '08fb8d9a72ab4ca62b811e74f2eca79f';
+    public const PAYMENT_ID_INVOICE_GUARANTEED = '78f3cfa6ab2d9168759724e7cde1eab2';
+    public const PAYMENT_ID_INVOICE_FACTORING  = '6cc3b56ce9b0f80bd44039c047282a41';
 
     public const PAYMENT_METHODS = [
         [
@@ -72,6 +77,42 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
         ],
+        [
+            'id'                => self::PAYMENT_ID_INVOICE_GUARANTEED,
+            'handlerIdentifier' => HeidelInvoiceGuaranteedPaymentHandler::class,
+            'name'              => 'Invoice guaranteed (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Rechnung garantiert (heidelpay)',
+                    'description' => 'Rechnungskauf garantiert mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'Invoice guaranteed (heidelpay)',
+                    'description' => 'Invoice guaranteed payments with heidelpay',
+                ],
+            ],
+            'customFields' => [
+                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/invoice-guaranteed.html.twig',
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_INVOICE_FACTORING,
+            'handlerIdentifier' => HeidelInvoiceFactoringPaymentHandler::class,
+            'name'              => 'Invoice factoring (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Rechnung mit factoring (heidelpay)',
+                    'description' => 'Rechnungskauf factoring mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'Invoice factoring (heidelpay)',
+                    'description' => 'Invoice factoring payments with heidelpay',
+                ],
+            ],
+            'customFields' => [
+                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/invoice-factoring.html.twig',
+            ],
+        ],
     ];
 
     /** @var EntityRepositoryInterface */
@@ -111,6 +152,13 @@ class PaymentInstaller implements InstallerInterface
     {
         $upsertPayload = [];
         foreach (self::PAYMENT_METHODS as $paymentMethod) {
+            $paymentMethodCriteria = new Criteria([$paymentMethod['id']]);
+            $hasPaymentMethod      = $this->paymentMethodRepository->searchIds($paymentMethodCriteria, $context->getContext())->getTotal() > 0;
+
+            if (!$hasPaymentMethod) {
+                continue;
+            }
+
             $upsertPayload[] = [
                 'id'     => $paymentMethod['id'],
                 'active' => $active,

@@ -1,6 +1,6 @@
 import Plugin from 'src/script/plugin-system/plugin.class';
 
-export default class HeidelpayInvoicePlugin extends Plugin {
+export default class HeidelpayInvoiceGuaranteedPlugin extends Plugin {
     static options = {
         heidelpayCardId: 'heidelpay-card'
     };
@@ -10,7 +10,7 @@ export default class HeidelpayInvoicePlugin extends Plugin {
      *
      * @public
      */
-    static invoice;
+    static invoiceGuaranteed;
 
     /**
      * @type {HeidelpayBasePlugin}
@@ -28,7 +28,7 @@ export default class HeidelpayInvoicePlugin extends Plugin {
         this._hideHeidelpayCard();
 
         this.heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
-        this.invoice = this.heidelpayPlugin.heidelpayInstance.Invoice();
+        this.invoiceGuaranteed = this.heidelpayPlugin.heidelpayInstance.InvoiceGuaranteed();
 
         this._registerEvents();
     }
@@ -42,7 +42,7 @@ export default class HeidelpayInvoicePlugin extends Plugin {
     _onCreateResource() {
         this.heidelpayPlugin.setSubmitButtonActive(false);
 
-        this.invoice.createResource()
+        this.invoiceGuaranteed.createResource()
             .then((resource) => this._submitPayment(resource))
             .catch((error) => this._handleError(error));
     }
