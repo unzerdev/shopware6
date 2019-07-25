@@ -19,9 +19,9 @@ use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 
 class PaymentInstaller implements InstallerInterface
 {
-    public const PAYMENT_ID_CREDIT_CARD = '4673044aff79424a938d42e9847693c3';
-    public const PAYMENT_ID_SOFORT      = '95aa098aac8f11e9a2a32a2ae2dbcce4';
-    public const PAYMENT_ID_INVOICE     = '08fb8d9a72ab4ca62b811e74f2eca79f';
+    public const PAYMENT_ID_CREDIT_CARD        = '4673044aff79424a938d42e9847693c3';
+    public const PAYMENT_ID_SOFORT             = '95aa098aac8f11e9a2a32a2ae2dbcce4';
+    public const PAYMENT_ID_INVOICE            = '08fb8d9a72ab4ca62b811e74f2eca79f';
     public const PAYMENT_ID_INVOICE_GUARANTEED = '78f3cfa6ab2d9168759724e7cde1eab2';
     public const PAYMENT_ID_INVOICE_FACTORING  = '6cc3b56ce9b0f80bd44039c047282a41';
 
