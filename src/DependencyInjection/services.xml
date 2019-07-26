@@ -9,6 +9,7 @@
         <import resource="commands.xml" />
         <import resource="controllers.xml" />
         <import resource="webhook_handlers.xml" />
+        <import resource="event_listeners.xml" />
     </imports>
 
     <services>
