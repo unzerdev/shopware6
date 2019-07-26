@@ -5,11 +5,11 @@
 
     <services>
         <service id="HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler">
-            <argument type="service" id="HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayBasketHydrator"/>
-            <argument type="service" id="HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayCustomerHydrator"/>
-            <argument type="service" id="HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayMetadataHydrator"/>
+            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="HeidelPayment\Services\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="router.default"/>
             <argument type="service" id="session"/>

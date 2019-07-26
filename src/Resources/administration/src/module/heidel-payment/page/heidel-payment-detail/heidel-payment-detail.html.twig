@@ -1,0 +1,11 @@
+{% block heidel_payment_payment_details %}
+    <div class="heidel-payment-detail">
+        <div v-if="!isLoading">
+            <sw-card :title="$tc('heidel-payment.paymentDetails.cardTitle')">
+
+            </sw-card>
+        </div>
+
+        <sw-loader v-if="isLoading"></sw-loader>
+    </div>
+{% endblock %}

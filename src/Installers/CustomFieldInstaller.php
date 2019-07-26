@@ -41,6 +41,7 @@ class CustomFieldInstaller implements InstallerInterface
             ],
         ],
     ];
+
     /** @var EntityRepositoryInterface */
     private $customFieldRepository;
 
@@ -78,7 +79,7 @@ class CustomFieldInstaller implements InstallerInterface
      */
     public function activate(ActivateContext $context): void
     {
-        //Nothing to do here
+        // Nothing to do here
     }
 
     /**
@@ -86,6 +87,6 @@ class CustomFieldInstaller implements InstallerInterface
      */
     public function deactivate(DeactivateContext $context): void
     {
-        //Nothing to do here
+        // Nothing to do here
     }
 }

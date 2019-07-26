@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace HeidelPayment\Components\PaymentHandler;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayHydratorInterface;
-use HeidelPayment\Services\TransactionStateHandlerInterface;
+use HeidelPayment\Components\ResourceHydrator\ResourceHydratorInterface;
+use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Basket;
@@ -54,13 +54,13 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var SessionInterface */
     protected $session;
 
-    /** @var HeidelpayHydratorInterface */
+    /** @var ResourceHydratorInterface */
     private $basketHydrator;
 
-    /** @var HeidelpayHydratorInterface */
+    /** @var ResourceHydratorInterface */
     private $customerHydrator;
 
-    /** @var HeidelpayHydratorInterface */
+    /** @var ResourceHydratorInterface */
     private $metadataHydrator;
 
     /** @var TransactionStateHandlerInterface */
@@ -76,9 +76,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     private $resourceId;
 
     public function __construct(
-        HeidelpayHydratorInterface $basketHydrator,
-        HeidelpayHydratorInterface $customerHydrator,
-        HeidelpayHydratorInterface $metadataHydrator,
+        ResourceHydratorInterface $basketHydrator,
+        ResourceHydratorInterface $customerHydrator,
+        ResourceHydratorInterface $metadataHydrator,
         SystemConfigService $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
