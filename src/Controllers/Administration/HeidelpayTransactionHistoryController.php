@@ -6,11 +6,13 @@ namespace HeidelPayment\Controllers\Administration;
 
 use HeidelPayment\Components\ArrayHydrator\PaymentArrayHydratorInterface;
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HeidelpayTransactionHistoryController extends AbstractController
@@ -41,7 +43,15 @@ class HeidelpayTransactionHistoryController extends AbstractController
     {
         $transaction = $this->getOrderTransaction($orderTransaction, $context);
 
-        $client = $this->clientFactory->createClient('');
+        if (null === $transaction) {
+            throw new NotFoundHttpException();
+        }
+
+        if (null === $transaction->getOrder()) {
+            throw new NotFoundHttpException();
+        }
+
+        $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         $resource = $client->fetchPaymentByOrderId($orderTransaction);
         $history  = $this->hydrator->hydrateArray($resource);
@@ -49,10 +59,11 @@ class HeidelpayTransactionHistoryController extends AbstractController
         return new JsonResponse(['history' => $history]);
     }
 
-    private function getOrderTransaction(string $orderTransaction, Context $context)
+    private function getOrderTransaction(string $orderTransaction, Context $context): ?OrderTransactionEntity
     {
-        $criteria = new Criteria();
+        $criteria = new Criteria([$orderTransaction]);
+        $criteria->addAssociation('order');
 
-        return $this->orderTransactionRepository->search($criteria, $context);
+        return $this->orderTransactionRepository->search($criteria, $context)->first();
     }
 }
