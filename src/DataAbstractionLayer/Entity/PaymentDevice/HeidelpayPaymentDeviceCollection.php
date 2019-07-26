@@ -17,15 +17,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  */
 class HeidelpayPaymentDeviceCollection extends EntityCollection
 {
-    protected function getExpectedClass(): string
-    {
-        return HeidelpayPaymentDeviceEntity::class;
-    }
-
     public function filterByDeviceType(string $deviceType): self
     {
         return $this->filter(function (HeidelpayPaymentDeviceEntity $deviceEntity) use ($deviceType) {
             return $deviceEntity->getDeviceType() === $deviceType;
         });
+    }
+
+    protected function getExpectedClass(): string
+    {
+        return HeidelpayPaymentDeviceEntity::class;
     }
 }

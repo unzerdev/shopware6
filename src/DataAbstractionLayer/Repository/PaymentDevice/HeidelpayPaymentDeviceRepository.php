@@ -38,21 +38,21 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
         Context $context
     ): EntityWrittenContainerEvent {
         $data = [
-            'id' => Uuid::randomHex(),
+            'id'         => Uuid::randomHex(),
             'deviceType' => $deviceType,
-            'typeId' => $typeId,
-            'data' => $jsonData
+            'typeId'     => $typeId,
+            'data'       => $jsonData,
         ];
 
         return $this->entityRepository->upsert([
-            $data
+            $data,
         ], $context);
     }
 
     public function remove(string $id, Context $context): EntityWrittenContainerEvent
     {
         return $this->entityRepository->delete([
-            ['id' => $id]
+            ['id' => $id],
         ], $context);
     }
 }
