@@ -3,11 +3,13 @@
 {% block page_checkout_finish_details %}
     {{ parent() }}
 
-    {% if page.extensions.heidelpay.transferInformation %}
-        {% for transferInformation in page.extensions.heidelpay.transferInformation %}
-            {% sw_include '@Storefront/component/heidelpay/finish/transfer-information.html.twig' with {
-                'transferInformation': transferInformation
-            } %}
-        {% endfor %}
-    {% endif %}
+    {% block page_checkout_finish_details_heidelpay_transfer_information %}
+        {% if page.extensions.heidelpay.transferInformation %}
+            {% for transferInformation in page.extensions.heidelpay.transferInformation %}
+                {% sw_include '@Storefront/component/heidelpay/finish/transfer-information.html.twig' with {
+                    'transferInformation': transferInformation
+                } %}
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
 {% endblock %}
