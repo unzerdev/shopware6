@@ -1,0 +1,15 @@
+{% block heidel_payment_payment_details %}
+    <div class="heidel-payment-detail">
+        <div v-if="!isLoading">
+            <template v-for="paymentResource in paymentResources">
+                <sw-card :title="$tc('heidel-payment.paymentDetails.cardTitle')">
+                    <heidel-payment-detail :paymentResource="paymentResource"></heidel-payment-detail>
+                    <heidel-payment-history :paymentResource="paymentResource"></heidel-payment-history>
+                    <heidel-payment-actions :paymentResource="paymentResource"></heidel-payment-actions>
+                </sw-card>
+            </template>
+        </div>
+
+        <sw-loader v-if="isLoading"></sw-loader>
+    </div>
+{% endblock %}

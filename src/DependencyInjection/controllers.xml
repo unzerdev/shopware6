@@ -24,7 +24,7 @@
             </call>
         </service>
 
-        <service id="HeidelPayment\Controllers\Administration\HeidelpayTransactionHistoryController">
+        <service id="HeidelPayment\Controllers\Administration\HeidelpayTransactionController">
             <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="HeidelPayment\Components\ArrayHydrator\PaymentArrayHydrator" />

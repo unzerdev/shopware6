@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
-class HeidelpayTransactionHistoryController extends AbstractController
+class HeidelpayTransactionController extends AbstractController
 {
     /** @var ClientFactoryInterface */
     private $clientFactory;
@@ -38,9 +38,9 @@ class HeidelpayTransactionHistoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/history", name="api.action.heidelpay.transaction.history", methods={"GET"})
+     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/details", name="api.action.heidelpay.transaction.details", methods={"GET"})
      */
-    public function fetchTransactionHistory(string $orderTransaction, Context $context): JsonResponse
+    public function fetchTransactionDetails(string $orderTransaction, Context $context): JsonResponse
     {
         $transaction = $this->getOrderTransaction($orderTransaction, $context);
 
@@ -61,12 +61,12 @@ class HeidelpayTransactionHistoryController extends AbstractController
                 throw new NotFoundHttpException();
             }
 
-            $history  = $this->hydrator->hydrateArray($resource);
+            $response = $this->hydrator->hydrateArray($resource);
         } catch (Throwable $exception) {
             throw $exception; // TODO: handle error or pass to administration
         }
 
-        return new JsonResponse(['history' => $history]);
+        return new JsonResponse($response);
     }
 
     /**

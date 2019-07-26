@@ -6,8 +6,8 @@ class HeidelPaymentService extends ApiService {
         super(httpClient, loginService, apiEndpoint);
     }
 
-    fetchPaymentHistory(transaction) {
-        const apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/history`;
+    fetchPaymentDetails(transaction) {
+        const apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/details`;
 
         return this.httpClient.get(
             apiRoute,

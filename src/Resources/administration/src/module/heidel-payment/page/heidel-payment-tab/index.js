@@ -1,15 +1,15 @@
 import { Component, Filter, Mixin, State } from 'src/core/shopware';
-import template from './heidel-payment-detail.html.twig';
-import './heidel-payment-detail.scss';
+import template from './heidel-payment-tab.html.twig';
+import './heidel-payment-tab.scss';
 
-Component.register('heidel-payment-detail', {
+Component.register('heidel-payment-tab', {
     template,
 
     inject: ['HeidelPaymentService'],
 
     data() {
         return {
-            histories: [],
+            paymentResources: [],
             isLoading: true,
         };
     },
@@ -26,18 +26,6 @@ Component.register('heidel-payment-detail', {
     },
 
     methods: {
-        fetchPaymentHistory(transaction) {
-            let me = this;
-
-            this.HeidelPaymentService.fetchPaymentHistory(transaction)
-                .then((response) => {
-                    console.log(response);
-                })
-                .catch((errorResponse) => {
-                    console.log(errorResponse);
-                });
-        },
-
         orderStore() {
             return State.getStore('order');
         },
@@ -50,11 +38,10 @@ Component.register('heidel-payment-detail', {
 
                 this.order.getAssociation('transactions').getList().then((orderTransactions) => {
                     orderTransactions.items.forEach((orderTransaction) => {
-                        this.HeidelPaymentService.fetchPaymentHistory(orderTransaction.id)
+                        this.HeidelPaymentService.fetchPaymentDetails(orderTransaction.id)
                             .then((response) => {
                                 this.isLoading = false;
-
-                                this.histories.push(response.history);
+                                this.paymentResources.push(response);
                             })
                             .catch((errorResponse) => {
                                 console.log(errorResponse);

@@ -3,6 +3,28 @@
     "tabTitle": "Heidelpay",
     "paymentDetails": {
       "cardTitle": "Zahlungsinformationen"
+    },
+    "transactionHistory": {
+      "column": {
+        "type": "Typ",
+        "amount": "Betrag",
+        "date": "Datum"
+      },
+      "type": {
+        "authorization": "Reservierung",
+        "charge": "Einzug",
+        "shipment": "Versandtmitteilung",
+        "cancellation": "Rückerstattung",
+        "default": ""
+      },
+      "detail": {
+        "amountTotal": "amountTotal",
+        "amountTotalVat": "amountTotalVat",
+        "currency": "currency",
+        "orderId": "orderId",
+        "id": "id",
+        "state": "state"
+      }
     }
   }
 }

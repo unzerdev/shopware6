@@ -2,7 +2,29 @@
   "heidel-payment": {
     "tabTitle": "Heidelpay",
     "paymentDetails": {
-      "cardTitle": "Zahlungsinformationen"
+      "cardTitle": "PaymentInformation"
+    },
+    "transactionHistory": {
+      "column": {
+        "type": "Type",
+        "amount": "Amount",
+        "date": "Date"
+      },
+      "type": {
+        "authorization": "Authorization",
+        "charge": "Charging",
+        "shipment": "Shipping notification",
+        "cancellation": "Refund",
+        "default": ""
+      },
+      "detail": {
+        "amountTotal": "amountTotal",
+        "amountTotalVat": "amountTotalVat",
+        "currency": "currency",
+        "orderId": "orderId",
+        "id": "id",
+        "state": "state"
+      }
     }
   }
 }

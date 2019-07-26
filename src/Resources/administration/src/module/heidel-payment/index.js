@@ -1,7 +1,10 @@
 import { Module } from 'src/core/shopware';
 
+import './component/heidel-payment-actions';
+import './component/heidel-payment-detail';
+import './component/heidel-payment-history';
 import './extension/sw-order';
-import './page/heidel-payment-detail';
+import './page/heidel-payment-tab';
 
 import deDE from './snippet/de-DE.json';
 import enGB from './snippet/en-GB.json';
@@ -22,7 +25,7 @@ Module.register('heidel-payment', {
     routeMiddleware(next, currentRoute) {
         if (currentRoute.name === 'sw.order.detail') {
             currentRoute.children.push({
-                component: 'heidel-payment-detail',
+                component: 'heidel-payment-tab',
                 name: 'heidel-payment.payment.detail',
                 isChildren: true,
                 path: '/sw/order/heidelpayment/detail/:id'

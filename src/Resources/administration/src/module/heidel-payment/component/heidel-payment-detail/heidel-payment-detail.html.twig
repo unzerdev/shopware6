@@ -1,0 +1,37 @@
+{% block heidel_payment_detail %}
+    <sw-container columns="1fr 1fr" gap="20px">
+        <div>
+            <sw-number-field
+                    :label="$tc('heidel-payment.transactionHistory.detail.amountTotal')"
+                    v-model="paymentResource.basket.amountTotal">
+            </sw-number-field>
+
+            <sw-number-field
+                    :label="$tc('heidel-payment.transactionHistory.detail.amountTotalVat')"
+                    v-model="paymentResource.basket.amountTotalVat">
+            </sw-number-field>
+
+            <sw-text-field
+                    :label="$tc('heidel-payment.transactionHistory.detail.currency')"
+                    v-model="paymentResource.currency">
+            </sw-text-field>
+        </div>
+
+        <div>
+            <sw-text-field
+                    :label="$tc('heidel-payment.transactionHistory.detail.orderId')"
+                    v-model="paymentResource.orderId">
+            </sw-text-field>
+
+            <sw-text-field
+                    :label="$tc('heidel-payment.transactionHistory.detail.id')"
+                    v-model="paymentResource.id">
+            </sw-text-field>
+
+            <sw-text-field
+                    :label="$tc('heidel-payment.transactionHistory.detail.state')"
+                    v-model="paymentResource.state.name">
+            </sw-text-field>
+        </div>
+    </sw-container>
+{% endblock %}
