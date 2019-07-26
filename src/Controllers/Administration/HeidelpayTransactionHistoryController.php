@@ -6,13 +6,11 @@ namespace HeidelPayment\Controllers\Administration;
 
 use HeidelPayment\Components\ArrayHydrator\PaymentArrayHydratorInterface;
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HeidelpayTransactionHistoryController extends AbstractController
@@ -42,7 +40,6 @@ class HeidelpayTransactionHistoryController extends AbstractController
     public function validateApiCredentials(string $orderTransaction, Context $context): JsonResponse
     {
         $transaction = $this->getOrderTransaction($orderTransaction, $context);
-
 
         $client = $this->clientFactory->createClient('');
 
