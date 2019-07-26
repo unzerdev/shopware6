@@ -9,5 +9,12 @@
 
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="HeidelPayment\EventListeners\CheckoutConfirmEventListener">
+            <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+
+            <tag name="kernel.event_subscriber"/>
+            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
+        </service>
     </services>
 </container>
