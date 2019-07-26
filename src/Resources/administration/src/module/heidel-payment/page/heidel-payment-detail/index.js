@@ -9,6 +9,7 @@ Component.register('heidel-payment-detail', {
 
     data() {
         return {
+            histories: [],
             isLoading: true,
         };
     },
@@ -53,7 +54,7 @@ Component.register('heidel-payment-detail', {
                             .then((response) => {
                                 this.isLoading = false;
 
-                                console.log(response);
+                                this.histories.push(response.history);
                             })
                             .catch((errorResponse) => {
                                 console.log(errorResponse);
@@ -65,6 +66,7 @@ Component.register('heidel-payment-detail', {
     },
 
     resetDataAttributes() {
+        this.histories = [];
         this.isLoading = true;
     }
 });

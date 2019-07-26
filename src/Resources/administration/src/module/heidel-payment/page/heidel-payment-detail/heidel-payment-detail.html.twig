@@ -1,9 +1,24 @@
 {% block heidel_payment_payment_details %}
     <div class="heidel-payment-detail">
         <div v-if="!isLoading">
-            <sw-card :title="$tc('heidel-payment.paymentDetails.cardTitle')">
-
-            </sw-card>
+            <template v-for="hitory in histories">
+                <sw-card :title="$tc('heidel-payment.paymentDetails.cardTitle')">
+                    <sw-data-grid
+                        :dataSource="[
+                            { id: 'uuid1', company: 'Wordify', name: 'Portia Jobson' },
+                            { id: 'uuid2', company: 'Twitternation', name: 'Baxy Eardley' },
+                            { id: 'uuid3', company: 'Skidoo', name: 'Arturo Staker' },
+                            { id: 'uuid4', company: 'Meetz', name: 'Dalston Top' },
+                            { id: 'uuid5', company: 'Photojam', name: 'Neddy Jensen' }
+                        ]"
+                        :columns="[
+                            { property: 'name', label: 'Name', rawData: true },
+                            { property: 'company', label: 'Company', rawData: true }
+                        ]"
+                        :showActions=false>
+                     </sw-data-grid>
+                </sw-card>
+            </template>
         </div>
 
         <sw-loader v-if="isLoading"></sw-loader>
