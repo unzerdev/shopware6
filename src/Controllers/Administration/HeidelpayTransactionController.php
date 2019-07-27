@@ -70,7 +70,7 @@ class HeidelpayTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/charge/{amount}", defaults={"amount"=0.0}, name="api.action.heidelpay.transaction.charge", methods={"GET"})
+     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/charge/{amount}", name="api.action.heidelpay.transaction.charge", methods={"GET"})
      */
     public function chargeTransaction(string $orderTransaction, float $amount, Context $context): JsonResponse
     {
@@ -87,11 +87,7 @@ class HeidelpayTransactionController extends AbstractController
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            if (empty($amount)) {
-                $client->chargeAuthorization($orderTransaction);
-            } else {
-                $client->chargeAuthorization($orderTransaction, $amount);
-            }
+            $client->chargeAuthorization($orderTransaction, $amount);
         } catch (Throwable $exception) {
             throw $exception; // TODO: handle error or pass to administration
         }
@@ -100,9 +96,9 @@ class HeidelpayTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/refund", name="api.action.heidelpay.transaction.refund", methods={"GET"})
+     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/refund/{amount}", name="api.action.heidelpay.transaction.refund", methods={"GET"})
      */
-    public function refundTransaction(string $orderTransaction, Context $context): JsonResponse
+    public function refundTransaction(string $orderTransaction, float $amount, Context $context): JsonResponse
     {
         $transaction = $this->getOrderTransaction($orderTransaction, $context);
 
@@ -117,7 +113,7 @@ class HeidelpayTransactionController extends AbstractController
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $client->cancel($orderTransaction);
+            $client->cancelChargeById($orderTransaction);
         } catch (Throwable $exception) {
             throw $exception; // TODO: handle error or pass to administration
         }

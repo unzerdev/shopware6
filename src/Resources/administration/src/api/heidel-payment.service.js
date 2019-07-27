@@ -18,6 +18,32 @@ class HeidelPaymentService extends ApiService {
             return ApiService.handleResponse(response);
         });
     }
+
+    chargeTransaction(transaction, amount) {
+        const apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/charge/${amount}`;
+
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
+    refundTransaction(transaction, amount) {
+        const apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/refund/${amount}`;
+
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
 }
 
 Application.addServiceProvider('HeidelPaymentService', (container) => {

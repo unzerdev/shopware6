@@ -16,30 +16,40 @@ Component.register('heidel-payment-history', {
             let data = [];
 
             this.paymentResource.transactions.forEach((transaction) => {
+                let amount = this.$options.filters.currency(
+                    parseFloat(transaction.amount),
+                    this.paymentResource.currency,
+                );
+
+                let date = this.$options.filters.date(
+                    transaction.date
+                );
+
                 data.push({
                     type: this.transactionTypeRenderer(transaction.type),
-                    amount: transaction.amount,
-                    date: transaction.date
+                    amount: amount,
+                    date: date
                 })
             });
 
             return data;
         },
+
         columns: function () {
             return [
                 {
                     property: 'type',
-                    label: this.$tc('heidel-payment.transactionHistory.column.type'),
+                    label: this.$tc('heidel-payment.paymentDetails.history.column.type'),
                     rawData: true
                 },
                 {
                     property: 'amount',
-                    label: this.$tc('heidel-payment.transactionHistory.column.amount'),
+                    label: this.$tc('heidel-payment.paymentDetails.history.column.amount'),
                     rawData: true
                 },
                 {
                     property: 'date',
-                    label: this.$tc('heidel-payment.transactionHistory.column.date'),
+                    label: this.$tc('heidel-payment.paymentDetails.history.column.date'),
                     rawData: true
                 },
             ];
@@ -50,15 +60,15 @@ Component.register('heidel-payment-history', {
         transactionTypeRenderer: function (value) {
             switch (value) {
                 case 'authorization':
-                    return this.$tc('heidel-payment.transactionHistory.type.authorization');
+                    return this.$tc('heidel-payment.paymentDetails.history.type.authorization');
                 case 'charge':
-                    return this.$tc('heidel-payment.transactionHistory.type.charge');
+                    return this.$tc('heidel-payment.paymentDetails.history.type.charge');
                 case 'shipment':
-                    return this.$tc('heidel-payment.transactionHistory.type.shipment');
+                    return this.$tc('heidel-payment.paymentDetails.history.type.shipment');
                 case 'cancellation':
-                    return this.$tc('heidel-payment.transactionHistory.type.cancellation');
+                    return this.$tc('heidel-payment.paymentDetails.history.type.cancellation');
                 default:
-                    return this.$tc('heidel-payment.transactionHistory.type.default');
+                    return this.$tc('heidel-payment.paymentDetails.history.type.default');
             }
         }
     }

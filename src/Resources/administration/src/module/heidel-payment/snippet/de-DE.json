@@ -2,22 +2,29 @@
   "heidel-payment": {
     "tabTitle": "Heidelpay",
     "paymentDetails": {
-      "cardTitle": "Zahlungsinformationen"
-    },
-    "transactionHistory": {
-      "column": {
-        "type": "Typ",
-        "amount": "Betrag",
-        "date": "Datum"
+      "history": {
+        "cardTitle": "Zahlungsverlauf",
+        "column": {
+          "type": "Typ",
+          "amount": "Betrag",
+          "date": "Datum"
+        },
+        "type": {
+          "authorization": "Reservierung",
+          "charge": "Einzug",
+          "shipment": "Versandtmitteilung",
+          "cancellation": "Rückerstattung",
+          "default": ""
+        }
       },
-      "type": {
-        "authorization": "Reservierung",
-        "charge": "Einzug",
-        "shipment": "Versandtmitteilung",
-        "cancellation": "Rückerstattung",
-        "default": ""
+      "actions": {
+        "cardTitle": "Aktionen",
+        "chargeButton": "Charge",
+        "shipButton": "Ship",
+        "refundButton": "Refund"
       },
       "detail": {
+        "cardTitle": "Zahlungsdetails",
         "amountTotal": "amountTotal",
         "amountTotalVat": "amountTotalVat",
         "currency": "currency",

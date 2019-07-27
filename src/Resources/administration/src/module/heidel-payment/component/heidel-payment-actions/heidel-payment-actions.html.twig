@@ -1,3 +1,29 @@
 {% block heidel_payment_actions %}
-    <div>asdf</div>
+    <sw-card class="heidel-payment-detail" :title="$tc('heidel-payment.paymentDetails.actions.cardTitle')">
+        <sw-container columns="1fr 1fr 1fr 1fr" gap="0 20px">
+            <div>
+                <sw-button :disabled="isLoading || !isShipPossible" @click="ship">
+                    {{ $tc('heidel-payment.paymentDetails.actions.shipButton') }}
+                </sw-button>
+            </div>
+
+            <div>
+                <sw-number-field v-model="transactionAmount"></sw-number-field>
+            </div>
+
+            <div>
+                <sw-button :disabled="isLoading || !isCapturePossible" @click="charge">
+                    {{ $tc('heidel-payment.paymentDetails.actions.chargeButton') }}
+                </sw-button>
+            </div>
+
+            <div>
+                <sw-button :disabled="isLoading || !isRefundPossible" @click="refund">
+                    {{ $tc('heidel-payment.paymentDetails.actions.refundButton') }}
+                </sw-button>
+            </div>
+        </sw-container>
+
+        <sw-loader v-if="isLoading"></sw-loader>
+    </sw-card>
 {% endblock %}

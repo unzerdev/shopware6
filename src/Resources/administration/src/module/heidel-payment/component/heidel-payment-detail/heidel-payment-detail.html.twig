@@ -1,37 +1,31 @@
 {% block heidel_payment_detail %}
-    <sw-container columns="1fr 1fr" gap="20px">
-        <div>
-            <sw-number-field
-                    :label="$tc('heidel-payment.transactionHistory.detail.amountTotal')"
-                    v-model="paymentResource.basket.amountTotal">
-            </sw-number-field>
+    <sw-card class="heidel-payment-detail" :title="$tc('heidel-payment.paymentDetails.detail.cardTitle')">
+        <sw-container columns="1fr 1fr" gap="0 20px">
+            <sw-container>
+                <sw-description-list>
+                    <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountTotal') }}</dt>
+                    <dd>{{ paymentResource.basket.amountTotal | currency(paymentResource.currency) }}</dd>
 
-            <sw-number-field
-                    :label="$tc('heidel-payment.transactionHistory.detail.amountTotalVat')"
-                    v-model="paymentResource.basket.amountTotalVat">
-            </sw-number-field>
+                    <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountTotalVat') }}</dt>
+                    <dd>{{ paymentResource.basket.amountTotalVat | currency(paymentResource.currency) }}</dd>
 
-            <sw-text-field
-                    :label="$tc('heidel-payment.transactionHistory.detail.currency')"
-                    v-model="paymentResource.currency">
-            </sw-text-field>
-        </div>
+                    <dt>{{ $tc('heidel-payment.paymentDetails.detail.currency') }}</dt>
+                    <dd>{{ paymentResource.currency }}</dd>
+                </sw-description-list>
+            </sw-container>
 
-        <div>
-            <sw-text-field
-                    :label="$tc('heidel-payment.transactionHistory.detail.orderId')"
-                    v-model="paymentResource.orderId">
-            </sw-text-field>
+            <sw-container>
+                <sw-description-list>
+                    <dt>{{ $tc('heidel-payment.paymentDetails.detail.orderId') }}</dt>
+                    <dd>{{ paymentResource.orderId }}</dd>
 
-            <sw-text-field
-                    :label="$tc('heidel-payment.transactionHistory.detail.id')"
-                    v-model="paymentResource.id">
-            </sw-text-field>
+                    <dt>{{ $tc('heidel-payment.paymentDetails.detail.id') }}</dt>
+                    <dd>{{ paymentResource.id }}</dd>
 
-            <sw-text-field
-                    :label="$tc('heidel-payment.transactionHistory.detail.state')"
-                    v-model="paymentResource.state.name">
-            </sw-text-field>
-        </div>
-    </sw-container>
+                    <dt>{{ $tc('heidel-payment.paymentDetails.detail.state') }}</dt>
+                    <dd>{{ paymentResource.state.name }}</dd>
+                </sw-description-list>
+            </sw-container>
+        </sw-container>
+    </sw-card>
 {% endblock %}

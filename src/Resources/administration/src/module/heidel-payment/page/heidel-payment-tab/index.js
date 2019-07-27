@@ -1,6 +1,5 @@
 import { Component, Filter, Mixin, State } from 'src/core/shopware';
 import template from './heidel-payment-tab.html.twig';
-import './heidel-payment-tab.scss';
 
 Component.register('heidel-payment-tab', {
     template,
@@ -26,11 +25,25 @@ Component.register('heidel-payment-tab', {
     },
 
     methods: {
+        createdComponent() {
+            this.loadData();
+        },
+
         orderStore() {
             return State.getStore('order');
         },
 
-        createdComponent() {
+        resetDataAttributes() {
+            this.paymentResources = [];
+            this.isLoading = true;
+        },
+
+        reloadPaymentDetails() {
+            this.resetDataAttributes();
+            this.loadData();
+        },
+
+        loadData() {
             const orderId = this.$route.params.id;
 
             this.orderStore().getByIdAsync(orderId).then((order) => {
@@ -51,9 +64,4 @@ Component.register('heidel-payment-tab', {
             });
         },
     },
-
-    resetDataAttributes() {
-        this.histories = [];
-        this.isLoading = true;
-    }
 });
