@@ -1,5 +1,6 @@
 import { Component } from 'src/core/shopware';
 import template from './heidel-payment-actions.html.twig';
+import './heidel-payment-actions.scss';
 
 Component.register('heidel-payment-actions', {
     template,
@@ -14,38 +15,30 @@ Component.register('heidel-payment-actions', {
     },
 
     props: {
+        transactionResource: {
+            type: Object,
+            required: true
+        },
+
         paymentResource: {
             type: Object,
             required: true
         },
     },
 
+    computed: {
+        isChargePossible: function () {
+            return true;
+        },
+
+        isRefundPossible: function () {
+            return false;
+        }
+    },
+
     methods: {
-        isCapturePossible() {
-            return true;
-        },
-
-        isRefundPossible() {
-            return true;
-        },
-
-        isShipPossible() {
-            return true;
-        },
-
         charge() {
-            this.isLoading = true;
-
-            this.HeidelPaymentService.chargeTransaction(
-                this.paymentResource.orderId,
-                this.transactionAmount
-            ).then(() => {
-                this.isLoading = false;
-
-                this.$emit('reload');
-            }).catch((errorResponse) => {
-                console.log(errorResponse);
-            });
+            this.$emit('reload');
         },
 
         refund() {
@@ -55,15 +48,11 @@ Component.register('heidel-payment-actions', {
                 this.paymentResource.orderId,
                 this.transactionAmount
             ).then(() => {
+                this.isLoading = true;
                 this.$emit('reload');
             }).catch((errorResponse) => {
                 console.log(errorResponse);
             });
         },
-
-        ship() {
-            this.isLoading = true;
-            this.$emit('reload');
-        }
     }
 });

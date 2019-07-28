@@ -1,10 +1,21 @@
-{% block heidel_payment_detail %}
+{% block heidel_payment_history %}
     <sw-card :title="$tc('heidel-payment.paymentDetails.history.cardTitle')">
         <sw-data-grid
             :dataSource="data"
             :columns="columns"
-            :showActions="false"
             :showSelection="false">
+
+            {% block heidel_payment_history_actions %}
+                <template slot="actions" slot-scope="{ item }">
+                    <heidel-payment-actions
+                        :transactionResource="item.resource"
+                        :paymentResource="paymentResource"
+                        @reload="reloadPaymentDetails">
+                    </heidel-payment-actions>
+                </template>
+            {% endblock %}
+
+            {% block sw_data_grid_header_cell_selection %}{% endblock %}
         </sw-data-grid>
     </sw-card>
 {% endblock %}

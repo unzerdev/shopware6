@@ -28,7 +28,8 @@ Component.register('heidel-payment-history', {
                 data.push({
                     type: this.transactionTypeRenderer(transaction.type),
                     amount: amount,
-                    date: date
+                    date: date,
+                    resource: transaction
                 })
             });
 
@@ -70,6 +71,10 @@ Component.register('heidel-payment-history', {
                 default:
                     return this.$tc('heidel-payment.paymentDetails.history.type.default');
             }
+        },
+
+        reloadPaymentDetails: function() {
+            this.$emit('reload');
         }
     }
 });

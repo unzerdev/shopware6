@@ -121,6 +121,32 @@ class HeidelpayTransactionController extends AbstractController
         return new JsonResponse(['status' => true]);
     }
 
+    /**
+     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/ship", name="api.action.heidelpay.transaction.ship", methods={"GET"})
+     */
+    public function shipTransaction(string $orderTransaction, Context $context): JsonResponse
+    {
+        $transaction = $this->getOrderTransaction($orderTransaction, $context);
+
+        if (null === $transaction) {
+            throw new NotFoundHttpException();
+        }
+
+        if (null === $transaction->getOrder()) {
+            throw new NotFoundHttpException();
+        }
+
+        $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
+
+        try {
+            $client->ship($orderTransaction);
+        } catch (Throwable $exception) {
+            throw $exception; // TODO: handle error or pass to administration
+        }
+
+        return new JsonResponse(['status' => true]);
+    }
+
     private function getOrderTransaction(string $orderTransaction, Context $context): ?OrderTransactionEntity
     {
         $criteria = new Criteria([$orderTransaction]);
