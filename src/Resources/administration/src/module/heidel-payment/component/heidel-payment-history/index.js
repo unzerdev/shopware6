@@ -22,7 +22,12 @@ Component.register('heidel-payment-history', {
                 );
 
                 let date = this.$options.filters.date(
-                    transaction.date
+                    transaction.date,
+                    {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        second: 'numeric',
+                    }
                 );
 
                 data.push({
