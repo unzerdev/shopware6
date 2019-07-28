@@ -93,15 +93,15 @@ class HeidelpayTransactionController extends AbstractController
         } catch (HeidelpayApiException $exception) {
             return new JsonResponse(
                 [
-                    'status' => false,
+                    'status'  => false,
                     'message' => $exception->getMerchantMessage(),
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
             return new JsonResponse(
                 [
-                    'status' => false,
-                    'message' => 'generic-error'
+                    'status'  => false,
+                    'message' => 'generic-error',
                 ],
                 Response::HTTP_BAD_REQUEST
             );
@@ -132,15 +132,15 @@ class HeidelpayTransactionController extends AbstractController
         } catch (HeidelpayApiException $exception) {
             return new JsonResponse(
                 [
-                    'status' => false,
+                    'status'  => false,
                     'message' => $exception->getMerchantMessage(),
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
             return new JsonResponse(
                 [
-                    'status' => false,
-                    'message' => 'generic-error'
+                    'status'  => false,
+                    'message' => 'generic-error',
                 ],
                 Response::HTTP_BAD_REQUEST
             );
@@ -171,15 +171,15 @@ class HeidelpayTransactionController extends AbstractController
         } catch (HeidelpayApiException $exception) {
             return new JsonResponse(
                 [
-                    'status' => false,
+                    'status'  => false,
                     'message' => $exception->getMerchantMessage(),
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
             return new JsonResponse(
                 [
-                    'status' => false,
-                    'message' => 'generic-error'
+                    'status'  => false,
+                    'message' => 'generic-error',
                 ],
                 Response::HTTP_BAD_REQUEST
             );
