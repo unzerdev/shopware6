@@ -58,17 +58,12 @@ class HeidelpayTransactionController extends AbstractController
 
         try {
             $resource = $client->fetchPaymentByOrderId($orderTransaction);
-
-            if (null === $resource) {
-                throw new NotFoundHttpException();
-            }
-
-            $response = $this->hydrator->hydrateArray($resource);
+            $data     = $this->hydrator->hydrateArray($resource);
         } catch (Throwable $exception) {
             throw $exception; // TODO: handle error or pass to administration
         }
 
-        return new JsonResponse($response);
+        return new JsonResponse($data);
     }
 
     /**
