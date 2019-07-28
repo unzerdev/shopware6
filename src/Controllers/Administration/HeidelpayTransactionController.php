@@ -6,12 +6,14 @@ namespace HeidelPayment\Controllers\Administration;
 
 use HeidelPayment\Components\ArrayHydrator\PaymentArrayHydratorInterface;
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
+use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
@@ -88,17 +90,30 @@ class HeidelpayTransactionController extends AbstractController
 
         try {
             $client->chargeAuthorization($orderTransaction, $amount);
+        } catch (HeidelpayApiException $exception) {
+            return new JsonResponse(
+                [
+                    'status' => false,
+                    'message' => $exception->getMerchantMessage(),
+                ],
+                Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
-            throw $exception; // TODO: handle error or pass to administration
+            return new JsonResponse(
+                [
+                    'status' => false,
+                    'message' => 'generic-error'
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return new JsonResponse(['status' => true]);
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/refund/{amount}", name="api.action.heidelpay.transaction.refund", methods={"GET"})
+     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/refund/{charge}/{amount}", name="api.action.heidelpay.transaction.refund", methods={"GET"})
      */
-    public function refundTransaction(string $orderTransaction, float $amount, Context $context): JsonResponse
+    public function refundTransaction(string $orderTransaction, string $charge, float $amount, Context $context): JsonResponse
     {
         $transaction = $this->getOrderTransaction($orderTransaction, $context);
 
@@ -113,9 +128,22 @@ class HeidelpayTransactionController extends AbstractController
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $client->cancelChargeById($orderTransaction);
+            $client->cancelChargeById($orderTransaction, $charge, $amount);
+        } catch (HeidelpayApiException $exception) {
+            return new JsonResponse(
+                [
+                    'status' => false,
+                    'message' => $exception->getMerchantMessage(),
+                ],
+                Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
-            throw $exception; // TODO: handle error or pass to administration
+            return new JsonResponse(
+                [
+                    'status' => false,
+                    'message' => 'generic-error'
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return new JsonResponse(['status' => true]);
@@ -140,8 +168,21 @@ class HeidelpayTransactionController extends AbstractController
 
         try {
             $client->ship($orderTransaction);
+        } catch (HeidelpayApiException $exception) {
+            return new JsonResponse(
+                [
+                    'status' => false,
+                    'message' => $exception->getMerchantMessage(),
+                ],
+                Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
-            throw $exception; // TODO: handle error or pass to administration
+            return new JsonResponse(
+                [
+                    'status' => false,
+                    'message' => 'generic-error'
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return new JsonResponse(['status' => true]);

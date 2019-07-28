@@ -4,17 +4,21 @@
             <sw-number-field
                 v-on:click.native.stop
                 v-model="transactionAmount"
-                v-if="isChargePossible || isRefundPossible">
+                >
             </sw-number-field>
         </div>
 
         <div class="heidel-payment-actions--button">
-            <sw-button :disabled="isLoading" v-if="isChargePossible" @click="charge">
+            <sw-button-process :isLoading="isLoading" v-if="isChargePossible" @click="charge">
                 {{ $tc('heidel-payment.paymentDetails.actions.chargeButton') }}
-            </sw-button>
+            </sw-button-process>
 
-            <sw-button :disabled="isLoading" v-if="isRefundPossible" @click="refund">
+            <sw-button-process :isLoading="isLoading" v-if="isRefundPossible" @click="refund">
                 {{ $tc('heidel-payment.paymentDetails.actions.refundButton') }}
+            </sw-button-process>
+
+            <sw-button :disabled="true" v-if="!isChargePossible && !isRefundPossible">
+                {{ $tc('heidel-payment.paymentDetails.actions.chargeButton') }}
             </sw-button>
         </div>
     </sw-container>

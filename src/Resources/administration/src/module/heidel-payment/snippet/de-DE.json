@@ -31,6 +31,17 @@
         "orderId": "orderId",
         "id": "id",
         "state": "state"
+      },
+      "notifications": {
+        "refundSuccessTitle": "refund success",
+        "refundSuccessMessage": "refund success",
+        "refundErrorTitle": "refund error",
+        "chargeSuccessTitle": "charge success",
+        "chargeSuccessMessage": "charge success",
+        "chargeErrorTitle": "charge error",
+        "shipSuccessTitle": "ship success",
+        "shipSuccessMessage": "ship success",
+        "shipErrorTitle": "ship error"
       }
     }
   }

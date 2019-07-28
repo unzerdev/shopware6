@@ -28,8 +28,10 @@
             </sw-container>
         </sw-container>
 
-        <sw-button @click="ship">
-            {{ $tc('heidel-payment.paymentDetails.actions.ship') }}
-        </sw-button>
+        <sw-container columns="1fr">
+            <sw-button-process :isLoading="isLoading" @click="ship">
+                {{ $tc('heidel-payment.paymentDetails.actions.shipButton') }}
+            </sw-button-process>
+        </sw-container>
     </sw-card>
 {% endblock %}

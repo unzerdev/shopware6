@@ -1,4 +1,4 @@
-import { Component } from 'src/core/shopware';
+import { Component, Mixin } from 'src/core/shopware';
 import template from './heidel-payment-actions.html.twig';
 import './heidel-payment-actions.scss';
 
@@ -6,6 +6,10 @@ Component.register('heidel-payment-actions', {
     template,
 
     inject: ['HeidelPaymentService'],
+
+    mixins: [
+        Mixin.getByName('notification')
+    ],
 
     data() {
         return {
@@ -28,17 +32,36 @@ Component.register('heidel-payment-actions', {
 
     computed: {
         isChargePossible: function () {
-            return true;
+            return this.transactionResource.type === 'authorization';
         },
 
         isRefundPossible: function () {
-            return false;
+            return this.transactionResource.type === 'charge';
         }
     },
 
     methods: {
         charge() {
-            this.$emit('reload');
+            this.isLoading = true;
+
+            this.HeidelPaymentService.chargeTransaction(
+                this.paymentResource.orderId,
+                this.transactionAmount
+            ).then(() => {
+                this.createNotificationSuccess({
+                    title: this.$tc('heidel-payment.paymentDetails.notifications.chargeSuccessTitle'),
+                    message: this.$tc('heidel-payment.paymentDetails.notifications.chargeSuccessMessage')
+                });
+
+                this.$emit('reload');
+            }).catch((errorResponse) => {
+                this.createNotificationError({
+                    title: this.$tc('heidel-payment.paymentDetails.notifications.chargeErrorTitle'),
+                    message: errorResponse.response.data.message
+                });
+
+                this.isLoading = false;
+            });
         },
 
         refund() {
@@ -46,12 +69,22 @@ Component.register('heidel-payment-actions', {
 
             this.HeidelPaymentService.refundTransaction(
                 this.paymentResource.orderId,
+                this.transactionResource.id,
                 this.transactionAmount
             ).then(() => {
-                this.isLoading = true;
+                this.createNotificationSuccess({
+                    title: this.$tc('heidel-payment.paymentDetails.notifications.refundSuccessTitle'),
+                    message: this.$tc('heidel-payment.paymentDetails.notifications.refundSuccessMessage')
+                });
+
                 this.$emit('reload');
             }).catch((errorResponse) => {
-                console.log(errorResponse);
+                this.createNotificationError({
+                    title: this.$tc('heidel-payment.paymentDetails.notifications.refundErrorTitle'),
+                    message: errorResponse.response.data.message
+                });
+
+                this.isLoading = false;
             });
         },
     }

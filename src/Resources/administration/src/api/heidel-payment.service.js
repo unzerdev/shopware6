@@ -19,7 +19,7 @@ class HeidelPaymentService extends ApiService {
         });
     }
 
-    chargeTransaction(transaction, amount) {
+    chargeTransaction(transaction, payment, amount) {
         const apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/charge/${amount}`;
 
         return this.httpClient.get(
@@ -32,8 +32,8 @@ class HeidelPaymentService extends ApiService {
         });
     }
 
-    refundTransaction(transaction, amount) {
-        const apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/refund/${amount}`;
+    refundTransaction(transaction, charge, amount) {
+        const apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/refund/${charge}/${amount}`;
 
         return this.httpClient.get(
             apiRoute,
