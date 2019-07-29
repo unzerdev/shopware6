@@ -9,11 +9,11 @@
         </div>
 
         <div class="heidel-payment-actions--button">
-            <sw-button-process :isLoading="isLoading" v-if="isChargePossible" @click="charge">
+            <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" v-if="isChargePossible" @click="charge">
                 {{ $tc('heidel-payment.paymentDetails.actions.chargeButton') }}
             </sw-button-process>
 
-            <sw-button-process :isLoading="isLoading" v-if="isRefundPossible" @click="refund">
+            <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" v-if="isRefundPossible" @click="refund">
                 {{ $tc('heidel-payment.paymentDetails.actions.refundButton') }}
             </sw-button-process>
 

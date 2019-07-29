@@ -59,8 +59,21 @@ class HeidelpayTransactionController extends AbstractController
         try {
             $resource = $client->fetchPaymentByOrderId($orderTransaction);
             $data     = $this->hydrator->hydrateArray($resource);
+        } catch (HeidelpayApiException $exception) {
+            return new JsonResponse(
+                [
+                    'status'  => false,
+                    'message' => $exception->getMerchantMessage(),
+                ],
+                Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
-            throw $exception; // TODO: handle error or pass to administration
+            return new JsonResponse(
+                [
+                    'status'  => false,
+                    'message' => 'generic-error',
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return new JsonResponse($data);

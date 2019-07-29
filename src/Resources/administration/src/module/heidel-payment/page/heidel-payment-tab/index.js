@@ -56,8 +56,8 @@ Component.register('heidel-payment-tab', {
                                 this.isLoading = false;
                                 this.paymentResources.push(response);
                             })
-                            .catch((errorResponse) => {
-                                console.log(errorResponse);
+                            .catch(() => {
+                                this.isLoading = false;
                             });
                     });
                 });

@@ -3,6 +3,7 @@
 namespace HeidelPayment\Components\ArrayHydrator;
 
 use heidelpayPHP\Resources\Payment;
+use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
 use heidelpayPHP\Resources\TransactionTypes\Cancellation;
 use heidelpayPHP\Resources\TransactionTypes\Charge;
 use heidelpayPHP\Resources\TransactionTypes\Shipment;
@@ -23,6 +24,7 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
             'basket'        => $resource->getBasket() ? $resource->getBasket()->expose() : null,
             'customer'      => $resource->getCustomer() ? $resource->getCustomer()->expose() : null,
             'metadata'      => [],
+            'isGuaranteed'  => $resource->getPaymentType() instanceof InvoiceGuaranteed,
             'type'          => $resource->getPaymentType() ? $resource->getPaymentType()->expose() : null,
             'amount'        => $resource->getAmount() ? $resource->getAmount()->expose() : null,
             'charges'       => [],

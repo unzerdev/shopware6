@@ -14,6 +14,7 @@ Component.register('heidel-payment-detail', {
     data() {
         return {
             isLoading: false,
+            isSuccessful: false,
         };
     },
 
@@ -36,11 +37,19 @@ Component.register('heidel-payment-detail', {
                     message: this.$tc('heidel-payment.paymentDetails.notifications.shipSuccessMessage')
                 });
 
+                this.isSuccessful = true;
+
                 this.$emit('reload');
             }).catch((errorResponse) => {
+                let message = errorResponse.response.data.message;
+
+                if (message === 'generic-error') {
+                    message = this.$tc('heidel-payment.paymentDetails.notifications.genericErrorMessage');
+                }
+
                 this.createNotificationError({
                     title: this.$tc('heidel-payment.paymentDetails.notifications.shipErrorTitle'),
-                    message: errorResponse.response.data.message
+                    message: message
                 });
 
                 this.isLoading = false;

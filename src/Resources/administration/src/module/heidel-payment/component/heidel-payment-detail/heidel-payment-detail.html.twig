@@ -28,8 +28,8 @@
             </sw-container>
         </sw-container>
 
-        <sw-container columns="1fr" justify="left">
-            <sw-button-process :isLoading="isLoading" @click="ship">
+        <sw-container v-if="paymentResource.isGuaranteed" columns="1fr" justify="left">
+            <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" @click="ship">
                 {{ $tc('heidel-payment.paymentDetails.actions.shipButton') }}
             </sw-button-process>
         </sw-container>

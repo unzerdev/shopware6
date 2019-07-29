@@ -18,21 +18,21 @@
         }
       },
       "actions": {
-        "cardTitle": "Actions",
         "chargeButton": "Charge",
-        "shipButton": "Ship",
+        "shipButton": "Shipping notice",
         "refundButton": "Refund"
       },
       "detail": {
         "cardTitle": "Payment Details",
-        "amountTotal": "amountTotal",
-        "amountTotalVat": "amountTotalVat",
-        "currency": "currency",
-        "orderId": "orderId",
-        "id": "id",
-        "state": "state"
+        "amountTotal": "Amount gross",
+        "amountTotalVat": "Amount net",
+        "currency": "Currency",
+        "orderId": "Payment-ID",
+        "id": "Transaction-ID",
+        "state": "State"
       },
       "notifications": {
+        "genericErrorMessage": "error",
         "refundSuccessTitle": "refund success",
         "refundSuccessMessage": "refund success",
         "refundErrorTitle": "refund error",

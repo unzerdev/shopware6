@@ -14,6 +14,7 @@ Component.register('heidel-payment-actions', {
     data() {
         return {
             isLoading: false,
+            isSuccessful: false,
             transactionAmount: this.paymentResource.basket.amountTotal
         };
     },
@@ -53,11 +54,19 @@ Component.register('heidel-payment-actions', {
                     message: this.$tc('heidel-payment.paymentDetails.notifications.chargeSuccessMessage')
                 });
 
+                this.isSuccessful = true;
+
                 this.$emit('reload');
             }).catch((errorResponse) => {
+                let message = errorResponse.response.data.message;
+
+                if (message === 'generic-error') {
+                    message = this.$tc('heidel-payment.paymentDetails.notifications.genericErrorMessage');
+                }
+
                 this.createNotificationError({
                     title: this.$tc('heidel-payment.paymentDetails.notifications.chargeErrorTitle'),
-                    message: errorResponse.response.data.message
+                    message: message
                 });
 
                 this.isLoading = false;
@@ -77,11 +86,19 @@ Component.register('heidel-payment-actions', {
                     message: this.$tc('heidel-payment.paymentDetails.notifications.refundSuccessMessage')
                 });
 
+                this.isSuccessful = true;
+
                 this.$emit('reload');
             }).catch((errorResponse) => {
+                let message = errorResponse.response.data.message;
+
+                if (message === 'generic-error') {
+                    message = this.$tc('heidel-payment.paymentDetails.notifications.genericErrorMessage');
+                }
+
                 this.createNotificationError({
                     title: this.$tc('heidel-payment.paymentDetails.notifications.refundErrorTitle'),
-                    message: errorResponse.response.data.message
+                    message: message
                 });
 
                 this.isLoading = false;
