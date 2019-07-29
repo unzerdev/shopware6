@@ -92,7 +92,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/invoice-guaranteed.html.twig',
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/invoice-guaranteed.html.twig',
             ],
         ],
         [
@@ -110,7 +110,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/invoice-factoring.html.twig',
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/invoice-factoring.html.twig',
             ],
         ],
     ];
