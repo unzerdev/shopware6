@@ -14,8 +14,8 @@ use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    public const HEIDELPAY_FRAME       = 'heidelpay_frame';
-    public const HEIDELPAY_TRANSACTION = 'heidelpay_transaction';
+    public const HEIDELPAY_FRAME          = 'heidelpay_frame';
+    public const HEIDELPAY_IS_TRANSACTION = 'heidelpay_is_transaction';
 
     public const CUSTOM_FIELDS = [
         [
@@ -40,7 +40,7 @@ class CustomFieldInstaller implements InstallerInterface
                     ],
                 ],
                 [
-                    'name'   => self::HEIDELPAY_TRANSACTION,
+                    'name'   => self::HEIDELPAY_IS_TRANSACTION,
                     'type'   => CustomFieldTypes::BOOL,
                     'id'     => '6bb838751d65478992a5c0a1e80cb5fd',
                     'config' => [

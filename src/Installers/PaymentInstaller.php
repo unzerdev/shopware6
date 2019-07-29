@@ -32,7 +32,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/credit-card.html.twig',
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/credit-card.html.twig',
             ],
         ],
     ];

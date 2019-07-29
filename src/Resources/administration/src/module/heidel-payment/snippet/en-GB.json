@@ -32,15 +32,15 @@
         "state": "State"
       },
       "notifications": {
-        "genericErrorMessage": "A error has occoured!",
+        "genericErrorMessage": "An error has occoured!",
         "refundSuccessTitle": "Refund",
-        "refundSuccessMessage": "The refund was process successfully.",
+        "refundSuccessMessage": "The reimbursement was successfully completed.",
         "refundErrorTitle": "Refund",
         "chargeSuccessTitle": "Charge",
-        "chargeSuccessMessage": "The charge was process successfully.",
+        "chargeSuccessMessage": "The collection of the payment was carried out successfully..",
         "chargeErrorTitle": "Charge",
         "shipSuccessTitle": "Shipping notice",
-        "shipSuccessMessage": "The shipping notice was process successfully.",
+        "shipSuccessMessage": "The shipping notification was successfully sent.",
         "shipErrorTitle": "Shipping notice"
       }
     }

@@ -40,24 +40,20 @@ class HeidelpayTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/details", name="api.action.heidelpay.transaction.details", methods={"GET"})
+     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransactionId}/details", name="api.action.heidelpay.transaction.details", methods={"GET"})
      */
-    public function fetchTransactionDetails(string $orderTransaction, Context $context): JsonResponse
+    public function fetchTransactionDetails(string $orderTransactionId, Context $context): JsonResponse
     {
-        $transaction = $this->getOrderTransaction($orderTransaction, $context);
+        $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
-        if (null === $transaction) {
-            throw new NotFoundHttpException();
-        }
-
-        if (null === $transaction->getOrder()) {
+        if ($transaction === null || $transaction->getOrder() === null) {
             throw new NotFoundHttpException();
         }
 
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $resource = $client->fetchPaymentByOrderId($orderTransaction);
+            $resource = $client->fetchPaymentByOrderId($orderTransactionId);
             $data     = $this->hydrator->hydrateArray($resource);
         } catch (HeidelpayApiException $exception) {
             return new JsonResponse(
@@ -80,24 +76,20 @@ class HeidelpayTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/charge/{amount}", name="api.action.heidelpay.transaction.charge", methods={"GET"})
+     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransactionId}/charge/{amount}", name="api.action.heidelpay.transaction.charge", methods={"GET"})
      */
-    public function chargeTransaction(string $orderTransaction, float $amount, Context $context): JsonResponse
+    public function chargeTransaction(string $orderTransactionId, float $amount, Context $context): JsonResponse
     {
-        $transaction = $this->getOrderTransaction($orderTransaction, $context);
+        $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
-        if (null === $transaction) {
-            throw new NotFoundHttpException();
-        }
-
-        if (null === $transaction->getOrder()) {
+        if ($transaction === null || $transaction->getOrder() === null) {
             throw new NotFoundHttpException();
         }
 
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $client->chargeAuthorization($orderTransaction, $amount);
+            $client->chargeAuthorization($orderTransactionId, $amount);
         } catch (HeidelpayApiException $exception) {
             return new JsonResponse(
                 [
@@ -119,24 +111,20 @@ class HeidelpayTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/refund/{charge}/{amount}", name="api.action.heidelpay.transaction.refund", methods={"GET"})
+     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransactionId}/refund/{charge}/{amount}", name="api.action.heidelpay.transaction.refund", methods={"GET"})
      */
-    public function refundTransaction(string $orderTransaction, string $charge, float $amount, Context $context): JsonResponse
+    public function refundTransaction(string $orderTransactionId, string $chargeId, float $amount, Context $context): JsonResponse
     {
-        $transaction = $this->getOrderTransaction($orderTransaction, $context);
+        $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
-        if (null === $transaction) {
-            throw new NotFoundHttpException();
-        }
-
-        if (null === $transaction->getOrder()) {
+        if ($transaction === null || $transaction->getOrder() === null) {
             throw new NotFoundHttpException();
         }
 
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $client->cancelChargeById($orderTransaction, $charge, $amount);
+            $client->cancelChargeById($orderTransactionId, $chargeId, $amount);
         } catch (HeidelpayApiException $exception) {
             return new JsonResponse(
                 [
@@ -158,24 +146,20 @@ class HeidelpayTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransaction}/ship", name="api.action.heidelpay.transaction.ship", methods={"GET"})
+     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransactionId}/ship", name="api.action.heidelpay.transaction.ship", methods={"GET"})
      */
-    public function shipTransaction(string $orderTransaction, Context $context): JsonResponse
+    public function shipTransaction(string $orderTransactionId, Context $context): JsonResponse
     {
-        $transaction = $this->getOrderTransaction($orderTransaction, $context);
+        $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
-        if (null === $transaction) {
-            throw new NotFoundHttpException();
-        }
-
-        if (null === $transaction->getOrder()) {
+        if ($transaction === null || $transaction->getOrder() === null) {
             throw new NotFoundHttpException();
         }
 
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $client->ship($orderTransaction);
+            $client->ship($orderTransactionId);
         } catch (HeidelpayApiException $exception) {
             return new JsonResponse(
                 [

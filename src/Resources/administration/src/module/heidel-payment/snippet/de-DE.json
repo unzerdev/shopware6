@@ -34,13 +34,13 @@
       "notifications": {
         "genericErrorMessage": "Es ist ein Fehler aufgetreten!",
         "refundSuccessTitle": "Rückerstatten",
-        "refundSuccessMessage": "Die Rückerstatten wurde erfolgreich durchgeführt.",
+        "refundSuccessMessage": "Die Rückerstattung wurde erfolgreich durchgeführt.",
         "refundErrorTitle": "Rückerstatten",
         "chargeSuccessTitle": "Einziehen",
         "chargeSuccessMessage": "Das Einziehen der Zahlung wurde erfolgreich durchgeführt.",
         "chargeErrorTitle": "Einziehen",
         "shipSuccessTitle": "Versandmitteilung",
-        "shipSuccessMessage": "Die Versandmitteilung wurde erfolgreich durchgeführt.",
+        "shipSuccessMessage": "Die Versandmitteilung wurde erfolgreich gesendet.",
         "shipErrorTitle": "Versandmitteilung"
       }
     }
