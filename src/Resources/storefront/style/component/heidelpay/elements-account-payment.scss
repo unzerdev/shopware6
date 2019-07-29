@@ -1,0 +1,17 @@
+.heidelpay-device {
+    border: 1px solid #d4e2e2;
+    border-radius: 2px;
+    margin: 8px;
+    padding: 10px;
+    width: 33%;
+}
+
+.heidelpay-card-body {
+    @extend .card-body;
+
+    display: flex;
+}
+
+.heidelpay-device-actions {
+    margin-top: 8px;
+}

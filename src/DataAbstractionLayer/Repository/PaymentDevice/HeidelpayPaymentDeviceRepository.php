@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice;
 
+use HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
@@ -20,6 +23,9 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
         $this->entityRepository = $entityRepository;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCollectionByCustomerId(string $customerId, Context $context): EntitySearchResult
     {
         $criteria = new Criteria();
@@ -30,6 +36,9 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
         return $this->entityRepository->search($criteria, $context);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function create(
         string $customerId,
         string $deviceType,
@@ -50,6 +59,9 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
         ], $context);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function remove(string $id, Context $context): EntityWrittenContainerEvent
     {
         return $this->entityRepository->delete([
@@ -57,6 +69,9 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
         ], $context);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function exists(string $typeId, Context $context): bool
     {
         $criteria = new Criteria();
@@ -65,5 +80,20 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
         );
 
         return $this->entityRepository->search($criteria, $context)->getTotal() > 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get(string $id, Context $context): ?HeidelpayPaymentDeviceEntity
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new EqualsFilter('id', $id)
+        );
+
+        $result = $this->entityRepository->search($criteria, $context);
+
+        return $result->getTotal() !== 0 ? $result->getEntities()->first() : null;
     }
 }

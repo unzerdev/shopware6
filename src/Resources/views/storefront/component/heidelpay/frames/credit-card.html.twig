@@ -26,7 +26,7 @@
                     <div class="custom-control custom-radio payment-control">
                         <input type="radio" value="new" name="savedCreditCard" id="card-new" class="custom-control-input payment-method-input">
                         <label for="card-new" class="custom-control-label payment-method-label">
-                            Eine andere Kreditkarte verwenden
+                            {{ "HeidelPayment.frame.creditCard.new" | trans  }}
                         </label>
                     </div>
                 {% endblock %}
@@ -36,7 +36,7 @@
         <div class="heidelpay-credit-card-wrapper-elements">
             {% block heidelpay_frame_credit_card_number %}
                 <div class="heidelpay-frame-row">
-                    <label for="heidelpay-credit-card-number">Card-Number:</label>
+                    <label for="heidelpay-credit-card-number">{{ "HeidelPayment.frame.creditCard.number" | trans  }}</label>
                     <div id="heidelpay-credit-card-number" class="heidelpay-text-input form-control"></div>
                     <div id="heidelpay-credit-card-number-error" class="heidelpay-error" hidden>
                         <div class="heidelpay-error-message">
@@ -47,7 +47,7 @@
 
             {% block heidelpay_frame_credit_card_expiry %}
                 <div class="heidelpay-frame-row">
-                    <label for="heidelpay-credit-card-expiry">Expiry:</label>
+                    <label for="heidelpay-credit-card-expiry">{{ "HeidelPayment.frame.creditCard.expiry" | trans  }}</label>
                     <div id="heidelpay-credit-card-expiry" class="heidelpay-text-input form-control"></div>
                     <div id="heidelpay-credit-card-expiry-error" class="heidelpay-error" hidden>
                         <div class="heidelpay-error-message">
@@ -58,7 +58,7 @@
 
             {% block heidelpay_frame_credit_card_cvc %}
                 <div class="heidelpay-frame-row">
-                    <label for="heidelpay-credit-card-cvc">CVC:</label>
+                    <label for="heidelpay-credit-card-cvc">{{ "HeidelPayment.frame.creditCard.cvc" | trans  }}</label>
                     <div id="heidelpay-credit-card-cvc" class="heidelpay-text-input form-control"></div>
                     <div id="heidelpay-credit-card-cvc-error" class="heidelpay-error" hidden>
                         <div class="heidelpay-error-message">

@@ -149,7 +149,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
      */
     protected function getReturnUrl(): string
     {
-        return $this->router->generate('heidelpay_finalize_payment', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        return $this->router->generate('heidelpay.payment.finalize', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     protected function setIsHeidelpayTransaction(

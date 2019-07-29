@@ -6,7 +6,7 @@
 
     <import resource="@HeidelPayment/Controllers/Storefront/HeidelpayRedirectController.php" type="annotation" />
     <import resource="@HeidelPayment/Controllers/Storefront/HeidelpayWebhookController.php" type="annotation" />
-
+    <import resource="@HeidelPayment/Controllers/HeidelpayPaymentDeviceController.php" type="annotation" />
     <import resource="@HeidelPayment/Controllers/Administration/HeidelpayTransactionController.php" type="annotation" />
 
 </routes>

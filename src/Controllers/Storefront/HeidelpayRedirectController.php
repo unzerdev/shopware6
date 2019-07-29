@@ -29,7 +29,7 @@ class HeidelpayRedirectController extends StorefrontController
     /**
      * @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
      *
-     * @Route("/heidelpay/finalizePayment", name="heidelpay_finalize_payment", methods={"GET"})
+     * @Route("/heidelpay/finalizePayment", name="heidelpay.payment.finalize", methods={"GET"})
      */
     public function finalizePayment(): RedirectResponse
     {

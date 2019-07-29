@@ -29,7 +29,7 @@ class HeidelpayWebhookController extends StorefrontController
     }
 
     /**
-     * @Route("/heidelpay/webhook", name="heidelpay_webhook", methods={"POST", "GET"})
+     * @Route("/heidelpay/webhook", name="heidelpay.webhook.execute", methods={"POST", "GET"})
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {
