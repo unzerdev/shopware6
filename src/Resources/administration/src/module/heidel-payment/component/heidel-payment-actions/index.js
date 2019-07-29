@@ -47,6 +47,7 @@ Component.register('heidel-payment-actions', {
 
             this.HeidelPaymentService.chargeTransaction(
                 this.paymentResource.orderId,
+                this.transactionResource.id,
                 this.transactionAmount
             ).then(() => {
                 this.createNotificationSuccess({
