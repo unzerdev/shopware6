@@ -34,14 +34,14 @@
       "notifications": {
         "genericErrorMessage": "A error has occoured!",
         "refundSuccessTitle": "Refund",
-        "refundSuccessMessage": "Die Rückerstatten wurde erfolgreich durchgeführt.",
+        "refundSuccessMessage": "The refund was process successfully.",
         "refundErrorTitle": "Refund",
-        "chargeSuccessTitle": "Einziehen",
-        "chargeSuccessMessage": "Das Einziehen der Zahlung wurde erfolgreich durchgeführt.",
-        "chargeErrorTitle": "Einziehen",
-        "shipSuccessTitle": "Versandmitteilung",
-        "shipSuccessMessage": "Die Versandmitteilung wurde erfolgreich durchgeführt.",
-        "shipErrorTitle": "Versandmitteilung"
+        "chargeSuccessTitle": "Charge",
+        "chargeSuccessMessage": "The charge was process successfully.",
+        "chargeErrorTitle": "Charge",
+        "shipSuccessTitle": "Shipping notice",
+        "shipSuccessMessage": "The shipping notice was process successfully.",
+        "shipErrorTitle": "Shipping notice"
       }
     }
   }

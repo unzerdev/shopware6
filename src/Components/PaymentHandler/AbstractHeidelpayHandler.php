@@ -7,6 +7,7 @@ namespace HeidelPayment\Components\PaymentHandler;
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment\Components\ResourceHydrator\ResourceHydratorInterface;
 use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use HeidelPayment\Installers\CustomFieldInstaller;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Basket;
@@ -16,6 +17,7 @@ use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -63,6 +65,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var ResourceHydratorInterface */
     private $metadataHydrator;
 
+    /** @var EntityRepositoryInterface */
+    private $transactionRepository;
+
     /** @var TransactionStateHandlerInterface */
     private $transactionStateHandler;
 
@@ -79,6 +84,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         ResourceHydratorInterface $basketHydrator,
         ResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
+        EntityRepositoryInterface $transactionRepository,
         SystemConfigService $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
@@ -88,6 +94,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $this->basketHydrator          = $basketHydrator;
         $this->customerHydrator        = $customerHydrator;
         $this->metadataHydrator        = $metadataHydrator;
+        $this->transactionRepository   = $transactionRepository;
         $this->configService           = $configService;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->clientFactory           = $clientFactory;
@@ -129,6 +136,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             $salesChannelContext->getContext()
         );
 
+        $this->setIsHeidelpayTransaction($transaction, $salesChannelContext);
+
         $this->session->remove('heidelpayMetadataId');
     }
 
@@ -140,5 +149,20 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     protected function getReturnUrl(): string
     {
         return $this->router->generate('heidelpay_finalize_payment', [], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    protected function setIsHeidelpayTransaction(
+        AsyncPaymentTransactionStruct $transaction,
+        SalesChannelContext $salesChannelContext
+    ): void {
+        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
+        $customFields = array_merge($customFields, [CustomFieldInstaller::CUSTOM_FIELD_TRAHSACTION => true]);
+
+        $update = [
+            'id'           => $transaction->getOrderTransaction()->getId(),
+            'customFields' => $customFields,
+        ];
+
+        $this->transactionRepository->update([$update], $salesChannelContext->getContext());
     }
 }
