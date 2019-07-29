@@ -6,7 +6,6 @@ namespace HeidelPayment\Components\PaymentHandler;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
-use HeidelPayment\Components\JsonSerializationTrait;
 use HeidelPayment\Components\ResourceHydrator\ResourceHydratorInterface;
 use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use HeidelPayment\Installers\CustomFieldInstaller;

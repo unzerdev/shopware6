@@ -6,15 +6,15 @@
     "license": "Commercial",
     "authors": [
         {
+            "name": "heidelpay GmbH",
+            "email": "info@heidelpay.com",
+            "homepage": "https://www.heidelpay.com"
+        },
+        {
             "name": "Kellerkinder GmbH",
             "email": "hallo@kellerkinder.de",
             "homepage": "https://www.kellerkinder.de/",
             "role": "Contributor"
-        },
-        {
-            "name": "heidelpay GmbH",
-            "email": "info@heidelpay.com",
-            "homepage": "https://www.heidelpay.com"
         }
     ],
     "config": {
@@ -28,7 +28,7 @@
         "phpstan/phpstan": "^0.11",
         "phpstan/phpstan-phpunit": "^0.11",
         "phpunit/phpunit": "^8.1",
-        "shopware/platform": "dev-master"
+        "shopware/core": "v6.0.0+ea1"
     },
     "extra": {
         "shopware-plugin-class": "HeidelPayment\\HeidelPayment",

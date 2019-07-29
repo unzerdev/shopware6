@@ -26,6 +26,7 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
 {
     /** @var Card */
     protected $paymentType;
+
     /** @var HeidelpayPaymentDeviceRepositoryInterface */
     private $deviceRepository;
 
