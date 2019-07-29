@@ -156,7 +156,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         SalesChannelContext $salesChannelContext
     ): void {
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
-        $customFields = array_merge($customFields, [CustomFieldInstaller::CUSTOM_FIELD_TRAHSACTION => true]);
+        $customFields = array_merge($customFields, [CustomFieldInstaller::HEIDELPAY_TRANSACTION => true]);
 
         $update = [
             'id'           => $transaction->getOrderTransaction()->getId(),
