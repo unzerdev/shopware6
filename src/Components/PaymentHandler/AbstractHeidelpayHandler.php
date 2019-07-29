@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace HeidelPayment\Components\PaymentHandler;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment\Components\JsonSerializationTrait;
 use HeidelPayment\Components\ResourceHydrator\ResourceHydratorInterface;
 use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use HeidelPayment\Installers\CustomFieldInstaller;
@@ -20,7 +22,6 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandle
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -50,7 +51,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     // phpstan-ignore-next-line
     protected $heidelpayMetadata;
 
-    /** @var SystemConfigService */
+    /** @var ConfigReaderInterface */
     protected $configService;
 
     /** @var SessionInterface */
@@ -85,7 +86,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         ResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
-        SystemConfigService $configService,
+        ConfigReaderInterface $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RouterInterface $router, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!

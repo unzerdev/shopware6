@@ -7,6 +7,11 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         expiryFieldId: 'heidelpay-credit-card-expiry',
         cvcFieldId: 'heidelpay-credit-card-cvc',
         invalidClass: 'is-invalid',
+        elementWrapperSelector: '.heidelpay-credit-card-wrapper-elements',
+        radioButtonSelector: '*[name="savedCreditCard"]',
+        radioButtonNewId: 'card-new',
+        selectedRadioButtonSelector: '*[name="savedCreditCard"]:checked',
+        hasSavedCards: false
     };
 
     /**
@@ -31,9 +36,16 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
     init() {
         this._heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
 
-        this._heidelpayPlugin.setSubmitButtonActive(false);
         this._createForm();
         this._registerEvents();
+
+        if (this.options.hasSavedCards) {
+            let heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+
+            heidelpayElementWrapper.hidden = true;
+        } else {
+            this._heidelpayPlugin.setSubmitButtonActive(false);
+        }
     }
 
     _createForm() {
@@ -58,9 +70,34 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
     }
 
     _registerEvents() {
+        if (this.options.hasSavedCards) {
+            let radioButtons = DomAccess.querySelectorAll(this.el, this.options.radioButtonSelector);
+
+            for (let $i = 0; $i < radioButtons.length; $i++) {
+                radioButtons[$i].addEventListener('change',  (event) => this._onRadioButtonChange(event));
+            }
+        }
+
         this._heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
+    }
+
+    _onRadioButtonChange(event) {
+        let targetElement = event.target,
+            heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+
+        heidelpayElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewId;
+
+        if (targetElement.id === this.options.radioButtonNewId) {
+            this._heidelpayPlugin.setSubmitButtonActive(
+                this.cvcValid === true &&
+                this.numberValid === true &&
+                this.expiryValid === true
+            );
+        } else {
+            this._heidelpayPlugin.setSubmitButtonActive(true);
+        }
     }
 
     /**
@@ -105,12 +142,22 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
     }
 
     _onCreateResource() {
+        let checkedRadioButton = null;
+
+        if (this.options.hasSavedCards) {
+            checkedRadioButton = DomAccess.querySelector(this.el, this.options.selectedRadioButtonSelector);
+        }
+
         this.submitting = true;
         this._heidelpayPlugin.setSubmitButtonActive(false);
 
-        this.creditCard.createResource()
-            .then((resource) => this._submitPayment(resource))
-            .catch((error) => this._handleError(error));
+        if (checkedRadioButton === null || checkedRadioButton.id === this.options.radioButtonNewId) {
+            this.creditCard.createResource()
+                .then((resource) => this._submitPayment(resource))
+                .catch((error) => this._handleError(error));
+        } else {
+            this._heidelpayPlugin.submitTypeId(checkedRadioButton.value);
+        }
     }
 
     /**
@@ -142,7 +189,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
      * @private
      */
     _submitPayment(resource) {
-        this._heidelpayPlugin.submit(resource);
+        this._heidelpayPlugin.submitResource(resource);
     }
 
     /**

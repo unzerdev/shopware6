@@ -10,7 +10,7 @@ use Shopware\Core\Framework\Struct\Struct;
 class ConfirmPageExtension extends Struct
 {
     /** @var array<HeidelpayPaymentDeviceEntity> */
-    protected $creditCards;
+    protected $creditCards = [];
 
     /** @var bool */
     protected $displayCreditCardSelection;

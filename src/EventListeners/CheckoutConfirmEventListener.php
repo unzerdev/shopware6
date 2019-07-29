@@ -16,6 +16,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
 {
     /** @var HeidelpayPaymentDeviceRepositoryInterface */
     private $deviceRepository;
+
     /** @var ConfigReaderInterface */
     private $configReader;
 

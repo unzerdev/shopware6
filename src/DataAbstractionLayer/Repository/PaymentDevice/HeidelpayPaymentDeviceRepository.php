@@ -34,18 +34,19 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
         string $customerId,
         string $deviceType,
         string $typeId,
-        string $jsonData,
+        array $data,
         Context $context
     ): EntityWrittenContainerEvent {
-        $data = [
+        $createData = [
             'id'         => Uuid::randomHex(),
             'deviceType' => $deviceType,
             'typeId'     => $typeId,
-            'data'       => $jsonData,
+            'data'       => $data,
+            'customerId' => $customerId,
         ];
 
-        return $this->entityRepository->upsert([
-            $data,
+        return $this->entityRepository->create([
+            $createData,
         ], $context);
     }
 
@@ -54,5 +55,15 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
         return $this->entityRepository->delete([
             ['id' => $id],
         ], $context);
+    }
+
+    public function exists(string $typeId, Context $context): bool
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new EqualsFilter('typeId', $typeId)
+        );
+
+        return $this->entityRepository->search($criteria, $context)->getTotal() > 0;
     }
 }

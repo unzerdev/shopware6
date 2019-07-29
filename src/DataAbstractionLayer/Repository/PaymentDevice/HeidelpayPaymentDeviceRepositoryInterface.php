@@ -13,7 +13,9 @@ interface HeidelpayPaymentDeviceRepositoryInterface
 
     public function getCollectionByCustomerId(string $customerId, Context $context): EntitySearchResult;
 
-    public function create(string $customerId, string $deviceType, string $typeId, string $jsonData, Context $context): EntityWrittenContainerEvent;
+    public function create(string $customerId, string $deviceType, string $typeId, array $data, Context $context): EntityWrittenContainerEvent;
 
     public function remove(string $id, Context $context): EntityWrittenContainerEvent;
+
+    public function exists(string $typeId, Context $context): bool;
 }
