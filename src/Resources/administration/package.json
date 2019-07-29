@@ -3,6 +3,6 @@
     "version": "1.0.0",
     "description": "Administration for Heidel Payment",
     "main": "index.js",
-    "author": "Kellerkinder",
+    "author": "composer.json",
     "license": "MIT"
 }
