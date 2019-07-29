@@ -27,21 +27,21 @@
         "amountTotal": "Betrag (brutto)",
         "amountTotalVat": "Betrag (netto)",
         "currency": "Währung",
-        "orderId": "Zahlungs-ID",
-        "id": "Transaktions-ID",
+        "orderId": "Auftrags-ID",
+        "id": "Zahlungs-ID",
         "state": "Status"
       },
       "notifications": {
-        "genericErrorMessage": "error",
-        "refundSuccessTitle": "refund success",
-        "refundSuccessMessage": "refund success",
-        "refundErrorTitle": "refund error",
-        "chargeSuccessTitle": "charge success",
-        "chargeSuccessMessage": "charge success",
-        "chargeErrorTitle": "charge error",
-        "shipSuccessTitle": "ship success",
-        "shipSuccessMessage": "ship success",
-        "shipErrorTitle": "ship error"
+        "genericErrorMessage": "Es ist ein Fehler aufgetreten!",
+        "refundSuccessTitle": "Rückerstatten",
+        "refundSuccessMessage": "Die Rückerstatten wurde erfolgreich durchgeführt.",
+        "refundErrorTitle": "Rückerstatten",
+        "chargeSuccessTitle": "Einziehen",
+        "chargeSuccessMessage": "Das Einziehen der Zahlung wurde erfolgreich durchgeführt.",
+        "chargeErrorTitle": "Einziehen",
+        "shipSuccessTitle": "Versandmitteilung",
+        "shipSuccessMessage": "Die Versandmitteilung wurde erfolgreich durchgeführt.",
+        "shipErrorTitle": "Versandmitteilung"
       }
     }
   }

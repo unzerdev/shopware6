@@ -4,6 +4,7 @@ namespace HeidelPayment\Components\ArrayHydrator;
 
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
+use heidelpayPHP\Resources\TransactionTypes\Authorization;
 use heidelpayPHP\Resources\TransactionTypes\Cancellation;
 use heidelpayPHP\Resources\TransactionTypes\Charge;
 use heidelpayPHP\Resources\TransactionTypes\Shipment;
@@ -26,14 +27,14 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
             'metadata'      => [],
             'isGuaranteed'  => $resource->getPaymentType() instanceof InvoiceGuaranteed,
             'type'          => $resource->getPaymentType() ? $resource->getPaymentType()->expose() : null,
-            'amount'        => $resource->getAmount() ? $resource->getAmount()->expose() : null,
+            'amount'        => $resource->getAmount()->expose(),
             'charges'       => [],
             'shipments'     => [],
             'cancellations' => [],
             'transactions'  => [],
         ]);
 
-        if ($authorization !== null) {
+        if ($authorization instanceof Authorization) {
             $data['transactions'][] = [
                 'type'   => 'authorization',
                 'amount' => $authorization->getAmount(),

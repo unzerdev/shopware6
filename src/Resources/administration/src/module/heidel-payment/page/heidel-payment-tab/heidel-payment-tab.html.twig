@@ -1,16 +1,25 @@
 {% block heidel_payment_payment_details %}
     <div class="heidel-payment-detail">
         <div v-if="!isLoading">
-            <template v-for="paymentResource in paymentResources">
-                <heidel-payment-detail
-                    :paymentResource="paymentResource"
-                    @reload="reloadPaymentDetails">
-                </heidel-payment-detail>
-                <heidel-payment-history
-                    :paymentResource="paymentResource"
-                    @reload="reloadPaymentDetails">
-                </heidel-payment-history>
-            </template>
+            {% block heidel_payment_payment_details_content %}
+                <template v-for="paymentResource in paymentResources">
+                    {% block heidel_payment_payment_details_content_payment_detail %}
+                        <heidel-payment-detail
+                            :paymentResource="paymentResource"
+                            @reload="reloadPaymentDetails">
+                        </heidel-payment-detail>
+                    {% endblock %}
+
+                    {% block heidel_payment_payment_details_content_payment_history %}
+                        <heidel-payment-history
+                            :paymentResource="paymentResource"
+                            @reload="reloadPaymentDetails">
+                        </heidel-payment-history>
+                    {% endblock %}
+
+                    {% block heidel_payment_payment_details_content_inner %}{% endblock %}
+                </template>
+            {% endblock %}
         </div>
 
         <sw-loader v-if="isLoading"></sw-loader>

@@ -1,4 +1,4 @@
-import { Component, Filter, Mixin, State } from 'src/core/shopware';
+import { Component, State } from 'src/core/shopware';
 import template from './heidel-payment-tab.html.twig';
 
 Component.register('heidel-payment-tab', {
@@ -51,6 +51,14 @@ Component.register('heidel-payment-tab', {
 
                 this.order.getAssociation('transactions').getList().then((orderTransactions) => {
                     orderTransactions.items.forEach((orderTransaction) => {
+                        if (!orderTransaction.customFields) {
+                            return;
+                        }
+
+                        if (!orderTransaction.customFields.heidelpay_transaction) {
+                            return;
+                        }
+
                         this.HeidelPaymentService.fetchPaymentDetails(orderTransaction.id)
                             .then((response) => {
                                 this.isLoading = false;

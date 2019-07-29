@@ -38,6 +38,17 @@ class CustomFieldInstaller implements InstallerInterface
                         ],
                     ],
                 ],
+                [
+                    'name'   => 'heidelpay_transaction',
+                    'type'   => CustomFieldTypes::BOOL,
+                    'id'     => '6bb838751d65478992a5c0a1e80cb5fd',
+                    'config' => [
+                        'label' => [
+                            'en-GB' => 'Heidelpay transaction',
+                            'de-DE' => 'Heidelpay Transaktion',
+                        ],
+                    ],
+                ],
             ],
         ],
     ];

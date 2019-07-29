@@ -1,9 +1,11 @@
 {% block sw_order_detail_content_tabs_general %}
     {% parent %}
 
-    <sw-tabs-item v-if="isHeidelpayPayment"
-                  :route="{ name: 'heidel-payment.payment.detail', params: { id: $route.params.id } }"
-                  :title="$tc('heidel-payment.tabTitle')">
-        {{ $tc('heidel-payment.tabTitle') }}
-    </sw-tabs-item>
-{% endblock %}s
+    {% block heidel_payment_payment_tab %}
+        <sw-tabs-item v-if="isHeidelpayPayment"
+                      :route="{ name: 'heidel-payment.payment.detail', params: { id: $route.params.id } }"
+                      :title="$tc('heidel-payment.tabTitle')">
+            {{ $tc('heidel-payment.tabTitle') }}
+        </sw-tabs-item>
+    {% endblock %}
+{% endblock %}

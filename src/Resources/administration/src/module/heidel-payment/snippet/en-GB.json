@@ -24,24 +24,24 @@
       },
       "detail": {
         "cardTitle": "Payment Details",
-        "amountTotal": "Amount gross",
-        "amountTotalVat": "Amount net",
+        "amountTotal": "Amount (gross)",
+        "amountTotalVat": "Amount (net)",
         "currency": "Currency",
-        "orderId": "Payment-ID",
-        "id": "Transaction-ID",
+        "orderId": "Order-ID",
+        "id": "Payment-ID",
         "state": "State"
       },
       "notifications": {
-        "genericErrorMessage": "error",
-        "refundSuccessTitle": "refund success",
-        "refundSuccessMessage": "refund success",
-        "refundErrorTitle": "refund error",
-        "chargeSuccessTitle": "charge success",
-        "chargeSuccessMessage": "charge success",
-        "chargeErrorTitle": "charge error",
-        "shipSuccessTitle": "ship success",
-        "shipSuccessMessage": "ship success",
-        "shipErrorTitle": "ship error"
+        "genericErrorMessage": "A error has occoured!",
+        "refundSuccessTitle": "Refund",
+        "refundSuccessMessage": "Die Rückerstatten wurde erfolgreich durchgeführt.",
+        "refundErrorTitle": "Refund",
+        "chargeSuccessTitle": "Einziehen",
+        "chargeSuccessMessage": "Das Einziehen der Zahlung wurde erfolgreich durchgeführt.",
+        "chargeErrorTitle": "Einziehen",
+        "shipSuccessTitle": "Versandmitteilung",
+        "shipSuccessMessage": "Die Versandmitteilung wurde erfolgreich durchgeführt.",
+        "shipErrorTitle": "Versandmitteilung"
       }
     }
   }
