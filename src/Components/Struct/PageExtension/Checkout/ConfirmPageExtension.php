@@ -9,7 +9,7 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class ConfirmPageExtension extends Struct
 {
-    /** @var array<HeidelpayPaymentDeviceEntity> */
+    /** @var HeidelpayPaymentDeviceEntity[] */
     protected $creditCards = [];
 
     /** @var bool */
@@ -23,7 +23,7 @@ class ConfirmPageExtension extends Struct
     }
 
     /**
-     * @return array<HeidelpayPaymentDeviceEntity>
+     * @return HeidelpayPaymentDeviceEntity[]
      */
     public function getCreditCards(): array
     {
@@ -31,7 +31,7 @@ class ConfirmPageExtension extends Struct
     }
 
     /**
-     * @param array<HeidelpayPaymentDeviceEntity> $creditCards
+     * @param HeidelpayPaymentDeviceEntity[] $creditCards
      *
      * @return ConfirmPageExtension
      */

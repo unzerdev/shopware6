@@ -9,7 +9,7 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class FinishPageExtension extends Struct
 {
-    /** @var array<TransferInformation> */
+    /** @var TransferInformation[] */
     protected $transferInformation;
 
     public function getTransferInformation(): array
@@ -17,6 +17,11 @@ class FinishPageExtension extends Struct
         return $this->transferInformation;
     }
 
+    /**
+     * @param TransferInformation[] $transferInformation
+     *
+     * @return FinishPageExtension
+     */
     public function setTransferInformation(array $transferInformation): self
     {
         $this->transferInformation = $transferInformation;

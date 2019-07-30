@@ -52,7 +52,7 @@ class AccountPaymentMethodEventListener implements EventSubscriberInterface
         if ($registerCreditCards) {
             $creditCards = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD)->getElements();
 
-            $extension->setSavedDevices($creditCards);
+            $extension->addPaymentDevices($creditCards);
         }
 
         $event->getPage()->addExtension('heidelpay', $extension);
