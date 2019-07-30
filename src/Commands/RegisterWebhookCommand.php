@@ -49,7 +49,7 @@ class RegisterWebhookCommand extends Command
             $client = $this->clientFactory->createClient();
             $client->deleteAllWebhooks();
 
-            $url = $this->router->generate('heidelpay_webhook', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            $url = $this->router->generate('heidelpay.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
             $result  = $client->createWebhook($url, 'all');
             $message = sprintf('The webhooks have been registered to the following URL: %s', $result->getUrl());

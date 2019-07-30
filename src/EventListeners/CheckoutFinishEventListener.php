@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace HeidelPayment\EventListeners;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment\Components\Struct\CheckoutFinishPageExtension;
+use HeidelPayment\Components\Struct\PageExtension\Checkout\FinishPageExtension;
 use HeidelPayment\Components\Struct\TransferInformation\TransferInformation;
 use HeidelPayment\Installers\PaymentInstaller;
 use heidelpayPHP\Resources\TransactionTypes\Charge;
@@ -56,7 +56,7 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
         }
 
         $heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
-        $extension       = new CheckoutFinishPageExtension();
+        $extension       = new FinishPageExtension();
 
         /** @var OrderTransactionEntity $transaction */
         foreach ($transactions as $transaction) {

@@ -9,5 +9,19 @@
 
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="HeidelPayment\EventListeners\CheckoutConfirmEventListener">
+            <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="HeidelPayment\EventListeners\AccountPaymentMethodEventListener">
+            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>

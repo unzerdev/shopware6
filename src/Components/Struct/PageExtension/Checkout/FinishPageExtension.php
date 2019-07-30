@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\Struct;
+namespace HeidelPayment\Components\Struct\PageExtension\Checkout;
 
 use HeidelPayment\Components\Struct\TransferInformation\TransferInformation;
 use Shopware\Core\Framework\Struct\Struct;
 
-class CheckoutFinishPageExtension extends Struct
+class FinishPageExtension extends Struct
 {
     /** @var array<TransferInformation> */
     protected $transferInformation;

@@ -33,5 +33,9 @@
                 <argument type="service" id="service_container"/>
             </call>
         </service>
+
+        <service id="HeidelPayment\Controllers\Storefront\HeidelpayPaymentDeviceController">
+            <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+        </service>
     </services>
 </container>

@@ -9,6 +9,7 @@
         <import resource="hydrators.xml"/>
         <import resource="commands.xml" />
         <import resource="webhook_handlers.xml" />
+        <import resource="entities.xml" />
         <import resource="event_listeners.xml" />
     </imports>
 

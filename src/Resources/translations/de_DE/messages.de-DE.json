@@ -1,13 +1,27 @@
 {
-  "HeidelPayment": {
-    "transferInformation": {
-      "message": "Bitte überweisen Sie den Betrag %amount% auf das nachfolgende Bankkonto:",
-      "title": "Überweisungsinformationen",
-      "bic": "BIC",
-      "iban": "IBAN",
-      "holder": "Kontoinhaber",
-      "descriptor": "Verwendungszweck",
-      "amount": "Betrag"
+    "HeidelPayment": {
+        "transferInformation": {
+            "message": "Bitte überweisen Sie den Betrag %amount% auf das nachfolgende Bankkonto:",
+            "title": "Überweisungsinformationen",
+            "bic": "BIC",
+            "iban": "IBAN",
+            "holder": "Kontoinhaber",
+            "descriptor": "Verwendungszweck",
+            "amount": "Betrag"
+        },
+        "frame": {
+            "creditCard": {
+                "new": "Eine andere Kreditkarte verwenden",
+                "number": "Kreditkartennummer",
+                "cvc": "CVC:",
+                "expiry": "Ablaufdatum:"
+            }
+        },
+        "accountPayment": {
+            "delete": "Löschen",
+            "creditCard": "Kreditkarte",
+            "deviceDeleted": "Das Zahlungsmittel wurde erfolgreich entfernt.",
+            "title": "Ihre gespeicherten Zahlungsmittel"
+        }
     }
-  }
 }

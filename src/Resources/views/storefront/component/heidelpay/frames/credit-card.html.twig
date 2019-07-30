@@ -1,38 +1,71 @@
 {% block heidelpay_frame_credit_card %}
     <div class="heidelpay-credit-card-wrapper"
-         data-heidelpay-credit-card="true">
+         data-heidelpay-credit-card="true"
+         data-heidelpay-credit-card-options='{
+            "hasSavedCards": "{{ page.extensions.heidelpay.creditCards|length > 0 }}"
+         }'>
 
-        {% block heidelpay_frame_credit_card_number %}
-            <div class="heidelpay-frame-row">
-                <label for="heidelpay-credit-card-number">Card-Number:</label>
-                <div id="heidelpay-credit-card-number" class="heidelpay-text-input form-control"></div>
-                <div id="heidelpay-credit-card-number-error" class="heidelpay-error" hidden>
-                    <div class="heidelpay-error-message">
+        {% if page.extensions.heidelpay.displayCreditCardSelection and page.extensions.heidelpay.creditCards|length > 0 %}
+            <div class="heidelpay-saved-cards-wrapper">
+                {% block heidelpay_frame_credit_card_saved_device %}
+                    {# @var creditCard \HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity#}
+                    {% for creditCard in page.extensions.heidelpay.creditCards %}
+                        <div class="custom-control custom-radio payment-control">
+                            <input type="radio" value="{{ creditCard.typeId }}" name="savedCreditCard" id="card-{{ creditCard.id }}" class="custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
+                            <label for="card-{{ creditCard.id }}" class="custom-control-label payment-method-label">
+                                <div class="payment-method-description">
+                                    <strong>{{ creditCard.data['number'] }}</strong>
+                                    <p>{{ creditCard.data['holder'] }} ({{ creditCard.data['expiryDate'] }})</p>
+                                </div>
+                            </label>
+                        </div>
+                    {% endfor %}
+                {% endblock %}
+
+                {% block heidelpay_frame_credit_card_saved_device_new %}
+                    <div class="custom-control custom-radio payment-control">
+                        <input type="radio" value="new" name="savedCreditCard" id="card-new" class="custom-control-input payment-method-input">
+                        <label for="card-new" class="custom-control-label payment-method-label">
+                            {{ "HeidelPayment.frame.creditCard.new" | trans  }}
+                        </label>
+                    </div>
+                {% endblock %}
+            </div>
+        {% endif %}
+
+        <div class="heidelpay-credit-card-wrapper-elements">
+            {% block heidelpay_frame_credit_card_number %}
+                <div class="heidelpay-frame-row">
+                    <label for="heidelpay-credit-card-number">{{ "HeidelPayment.frame.creditCard.number" | trans  }}</label>
+                    <div id="heidelpay-credit-card-number" class="heidelpay-text-input form-control"></div>
+                    <div id="heidelpay-credit-card-number-error" class="heidelpay-error" hidden>
+                        <div class="heidelpay-error-message">
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endblock %}
+            {% endblock %}
 
-        {% block heidelpay_frame_credit_card_expiry %}
-            <div class="heidelpay-frame-row">
-                <label for="heidelpay-credit-card-expiry">Expiry:</label>
-                <div id="heidelpay-credit-card-expiry" class="heidelpay-text-input form-control"></div>
-                <div id="heidelpay-credit-card-expiry-error" class="heidelpay-error" hidden>
-                    <div class="heidelpay-error-message">
+            {% block heidelpay_frame_credit_card_expiry %}
+                <div class="heidelpay-frame-row">
+                    <label for="heidelpay-credit-card-expiry">{{ "HeidelPayment.frame.creditCard.expiry" | trans  }}</label>
+                    <div id="heidelpay-credit-card-expiry" class="heidelpay-text-input form-control"></div>
+                    <div id="heidelpay-credit-card-expiry-error" class="heidelpay-error" hidden>
+                        <div class="heidelpay-error-message">
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endblock %}
+            {% endblock %}
 
-        {% block heidelpay_frame_credit_card_cvc %}
-            <div class="heidelpay-frame-row">
-                <label for="heidelpay-credit-card-cvc">CVC:</label>
-                <div id="heidelpay-credit-card-cvc" class="heidelpay-text-input form-control"></div>
-                <div id="heidelpay-credit-card-cvc-error" class="heidelpay-error" hidden>
-                    <div class="heidelpay-error-message">
+            {% block heidelpay_frame_credit_card_cvc %}
+                <div class="heidelpay-frame-row">
+                    <label for="heidelpay-credit-card-cvc">{{ "HeidelPayment.frame.creditCard.cvc" | trans  }}</label>
+                    <div id="heidelpay-credit-card-cvc" class="heidelpay-text-input form-control"></div>
+                    <div id="heidelpay-credit-card-cvc-error" class="heidelpay-error" hidden>
+                        <div class="heidelpay-error-message">
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endblock %}
+            {% endblock %}
+        </div>
     </div>
 {% endblock %}

@@ -1,13 +1,27 @@
 {
-  "HeidelPayment": {
-    "transferInformation": {
-      "message": "Please transfer the amount %amount% to the following bank account:",
-      "title": "Invoice payment information",
-      "bic": "BIC",
-      "iban": "IBAN",
-      "holder": "Holder",
-      "descriptor": "Descriptor",
-      "amount": "Amount"
+    "HeidelPayment": {
+        "transferInformation": {
+            "message": "Please transfer the amount %amount% to the following bank account:",
+            "title": "Invoice payment information",
+            "bic": "BIC",
+            "iban": "IBAN",
+            "holder": "Holder",
+            "descriptor": "Descriptor",
+            "amount": "Amount"
+        },
+        "frame": {
+            "creditCard": {
+                "new": "Use another credit card",
+                "number": "Card number:",
+                "cvc": "CVC:",
+                "expiry": "Expiry:"
+            }
+        },
+        "accountPayment": {
+            "delete": "Delete",
+            "creditCard": "Credit card",
+            "deviceDeleted": "The payment device has been deleted successfully.",
+            "title": "Your saved payment devices"
+        }
     }
-  }
 }

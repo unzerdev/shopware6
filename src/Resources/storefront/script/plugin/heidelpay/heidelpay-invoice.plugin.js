@@ -53,7 +53,7 @@ export default class HeidelpayInvoicePlugin extends Plugin {
      * @private
      */
     _submitPayment(resource) {
-        this.heidelpayPlugin.submit(resource);
+        this.heidelpayPlugin.submitResource(resource);
     }
 
     /**

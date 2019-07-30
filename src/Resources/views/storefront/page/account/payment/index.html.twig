@@ -1,0 +1,35 @@
+{% sw_extends '@Storefront/page/account/payment/index.html.twig' %}
+
+{% block page_account_payment_main %}
+    {% if page.extensions.heidelpay.deviceRemoved %}
+        {% sw_include '@Storefront/utilities/alert.html.twig' with {
+            type: "success",
+            content:  "HeidelPayment.accountPayment.deviceDeleted"|trans
+        } %}
+    {% endif %}
+
+    {{ parent() }}
+
+    {% if page.extensions.heidelpay.savedDevices|length > 0 %}
+
+        {% block page_account_payment_main_heidelpay_wrapper %}
+            <div class="heidelpay-card has-margin-top">
+                {% block page_account_payment_main_heidelpay_wrapper_title %}
+                    <div class="card-title">
+                        {{ "HeidelPayment.accountPayment.title"|trans }}
+                    </div>
+                {% endblock %}
+
+                {% block page_account_payment_main_heidelpay_wrapper_body %}
+                    <div class="heidelpay-card-body">
+                        {% for paymentDevice in page.extensions.heidelpay.savedDevices %}
+                            {% sw_include '@Storefront/component/heidelpay/account/payment/' ~ paymentDevice.deviceType  ~ '.html.twig' ignore missing with {
+                                'device': paymentDevice
+                            }  %}
+                        {% endfor %}
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    {% endif %}
+{% endblock %}
