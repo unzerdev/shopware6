@@ -1,6 +1,4 @@
 .php_cs.cache
 vendor
 .phpunit.result.cache
-src/Resources/public
 .idea
-src/Resources/dist
