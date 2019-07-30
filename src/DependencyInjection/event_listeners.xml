@@ -4,20 +4,20 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment\EventListeners\CheckoutFinishEventListener">
+        <service id="HeidelPayment\EventListeners\Checkout\FinishPageEventListener">
             <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="HeidelPayment\EventListeners\CheckoutConfirmEventListener">
+        <service id="HeidelPayment\EventListeners\Checkout\ConfirmPageEventListener">
             <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
             <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="HeidelPayment\EventListeners\AccountPaymentMethodEventListener">
+        <service id="HeidelPayment\EventListeners\Account\PaymentMethodPageEventListener">
             <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
 

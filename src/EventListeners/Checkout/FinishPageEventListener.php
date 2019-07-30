@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\EventListeners;
+namespace HeidelPayment\EventListeners\Checkout;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment\Components\Struct\PageExtension\Checkout\FinishPageExtension;
@@ -14,7 +14,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CheckoutFinishEventListener implements EventSubscriberInterface
+class FinishPageEventListener implements EventSubscriberInterface
 {
     /** @var ClientFactoryInterface */
     private $clientFactory;
