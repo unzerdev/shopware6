@@ -5,3 +5,9 @@
 
     <script type="text/javascript" src="{{ asset('bundles/heidelpayment/administration/js/heidel-payment.js')}}"></script>
 {% endblock %}
+
+{% block administration_stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" href="{{ asset('bundles/heidelpayment/administration/css/heidel-payment.css')}}">
+{% endblock %}
