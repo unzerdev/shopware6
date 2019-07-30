@@ -55,7 +55,7 @@ Component.register('heidel-payment-tab', {
                             return;
                         }
 
-                        if (!orderTransaction.customFields.heidelpay_transaction) {
+                        if (!orderTransaction.customFields.heidelpay_is_transaction) {
                             return;
                         }
 
