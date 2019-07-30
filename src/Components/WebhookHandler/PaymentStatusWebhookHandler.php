@@ -6,7 +6,7 @@ namespace HeidelPayment\Components\WebhookHandler;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment\Components\Struct\Webhook;
-use HeidelPayment\Services\TransactionStateHandlerInterface;
+use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use heidelpayPHP\Resources\Payment;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;

@@ -14,7 +14,8 @@ use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    public const CUSTOM_FIELD_FRAME = 'heidelpay_frame';
+    public const HEIDELPAY_FRAME          = 'heidelpay_frame';
+    public const HEIDELPAY_IS_TRANSACTION = 'heidelpay_is_transaction';
 
     public const CUSTOM_FIELDS = [
         [
@@ -28,7 +29,7 @@ class CustomFieldInstaller implements InstallerInterface
             ],
             'customFields' => [
                 [
-                    'name'   => 'heidelpay_frame',
+                    'name'   => self::HEIDELPAY_FRAME,
                     'type'   => CustomFieldTypes::TEXT,
                     'id'     => 'ef604f17f5be45ccbe3fe9315aac8a84',
                     'config' => [
@@ -38,9 +39,21 @@ class CustomFieldInstaller implements InstallerInterface
                         ],
                     ],
                 ],
+                [
+                    'name'   => self::HEIDELPAY_IS_TRANSACTION,
+                    'type'   => CustomFieldTypes::BOOL,
+                    'id'     => '6bb838751d65478992a5c0a1e80cb5fd',
+                    'config' => [
+                        'label' => [
+                            'en-GB' => 'Heidelpay transaction',
+                            'de-DE' => 'Heidelpay Transaktion',
+                        ],
+                    ],
+                ],
             ],
         ],
     ];
+
     /** @var EntityRepositoryInterface */
     private $customFieldRepository;
 
@@ -78,7 +91,7 @@ class CustomFieldInstaller implements InstallerInterface
      */
     public function activate(ActivateContext $context): void
     {
-        //Nothing to do here
+        // Nothing to do here
     }
 
     /**
@@ -86,6 +99,6 @@ class CustomFieldInstaller implements InstallerInterface
      */
     public function deactivate(DeactivateContext $context): void
     {
-        //Nothing to do here
+        // Nothing to do here
     }
 }

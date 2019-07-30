@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Controllers;
+namespace HeidelPayment\Controllers\Storefront;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use Shopware\Storefront\Controller\StorefrontController;

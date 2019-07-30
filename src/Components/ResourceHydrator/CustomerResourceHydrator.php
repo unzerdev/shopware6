@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Services\Heidelpay\Hydrator;
+namespace HeidelPayment\Components\ResourceHydrator;
 
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Customer;
@@ -11,7 +11,7 @@ use RuntimeException;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class HeidelpayCustomerHydrator implements HeidelpayHydratorInterface
+class CustomerResourceHydrator implements ResourceHydratorInterface
 {
     public function hydrateObject(
         SalesChannelContext $channelContext,

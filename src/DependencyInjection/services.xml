@@ -5,15 +5,15 @@
 
     <imports>
         <import resource="payment_handlers.xml"/>
+        <import resource="controllers.xml" />
         <import resource="hydrators.xml"/>
         <import resource="commands.xml" />
-        <import resource="controllers.xml" />
         <import resource="webhook_handlers.xml" />
         <import resource="event_listeners.xml" />
     </imports>
 
     <services>
-        <service id="HeidelPayment\Services\TransactionStateHandler">
+        <service id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler">
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
         </service>
 

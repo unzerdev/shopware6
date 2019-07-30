@@ -1,0 +1,27 @@
+{% block heidel_payment_history %}
+    <sw-card :title="$tc('heidel-payment.paymentDetails.history.cardTitle')">
+        {% block heidel_payment_history_container %}
+            <sw-container slot="grid" type="row">
+                {% block heidel_payment_history_data_grid %}
+                    <sw-data-grid
+                        :dataSource="data"
+                        :columns="columns"
+                        :showSelection="false">
+
+                        {% block heidel_payment_history_actions %}
+                            <template slot="actions" slot-scope="{ item }">
+                                {% block heidel_payment_history_data_grid_item_actions %}
+                                    <heidel-payment-actions
+                                        :transactionResource="item.resource"
+                                        :paymentResource="paymentResource"
+                                        @reload="reloadPaymentDetails">
+                                    </heidel-payment-actions>
+                                {% endblock %}
+                            </template>
+                        {% endblock %}
+                    </sw-data-grid>
+                {% endblock %}
+            </sw-container>
+        {% endblock %}
+    </sw-card>
+{% endblock %}
