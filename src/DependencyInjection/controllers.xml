@@ -34,7 +34,7 @@
             </call>
         </service>
 
-        <service id="HeidelPayment\Controllers\HeidelpayPaymentDeviceController">
+        <service id="HeidelPayment\Controllers\Storefront\HeidelpayPaymentDeviceController">
             <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
         </service>
     </services>

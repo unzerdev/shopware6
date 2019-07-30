@@ -7,15 +7,16 @@ namespace HeidelPayment\Components\PaymentHandler;
 use HeidelPayment\Components\BookingMode;
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment\Components\ResourceHydrator\ResourceHydratorInterface;
+use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
-use HeidelPayment\Services\Heidelpay\Hydrator\HeidelpayHydratorInterface;
-use HeidelPayment\Services\TransactionStateHandlerInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\Card;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,20 +32,22 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
     private $deviceRepository;
 
     public function __construct(
-        HeidelpayHydratorInterface $basketHydrator,
-        HeidelpayHydratorInterface $customerHydrator,
-        HeidelpayHydratorInterface $metadataHydrator,
+        ResourceHydratorInterface $basketHydrator,
+        ResourceHydratorInterface $customerHydrator,
+        ResourceHydratorInterface $metadataHydrator,
+        EntityRepositoryInterface $transactionRepository,
         ConfigReaderInterface $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
-        RouterInterface $router,
-        SessionInterface $session,
+        RouterInterface $router, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
+        SessionInterface $session, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
         HeidelpayPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
             $basketHydrator,
             $customerHydrator,
             $metadataHydrator,
+            $transactionRepository,
             $configService,
             $transactionStateHandler,
             $clientFactory,

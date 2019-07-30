@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Controllers;
+namespace HeidelPayment\Controllers\Storefront;
 
 use HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
