@@ -14,7 +14,7 @@ Component.register('heidel-payment-detail', {
     data() {
         return {
             isLoading: false,
-            isSuccessful: false,
+            isSuccessful: false
         };
     },
 

@@ -111,7 +111,7 @@ class HeidelpayTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransactionId}/refund/{charge}/{amount}", name="api.action.heidelpay.transaction.refund", methods={"GET"})
+     * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.heidelpay.transaction.refund", methods={"GET"})
      */
     public function refundTransaction(string $orderTransactionId, string $chargeId, float $amount, Context $context): JsonResponse
     {

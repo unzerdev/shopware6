@@ -18,7 +18,7 @@ Component.register('heidel-payment-history', {
             this.paymentResource.transactions.forEach((transaction) => {
                 let amount = this.$options.filters.currency(
                     parseFloat(transaction.amount),
-                    this.paymentResource.currency,
+                    this.paymentResource.currency
                 );
 
                 let date = this.$options.filters.date(
@@ -26,7 +26,7 @@ Component.register('heidel-payment-history', {
                     {
                         hour: 'numeric',
                         minute: 'numeric',
-                        second: 'numeric',
+                        second: 'numeric'
                     }
                 );
 

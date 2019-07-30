@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\EventListeners;
+namespace HeidelPayment\EventListeners\Account;
 
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment\Components\Struct\PageExtension\Account\PaymentMethodPageExtension;
@@ -11,7 +11,7 @@ use HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPayment
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class AccountPaymentMethodEventListener implements EventSubscriberInterface
+class PaymentMethodPageEventListener implements EventSubscriberInterface
 {
     /** @var ConfigReaderInterface */
     private $configReader;
@@ -52,7 +52,7 @@ class AccountPaymentMethodEventListener implements EventSubscriberInterface
         if ($registerCreditCards) {
             $creditCards = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD)->getElements();
 
-            $extension->setSavedDevices($creditCards);
+            $extension->addPaymentDevices($creditCards);
         }
 
         $event->getPage()->addExtension('heidelpay', $extension);

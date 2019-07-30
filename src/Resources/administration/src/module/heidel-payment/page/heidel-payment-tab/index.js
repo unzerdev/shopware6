@@ -9,7 +9,7 @@ Component.register('heidel-payment-tab', {
     data() {
         return {
             paymentResources: [],
-            isLoading: true,
+            isLoading: true
         };
     },
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\EventListeners;
+namespace HeidelPayment\EventListeners\Checkout;
 
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment\Components\Struct\PageExtension\Checkout\ConfirmPageExtension;
@@ -12,7 +12,7 @@ use HeidelPayment\Installers\PaymentInstaller;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CheckoutConfirmEventListener implements EventSubscriberInterface
+class ConfirmPageEventListener implements EventSubscriberInterface
 {
     /** @var HeidelpayPaymentDeviceRepositoryInterface */
     private $deviceRepository;

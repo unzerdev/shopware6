@@ -9,21 +9,21 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class PaymentMethodPageExtension extends Struct
 {
-    /** @var array<HeidelpayPaymentDeviceEntity> */
+    /** @var HeidelpayPaymentDeviceEntity[] */
     protected $savedDevices = [];
 
     /** @var bool */
     protected $deviceRemoved = false;
 
-    public function addCreditCard(HeidelpayPaymentDeviceEntity $creditCard): self
+    public function addPaymentDevices(array $paymentDevices): self
     {
-        $this->savedDevices[] = $creditCard;
+        $this->savedDevices = array_merge($this->savedDevices, $paymentDevices);
 
         return $this;
     }
 
     /**
-     * @return array<HeidelpayPaymentDeviceEntity>
+     * @return HeidelpayPaymentDeviceEntity[]
      */
     public function getSavedDevices(): array
     {
@@ -31,7 +31,7 @@ class PaymentMethodPageExtension extends Struct
     }
 
     /**
-     * @param array<HeidelpayPaymentDeviceEntity> $savedDevices
+     * @param HeidelpayPaymentDeviceEntity[] $savedDevices
      *
      * @return PaymentMethodPageExtension
      */
