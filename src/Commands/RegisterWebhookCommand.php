@@ -57,7 +57,7 @@ class RegisterWebhookCommand extends Command
             if (empty($host['host']) || empty($host['scheme'])) {
                 $style->warning('The provided host is invalid.');
 
-                return;
+                return null;
             }
 
             $context = $this->router->getContext();
