@@ -37,7 +37,7 @@ class RegisterWebhookCommand extends Command
     protected function configure()
     {
         $this->setName('heidelpay:register-webhooks');
-        $this->setDescription('registers the heidelpay webhook');
+        $this->setDescription('Registers the heidelpay webhook');
         $this->addArgument('host', InputArgument::REQUIRED, 'Main Host of the shop. Example: http://www.domain.de');
     }
 
