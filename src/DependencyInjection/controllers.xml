@@ -6,7 +6,7 @@
     <services>
         <defaults public="true"/>
 
-        <service id="HeidelPayment\Controllers\HeidelpayRedirectController">
+        <service id="HeidelPayment\Controllers\Storefront\HeidelpayRedirectController">
             <argument type="service" id="session"/>
             <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
 
@@ -15,13 +15,27 @@
             </call>
         </service>
 
-        <service id="HeidelPayment\Controllers\HeidelpayWebhookController">
+        <service id="HeidelPayment\Controllers\Storefront\HeidelpayWebhookController">
             <argument type="tagged" tag="heidelpay.webhook_handler" />
             <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
+        </service>
+
+        <service id="HeidelPayment\Controllers\Administration\HeidelpayTransactionController">
+            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="HeidelPayment\Components\ArrayHydrator\PaymentArrayHydrator" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="HeidelPayment\Controllers\Storefront\HeidelpayPaymentDeviceController">
+            <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
         </service>
     </services>
 </container>

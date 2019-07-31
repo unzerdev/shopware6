@@ -6,14 +6,20 @@ namespace HeidelPayment\Components\Struct;
 
 class Configuration
 {
-    private $configuration = [];
+    private $configuration;
 
     public function __construct(array $configuration)
     {
         $this->configuration = $configuration;
     }
 
-    public function get(string $key, string $default = ''): string
+    /**
+     * @param string $key
+     * @param string $default
+     *
+     * @return mixed|string
+     */
+    public function get(string $key, string $default = '')
     {
         if (!array_key_exists($key, $this->configuration)) {
             return $default;

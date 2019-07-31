@@ -5,7 +5,7 @@
 
     <services>
         <service id="HeidelPayment\Components\WebhookHandler\PaymentStatusWebhookHandler">
-            <argument type="service" id="HeidelPayment\Services\TransactionStateHandler" />
+            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler" />
             <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="order_transaction.repository" />
 

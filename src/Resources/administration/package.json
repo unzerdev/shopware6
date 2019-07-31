@@ -1,0 +1,8 @@
+{
+    "name": "heidelpayment",
+    "version": "1.0.0",
+    "description": "Administration for Heidel Payment",
+    "main": "index.js",
+    "author": "composer.json",
+    "license": "MIT"
+}

@@ -46,9 +46,16 @@ export default class HeidelpayBasePlugin extends Plugin {
     /**
      * @param {Object} resource
      */
-    submit(resource) {
+    submitResource(resource) {
         let resourceIdElement = document.getElementById(this.options.resourceIdElementId);
         resourceIdElement.value = resource.id;
+
+        this.confirmForm.submit();
+    }
+
+    submitTypeId(typeId) {
+        let resourceIdElement = document.getElementById(this.options.resourceIdElementId);
+        resourceIdElement.value = typeId;
 
         this.confirmForm.submit();
     }
