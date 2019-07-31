@@ -78,6 +78,6 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
     {
         $criteria = new Criteria([$payment->getOrderId()]);
 
-        $this->orderTransactionRepository->search($criteria, $context)->first();
+        return $this->orderTransactionRepository->search($criteria, $context)->first();
     }
 }

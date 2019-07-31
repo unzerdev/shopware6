@@ -41,7 +41,6 @@ class RegisterWebhookCommand extends Command
         $this->addArgument('host', InputArgument::REQUIRED, 'Main Host of the shop. Example: http://www.domain.de');
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -56,7 +55,7 @@ class RegisterWebhookCommand extends Command
             $host = parse_url($input->getArgument('host'));
 
             if (empty($host['host']) || empty($host['scheme'])) {
-                $style->warning('the provided host is invalid.');
+                $style->warning('The provided host is invalid.');
 
                 return;
             }
