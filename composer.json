@@ -32,6 +32,7 @@
     },
     "extra": {
         "shopware-plugin-class": "HeidelPayment\\HeidelPayment",
+        "plugin-icon": "src/Resources/public/plugin.png",
         "copyright": "(c) heidelpay GmbH",
         "label": {
             "de-DE": "Heidelpay",
