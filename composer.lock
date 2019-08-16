@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5c29a42eb105fdb3f7c6ef69500dd3ea",
+    "content-hash": "5255f714bf13ad609076cb1f47746a6b",
     "packages": [
         {
             "name": "heidelpay/heidelpay-php",
@@ -1403,6 +1403,66 @@
             "time": "2019-08-13T17:33:27+00:00"
         },
         {
+            "name": "elasticsearch/elasticsearch",
+            "version": "v7.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/elastic/elasticsearch-php.git",
+                "reference": "e8d035bac967aeb6a47aca1f9b07a25e01cda93f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/e8d035bac967aeb6a47aca1f9b07a25e01cda93f",
+                "reference": "e8d035bac967aeb6a47aca1f9b07a25e01cda93f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": ">=1.3.7",
+                "guzzlehttp/ringphp": "~1.0",
+                "php": "^7.1",
+                "psr/log": "~1.0"
+            },
+            "require-dev": {
+                "cpliakas/git-wrapper": "~2.0",
+                "doctrine/inflector": "^1.3",
+                "mockery/mockery": "^1.2",
+                "phpstan/phpstan-shim": "^0.11",
+                "phpunit/phpunit": "^7.5",
+                "squizlabs/php_codesniffer": "^3.4",
+                "symfony/finder": "~4.0",
+                "symfony/yaml": "~4.0"
+            },
+            "suggest": {
+                "ext-curl": "*",
+                "monolog/monolog": "Allows for client-level logging and tracing"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Elasticsearch\\": "src/Elasticsearch/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Zachary Tong"
+                },
+                {
+                    "name": "Enrico Zimuel"
+                }
+            ],
+            "description": "PHP Client for Elasticsearch",
+            "keywords": [
+                "client",
+                "elasticsearch",
+                "search"
+            ],
+            "time": "2019-06-13T15:21:54+00:00"
+        },
+        {
             "name": "enqueue/amqp-tools",
             "version": "0.9.12",
             "source": {
@@ -1767,6 +1827,96 @@
                 "testing"
             ],
             "time": "2019-05-27T13:12:22+00:00"
+        },
+        {
+            "name": "erusev/parsedown",
+            "version": "1.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/erusev/parsedown.git",
+                "reference": "6d893938171a817f4e9bc9e86f2da1e370b7bcd7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/6d893938171a817f4e9bc9e86f2da1e370b7bcd7",
+                "reference": "6d893938171a817f4e9bc9e86f2da1e370b7bcd7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Parsedown": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Emanuil Rusev",
+                    "email": "hello@erusev.com",
+                    "homepage": "http://erusev.com"
+                }
+            ],
+            "description": "Parser for Markdown.",
+            "homepage": "http://parsedown.org",
+            "keywords": [
+                "markdown",
+                "parser"
+            ],
+            "time": "2019-03-17T18:48:37+00:00"
+        },
+        {
+            "name": "erusev/parsedown-extra",
+            "version": "0.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/erusev/parsedown-extra.git",
+                "reference": "0db5cce7354e4b76f155d092ab5eb3981c21258c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/erusev/parsedown-extra/zipball/0db5cce7354e4b76f155d092ab5eb3981c21258c",
+                "reference": "0db5cce7354e4b76f155d092ab5eb3981c21258c",
+                "shasum": ""
+            },
+            "require": {
+                "erusev/parsedown": "~1.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ParsedownExtra": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Emanuil Rusev",
+                    "email": "hello@erusev.com",
+                    "homepage": "http://erusev.com"
+                }
+            ],
+            "description": "An extension of Parsedown that adds support for Markdown Extra.",
+            "homepage": "https://github.com/erusev/parsedown-extra",
+            "keywords": [
+                "markdown",
+                "markdown extra",
+                "parsedown",
+                "parser"
+            ],
+            "time": "2015-11-01T10:19:22+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -2162,6 +2312,107 @@
                 "url"
             ],
             "time": "2019-07-01T23:21:34+00:00"
+        },
+        {
+            "name": "guzzlehttp/ringphp",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/RingPHP.git",
+                "reference": "5e2a174052995663dd68e6b5ad838afd47dd615b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/RingPHP/zipball/5e2a174052995663dd68e6b5ad838afd47dd615b",
+                "reference": "5e2a174052995663dd68e6b5ad838afd47dd615b",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/streams": "~3.0",
+                "php": ">=5.4.0",
+                "react/promise": "~2.0"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "ext-curl": "Guzzle will use specific adapters if cURL is present"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Ring\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
+            "time": "2018-07-31T13:22:33+00:00"
+        },
+        {
+            "name": "guzzlehttp/streams",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/streams.git",
+                "reference": "47aaa48e27dae43d39fc1cea0ccf0d84ac1a2ba5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/streams/zipball/47aaa48e27dae43d39fc1cea0ccf0d84ac1a2ba5",
+                "reference": "47aaa48e27dae43d39fc1cea0ccf0d84ac1a2ba5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Stream\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Provides a simple abstraction over streams of data",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "Guzzle",
+                "stream"
+            ],
+            "time": "2014-10-12T19:18:40+00:00"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -3643,6 +3894,59 @@
             "time": "2019-07-17T15:49:50+00:00"
         },
         {
+            "name": "ongr/elasticsearch-dsl",
+            "version": "v6.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ongr-io/ElasticsearchDSL.git",
+                "reference": "56e59e51cf066f5ee4dff2612b3831b5a7792e67"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ongr-io/ElasticsearchDSL/zipball/56e59e51cf066f5ee4dff2612b3831b5a7792e67",
+                "reference": "56e59e51cf066f5ee4dff2612b3831b5a7792e67",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/random_compat": "*",
+                "php": "^7.0",
+                "symfony/serializer": "^3.0|^4.0"
+            },
+            "require-dev": {
+                "elasticsearch/elasticsearch": "^6.0",
+                "php-coveralls/php-coveralls": "~2.0",
+                "phpunit/phpunit": "^6.0",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "suggest": {
+                "elasticsearch/elasticsearch": "This library is for elasticsearch/elasticsearch client to enhance it with DSL functionality."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "6.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ONGR\\ElasticsearchDSL\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ONGR team",
+                    "homepage": "http://www.ongr.io"
+                }
+            ],
+            "description": "Elasticsearch DSL library",
+            "homepage": "http://ongr.io",
+            "time": "2019-01-24T21:34:23+00:00"
+        },
+        {
             "name": "paragonie/random_compat",
             "version": "v9.99.99",
             "source": {
@@ -5097,6 +5401,52 @@
             "time": "2018-07-19T23:38:55+00:00"
         },
         {
+            "name": "react/promise",
+            "version": "v2.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/promise.git",
+                "reference": "31ffa96f8d2ed0341a57848cbb84d88b89dd664d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/31ffa96f8d2ed0341a57848cbb84d88b89dd664d",
+                "reference": "31ffa96f8d2ed0341a57848cbb84d88b89dd664d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\Promise\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Sorgalla",
+                    "email": "jsorgalla@gmail.com"
+                }
+            ],
+            "description": "A lightweight implementation of CommonJS Promises/A for PHP",
+            "keywords": [
+                "promise",
+                "promises"
+            ],
+            "time": "2019-01-07T21:25:54+00:00"
+        },
+        {
             "name": "rize/uri-template",
             "version": "0.3.2",
             "source": {
@@ -5183,6 +5533,65 @@
                 "stylesheet"
             ],
             "time": "2016-07-19T19:14:21+00:00"
+        },
+        {
+            "name": "scssphp/scssphp",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/scssphp/scssphp.git",
+                "reference": "6c8734b6edcf6c2fa785ad874b998fa854a7d030"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/6c8734b6edcf6c2fa785ad874b998fa854a7d030",
+                "reference": "6c8734b6edcf6c2fa785ad874b998fa854a7d030",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6.0 || ^7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.6",
+                "squizlabs/php_codesniffer": "~2.5",
+                "twbs/bootstrap": "~4.3",
+                "zurb/foundation": "~6.5"
+            },
+            "bin": [
+                "bin/pscss"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ScssPhp\\ScssPhp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthon Pang",
+                    "email": "apang@softwaredevelopment.ca",
+                    "homepage": "https://github.com/robocoder"
+                },
+                {
+                    "name": "Cédric Morin",
+                    "email": "cedric@yterium.com",
+                    "homepage": "https://github.com/Cerdic"
+                }
+            ],
+            "description": "scssphp is a compiler for SCSS written in PHP.",
+            "homepage": "http://scssphp.github.io/scssphp/",
+            "keywords": [
+                "css",
+                "less",
+                "sass",
+                "scss",
+                "stylesheet"
+            ],
+            "time": "2019-06-05T01:22:01+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -5966,17 +6375,17 @@
             "time": "2019-04-10T06:00:20+00:00"
         },
         {
-            "name": "shopware/core",
+            "name": "shopware/platform",
             "version": "v6.0.0+ea1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/shopware/core.git",
-                "reference": "6911cee21ae491ddde574265d735b37a821fe4cf"
+                "url": "https://github.com/shopware/platform.git",
+                "reference": "3c047808a1b0d81826cdff34f43309700dd5e589"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shopware/core/zipball/6911cee21ae491ddde574265d735b37a821fe4cf",
-                "reference": "6911cee21ae491ddde574265d735b37a821fe4cf",
+                "url": "https://api.github.com/repos/shopware/platform/zipball/3c047808a1b0d81826cdff34f43309700dd5e589",
+                "reference": "3c047808a1b0d81826cdff34f43309700dd5e589",
                 "shasum": ""
             },
             "require": {
@@ -5988,7 +6397,9 @@
                 "doctrine/dbal": "2.9.2",
                 "doctrine/inflector": "1.3.0",
                 "dompdf/dompdf": "0.8.3",
+                "elasticsearch/elasticsearch": "7.0.0",
                 "enqueue/fs": "0.9.8",
+                "erusev/parsedown-extra": "0.7.1",
                 "ext-dom": "*",
                 "ext-fileinfo": "*",
                 "ext-gd": "*",
@@ -6011,11 +6422,13 @@
                 "league/oauth2-server": "7.3.3",
                 "marc1706/fast-image-size": "1.1.4",
                 "nyholm/psr7": "1.1.0",
+                "ongr/elasticsearch-dsl": "6.0.3",
                 "php": ">=7.2.0",
                 "psr/cache": "1.0.1",
                 "psr/http-factory": "1.0.1",
                 "psr/http-message": "1.0.1",
                 "psr/log": "1.1.0",
+                "scssphp/scssphp": "1.0.0",
                 "sensio/framework-extra-bundle": "5.3.1",
                 "sroze/messenger-enqueue-transport": "0.3.0",
                 "superbalist/flysystem-google-storage": "7.2.1",
@@ -6044,6 +6457,7 @@
                 "symfony/psr-http-message-bridge": "1.2.0",
                 "symfony/routing": "4.3.2",
                 "symfony/serializer": "4.3.2",
+                "symfony/service-contracts": "1.1.2",
                 "symfony/swiftmailer-bundle": "3.2.7",
                 "symfony/translation": "4.3.2",
                 "symfony/translation-contracts": "1.1.2",
@@ -6056,6 +6470,12 @@
             },
             "conflict": {
                 "symfony/symfony": "*"
+            },
+            "replace": {
+                "shopware/administration": "self.version",
+                "shopware/core": "self.version",
+                "shopware/elasticsearch": "self.version",
+                "shopware/storefront": "self.version"
             },
             "require-dev": {
                 "bheller/images-generator": "1.0.1",
@@ -6076,24 +6496,28 @@
             },
             "type": "library",
             "autoload": {
-                "exclude-from-classmap": [
-                    "*/Test/"
-                ],
                 "psr-4": {
-                    "Shopware\\Core\\": ""
-                }
+                    "Shopware\\Administration\\": "src/Administration/",
+                    "Shopware\\Docs\\": "src/Docs/",
+                    "Shopware\\Storefront\\": "src/Storefront/",
+                    "Shopware\\Core\\": "src/Core/",
+                    "Shopware\\Elasticsearch\\": "src/Elasticsearch/"
+                },
+                "exclude-from-classmap": [
+                    "src/**/Test/"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
-            "description": "Shopware platform is the core for all Shopware ecommerce products.",
-            "homepage": "http://www.shopware.com",
+            "description": "The Shopware e-commerce core",
+            "homepage": "https://www.shopware.com",
             "keywords": [
-                "shop",
+                "framework",
                 "shopware"
             ],
-            "time": "2019-07-16T14:20:37+00:00"
+            "time": "2019-07-17T08:50:16+00:00"
         },
         {
             "name": "sroze/messenger-enqueue-transport",
@@ -8484,23 +8908,23 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v1.1.5",
+            "version": "v1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "f391a00de78ec7ec8cf5cdcdae59ec7b883edb8d"
+                "reference": "191afdcb5804db960d26d8566b7e9a2843cab3a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/f391a00de78ec7ec8cf5cdcdae59ec7b883edb8d",
-                "reference": "f391a00de78ec7ec8cf5cdcdae59ec7b883edb8d",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/191afdcb5804db960d26d8566b7e9a2843cab3a0",
+                "reference": "191afdcb5804db960d26d8566b7e9a2843cab3a0",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3",
-                "psr/container": "^1.0"
+                "php": "^7.1.3"
             },
             "suggest": {
+                "psr/container": "",
                 "symfony/service-implementation": ""
             },
             "type": "library",
@@ -8538,7 +8962,7 @@
                 "interoperability",
                 "standards"
             ],
-            "time": "2019-06-13T11:15:36+00:00"
+            "time": "2019-05-28T07:50:59+00:00"
         },
         {
             "name": "symfony/swiftmailer-bundle",
