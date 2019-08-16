@@ -4,6 +4,7 @@ Heidelpay payment integration for Shopware 6 including the following payment met
 * Credit Card
 * Invoice
 * SOFORT
+* Flexipay
 
 ## Installation
 ### For production
