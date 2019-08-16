@@ -72,11 +72,8 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Can not process payment without a valid payment resource.');
         }
 
-        $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
-        $pluginConfig   = $this->configService->read($salesChannelId);
-
-        $bookingMode         = $pluginConfig->get('bookingModeCreditCard', BookingMode::CHARGE);
-        $registerCreditCards = $pluginConfig->get('registerCreditCard');
+        $bookingMode         = $this->pluginConfig->get('bookingModeCreditCard', BookingMode::CHARGE);
+        $registerCreditCards = $this->pluginConfig->get('registerCreditCard');
 
         try {
             // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
