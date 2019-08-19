@@ -71,6 +71,8 @@ export default class HeidelpayBasePlugin extends Plugin {
 
         errorWrapper.hidden = false;
         errorWrapper.scrollIntoView({ block: 'end', behavior: 'smooth' });
+
+        this.setSubmitButtonActive(true);
     }
 
     /**
