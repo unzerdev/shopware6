@@ -6,6 +6,7 @@ namespace HeidelPayment\Installers;
 
 use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelEpsPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoicePaymentHandler;
@@ -26,6 +27,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_INVOICE_GUARANTEED = '78f3cfa6ab2d9168759724e7cde1eab2';
     public const PAYMENT_ID_INVOICE_FACTORING  = '6cc3b56ce9b0f80bd44039c047282a41';
     public const PAYMENT_ID_EPS                = '17830aa7e6a00b99eab27f0e45ac5e0d';
+    public const PAYMENT_ID_FLEXIPAY           = '4ebb99451f36ba01f13d5871a30bce2c';
 
     public const PAYMENT_METHODS = [
         [
@@ -131,6 +133,21 @@ class PaymentInstaller implements InstallerInterface
             ],
             'customFields' => [
                 CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/eps.html.twig',
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_FLEXIPAY,
+            'handlerIdentifier' => HeidelFlexipayPaymentHandler::class,
+            'name'              => 'Flexipay (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Flexipay (heidelpay)',
+                    'description' => 'Flexipay Zahlungen mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'Flexipay (heidelpay)',
+                    'description' => 'Flexipay payments with Heidelpay',
+                ],
             ],
         ],
     ];
