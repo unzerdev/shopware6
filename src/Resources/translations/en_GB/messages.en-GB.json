@@ -14,7 +14,13 @@
                 "new": "Use another credit card",
                 "number": "Card number:",
                 "cvc": "CVC:",
-                "expiry": "Expiry:"
+                "expiry": "Expiry:",
+                "testData": {
+                    "brand": "Brand",
+                    "number": "Number",
+                    "expiry": "Expiry date",
+                    "cvc": "CVC"
+                }
             }
         },
         "accountPayment": {
