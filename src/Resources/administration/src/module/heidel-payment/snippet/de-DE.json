@@ -1,48 +1,64 @@
 {
-  "heidel-payment": {
-    "tabTitle": "Heidelpay",
-    "paymentDetails": {
-      "history": {
-        "cardTitle": "Zahlungsverlauf",
-        "column": {
-          "type": "Typ",
-          "amount": "Betrag",
-          "date": "Datum"
-        },
-        "type": {
-          "authorization": "Reservierung",
-          "charge": "Einzug",
-          "shipment": "Versandtmitteilung",
-          "cancellation": "Rückerstattung",
-          "default": ""
+    "heidel-payment": {
+        "tabTitle": "Heidelpay",
+        "paymentDetails": {
+            "history": {
+                "cardTitle": "Zahlungsverlauf",
+                "column": {
+                    "type": "Typ",
+                    "amount": "Betrag",
+                    "date": "Datum"
+                },
+                "type": {
+                    "authorization": "Reservierung",
+                    "charge": "Einzug",
+                    "shipment": "Versandtmitteilung",
+                    "cancellation": "Rückerstattung",
+                    "default": ""
+                }
+            },
+            "actions": {
+                "chargeButton": "Einziehen",
+                "shipButton": "Versandmitteilung",
+                "refundButton": "Rückerstatten"
+            },
+            "detail": {
+                "cardTitle": "Zahlungsdetails",
+                "amountTotal": "Betrag (brutto)",
+                "amountTotalVat": "Betrag (netto)",
+                "currency": "Währung",
+                "orderId": "Auftrags-ID",
+                "id": "Zahlungs-ID",
+                "state": "Status"
+            },
+            "metadata": {
+                "cardTitle": "Metadaten",
+                "column": {
+                    "key": "Schlüssel",
+                    "value": "Wert"
+                }
+            },
+            "basket": {
+                "cardTitle": "Warenkorb",
+                "column":{
+                    "quantity": "Anzahl",
+                    "title": "Titel",
+                    "amountGross": "Betrag (brutto)",
+                    "amountNet": "Betrag (netto)"
+                }
+            },
+            "notifications": {
+                "genericErrorMessage": "Es ist ein Fehler aufgetreten!",
+                "refundSuccessTitle": "Rückerstatten",
+                "refundSuccessMessage": "Die Rückerstattung wurde erfolgreich durchgeführt.",
+                "refundErrorTitle": "Rückerstatten",
+                "chargeSuccessTitle": "Einziehen",
+                "chargeSuccessMessage": "Das Einziehen der Zahlung wurde erfolgreich durchgeführt.",
+                "chargeErrorTitle": "Einziehen",
+                "shipSuccessTitle": "Versandmitteilung",
+                "shipSuccessMessage": "Die Versandmitteilung wurde erfolgreich gesendet.",
+                "shipErrorTitle": "Versandmitteilung"
+            }
         }
-      },
-      "actions": {
-        "chargeButton": "Einziehen",
-        "shipButton": "Versandmitteilung",
-        "refundButton": "Rückerstatten"
-      },
-      "detail": {
-        "cardTitle": "Zahlungsdetails",
-        "amountTotal": "Betrag (brutto)",
-        "amountTotalVat": "Betrag (netto)",
-        "currency": "Währung",
-        "orderId": "Auftrags-ID",
-        "id": "Zahlungs-ID",
-        "state": "Status"
-      },
-      "notifications": {
-        "genericErrorMessage": "Es ist ein Fehler aufgetreten!",
-        "refundSuccessTitle": "Rückerstatten",
-        "refundSuccessMessage": "Die Rückerstattung wurde erfolgreich durchgeführt.",
-        "refundErrorTitle": "Rückerstatten",
-        "chargeSuccessTitle": "Einziehen",
-        "chargeSuccessMessage": "Das Einziehen der Zahlung wurde erfolgreich durchgeführt.",
-        "chargeErrorTitle": "Einziehen",
-        "shipSuccessTitle": "Versandmitteilung",
-        "shipSuccessMessage": "Die Versandmitteilung wurde erfolgreich gesendet.",
-        "shipErrorTitle": "Versandmitteilung"
-      }
     }
-  }
 }
