@@ -21,12 +21,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             throw new InvalidArgumentException('Transaction struct can not be null');
         }
 
-        $currencyPrecision = $transaction->getOrder()->getCurrency() !== null ? $transaction->getOrder()->getCurrency()->getDecimalPrecision() : 2;
-
-        //The heidelpay API supports only up to 4 digits.
-        if ($currencyPrecision > 4) {
-            $currencyPrecision = 4;
-        }
+        $currencyPrecision = $transaction->getOrder()->getCurrency() !== null ? $transaction->getOrder()->getCurrency()->getDecimalPrecision() : 4;
+        $currencyPrecision = min($currencyPrecision, 4);
 
         $amountTotalVat = round($transaction->getOrder()->getAmountTotal() - $transaction->getOrder()->getAmountNet(), $currencyPrecision);
 
