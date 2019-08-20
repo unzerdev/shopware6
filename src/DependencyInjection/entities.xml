@@ -10,6 +10,7 @@
 
         <service id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository">
            <argument type="service" id="heidelpay_payment_device.repository"/>
+            <argument type="service" id="HeidelPayment\Components\AddressHashGenerator\AddressHashGenerator"/>
         </service>
     </services>
 </container>

@@ -44,6 +44,7 @@ class HeidelpayPaymentDeviceDefinition extends EntityDefinition
             (new StringField('device_type', 'deviceType'))->setFlags(new Required()),
             (new StringField('type_id', 'typeId'))->setFlags(new Required()),
             (new JsonField('data', 'data'))->setFlags(new Required()),
+            (new StringField('address_hash', 'addressHash'))->setFlags(new Required()),
 
             new ManyToOneAssociationField('customer', 'customer_id', CustomerDefinition::class, 'id', false),
 

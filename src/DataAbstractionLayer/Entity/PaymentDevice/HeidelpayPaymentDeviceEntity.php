@@ -25,6 +25,9 @@ class HeidelpayPaymentDeviceEntity extends Entity
     /** @var array */
     protected $data;
 
+    /** @var string */
+    protected $addressHash;
+
     public function getCustomerId(): string
     {
         return $this->customerId;
@@ -69,6 +72,18 @@ class HeidelpayPaymentDeviceEntity extends Entity
     public function setData(array $data): self
     {
         $this->data = $data;
+
+        return $this;
+    }
+
+    public function getAddressHash(): string
+    {
+        return $this->addressHash;
+    }
+
+    public function setAddressHash(string $addressHash): self
+    {
+        $this->addressHash = $addressHash;
 
         return $this;
     }

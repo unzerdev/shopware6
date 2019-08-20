@@ -46,7 +46,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $creditCards = $this->deviceRepository->getCollectionByCustomerId($customer->getId(), $salesChannelContext->getContext());
+        $creditCards = $this->deviceRepository->getCollectionByCustomer($customer, $salesChannelContext->getContext());
 
         $extension = new ConfirmPageExtension();
         $extension->setDisplayCreditCardSelection(true);
