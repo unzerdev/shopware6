@@ -7,6 +7,7 @@ namespace HeidelPayment\Components\PaymentHandler;
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment\Components\ResourceHydrator\ResourceHydratorInterface;
+use HeidelPayment\Components\Struct\Configuration;
 use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use HeidelPayment\Installers\CustomFieldInstaller;
 use heidelpayPHP\Heidelpay;
@@ -50,8 +51,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     // phpstan-ignore-next-line
     protected $heidelpayMetadata;
 
-    /** @var ConfigReaderInterface */
-    protected $configService;
+    /** @var Configuration */
+    protected $pluginConfig;
 
     /** @var SessionInterface */
     protected $session;
@@ -80,6 +81,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var string */
     private $resourceId;
 
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
         ResourceHydratorInterface $customerHydrator,
@@ -95,7 +99,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $this->customerHydrator        = $customerHydrator;
         $this->metadataHydrator        = $metadataHydrator;
         $this->transactionRepository   = $transactionRepository;
-        $this->configService           = $configService;
+        $this->configReader            = $configService;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->clientFactory           = $clientFactory;
         $this->router                  = $router;
@@ -107,6 +111,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
+        $this->pluginConfig    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
 
         $this->resourceId = $dataBag->get('heidelpayResourceId');
@@ -127,8 +132,10 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         Request $request,
         SalesChannelContext $salesChannelContext
     ): void {
+        $this->pluginConfig    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
-        $payment               = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
+
+        $payment = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
 
         $this->transactionStateHandler->transformTransactionState(
             $transaction->getOrderTransaction(),

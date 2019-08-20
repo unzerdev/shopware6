@@ -21,7 +21,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             throw new InvalidArgumentException('Transaction struct can not be null');
         }
 
-        $amountTotalVat = round($transaction->getOrder()->getAmountTotal() - $transaction->getOrder()->getAmountNet(), 2);
+        $currencyPrecision = $transaction->getOrder()->getCurrency() !== null ? $transaction->getOrder()->getCurrency()->getDecimalPrecision() : 4;
+        $currencyPrecision = min($currencyPrecision, 4);
+
+        $amountTotalVat = round($transaction->getOrder()->getAmountTotal() - $transaction->getOrder()->getAmountNet(), $currencyPrecision);
 
         $heidelBasket = new Basket(
             $transaction->getOrderTransaction()->getId(),
@@ -35,8 +38,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             if ($lineItem->getPrice() === null) {
                 $heidelBasket->addBasketItem(new BasketItem(
                     $lineItem->getLabel(),
-                    round($lineItem->getTotalPrice(), 2),
-                    round($lineItem->getUnitPrice(), 2),
+                    round($lineItem->getTotalPrice(), $currencyPrecision),
+                    round($lineItem->getUnitPrice(), $currencyPrecision),
                     $lineItem->getQuantity())
                 );
 
@@ -46,12 +49,12 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $amountTax = 0;
             $taxRate   = 0.0;
             foreach ($lineItem->getPrice()->getCalculatedTaxes() as $tax) {
-                $amountTax += round($tax->getTax(), 2);
+                $amountTax += round($tax->getTax(), $currencyPrecision);
                 $taxRate += $tax->getTaxRate();
             }
 
             $amountGross = $lineItem->getTotalPrice();
-            $amountNet   = round($amountGross - $amountTax, 2);
+            $amountNet   = round($amountGross - $amountTax, $currencyPrecision);
 
             $basketItem = new BasketItem(
                 $lineItem->getLabel(),
@@ -62,7 +65,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
             $basketItem->setVat($taxRate);
             $basketItem->setAmountVat($amountTax);
-            $basketItem->setAmountGross(round($lineItem->getTotalPrice(), 2));
+            $basketItem->setAmountGross(round($lineItem->getTotalPrice(), $currencyPrecision));
             $basketItem->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
 
             $heidelBasket->addBasketItem($basketItem);
