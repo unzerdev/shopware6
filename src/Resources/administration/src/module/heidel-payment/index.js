@@ -3,6 +3,8 @@ import { Module } from 'src/core/shopware';
 import './component/heidel-payment-actions';
 import './component/heidel-payment-detail';
 import './component/heidel-payment-history';
+import './component/heidel-payment-metadata';
+import './component/heidel-payment-basket';
 import './extension/sw-order';
 import './page/heidel-payment-tab';
 
