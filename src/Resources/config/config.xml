@@ -19,7 +19,7 @@
             <name>testMode</name>
             <label>Test mode</label>
             <label lang="de-DE">Testmodus</label>
-            <helpText lang="de-DE">Aktivieren, um Testdaten zu Zahlungsmitteln in der Storefront ausgegeben.</helpText>
+            <helpText lang="de-DE">Aktivieren, um Testdaten zu Zahlungsmitteln in der Storefront auszugeben.</helpText>
             <helpText>Activate to display test data for payment devices in the storefront.</helpText>
         </input-field>
     </card>
