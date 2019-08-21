@@ -15,6 +15,13 @@
             <label>Private key</label>
             <label lang="de-DE">Private key</label>
         </input-field>
+        <input-field type="bool">
+            <name>testMode</name>
+            <label>Test mode</label>
+            <label lang="de-DE">Testmodus</label>
+            <helpText lang="de-DE">Aktivieren, um Testdaten zu Zahlungsmitteln in der Storefront auszugeben.</helpText>
+            <helpText>Activate to display test data for payment devices in the storefront.</helpText>
+        </input-field>
     </card>
 
     <card>
