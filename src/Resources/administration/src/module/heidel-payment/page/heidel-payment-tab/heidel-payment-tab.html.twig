@@ -17,6 +17,20 @@
                         </heidel-payment-history>
                     {% endblock %}
 
+                    {% block heidel_payment_payment_details_content_payment_basket %}
+                        <heidel-payment-basket
+                            :paymentResource="paymentResource"
+                            @reload="reloadPaymentDetails">
+                        </heidel-payment-basket>
+                    {% endblock %}
+
+                    {% block heidel_payment_payment_details_content_payment_metadata %}
+                        <heidel-payment-metadata
+                            :paymentResource="paymentResource"
+                            @reload="reloadPaymentDetails">
+                        </heidel-payment-metadata>
+                    {% endblock %}
+
                     {% block heidel_payment_payment_details_content_inner %}{% endblock %}
                 </template>
             {% endblock %}

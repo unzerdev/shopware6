@@ -5,6 +5,10 @@
             "hasSavedCards": "{{ page.extensions.heidelpay.creditCards|length > 0 }}"
          }'>
 
+        {% if  shopware.config.HeidelPayment.config.testMode %}
+            {% sw_include '@Storefront/component/heidelpay/frames/testdata/credit-card.html.twig' %}
+        {% endif %}
+
         {% if page.extensions.heidelpay.displayCreditCardSelection and page.extensions.heidelpay.creditCards|length > 0 %}
             <div class="heidelpay-saved-cards-wrapper">
                 {% block heidelpay_frame_credit_card_saved_device %}

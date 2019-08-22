@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice;
 
+use HeidelPayment\Components\AddressHashGenerator\AddressHashGeneratorInterface;
 use HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
@@ -18,19 +20,26 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
     /** @var EntityRepositoryInterface */
     private $entityRepository;
 
-    public function __construct(EntityRepositoryInterface $entityRepository)
+    /** @var AddressHashGeneratorInterface */
+    private $addressHashService;
+
+    public function __construct(EntityRepositoryInterface $entityRepository, AddressHashGeneratorInterface $addressHashGenerator)
     {
-        $this->entityRepository = $entityRepository;
+        $this->entityRepository   = $entityRepository;
+        $this->addressHashService = $addressHashGenerator;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getCollectionByCustomerId(string $customerId, Context $context): EntitySearchResult
+    public function getCollectionByCustomer(CustomerEntity $customer, Context $context): EntitySearchResult
     {
+        $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
+
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter('heidelpay_payment_device.customerId', $customerId)
+            new EqualsFilter('heidelpay_payment_device.customerId', $customer->getId()),
+            new EqualsFilter('heidelpay_payment_device.addressHash', $addressHash)
         );
 
         return $this->entityRepository->search($criteria, $context);
@@ -40,18 +49,21 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
      * {@inheritdoc}
      */
     public function create(
-        string $customerId,
+        CustomerEntity $customer,
         string $deviceType,
         string $typeId,
         array $data,
         Context $context
     ): EntityWrittenContainerEvent {
+        $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
+
         $createData = [
-            'id'         => Uuid::randomHex(),
-            'deviceType' => $deviceType,
-            'typeId'     => $typeId,
-            'data'       => $data,
-            'customerId' => $customerId,
+            'id'          => Uuid::randomHex(),
+            'deviceType'  => $deviceType,
+            'typeId'      => $typeId,
+            'data'        => $data,
+            'customerId'  => $customer->getId(),
+            'addressHash' => $addressHash,
         ];
 
         return $this->entityRepository->create([

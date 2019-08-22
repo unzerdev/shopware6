@@ -25,5 +25,7 @@
         <service id="HeidelPayment\Components\ClientFactory\ClientFactory">
             <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader" />
         </service>
+
+        <service id="HeidelPayment\Components\AddressHashGenerator\AddressHashGenerator"/>
     </services>
 </container>

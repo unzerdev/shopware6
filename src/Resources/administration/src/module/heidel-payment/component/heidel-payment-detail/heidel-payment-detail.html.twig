@@ -6,7 +6,7 @@
                     <sw-container>
                         <sw-description-list>
                             <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountTotal') }}</dt>
-                            <dd>{{ paymentResource.basket.amountTotal | currency(paymentResource.currency) }}</dd>
+                            <dd>{{ paymentResource.basket.amountTotalGross | currency(paymentResource.currency) }}</dd>
 
                             <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountTotalVat') }}</dt>
                             <dd>{{ paymentResource.basket.amountTotalVat | currency(paymentResource.currency) }}</dd>

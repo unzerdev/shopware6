@@ -13,6 +13,7 @@ use HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDevi
 use HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\Card;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
@@ -72,11 +73,8 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Can not process payment without a valid payment resource.');
         }
 
-        $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
-        $pluginConfig   = $this->configService->read($salesChannelId);
-
-        $bookingMode         = $pluginConfig->get('bookingModeCreditCard', BookingMode::CHARGE);
-        $registerCreditCards = $pluginConfig->get('registerCreditCard');
+        $bookingMode         = $this->pluginConfig->get('bookingModeCreditCard', BookingMode::CHARGE);
+        $registerCreditCards = $this->pluginConfig->get('registerCreditCard');
 
         try {
             // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
@@ -108,7 +106,7 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
             }
 
             if ($registerCreditCards && $salesChannelContext->getCustomer() !== null) {
-                $this->saveCreditCard($salesChannelContext->getCustomer()->getId(), $salesChannelContext->getContext());
+                $this->saveCreditCard($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
             }
 
             $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());
@@ -123,14 +121,14 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
         }
     }
 
-    private function saveCreditCard(string $customerId, Context $context): void
+    private function saveCreditCard(CustomerEntity $customer, Context $context): void
     {
         if ($this->deviceRepository->exists($this->paymentType->getId(), $context)) {
             return;
         }
 
         $this->deviceRepository->create(
-            $customerId,
+            $customer,
             HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD,
             $this->paymentType->getId(),
             $this->paymentType->expose(),

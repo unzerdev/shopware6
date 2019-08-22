@@ -14,7 +14,13 @@
                 "new": "Eine andere Kreditkarte verwenden",
                 "number": "Kreditkartennummer",
                 "cvc": "CVC:",
-                "expiry": "Ablaufdatum:"
+                "expiry": "Ablaufdatum:",
+                "testData": {
+                    "brand": "Marke",
+                    "number": "Nummer",
+                    "expiry": "Ablaufdatum",
+                    "cvc": "CVC"
+                }
             }
         },
         "accountPayment": {

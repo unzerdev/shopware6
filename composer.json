@@ -28,10 +28,11 @@
         "phpstan/phpstan": "^0.11",
         "phpstan/phpstan-phpunit": "^0.11",
         "phpunit/phpunit": "^8.1",
-        "shopware/core": "v6.0.0+ea1"
+        "shopware/platform": "v6.0.0+ea1"
     },
     "extra": {
         "shopware-plugin-class": "HeidelPayment\\HeidelPayment",
+        "plugin-icon": "src/Resources/public/plugin.png",
         "copyright": "(c) heidelpay GmbH",
         "label": {
             "de-DE": "Heidelpay",

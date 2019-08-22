@@ -47,7 +47,7 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
         $extension = new PaymentMethodPageExtension();
         $extension->setDeviceRemoved((bool) $event->getRequest()->get('deviceRemoved'));
 
-        $devices = $this->deviceRepository->getCollectionByCustomerId($salesChannelContext->getCustomer()->getId(), $salesChannelContext->getContext());
+        $devices = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
 
         if ($registerCreditCards) {
             $creditCards = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD)->getElements();
