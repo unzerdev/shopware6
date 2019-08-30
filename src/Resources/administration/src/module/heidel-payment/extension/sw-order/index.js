@@ -1,6 +1,7 @@
-import { Component } from 'src/core/shopware';
+const { Component } = Shopware;
+const { Criteria } = Shopware.Data;
+
 import template from './sw-order.html.twig';
-import Criteria from 'src/core/data-new/criteria.data';
 
 Component.override('sw-order-detail', {
     template,
