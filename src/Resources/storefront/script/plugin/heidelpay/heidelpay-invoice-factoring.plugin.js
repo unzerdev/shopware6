@@ -2,7 +2,7 @@ import Plugin from 'src/script/plugin-system/plugin.class';
 
 export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
     static options = {
-        heidelpayCardId: 'heidelpay-card'
+        heidelpayCardId: 'heidelpay-card',
     };
 
     /**
@@ -35,7 +35,7 @@ export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
 
     _registerEvents() {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
-            scope: this
+            scope: this,
         });
     }
 
@@ -69,7 +69,7 @@ export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
      * @private
      */
     _hideHeidelpayCard() {
-        let heidelpayCard = document.getElementById(this.options.heidelpayCardId);
+        const heidelpayCard = document.getElementById(this.options.heidelpayCardId);
 
         heidelpayCard.hidden = true;
     }

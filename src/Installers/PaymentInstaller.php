@@ -7,6 +7,7 @@ namespace HeidelPayment\Installers;
 use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelEpsPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelIdealPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoicePaymentHandler;
@@ -30,6 +31,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_EPS                = '17830aa7e6a00b99eab27f0e45ac5e0d';
     public const PAYMENT_ID_PAYPAL             = '409fe641d6d62a4416edd6307d758791';
     public const PAYMENT_ID_FLEXIPAY           = '4ebb99451f36ba01f13d5871a30bce2c';
+    public const PAYMENT_ID_IDEAL              = '614ad722a03ee96baa2446793143215b';
 
     public const PAYMENT_METHODS = [
         [
@@ -65,7 +67,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/invoice.html.twig',
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/invoice.html.twig',
             ],
         ],
         [
@@ -165,6 +167,24 @@ class PaymentInstaller implements InstallerInterface
                     'name'        => 'PayPal (heidelpay)',
                     'description' => 'PayPal payments with heidelpay',
                 ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_IDEAL,
+            'handlerIdentifier' => HeidelIdealPaymentHandler::class,
+            'name'              => 'iDEAL (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'iDEAL (heidelpay)',
+                    'description' => 'iDEAL Zahlungen mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'iDEAL (heidelpay)',
+                    'description' => 'iDEAL payments with heidelpay',
+                ],
+            ],
+            'customFields' => [
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/ideal.html.twig',
             ],
         ],
     ];

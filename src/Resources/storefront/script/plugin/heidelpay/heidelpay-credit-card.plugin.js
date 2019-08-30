@@ -11,7 +11,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         radioButtonSelector: '*[name="savedCreditCard"]',
         radioButtonNewId: 'card-new',
         selectedRadioButtonSelector: '*[name="savedCreditCard"]:checked',
-        hasSavedCards: false
+        hasSavedCards: false,
     };
 
     /**
@@ -40,7 +40,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         this._registerEvents();
 
         if (this.options.hasSavedCards) {
-            let heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+            const heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
 
             heidelpayElementWrapper.hidden = true;
         } else {
@@ -53,17 +53,17 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
 
         this.creditCard.create('number', {
             containerId: this.options.numberFieldId,
-            onlyIframe: true
+            onlyIframe: true,
         });
 
         this.creditCard.create('expiry', {
             containerId: this.options.expiryFieldId,
-            onlyIframe: true
+            onlyIframe: true,
         });
 
         this.creditCard.create('cvc', {
             containerId: this.options.cvcFieldId,
-            onlyIframe: true
+            onlyIframe: true,
         });
 
         this.creditCard.addEventListener('change', this._onChangeForm.bind(this));
@@ -71,7 +71,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
 
     _registerEvents() {
         if (this.options.hasSavedCards) {
-            let radioButtons = DomAccess.querySelectorAll(this.el, this.options.radioButtonSelector);
+            const radioButtons = DomAccess.querySelectorAll(this.el, this.options.radioButtonSelector);
 
             for (let $i = 0; $i < radioButtons.length; $i++) {
                 radioButtons[$i].addEventListener('change',  (event) => this._onRadioButtonChange(event));
@@ -79,12 +79,12 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         }
 
         this._heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
-            scope: this
+            scope: this,
         });
     }
 
     _onRadioButtonChange(event) {
-        let targetElement = event.target,
+        const targetElement = event.target,
             heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
 
         heidelpayElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewId;
@@ -110,8 +110,8 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
             return;
         }
 
-        let inputElement = this._getInputElementByEvent(event);
-        let errorElement = this._getErrorElementByEvent(event);
+        const inputElement = this._getInputElementByEvent(event);
+        const errorElement = this._getErrorElementByEvent(event);
 
         if (event.success === false) {
             inputElement.classList.add(this.options.invalidClass);
@@ -122,7 +122,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         }
 
         if (event.error) {
-            let errorMessageElement = errorElement.getElementsByClassName('heidelpay-error-message')[0];
+            const errorMessageElement = errorElement.getElementsByClassName('heidelpay-error-message')[0];
             errorMessageElement.innerText = event.error;
         }
 
@@ -167,7 +167,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
      * @private
      */
     _getInputElementByEvent(event) {
-        let selector = `#heidelpay-credit-card-${event.type}`;
+        const selector = `#heidelpay-credit-card-${event.type}`;
 
         return DomAccess.querySelector(this.el, selector);
     }
@@ -179,7 +179,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
      * @private
      */
     _getErrorElementByEvent(event) {
-        let selector = `#heidelpay-credit-card-${event.type}-error`;
+        const selector = `#heidelpay-credit-card-${event.type}-error`;
 
         return DomAccess.querySelector(this.el, selector);
     }
