@@ -39,25 +39,7 @@ export default class HeidelpayIdealPlugin extends Plugin {
         this.heidelpayPlugin.setSubmitButtonActive(false);
 
         this.ideal.createResource()
-            .then((resource) => this._submitPayment(resource))
-            .catch((error) => this._handleError(error));
-    }
-
-
-    /**
-     * @param {Object} resource
-     * @private
-     */
-    _submitPayment(resource) {
-        this.heidelpayPlugin.submitResource(resource);
-    }
-
-    /**
-     * @param {Object} error
-     *
-     * @private
-     */
-    _handleError(error) {
-        this.heidelpayPlugin.showError(error);
+            .then((resource) => this.heidelpayPlugin.submitResource(resource))
+            .catch((error) => this.heidelpayPlugin.showError(error));
     }
 }

@@ -33,7 +33,7 @@ class HeidelSofortPaymentHandler extends AbstractHeidelpayHandler
             $returnUrl = $this->getReturnUrl();
 
             $result = $this->paymentType->charge(
-                $this->heidelpayBasket->getAmountTotal(),
+                $this->heidelpayBasket->getAmountTotalGross(),
                 $this->heidelpayBasket->getCurrencyCode(),
                 $returnUrl,
                 $this->heidelpayCustomer,
