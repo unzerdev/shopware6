@@ -9,7 +9,7 @@ export default class HeidelpayBasePlugin extends Plugin {
         resourceIdElementId: 'heidelpayResourceId',
         confirmFormId: 'confirmOrderForm',
         errorWrapperClass: 'heidelpay-error-wrapper',
-        errorContentSelector: '.heidelpay-error-wrapper .alert-content'
+        errorContentSelector: '.heidelpay-error-wrapper .alert-content',
     };
 
     /**
@@ -21,7 +21,7 @@ export default class HeidelpayBasePlugin extends Plugin {
 
     init() {
         this.heidelpayInstance = new window.heidelpay(this.options.publicKey, {
-            locale: this.options.locale
+            locale: this.options.locale,
         });
 
         this.submitButton = document.getElementById(this.options.submitButtonId);
@@ -47,14 +47,14 @@ export default class HeidelpayBasePlugin extends Plugin {
      * @param {Object} resource
      */
     submitResource(resource) {
-        let resourceIdElement = document.getElementById(this.options.resourceIdElementId);
+        const resourceIdElement = document.getElementById(this.options.resourceIdElementId);
         resourceIdElement.value = resource.id;
 
         this.confirmForm.submit();
     }
 
     submitTypeId(typeId) {
-        let resourceIdElement = document.getElementById(this.options.resourceIdElementId);
+        const resourceIdElement = document.getElementById(this.options.resourceIdElementId);
         resourceIdElement.value = typeId;
 
         this.confirmForm.submit();
@@ -64,7 +64,7 @@ export default class HeidelpayBasePlugin extends Plugin {
      * @param { Object } error
      */
     showError(error) {
-        let errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
+        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
             errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
 
         errorContent.innerText = error.message;

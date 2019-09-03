@@ -1,12 +1,12 @@
 import Plugin from 'src/script/plugin-system/plugin.class';
 
-export default class HeidelpayEpsPlugin extends Plugin {
+export default class HeidelpayIdealPlugin extends Plugin {
     /**
      * @type {Object}
      *
      * @public
      */
-    static eps;
+    static ideal;
 
     /**
      * @type {HeidelpayBasePlugin}
@@ -17,15 +17,15 @@ export default class HeidelpayEpsPlugin extends Plugin {
 
     init() {
         this.heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
-        this.eps = this.heidelpayPlugin.heidelpayInstance.EPS();
+        this.ideal = this.heidelpayPlugin.heidelpayInstance.Ideal();
 
         this._createForm();
         this._registerEvents();
     }
 
     _createForm() {
-        this.eps.create('eps', {
-            containerId: 'heidelpay-eps-container',
+        this.ideal.create('ideal', {
+            containerId: 'heidelpay-ideal-container',
         });
     }
 
@@ -38,26 +38,8 @@ export default class HeidelpayEpsPlugin extends Plugin {
     _onCreateResource() {
         this.heidelpayPlugin.setSubmitButtonActive(false);
 
-        this.eps.createResource()
-            .then((resource) => this._submitPayment(resource))
-            .catch((error) => this._handleError(error));
-    }
-
-
-    /**
-     * @param {Object} resource
-     * @private
-     */
-    _submitPayment(resource) {
-        this.heidelpayPlugin.submitResource(resource);
-    }
-
-    /**
-     * @param {Object} error
-     *
-     * @private
-     */
-    _handleError(error) {
-        this.heidelpayPlugin.showError(error);
+        this.ideal.createResource()
+            .then((resource) => this.heidelpayPlugin.submitResource(resource))
+            .catch((error) => this.heidelpayPlugin.showError(error));
     }
 }

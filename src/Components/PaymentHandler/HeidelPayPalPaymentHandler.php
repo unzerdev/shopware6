@@ -39,7 +39,7 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
 
             if ($bookingMode === BookingMode::CHARGE) {
                 $paymentResult = $this->paymentType->charge(
-                    $this->heidelpayBasket->getAmountTotal(),
+                    $this->heidelpayBasket->getAmountTotalGross(),
                     $this->heidelpayBasket->getCurrencyCode(),
                     $returnUrl,
                     $this->heidelpayCustomer,

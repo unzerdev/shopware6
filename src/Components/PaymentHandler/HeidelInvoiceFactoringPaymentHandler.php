@@ -33,7 +33,7 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
             $returnUrl = $this->getReturnUrl();
 
             $paymentResult = $this->paymentType->charge(
-                $this->heidelpayBasket->getAmountTotal(),
+                $this->heidelpayBasket->getAmountTotalGross(),
                 $this->heidelpayBasket->getCurrencyCode(),
                 $returnUrl,
                 $this->heidelpayCustomer,
