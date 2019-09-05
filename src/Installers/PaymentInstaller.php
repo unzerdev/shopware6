@@ -212,15 +212,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED,
             'handlerIdentifier' => HeidelDirectDebitGuaranteedPaymentHandler::class,
-            'name'              => 'SEPA direct debit (guaranteed, heidelpay)',
+            'name'              => 'SEPA direct debit guaranteed (heidelpay)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA Lastschrift (gesichert, heidelpay)',
-                    'description' => 'SEPA Lastschrift Zahlungen mit Heidelpay',
+                    'name'        => 'SEPA Lastschrift gesichert (heidelpay)',
+                    'description' => 'Gesicherte SEPA Lastschrift Zahlungen mit Heidelpay',
                 ],
                 'en-GB' => [
-                    'name'        => 'SEPA direct debit (guaranteed, heidelpay)',
-                    'description' => 'SEPA direct debit payments with Heidelpay',
+                    'name'        => 'SEPA direct debit guaranteed (heidelpay)',
+                    'description' => 'Guaranteed SEPA direct debit payments with Heidelpay',
                 ],
             ],
             'customFields' => [
