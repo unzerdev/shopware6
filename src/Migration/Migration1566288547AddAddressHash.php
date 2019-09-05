@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HeidelPayment\Migration;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
 class Migration1566288547AddAddressHash extends MigrationStep
@@ -21,7 +22,11 @@ class Migration1566288547AddAddressHash extends MigrationStep
             ADD COLUMN `address_hash` VARCHAR(32) NOT NULL AFTER `data`;
 SQL;
 
-        $connection->exec($sql);
+        try {
+            $connection->exec($sql);
+        } catch (DBALException $ex) {
+            //The column may exist already
+        }
     }
 
     public function updateDestructive(Connection $connection): void
