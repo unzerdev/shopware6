@@ -43,8 +43,7 @@ class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
                 $this->heidelpayCustomer,
                 $transaction->getOrderTransaction()->getId(),
                 $this->heidelpayMetadata,
-                $this->heidelpayBasket,
-                true
+                $this->heidelpayBasket
             );
 
             $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());

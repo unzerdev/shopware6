@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace HeidelPayment\Components\PaymentHandler;
 
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Resources\PaymentTypes\SepaDirectDebit;
+use heidelpayPHP\Resources\PaymentTypes\SepaDirectDebitGuaranteed;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
+class HeidelDirectDebitGuaranteedPaymentHandler extends AbstractHeidelpayHandler
 {
-    /** @var SepaDirectDebit */
+    /** @var SepaDirectDebitGuaranteed */
     protected $paymentType;
 
     /**
@@ -43,8 +43,7 @@ class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
                 $this->heidelpayCustomer,
                 $transaction->getOrderTransaction()->getId(),
                 $this->heidelpayMetadata,
-                $this->heidelpayBasket,
-                true
+                $this->heidelpayBasket
             );
 
             $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());

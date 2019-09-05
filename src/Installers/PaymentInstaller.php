@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HeidelPayment\Installers;
 
 use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelDirectDebitGuaranteedPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelDirectDebitPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelEpsPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
@@ -34,6 +35,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_FLEXIPAY           = '4ebb99451f36ba01f13d5871a30bce2c';
     public const PAYMENT_ID_IDEAL              = '614ad722a03ee96baa2446793143215b';
     public const PAYMENT_ID_DIRECT_DEBIT       = '713c7a332b432dcd4092701eda522a7e';
+    public const PAYMENT_ID_DIRECT_DEBIT_GUARANTEED = '5123af5ce94a4a286641973e8de7eb60';
 
     public const PAYMENT_METHODS = [
         [
@@ -205,6 +207,24 @@ class PaymentInstaller implements InstallerInterface
             ],
             'customFields' => [
                 'heidelpay_frame' => '@Storefront/component/heidelpay/frames/sepa_direct_debit.html.twig',
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED,
+            'handlerIdentifier' => HeidelDirectDebitGuaranteedPaymentHandler::class,
+            'name'              => 'SEPA direct debit (guaranteed, heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'SEPA Lastschrift (gesichert, heidelpay)',
+                    'description' => 'SEPA Lastschrift Zahlungen mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'SEPA direct debit (guaranteed, heidelpay)',
+                    'description' => 'SEPA direct debit payments with Heidelpay',
+                ],
+            ],
+            'customFields' => [
+                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/sepa_direct_debit_guaranteed.html.twig',
             ],
         ],
     ];

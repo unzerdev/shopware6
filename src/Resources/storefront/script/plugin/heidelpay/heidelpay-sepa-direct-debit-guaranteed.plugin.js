@@ -1,6 +1,6 @@
 import Plugin from 'src/script/plugin-system/plugin.class';
 
-export default class HeidelpaySepaDirectDebitPlugin extends Plugin {
+export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
     static options = {
         acceptMandateId: 'acceptSepaMandate',
         mandateNotAcceptedError: '',
@@ -22,14 +22,14 @@ export default class HeidelpaySepaDirectDebitPlugin extends Plugin {
 
     init() {
         this.heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
-        this.sepa = this.heidelpayPlugin.heidelpayInstance.SepaDirectDebit();
+        this.sepa = this.heidelpayPlugin.heidelpayInstance.SepaDirectDebitGuaranteed();
 
         this._createForm();
         this._registerEvents();
     }
 
     _createForm() {
-        this.sepa.create('sepa-direct-debit', {
+        this.sepa.create('sepa-direct-debit-guaranteed', {
             containerId: 'heidelpay-sepa-container',
         });
     }
