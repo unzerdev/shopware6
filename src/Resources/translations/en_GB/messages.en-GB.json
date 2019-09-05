@@ -21,6 +21,18 @@
                     "expiry": "Expiry date",
                     "cvc": "CVC"
                 }
+            },
+            "sepa": {
+                "testData": {
+                    "iban": "IBAN",
+                    "country": "Country"
+                },
+                "mandate": {
+                    "title": "SEPA direct debit mandate",
+                    "content": "By signing this mandate form, you authorise %company% to send instructions to your bank to debit your account and your bank to debit your account in accordance with the instructions from %company%. Note: As part of your rights, you are entitled to a refund from your bank under the terms and conditions of your agreement with your bank. A refund must be claimed within 8 weeks starting from the date on which your account was debited. Your rights regarding this SEPA mandate are explained in a statement that you can obtain from your bank.",
+                    "accept": "Accept SEPA direct debit mandate",
+                    "error": "Please accept the SEPA direct debit mandate in order to continue."
+                }
             }
         },
         "accountPayment": {

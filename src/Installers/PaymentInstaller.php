@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HeidelPayment\Installers;
 
 use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelDirectDebitPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelEpsPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelIdealPaymentHandler;
@@ -32,6 +33,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_PAYPAL             = '409fe641d6d62a4416edd6307d758791';
     public const PAYMENT_ID_FLEXIPAY           = '4ebb99451f36ba01f13d5871a30bce2c';
     public const PAYMENT_ID_IDEAL              = '614ad722a03ee96baa2446793143215b';
+    public const PAYMENT_ID_DIRECT_DEBIT       = '713c7a332b432dcd4092701eda522a7e';
 
     public const PAYMENT_METHODS = [
         [
@@ -185,6 +187,24 @@ class PaymentInstaller implements InstallerInterface
             ],
             'customFields' => [
                 CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/ideal.html.twig',
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
+            'handlerIdentifier' => HeidelDirectDebitPaymentHandler::class,
+            'name'              => 'SEPA direct debit (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'SEPA Lastschrift (heidelpay)',
+                    'description' => 'SEPA Lastschrift Zahlungen mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'SEPA direct debit (heidelpay)',
+                    'description' => 'SEPA direct debit payments with Heidelpay',
+                ],
+            ],
+            'customFields' => [
+                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/sepa_direct_debit.html.twig',
             ],
         ],
     ];
