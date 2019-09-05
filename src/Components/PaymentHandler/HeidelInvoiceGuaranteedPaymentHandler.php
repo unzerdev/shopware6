@@ -92,8 +92,6 @@ class HeidelInvoiceGuaranteedPaymentHandler extends AbstractHeidelpayHandler
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
-            dump($apiException);
-            die();
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         }
     }
