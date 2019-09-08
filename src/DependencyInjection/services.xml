@@ -24,8 +24,18 @@
 
         <service id="HeidelPayment\Components\ClientFactory\ClientFactory">
             <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="HeidelPayment\Components\HeidelpayDebugHandler"/>
         </service>
 
         <service id="HeidelPayment\Components\AddressHashGenerator\AddressHashGenerator"/>
+
+        <service id="HeidelPayment\Components\HeidelpayDebugHandler">
+            <argument type="service" id="heidel_payment.logger"/>
+        </service>
+
+        <service id="heidel_payment.logger" class="Monolog\Logger">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+            <argument type="string">plugin_heidel_payment</argument>
+        </service>
     </services>
 </container>
