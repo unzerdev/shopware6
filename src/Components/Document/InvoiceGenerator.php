@@ -17,10 +17,11 @@ use Shopware\Core\Framework\Context;
 
 class InvoiceGenerator implements DocumentGeneratorInterface
 {
-    public const DECORATABLE_PAYMENT_METHOD_IDS = [
+    public const SUPPORTED_PAYMENT_METHODS = [
         PaymentInstaller::PAYMENT_ID_INVOICE_GUARANTEED,
         PaymentInstaller::PAYMENT_ID_INVOICE_FACTORING,
         PaymentInstaller::PAYMENT_ID_INVOICE,
+        PaymentInstaller::PAYMENT_ID_PRE_PAYMENT,
     ];
 
     /** @var DocumentGeneratorInterface */
@@ -62,7 +63,7 @@ class InvoiceGenerator implements DocumentGeneratorInterface
     ): string {
         $heidelPaymentId = null;
         foreach ($order->getTransactions() as $transaction) {
-            if (in_array($transaction->getPaymentMethodId(), self::DECORATABLE_PAYMENT_METHOD_IDS)) {
+            if (in_array($transaction->getPaymentMethodId(), self::SUPPORTED_PAYMENT_METHODS)) {
                 $heidelPaymentId = $transaction->getId();
 
                 break;

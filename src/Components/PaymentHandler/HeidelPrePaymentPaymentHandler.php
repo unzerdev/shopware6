@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace HeidelPayment\Components\PaymentHandler;
 
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Resources\PaymentTypes\EPS;
+use heidelpayPHP\Resources\PaymentTypes\Prepayment;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class HeidelEpsPaymentHandler extends AbstractHeidelpayHandler
+class HeidelPrePaymentPaymentHandler extends AbstractHeidelpayHandler
 {
-    /** @var EPS */
+    /** @var Prepayment */
     protected $paymentType;
 
     /**
@@ -26,6 +26,9 @@ class HeidelEpsPaymentHandler extends AbstractHeidelpayHandler
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
+
+        $this->paymentType = new Prepayment();
+        $this->paymentType->setParentResource($this->heidelpayClient);
 
         try {
             // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!

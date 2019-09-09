@@ -2,7 +2,7 @@
     "HeidelPayment": {
         "transferInformation": {
             "message": "Please transfer the amount %amount% to the following bank account:",
-            "title": "Invoice payment information",
+            "title": "Payment instructions",
             "bic": "BIC",
             "iban": "IBAN",
             "holder": "Holder",

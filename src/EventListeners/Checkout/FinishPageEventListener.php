@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace HeidelPayment\EventListeners\Checkout;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment\Components\Document\InvoiceGenerator;
 use HeidelPayment\Components\Struct\PageExtension\Checkout\FinishPageExtension;
 use HeidelPayment\Components\Struct\TransferInformation\TransferInformation;
-use HeidelPayment\Installers\PaymentInstaller;
 use heidelpayPHP\Resources\TransactionTypes\Charge;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -37,7 +37,7 @@ class FinishPageEventListener implements EventSubscriberInterface
         $paymentMethodId     = $salesChannelContext->getPaymentMethod()->getId();
 
         //Only invoice payments need to add further information to the finish page!
-        if (!$this->isInvoicePayment($paymentMethodId)) {
+        if (!in_array($paymentMethodId, InvoiceGenerator::SUPPORTED_PAYMENT_METHODS)) {
             return;
         }
 
@@ -73,15 +73,8 @@ class FinishPageEventListener implements EventSubscriberInterface
     {
         return $transactionCollection->filter(
             function (OrderTransactionEntity $orderTransaction) {
-                return $this->isInvoicePayment($orderTransaction->getPaymentMethodId());
+                return in_array($orderTransaction->getPaymentMethodId(), InvoiceGenerator::SUPPORTED_PAYMENT_METHODS);
             }
         );
-    }
-
-    private function isInvoicePayment(string $paymentMethodId): bool
-    {
-        return $paymentMethodId === PaymentInstaller::PAYMENT_ID_INVOICE ||
-               $paymentMethodId === PaymentInstaller::PAYMENT_ID_INVOICE_GUARANTEED ||
-               $paymentMethodId === PaymentInstaller::PAYMENT_ID_INVOICE_FACTORING;
     }
 }
