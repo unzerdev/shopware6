@@ -3,7 +3,7 @@ import Plugin from 'src/script/plugin-system/plugin.class';
 export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
     static options = {
         acceptMandateId: 'acceptSepaMandate',
-        mandateNotAcceptedError: '',
+        mandateNotAcceptedError: 'Please accept the SEPA direct debit mandate in order to continue.',
     };
 
     /**
