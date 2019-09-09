@@ -6,6 +6,7 @@ use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment\Components\Struct\TransferInformation\TransferInformation;
 use HeidelPayment\Installers\PaymentInstaller;
 use heidelpayPHP\Resources\Payment;
+use heidelpayPHP\Resources\TransactionTypes\Charge;
 use Shopware\Core\Checkout\Document\DocumentConfiguration;
 use Shopware\Core\Checkout\Document\DocumentConfigurationFactory;
 use Shopware\Core\Checkout\Document\DocumentGenerator\DocumentGeneratorInterface;
@@ -101,8 +102,9 @@ class InvoiceGenerator implements DocumentGeneratorInterface
         return $this->decoratedService->getFileName($config);
     }
 
-    private function getTransferInformation(Payment $payment): TransferInformation
+    private function getTransferInformation(Payment $payment): ?TransferInformation
     {
+        /** @var null|Charge $charge */
         $charge = $payment->getChargeByIndex(0);
 
         if ($charge === null) {
