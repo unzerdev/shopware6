@@ -3,7 +3,9 @@
 namespace HeidelPayment\Components\Document;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment\Components\Struct\TransferInformation\TransferInformation;
 use HeidelPayment\Installers\PaymentInstaller;
+use heidelpayPHP\Resources\Payment;
 use Shopware\Core\Checkout\Document\DocumentConfiguration;
 use Shopware\Core\Checkout\Document\DocumentConfigurationFactory;
 use Shopware\Core\Checkout\Document\DocumentGenerator\DocumentGeneratorInterface;
@@ -40,11 +42,17 @@ class InvoiceGenerator implements DocumentGeneratorInterface
         $this->clientFactory            = $clientFactory;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supports(): string
     {
         return $this->decoratedService->supports();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generate(
         OrderEntity $order,
         DocumentConfiguration $config,
@@ -55,6 +63,8 @@ class InvoiceGenerator implements DocumentGeneratorInterface
         foreach ($order->getTransactions() as $transaction) {
             if (in_array($transaction->getPaymentMethodId(), self::DECORATABLE_PAYMENT_METHOD_IDS)) {
                 $heidelPaymentId = $transaction->getId();
+
+                break;
             }
         }
 
@@ -62,17 +72,19 @@ class InvoiceGenerator implements DocumentGeneratorInterface
             return $this->decoratedService->generate($order, $config, $context, $templatePath);
         }
 
-        $this->clientFactory->createClient($order->getSalesChannelId())->fetchPaymentByOrderId();
+        $payment      = $this->clientFactory->createClient($order->getSalesChannelId())->fetchPaymentByOrderId($heidelPaymentId);
+        $transferInfo = $this->getTransferInformation($payment);
 
         $templatePath = $templatePath ?? CoreInvoiceGenerator::DEFAULT_TEMPLATE;
 
         return $this->documentTemplateRenderer->render(
             $templatePath,
             [
-                'order'   => $order,
-                'config'  => DocumentConfigurationFactory::mergeConfiguration($config, new DocumentConfiguration())->jsonSerialize(),
-                'rootDir' => $this->rootDir,
-                'context' => $context,
+                'order'                        => $order,
+                'config'                       => DocumentConfigurationFactory::mergeConfiguration($config, new DocumentConfiguration())->jsonSerialize(),
+                'rootDir'                      => $this->rootDir,
+                'context'                      => $context,
+                'heidelpayTransferInformation' => $transferInfo,
             ],
             $context,
             $order->getSalesChannelId(),
@@ -81,12 +93,22 @@ class InvoiceGenerator implements DocumentGeneratorInterface
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFileName(DocumentConfiguration $config): string
     {
         return $this->decoratedService->getFileName($config);
     }
 
-    private function getBankInfo()
+    private function getTransferInformation(Payment $payment): TransferInformation
     {
+        $charge = $payment->getChargeByIndex(0);
+
+        if ($charge === null) {
+            return null;
+        }
+
+        return (new TransferInformation())->fromCharge($charge);
     }
 }
