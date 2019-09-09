@@ -7,6 +7,7 @@
         <service id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
         <service id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
         <service id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
 
         <service id="HeidelPayment\Components\ArrayHydrator\PaymentArrayHydrator" />
     </services>
