@@ -27,6 +27,8 @@ class HeidelDirectDebitGuaranteedPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
+        $birthday = $dataBag->get('heidelpayBirthday');
+
         if ($dataBag->get('acceptSepaMandate') !== 'on') {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
         }
@@ -36,11 +38,14 @@ class HeidelDirectDebitGuaranteedPaymentHandler extends AbstractHeidelpayHandler
             // As soon as it's shorter, use $transaction->getReturnUrl() instead!
             $returnUrl = $this->getReturnUrl();
 
+            $this->heidelpayCustomer->setBirthDate($birthday);
+            $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($this->heidelpayCustomer);
+
             $paymentResult = $this->paymentType->charge(
                 $this->heidelpayBasket->getAmountTotalGross(),
                 $this->heidelpayBasket->getCurrencyCode(),
                 $returnUrl,
-                $this->heidelpayCustomer,
+                $heidelpayCustomer,
                 $transaction->getOrderTransaction()->getId(),
                 $this->heidelpayMetadata,
                 $this->heidelpayBasket

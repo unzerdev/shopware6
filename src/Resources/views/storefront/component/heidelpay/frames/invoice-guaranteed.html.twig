@@ -1,5 +1,21 @@
 {% block heidelpay_frame_invoice_guaranteed %}
     <div class="heidelpay-invoice-guaranteed-wrapper"
          data-heidelpay-invoice-guaranteed="true">
+
+        {% block heidelpay_frame_invoice_guaranteed_birthday %}
+            <div class="heidelpay-frame-row">
+                <label for="heidelpayBirthday">
+                    {{ "account.personalBirthdayLabel"|trans }}
+                </label>
+
+                <input type="date"
+                       id="heidelpayBirthday"
+                       name="heidelpayBirthday"
+                       class="form-control heidelpay-date-input"
+                       form="confirmOrderForm"
+                       {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+
+            </div>
+        {% endblock %}
     </div>
 {% endblock %}
