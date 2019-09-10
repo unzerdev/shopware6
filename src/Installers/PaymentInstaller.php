@@ -9,6 +9,7 @@ use HeidelPayment\Components\PaymentHandler\HeidelDirectDebitGuaranteedPaymentHa
 use HeidelPayment\Components\PaymentHandler\HeidelDirectDebitPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelEpsPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelGiropayPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelIdealPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
@@ -33,6 +34,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_EPS                     = '17830aa7e6a00b99eab27f0e45ac5e0d';
     public const PAYMENT_ID_PAYPAL                  = '409fe641d6d62a4416edd6307d758791';
     public const PAYMENT_ID_FLEXIPAY                = '4ebb99451f36ba01f13d5871a30bce2c';
+    public const PAYMENT_ID_GIROPAY                 = 'd4b90a17af62c1bb2f6c3b1fed339425';
     public const PAYMENT_ID_IDEAL                   = '614ad722a03ee96baa2446793143215b';
     public const PAYMENT_ID_DIRECT_DEBIT            = '713c7a332b432dcd4092701eda522a7e';
     public const PAYMENT_ID_DIRECT_DEBIT_GUARANTEED = '5123af5ce94a4a286641973e8de7eb60';
@@ -225,6 +227,21 @@ class PaymentInstaller implements InstallerInterface
             ],
             'customFields' => [
                 'heidelpay_frame' => '@Storefront/component/heidelpay/frames/sepa_direct_debit_guaranteed.html.twig',
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_GIROPAY,
+            'handlerIdentifier' => HeidelGiropayPaymentHandler::class,
+            'name'              => 'Giropay (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Giropay (heidelpay)',
+                    'description' => 'Giropay Zahlungen mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'Giropay (heidelpay)',
+                    'description' => 'Giropay payments with heidelpay',
+                ],
             ],
         ],
     ];
