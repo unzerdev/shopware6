@@ -19,14 +19,7 @@
                             <label for="card-{{ creditCard.id }}" class="custom-control-label payment-method-label">
                                 <div class="payment-method-description">
                                     <strong>{{ creditCard.data['number'] }}</strong>
-
-                                    {% if creditCard.data['brand'] is not empty %}
-                                        <img src="https://static.heidelpay.com/assets/images/brands/{{ creditCard.data['brand']|lower }}.svg" alt="{{ creditCard.data['brand'] }}">
-                                    {% endif %}
-
-                                    <p>
-                                        {{ creditCard.data['holder'] }} ({{ creditCard.data['expiryDate'] }})
-                                    </p>
+                                    <p>{{ creditCard.data['holder'] }} ({{ creditCard.data['expiryDate'] }})</p>
                                 </div>
                             </label>
                         </div>

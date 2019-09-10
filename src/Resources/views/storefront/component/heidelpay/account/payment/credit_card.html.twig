@@ -5,10 +5,6 @@
         {% block page_account_payment_main_heidelpay_device_title %}
             <div class="card-title">
                 {{ "HeidelPayment.accountPayment.creditCard" | trans  }}
-
-                {% if device.data['brand'] is not empty %}
-                    <img src="https://static.heidelpay.com/assets/images/brands/{{ device.data['brand']|lower }}.svg" alt="{{ device.data['brand'] }}">
-                {% endif %}
             </div>
         {% endblock %}
 
