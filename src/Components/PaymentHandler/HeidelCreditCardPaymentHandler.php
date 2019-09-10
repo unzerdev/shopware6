@@ -131,7 +131,7 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
             $customer,
             HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD,
             $this->paymentType->getId(),
-            $this->paymentType->expose(),
+            array_merge(['brand' => $this->paymentType->getBrand()], $this->paymentType->expose()),
             $context
         );
     }
