@@ -15,6 +15,7 @@ use HeidelPayment\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler
 use HeidelPayment\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoicePaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelPayPalPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelPrzelewyHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelPrePaymentPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelSofortPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -39,6 +40,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_IDEAL                   = '614ad722a03ee96baa2446793143215b';
     public const PAYMENT_ID_DIRECT_DEBIT            = '713c7a332b432dcd4092701eda522a7e';
     public const PAYMENT_ID_DIRECT_DEBIT_GUARANTEED = '5123af5ce94a4a286641973e8de7eb60';
+    public const PAYMENT_ID_PRZELEWY24              = 'cd6f59d572e6c90dff77a48ce16b44db';
     public const PAYMENT_ID_PRE_PAYMENT             = '085b64d0028a8bd447294e03c4eb411a';
 
     public const PAYMENT_METHODS = [
@@ -258,6 +260,21 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name'        => 'Prepayment (heidelpay)',
                     'description' => 'Prepayment with heidelpay',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_PRZELEWY24,
+            'handlerIdentifier' => HeidelPrzelewyHandler::class,
+            'name'              => 'Przelewy24 (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Przelewy24 (heidelpay)',
+                    'description' => 'Przelewy24 Zahlungen mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'Przelewy24 (heidelpay)',
+                    'description' => 'Przelewy24 payments with heidelpay',
                 ],
             ],
         ],

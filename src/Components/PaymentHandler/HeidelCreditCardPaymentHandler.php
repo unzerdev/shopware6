@@ -94,7 +94,7 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
                 );
             } else {
                 $paymentResult = $this->paymentType->authorize(
-                    $this->heidelpayBasket->getAmountTotal(),
+                    $this->heidelpayBasket->getAmountTotalGross(),
                     $this->heidelpayBasket->getCurrencyCode(),
                     $returnUrl,
                     $this->heidelpayCustomer,
