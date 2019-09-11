@@ -38,9 +38,9 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         } elseif ($payment->isCanceled()) {
             $this->orderTransactionStateHandler->cancel($transactionId, $context);
         } elseif ($payment->isChargeBack()) {
-            $this->orderTransactionStateHandler->refundPartially($transactionId, $context);
+            $this->orderTransactionStateHandler->payPartially($transactionId, $context);
         } else {
-            $this->orderTransactionStateHandler->remind($transactionId, $context);
+            $this->orderTransactionStateHandler->open($transactionId, $context);
         }
     }
 }
