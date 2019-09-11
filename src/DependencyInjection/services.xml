@@ -11,6 +11,7 @@
         <import resource="webhook_handlers.xml" />
         <import resource="entities.xml" />
         <import resource="event_listeners.xml" />
+        <import resource="decorators.xml" />
     </imports>
 
     <services>
