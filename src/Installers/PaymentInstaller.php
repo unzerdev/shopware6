@@ -15,8 +15,8 @@ use HeidelPayment\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler
 use HeidelPayment\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelInvoicePaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelPayPalPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelPrzelewyHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelPrePaymentPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelPrzelewyHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelSofortPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
