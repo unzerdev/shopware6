@@ -10,6 +10,7 @@ export default class HeidelpayBasePlugin extends Plugin {
         confirmFormId: 'confirmOrderForm',
         errorWrapperClass: 'heidelpay-error-wrapper',
         errorContentSelector: '.heidelpay-error-wrapper .alert-content',
+        errorShouldNotBeEmpty: '%field% should not be empty',
     };
 
     /**
@@ -88,7 +89,41 @@ export default class HeidelpayBasePlugin extends Plugin {
     _onSubmitButtonClick(event) {
         event.preventDefault();
 
+        if (!this._validateForm()) {
+            return;
+        }
+
         this.setSubmitButtonActive(false);
         this.$emitter.publish('heidelpayBase_createResource');
+    }
+
+    /**
+     * @return {boolean}
+     * @private
+     */
+    _validateForm() {
+        const form = document.forms[this.options.confirmFormId].elements;
+
+        for (let i = 0; i < form.length; i++) {
+            const element = form[i];
+
+            if (element.required && element.value === '') {
+                element.classList.add('is-invalid');
+
+                if (element.labels.length === 0) {
+                    element.scrollIntoView({ block: 'end', behavior: 'smooth' });
+
+                    return false;
+                }
+
+                this.showError({
+                    message: this.options.errorShouldNotBeEmpty.replace(/%field%/, element.labels[0].innerText),
+                });
+
+                return false;
+            }
+        }
+
+        return true;
     }
 }

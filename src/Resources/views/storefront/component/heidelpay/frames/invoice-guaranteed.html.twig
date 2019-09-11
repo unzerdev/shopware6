@@ -4,7 +4,7 @@
 
         {% block heidelpay_frame_invoice_guaranteed_birthday %}
             <div class="heidelpay-frame-row">
-                <label for="heidelpayBirthday">
+                <label for="heidelpayBirthday" class="heidelpay-label">
                     {{ "account.personalBirthdayLabel"|trans }}
                 </label>
 
@@ -13,6 +13,7 @@
                        name="heidelpayBirthday"
                        class="form-control heidelpay-date-input"
                        form="confirmOrderForm"
+                       required="required"
                        {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
 
             </div>
