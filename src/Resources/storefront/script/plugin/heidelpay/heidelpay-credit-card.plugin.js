@@ -4,14 +4,17 @@ import DomAccess from 'src/script/helper/dom-access.helper';
 export default class HeidelpayCreditCardPlugin extends Plugin {
     static options = {
         numberFieldId: 'heidelpay-credit-card-number',
+        numberFieldInputId: 'heidelpay-credit-card-number-input',
         expiryFieldId: 'heidelpay-credit-card-expiry',
         cvcFieldId: 'heidelpay-credit-card-cvc',
+        iconFieldId: 'heidelpay-credit-card-icon',
         invalidClass: 'is-invalid',
         elementWrapperSelector: '.heidelpay-credit-card-wrapper-elements',
         radioButtonSelector: '*[name="savedCreditCard"]',
         radioButtonNewId: 'card-new',
         selectedRadioButtonSelector: '*[name="savedCreditCard"]:checked',
         hasSavedCards: false,
+        placeholderBrandImageUrl: 'https://static.heidelpay.com/assets/images/common/group-5.svg',
     };
 
     /**
@@ -52,7 +55,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         this.creditCard = this._heidelpayPlugin.heidelpayInstance.Card();
 
         this.creditCard.create('number', {
-            containerId: this.options.numberFieldId,
+            containerId: this.options.numberFieldInputId,
             onlyIframe: true,
         });
 
@@ -106,6 +109,18 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
      * @private
      */
     _onChangeForm(event) {
+        if (event.cardType) {
+            let imageUrl = this.options.placeholderBrandImageUrl;
+
+            if (event.cardType.type !== 'unknown') {
+                imageUrl = this._getBrandImageUrl(event.cardType.type);
+            }
+
+            document.getElementById(this.options.iconFieldId).src = imageUrl;
+
+            return;
+        }
+
         if (!event.type || this.submitting) {
             return;
         }
@@ -199,5 +214,14 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
      */
     _handleError(error) {
         this._heidelpayPlugin.showError(error);
+    }
+
+    /**
+     *
+     * @param {String} brand
+     * @private
+     */
+    _getBrandImageUrl(brand) {
+        return `https://static.heidelpay.com/assets/images/brands/${brand}.svg`;
     }
 }

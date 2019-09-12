@@ -41,7 +41,10 @@
             {% block heidelpay_frame_credit_card_number %}
                 <div class="heidelpay-frame-row">
                     <label for="heidelpay-credit-card-number">{{ "HeidelPayment.frame.creditCard.number" | trans  }}</label>
-                    <div id="heidelpay-credit-card-number" class="heidelpay-text-input form-control"></div>
+                    <div id="heidelpay-credit-card-number" class="heidelpay-text-input form-control">
+                        <img id="heidelpay-credit-card-icon" src="https://static.heidelpay.com/assets/images/common/group-5.svg" alt=""/>
+                        <div id="heidelpay-credit-card-number-input"></div>
+                    </div>
                     <div id="heidelpay-credit-card-number-error" class="heidelpay-error" hidden>
                         <div class="heidelpay-error-message">
                         </div>
