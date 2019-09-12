@@ -63,12 +63,17 @@ export default class HeidelpayBasePlugin extends Plugin {
 
     /**
      * @param { Object } error
+     * @param { Boolean } append
      */
-    showError(error) {
+    showError(error, append = false) {
         const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
             errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
 
-        errorContent.innerText = error.message;
+        if (!append || errorContent.innerText === '') {
+            errorContent.innerText = error.message;
+        } else {
+            errorContent.innerText = `${errorContent.innerText}\n${error.message}`;
+        }
 
         errorWrapper.hidden = false;
         errorWrapper.scrollIntoView({ block: 'end', behavior: 'smooth' });
@@ -105,24 +110,36 @@ export default class HeidelpayBasePlugin extends Plugin {
         let formValid = true;
         const form = document.forms[this.options.confirmFormId].elements;
 
+        this._clearErrorMessage();
+
         for (let i = 0; i < form.length; i++) {
             const element = form[i];
 
             if (element.required && element.value === '') {
                 element.classList.add('is-invalid');
 
-                if (element.labels.length === 0) {
+                if (element.labels.length === 0 && formValid) {
                     element.scrollIntoView({ block: 'end', behavior: 'smooth' });
-                } else {
+                } else if (element.labels.length > 0) {
                     this.showError({
                         message: this.options.errorShouldNotBeEmpty.replace(/%field%/, element.labels[0].innerText),
-                    });
+                    }, true);
                 }
 
                 formValid = false;
+            } else {
+                element.classList.remove('is-invalid');
             }
         }
 
         return formValid;
+    }
+
+    _clearErrorMessage() {
+        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
+            errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+
+        errorContent.innerText = '';
+        errorWrapper.hidden = true;
     }
 }
