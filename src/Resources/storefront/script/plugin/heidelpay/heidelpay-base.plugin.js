@@ -102,6 +102,7 @@ export default class HeidelpayBasePlugin extends Plugin {
      * @private
      */
     _validateForm() {
+        let formValid = true;
         const form = document.forms[this.options.confirmFormId].elements;
 
         for (let i = 0; i < form.length; i++) {
@@ -112,18 +113,16 @@ export default class HeidelpayBasePlugin extends Plugin {
 
                 if (element.labels.length === 0) {
                     element.scrollIntoView({ block: 'end', behavior: 'smooth' });
-
-                    return false;
+                } else {
+                    this.showError({
+                        message: this.options.errorShouldNotBeEmpty.replace(/%field%/, element.labels[0].innerText),
+                    });
                 }
 
-                this.showError({
-                    message: this.options.errorShouldNotBeEmpty.replace(/%field%/, element.labels[0].innerText),
-                });
-
-                return false;
+                formValid = false;
             }
         }
 
-        return true;
+        return formValid;
     }
 }
