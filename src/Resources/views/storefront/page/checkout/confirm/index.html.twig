@@ -23,7 +23,8 @@
                  data-heidelpay-base="true"
                  data-heidelpay-base-options='{
                      "publicKey": "{{ shopware.config.HeidelPayment.config.publicKey }}",
-                     "locale": "{{ app.request.locale }}"
+                     "locale": "{{ app.request.locale }}",
+                     "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
                  }'>
                 <div class="card-body">
                     <div class="card-title">

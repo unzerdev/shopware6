@@ -11,6 +11,22 @@
             {% endif %}
         {% endblock %}
 
+        {% block heidelpay_frame_sepa_direct_debit_guaranteed_birthday %}
+            <div class="heidelpay-frame-row">
+                <label for="heidelpayBirthday">
+                    {{ "account.personalBirthdayLabel"|trans }}
+                </label>
+
+                <input type="date"
+                       id="heidelpayBirthday"
+                       name="heidelpayBirthday"
+                       class="form-control heidelpay-date-input"
+                       form="confirmOrderForm"
+                       required="required"
+                       {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+            </div>
+        {% endblock %}
+
         {% block heidelpay_frame_sepa_direct_debit_guaranteed_iban %}
             <div id="heidelpay-sepa-container"></div>
         {% endblock %}

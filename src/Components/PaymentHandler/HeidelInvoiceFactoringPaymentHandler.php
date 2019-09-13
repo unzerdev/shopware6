@@ -64,6 +64,8 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
+        $birthday = $dataBag->get('heidelpayBirthday');
+
         try {
             // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
             // As soon as it's shorter, use $transaction->getReturnUrl() instead!
@@ -73,6 +75,9 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
             if ($salesChannelContext->getCustomer()->getCompany() !== null || $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany() !== null) {
                 $heidelpayCustomer = $this->businessCustomerHydrator->hydrateObject($salesChannelContext, $transaction);
             }
+
+            $heidelpayCustomer->setBirthDate($birthday);
+            $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($heidelpayCustomer);
 
             $paymentResult = $this->paymentType->charge(
                 $this->heidelpayBasket->getAmountTotalGross(),
