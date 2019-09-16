@@ -1,4 +1,4 @@
-import { Component, Mixin } from 'src/core/shopware';
+const { Component, Mixin } = Shopware;
 import template from './heidel-payment-detail.html.twig';
 import './heidel-payment-detail.scss';
 

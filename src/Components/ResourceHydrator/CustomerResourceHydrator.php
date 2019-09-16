@@ -8,6 +8,7 @@ use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Customer;
 use heidelpayPHP\Resources\EmbeddedResources\Address;
 use RuntimeException;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
@@ -37,27 +38,26 @@ class CustomerResourceHydrator implements ResourceHydratorInterface
         $heidelCustomer->setBirthDate($customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null);
 
         if ($shippingAddress) {
-            $heidelCustomer->setShippingAddress((new Address())
-                ->setCountry($shippingAddress->getCountry() !== null ? $shippingAddress->getCountry()->getIso() : null)
-                ->setState($shippingAddress->getCountryState() !== null ? $shippingAddress->getCountryState()->getShortCode() : null)
-                ->setZip($shippingAddress->getZipcode())
-                ->setStreet($shippingAddress->getStreet())
-                ->setCity($shippingAddress->getCity())
-                ->setName($shippingAddress->getFirstName() . ' ' . $shippingAddress->getLastName())
-            );
+            $heidelCustomer->setShippingAddress($this->getHeidelpayAddress($shippingAddress));
         }
 
         if ($billingAddress) {
-            $heidelCustomer->setBillingAddress((new Address())
-                ->setCountry($shippingAddress->getCountry() !== null ? $shippingAddress->getCountry()->getIso() : null)
-                ->setState($shippingAddress->getCountryState() !== null ? $shippingAddress->getCountryState()->getShortCode() : null)
-                ->setZip($shippingAddress->getZipcode())
-                ->setStreet($shippingAddress->getStreet())
-                ->setCity($shippingAddress->getCity())
-                ->setName($shippingAddress->getFirstName() . ' ' . $shippingAddress->getLastName())
-            );
+            $heidelCustomer->setBillingAddress($this->getHeidelpayAddress($billingAddress));
         }
 
         return $heidelCustomer;
+    }
+
+    private function getHeidelpayAddress(CustomerAddressEntity $shopwareAddress): Address
+    {
+        $address = new Address();
+        $address->setCountry($shopwareAddress->getCountry() !== null ? $shopwareAddress->getCountry()->getIso() : null);
+        $address->setState($shopwareAddress->getCountryState() !== null ? $shopwareAddress->getCountryState()->getShortCode() : null);
+        $address->setZip($shopwareAddress->getZipcode());
+        $address->setStreet($shopwareAddress->getStreet());
+        $address->setCity($shopwareAddress->getCity());
+        $address->setName($shopwareAddress->getFirstName() . ' ' . $shopwareAddress->getLastName());
+
+        return $address;
     }
 }

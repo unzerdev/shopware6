@@ -1,4 +1,4 @@
-import { Component, State } from 'src/core/shopware';
+const { Component, State } = Shopware;
 import template from './heidel-payment-tab.html.twig';
 
 Component.register('heidel-payment-tab', {

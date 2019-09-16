@@ -9,7 +9,8 @@ export default class HeidelpayBasePlugin extends Plugin {
         resourceIdElementId: 'heidelpayResourceId',
         confirmFormId: 'confirmOrderForm',
         errorWrapperClass: 'heidelpay-error-wrapper',
-        errorContentSelector: '.heidelpay-error-wrapper .alert-content'
+        errorContentSelector: '.heidelpay-error-wrapper .alert-content',
+        errorShouldNotBeEmpty: '%field% should not be empty',
     };
 
     /**
@@ -21,7 +22,7 @@ export default class HeidelpayBasePlugin extends Plugin {
 
     init() {
         this.heidelpayInstance = new window.heidelpay(this.options.publicKey, {
-            locale: this.options.locale
+            locale: this.options.locale,
         });
 
         this.submitButton = document.getElementById(this.options.submitButtonId);
@@ -47,14 +48,14 @@ export default class HeidelpayBasePlugin extends Plugin {
      * @param {Object} resource
      */
     submitResource(resource) {
-        let resourceIdElement = document.getElementById(this.options.resourceIdElementId);
+        const resourceIdElement = document.getElementById(this.options.resourceIdElementId);
         resourceIdElement.value = resource.id;
 
         this.confirmForm.submit();
     }
 
     submitTypeId(typeId) {
-        let resourceIdElement = document.getElementById(this.options.resourceIdElementId);
+        const resourceIdElement = document.getElementById(this.options.resourceIdElementId);
         resourceIdElement.value = typeId;
 
         this.confirmForm.submit();
@@ -62,12 +63,17 @@ export default class HeidelpayBasePlugin extends Plugin {
 
     /**
      * @param { Object } error
+     * @param { Boolean } append
      */
-    showError(error) {
-        let errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
+    showError(error, append = false) {
+        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
             errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
 
-        errorContent.innerText = error.message;
+        if (!append || errorContent.innerText === '') {
+            errorContent.innerText = error.message;
+        } else {
+            errorContent.innerText = `${errorContent.innerText}\n${error.message}`;
+        }
 
         errorWrapper.hidden = false;
         errorWrapper.scrollIntoView({ block: 'end', behavior: 'smooth' });
@@ -88,7 +94,52 @@ export default class HeidelpayBasePlugin extends Plugin {
     _onSubmitButtonClick(event) {
         event.preventDefault();
 
+        if (!this._validateForm()) {
+            return;
+        }
+
         this.setSubmitButtonActive(false);
         this.$emitter.publish('heidelpayBase_createResource');
+    }
+
+    /**
+     * @return {boolean}
+     * @private
+     */
+    _validateForm() {
+        let formValid = true;
+        const form = document.forms[this.options.confirmFormId].elements;
+
+        this._clearErrorMessage();
+
+        for (let i = 0; i < form.length; i++) {
+            const element = form[i];
+
+            if (element.required && element.value === '') {
+                element.classList.add('is-invalid');
+
+                if (element.labels.length === 0 && formValid) {
+                    element.scrollIntoView({ block: 'end', behavior: 'smooth' });
+                } else if (element.labels.length > 0) {
+                    this.showError({
+                        message: this.options.errorShouldNotBeEmpty.replace(/%field%/, element.labels[0].innerText),
+                    }, true);
+                }
+
+                formValid = false;
+            } else {
+                element.classList.remove('is-invalid');
+            }
+        }
+
+        return formValid;
+    }
+
+    _clearErrorMessage() {
+        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
+            errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+
+        errorContent.innerText = '';
+        errorWrapper.hidden = true;
     }
 }

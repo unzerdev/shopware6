@@ -11,7 +11,7 @@ variables:
     MYSQL_DATABASE: shopware
     MYSQL_USER: shopware
     MYSQL_PASSWORD: shopware
-    SHOPWARE_BRANCH: 'v6.0.0+ea1'
+    SHOPWARE_BRANCH: 'v6.0.0+ea1.1'
 
 composer:
     stage: setup

@@ -2,21 +2,35 @@
     &.has-margin-top {
         margin-top: 32px;
     }
-  margin-bottom: 32px;
+    margin-bottom: 32px;
 }
 
 .heidelpay-frame-row {
-  margin-bottom: 16px;
+    margin-bottom: 16px;
 }
 
 .heidelpay-error {
-  color: #f27f7f;
+    color: #f27f7f;
 }
 
 .heidelpay-text-input {
-  height: 34px;
+    height: 34px;
 }
 
 .heidelpay-saved-cards-wrapper {
     margin-bottom: 24px;
+}
+
+.heidelpay-date-input {
+    width: 33%;
+}
+
+#heidelpay-credit-card-icon {
+    float: left;
+}
+
+#heidelpay-credit-card-number-input {
+    width: 90%;
+    display: inline-block;
+    margin-left: 8px;
 }
