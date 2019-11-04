@@ -49,7 +49,7 @@ Component.register('heidel-payment-tab', {
             this.orderStore().getByIdAsync(orderId).then((order) => {
                 this.order = order;
 
-                this.order.getAssociation('transactions').getList().then((orderTransactions) => {
+                this.order.getAssociation('transactions').getList({}).then((orderTransactions) => {
                     orderTransactions.items.forEach((orderTransaction) => {
                         if (!orderTransaction.customFields) {
                             return;

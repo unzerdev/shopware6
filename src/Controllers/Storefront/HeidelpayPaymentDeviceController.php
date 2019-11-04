@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HeidelPayment\Controllers\Storefront;
 
 use HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,6 +24,7 @@ class HeidelpayPaymentDeviceController extends StorefrontController
 
     /**
      * @Route("/heidelpay/deleteDevice", name="heidelpay.device.delete", methods={"GET"})
+     * @RouteScope(scopes={"storefront"})
      */
     public function deleteDevice(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {
