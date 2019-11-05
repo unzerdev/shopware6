@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HeidelPayment\Controllers\Storefront;
 
 use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -30,6 +31,7 @@ class HeidelpayRedirectController extends StorefrontController
      * @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
      *
      * @Route("/heidelpay/finalizePayment", name="heidelpay.payment.finalize", methods={"GET"})
+     * @RouteScope(scopes={"storefront"})
      */
     public function finalizePayment(): RedirectResponse
     {

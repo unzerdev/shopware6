@@ -14,9 +14,6 @@ class Configuration
     }
 
     /**
-     * @param string $key
-     * @param string $default
-     *
      * @return mixed|string
      */
     public function get(string $key, string $default = '')

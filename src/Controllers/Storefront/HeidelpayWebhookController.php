@@ -7,6 +7,7 @@ namespace HeidelPayment\Controllers\Storefront;
 use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment\Components\Struct\Webhook;
 use HeidelPayment\Components\WebhookHandler\WebhookHandlerInterface;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,6 +31,7 @@ class HeidelpayWebhookController extends StorefrontController
 
     /**
      * @Route("/heidelpay/webhook", name="heidelpay.webhook.execute", methods={"POST", "GET"})
+     * @RouteScope(scopes={"storefront"})
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {

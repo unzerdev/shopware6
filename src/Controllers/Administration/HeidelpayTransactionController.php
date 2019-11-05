@@ -11,6 +11,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,6 +42,7 @@ class HeidelpayTransactionController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransactionId}/details", name="api.action.heidelpay.transaction.details", methods={"GET"})
+     * @RouteScope(scopes={"api"})
      */
     public function fetchTransactionDetails(string $orderTransactionId, Context $context): JsonResponse
     {
@@ -77,6 +79,7 @@ class HeidelpayTransactionController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransactionId}/charge/{amount}", name="api.action.heidelpay.transaction.charge", methods={"GET"})
+     * @RouteScope(scopes={"api"})
      */
     public function chargeTransaction(string $orderTransactionId, float $amount, Context $context): JsonResponse
     {
@@ -112,6 +115,7 @@ class HeidelpayTransactionController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.heidelpay.transaction.refund", methods={"GET"})
+     * @RouteScope(scopes={"api"})
      */
     public function refundTransaction(string $orderTransactionId, string $chargeId, float $amount, Context $context): JsonResponse
     {
@@ -147,6 +151,7 @@ class HeidelpayTransactionController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/heidelpay/transaction/{orderTransactionId}/ship", name="api.action.heidelpay.transaction.ship", methods={"GET"})
+     * @RouteScope(scopes={"api"})
      */
     public function shipTransaction(string $orderTransactionId, Context $context): JsonResponse
     {

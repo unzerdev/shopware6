@@ -15,11 +15,32 @@ export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
      */
     static heidelpayPlugin = null;
 
+    /**
+     * @type {Object}
+     *
+     * @public
+     */
+    static b2bCustomer = null;
+
     init() {
         this.heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
         this.invoiceFactoring = this.heidelpayPlugin.heidelpayInstance.InvoiceFactoring();
+        this.b2bCustomer = this.heidelpayPlugin.heidelpayInstance.B2BCustomer();
 
+        this._createForm();
         this._registerEvents();
+    }
+
+    _createForm() {
+        this.b2bCustomer.initFormFields({
+            'companyInfo': {
+                'commercialSector': 'AIR_TRANSPORT',
+            },
+        });
+
+        this.b2bCustomer.create({
+            containerId: 'heidelpay-invoice-commercial-sector',
+        });
     }
 
     _registerEvents() {
