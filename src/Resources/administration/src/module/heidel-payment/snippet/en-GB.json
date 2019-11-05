@@ -27,7 +27,7 @@
                 "amountTotal": "Amount (gross)",
                 "amountTotalVat": "Amount (net)",
                 "currency": "Currency",
-                "orderId": "Order-ID",
+                "shortId": "Short-ID",
                 "id": "Payment-ID",
                 "state": "State"
             },
