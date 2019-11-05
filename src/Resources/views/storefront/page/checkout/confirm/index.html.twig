@@ -20,24 +20,32 @@
                 <input type="hidden" id="heidelpayResourceId" name="heidelpayResourceId" form="confirmOrderForm">
             {% endblock %}
 
-            <div class="heidelpay-card"
-                 id="heidelpay-card"
-                 data-heidelpay-base="true"
-                 data-heidelpay-base-options='{
+            {% block heidelpay_checkout_confirm_frame_card %}
+                <div class="heidelpay-card"
+                     id="heidelpay-card"
+                     data-heidelpay-base="true"
+                     data-heidelpay-base-options='{
                      "publicKey": "{{ shopware.config.HeidelPayment.config.publicKey }}",
                      "locale": "{{ app.request.locale }}",
                      "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
                  }'>
-                <div class="card-body">
-                    <div class="card-title">
-                        {{ context.paymentMethod.translated.name }}
-                    </div>
+                    <div class="card-body">
+                        {% block heidelpay_checkout_confirm_frame_card_body %}
+                            {% block heidelpay_checkout_confirm_frame_card_body_title %}
+                                <div class="card-title">
+                                    {{ context.paymentMethod.translated.name }}
+                                </div>
+                            {% endblock %}
 
-                    <div class="heidelpay-frame">
-                        {% sw_include context.paymentMethod.customFields.heidelpay_frame ignore missing %}
+                            {% block heidelpay_checkout_confirm_frame_card_body_frame %}
+                                <div class="heidelpay-frame">
+                                    {% sw_include context.paymentMethod.customFields.heidelpay_frame ignore missing %}
+                                </div>
+                            {% endblock %}
+                        {% endblock %}
                     </div>
                 </div>
-            </div>
+            {% endblock %}
         {% endblock %}
     {% endif %}
 
