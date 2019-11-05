@@ -57,7 +57,8 @@
                 "chargeErrorTitle": "Einziehen",
                 "shipSuccessTitle": "Versandmitteilung",
                 "shipSuccessMessage": "Die Versandmitteilung wurde erfolgreich gesendet.",
-                "shipErrorTitle": "Versandmitteilung"
+                "shipErrorTitle": "Versandmitteilung",
+                "invoiceNotFoundMessage": "Zu dieser Bestellung wurde keine Rechnung gefunden"
             }
         }
     }

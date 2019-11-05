@@ -57,7 +57,8 @@
                 "chargeErrorTitle": "Charge",
                 "shipSuccessTitle": "Shipping notice",
                 "shipSuccessMessage": "The shipping notification was successfully sent.",
-                "shipErrorTitle": "Shipping notice"
+                "shipErrorTitle": "Shipping notice",
+                "invoiceNotFoundMessage": "No invoice was found for this order."
             }
         }
     }
