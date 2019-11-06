@@ -27,7 +27,7 @@
                 "amountTotal": "Betrag (brutto)",
                 "amountTotalVat": "Betrag (netto)",
                 "currency": "Währung",
-                "orderId": "Auftrags-ID",
+                "shortId": "Short-ID",
                 "id": "Zahlungs-ID",
                 "state": "Status"
             },

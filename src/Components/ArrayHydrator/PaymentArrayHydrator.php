@@ -57,6 +57,10 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
                 'date'   => $charge->getDate(),
                 'id'     => $charge->getId(),
             ];
+
+            if (!array_key_exists('shortId', $data) && $charge->getShortId() !== null) {
+                $data['shortId'] = $charge->getShortId();
+            }
         }
 
         /** @var Shipment $metaShipment */
