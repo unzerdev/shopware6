@@ -22,11 +22,6 @@ Component.override('sw-order-detail', {
         },
     },
 
-    created() {
-        // ToDo with NEXT-3911: Remove this Quickfix
-        this.$router.push({ name: 'sw.order.detail', params: { id: this.orderId } });
-    },
-
     watch: {
         orderId: {
             deep: true,

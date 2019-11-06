@@ -38,6 +38,7 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
     public function onLoadAccountPaymentMethod(AccountPaymentMethodPageLoadedEvent $event): void
     {
         $salesChannelContext = $event->getSalesChannelContext();
+
         if (!$salesChannelContext->getCustomer()) {
             return;
         }

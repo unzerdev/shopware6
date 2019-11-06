@@ -72,7 +72,7 @@ class FinishPageEventListener implements EventSubscriberInterface
     private function getInvoiceTransactions(OrderTransactionCollection $transactionCollection)
     {
         return $transactionCollection->filter(
-            function (OrderTransactionEntity $orderTransaction) {
+            static function (OrderTransactionEntity $orderTransaction) {
                 return in_array($orderTransaction->getPaymentMethodId(), InvoiceGenerator::SUPPORTED_PAYMENT_METHODS);
             }
         );

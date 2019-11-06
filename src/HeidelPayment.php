@@ -108,15 +108,13 @@ class HeidelPayment extends Plugin
 
     public function getViewPaths(): array
     {
-        return array_merge(parent::getViewPaths(), [
-            'Resources/views/storefront',
-            'Resources/views/administration',
-            'Resources/views/framework',
-        ]);
-    }
-
-    public function getStorefrontScriptPath(): string
-    {
-        return 'Resources/dist/storefront/js';
+        return array_merge(
+            parent::getViewPaths(),
+            [
+                'Resources/views/storefront',
+                'Resources/views/administration',
+                'Resources/views/framework',
+            ]
+        );
     }
 }
