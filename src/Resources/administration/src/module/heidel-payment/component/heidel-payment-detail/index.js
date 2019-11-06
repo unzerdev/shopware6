@@ -45,6 +45,8 @@ Component.register('heidel-payment-detail', {
 
                 if (message === 'generic-error') {
                     message = this.$tc('heidel-payment.paymentDetails.notifications.genericErrorMessage');
+                } else if (message === 'invoice-missing-error') {
+                    message = this.$tc('heidel-payment.paymentDetails.notifications.invoiceNotFoundMessage');
                 }
 
                 this.createNotificationError({
