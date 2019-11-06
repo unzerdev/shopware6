@@ -150,8 +150,6 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
 
     /**
      * @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-     *
-     * @return string
      */
     protected function getReturnUrl(): string
     {

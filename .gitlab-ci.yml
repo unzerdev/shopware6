@@ -34,7 +34,7 @@ phpstan:
         - composer
     script:
         - composer install
-        - vendor/bin/phpstan analyse -l 5 -c phpstan.neon tests src
+        - vendor/bin/phpstan analyse -l 5 -c phpstan.neon src
 
 codestyle:
     stage: test

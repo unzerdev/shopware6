@@ -11,6 +11,8 @@ use Shopware\Core\Framework\Context;
 
 class TransactionStateHandler implements TransactionStateHandlerInterface
 {
+    public const STATE_OPEN = 'open';
+
     /** @var OrderTransactionStateHandler */
     private $orderTransactionStateHandler;
 
@@ -29,9 +31,7 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
     ): void {
         $transactionId = $transaction->getId();
 
-        if ($payment->isPending()) {
-            $this->orderTransactionStateHandler->open($transactionId, $context);
-        } elseif ($payment->isPartlyPaid()) {
+        if ($payment->isPartlyPaid()) {
             $this->orderTransactionStateHandler->payPartially($transactionId, $context);
         } elseif ($payment->isCompleted()) {
             $this->orderTransactionStateHandler->pay($transactionId, $context);
@@ -39,8 +39,8 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
             $this->orderTransactionStateHandler->cancel($transactionId, $context);
         } elseif ($payment->isChargeBack()) {
             $this->orderTransactionStateHandler->payPartially($transactionId, $context);
-        } else {
-            $this->orderTransactionStateHandler->open($transactionId, $context);
+        } elseif ($transaction->getStateMachineState()->getTechnicalName() !== self::STATE_OPEN) {
+            $this->orderTransactionStateHandler->reopen($transactionId, $context);
         }
     }
 }
