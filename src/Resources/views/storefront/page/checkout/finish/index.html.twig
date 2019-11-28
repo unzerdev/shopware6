@@ -1,4 +1,4 @@
-{% sw_extends '@Storefront/page/checkout/finish/index.html.twig' %}
+{% sw_extends '@Storefront/storefront/page/checkout/finish/index.html.twig' %}
 
 {% block page_checkout_finish_details %}
     {{ parent() }}
@@ -6,7 +6,7 @@
     {% block page_checkout_finish_details_heidelpay_transfer_information %}
         {% if page.extensions.heidelpay.transferInformation %}
             {% for transferInformation in page.extensions.heidelpay.transferInformation %}
-                {% sw_include '@Storefront/component/heidelpay/finish/transfer-information.html.twig' with {
+                {% sw_include '@Storefront/storefront/component/heidelpay/finish/transfer-information.html.twig' with {
                     'transferInformation': transferInformation
                 } %}
             {% endfor %}

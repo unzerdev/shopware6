@@ -59,7 +59,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/credit-card.html.twig',
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/storefront/component/heidelpay/frames/credit-card.html.twig',
             ],
         ],
         [
@@ -77,7 +77,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/invoice.html.twig',
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/storefront/component/heidelpay/frames/invoice.html.twig',
             ],
         ],
         [
@@ -110,7 +110,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/invoice-guaranteed.html.twig',
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/storefront/component/heidelpay/frames/invoice-guaranteed.html.twig',
             ],
         ],
         [
@@ -128,7 +128,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/invoice-factoring.html.twig',
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/storefront/component/heidelpay/frames/invoice-factoring.html.twig',
             ],
         ],
         [
@@ -146,7 +146,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/eps.html.twig',
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/storefront/component/heidelpay/frames/eps.html.twig',
             ],
         ],
         [
@@ -194,7 +194,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/ideal.html.twig',
+                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/storefront/component/heidelpay/frames/ideal.html.twig',
             ],
         ],
         [
@@ -212,7 +212,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/sepa_direct_debit.html.twig',
+                'heidelpay_frame' => '@Storefront/storefront/component/heidelpay/frames/sepa_direct_debit.html.twig',
             ],
         ],
         [
@@ -230,7 +230,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
             'customFields' => [
-                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/sepa_direct_debit_guaranteed.html.twig',
+                'heidelpay_frame' => '@Storefront/storefront/component/heidelpay/frames/sepa_direct_debit_guaranteed.html.twig',
             ],
         ],
         [

@@ -105,16 +105,4 @@ class HeidelPayment extends Plugin
         (new PaymentInstaller($paymentRepository))->uninstall($uninstallContext);
         (new CustomFieldInstaller($customFieldRepository))->uninstall($uninstallContext);
     }
-
-    public function getViewPaths(): array
-    {
-        return array_merge(
-            parent::getViewPaths(),
-            [
-                'Resources/views/storefront',
-                'Resources/views/administration',
-                'Resources/views/framework',
-            ]
-        );
-    }
 }

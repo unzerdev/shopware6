@@ -7,7 +7,7 @@
 
         {% block heidelpay_frame_sepa_direct_debit_test_data %}
             {% if  shopware.config.HeidelPayment.config.testMode %}
-                {% sw_include '@Storefront/component/heidelpay/frames/testdata/sepa.html.twig' %}
+                {% sw_include '@Storefront/storefront/component/heidelpay/frames/testdata/sepa.html.twig' %}
             {% endif %}
         {% endblock %}
 
@@ -16,7 +16,7 @@
         {% endblock %}
 
         {% block heidelpay_frame_sepa_direct_debit_mandate %}
-            {% sw_include '@Storefront/component/heidelpay/frames/sepa/mandate.html.twig' %}
+            {% sw_include '@Storefront/storefront/component/heidelpay/frames/sepa/mandate.html.twig' %}
         {% endblock %}
     </div>
 {% endblock %}
