@@ -95,6 +95,8 @@ export default class HeidelpayBasePlugin extends Plugin {
         event.preventDefault();
 
         if (!this._validateForm()) {
+            this.setSubmitButtonActive(true);
+
             return;
         }
 
