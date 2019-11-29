@@ -53,7 +53,7 @@
                 "refundSuccessMessage": "The reimbursement was successfully completed.",
                 "refundErrorTitle": "Refund",
                 "chargeSuccessTitle": "Charge",
-                "chargeSuccessMessage": "The collection of the payment was carried out successfully..",
+                "chargeSuccessMessage": "The collection of the payment was carried out successfully.",
                 "chargeErrorTitle": "Charge",
                 "shipSuccessTitle": "Shipping notice",
                 "shipSuccessMessage": "The shipping notification was successfully sent.",
