@@ -18,6 +18,7 @@ use HeidelPayment\Components\PaymentHandler\HeidelPayPalPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelPrePaymentPaymentHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelPrzelewyHandler;
 use HeidelPayment\Components\PaymentHandler\HeidelSofortPaymentHandler;
+use HeidelPayment\Components\PaymentHandler\HeidelWeChatPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -42,6 +43,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_DIRECT_DEBIT_GUARANTEED = '5123af5ce94a4a286641973e8de7eb60';
     public const PAYMENT_ID_PRZELEWY24              = 'cd6f59d572e6c90dff77a48ce16b44db';
     public const PAYMENT_ID_PRE_PAYMENT             = '085b64d0028a8bd447294e03c4eb411a';
+    public const PAYMENT_ID_WE_CHAT                 = 'fd96d03535a46d197f5adac17c9f8bac';
 
     public const PAYMENT_METHODS = [
         [
@@ -275,6 +277,21 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name'        => 'Przelewy24 (heidelpay)',
                     'description' => 'Przelewy24 payments with heidelpay',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_WE_CHAT,
+            'handlerIdentifier' => HeidelWeChatPaymentHandler::class,
+            'name'              => 'WeChat (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'WeChat (heidelpay)',
+                    'description' => 'WeChat Zahlungen mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'WeChat (heidelpay)',
+                    'description' => 'WeChat payments with heidelpay',
                 ],
             ],
         ],
