@@ -17,9 +17,11 @@ use Throwable;
 
 class RegisterWebhookCommand extends Command
 {
+    private const EXIT_CODE_SUCCESS       = 0;
     private const EXIT_CODE_API_ERROR     = 1;
     private const EXIT_CODE_UNKNOWN_ERROR = 2;
     private const EXIT_CODE_INVALID_HOST  = 3;
+
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
@@ -83,6 +85,6 @@ class RegisterWebhookCommand extends Command
             return self::EXIT_CODE_UNKNOWN_ERROR;
         }
 
-        return 0;
+        return self::EXIT_CODE_SUCCESS;
     }
 }
