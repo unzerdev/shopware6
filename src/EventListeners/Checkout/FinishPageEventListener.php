@@ -69,7 +69,7 @@ class FinishPageEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension('heidelpay', $extension);
     }
 
-    private function getInvoiceTransactions(OrderTransactionCollection $transactionCollection)
+    private function getInvoiceTransactions(OrderTransactionCollection $transactionCollection): OrderTransactionCollection
     {
         return $transactionCollection->filter(
             static function (OrderTransactionEntity $orderTransaction) {

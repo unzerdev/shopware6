@@ -4,6 +4,8 @@
     "version": "v1.0.0",
     "type": "shopware-platform-plugin",
     "license": "Commercial",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "authors": [
         {
             "name": "heidelpay GmbH",
@@ -21,14 +23,16 @@
         "sort-packages": true
     },
     "require": {
+        "php": "^7.2",
         "heidelpay/heidelpay-php": "dev-master"
     },
     "require-dev": {
         "k10r/codestyle": "^1.0",
         "phpstan/phpstan": "^0.11",
         "phpstan/phpstan-phpunit": "^0.11",
-        "phpunit/phpunit": "^8.1",
-        "shopware/platform": "v6.0.0+ea1.1"
+        "shopware/core": "*",
+        "shopware/administration": "*",
+        "shopware/storefront": "*"
     },
     "extra": {
         "shopware-plugin-class": "HeidelPayment\\HeidelPayment",
@@ -55,5 +59,14 @@
         "psr-4": {
             "HeidelPayment\\": "src/"
         }
+    },
+    "suggest": {
+        "shopware/core": "Require '*'. Base for all payment processes",
+        "shopware/storefront": "Require '*'. Enables payment further payment features on checkout pages",
+        "shopware/administration": "Require '*'. Enables payment administrations for orders placed with heidelpay and easy configuration"
+    },
+    "conflict": {
+        "shopware/storefront": "<6,>=7",
+        "shopware/administration": "<6,>=7"
     }
 }

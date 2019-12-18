@@ -1,10 +1,10 @@
-{% sw_extends '@Storefront/page/checkout/confirm/index.html.twig' %}
+{% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
 
 {% block page_checkout_confirm_errors %}
     {{ parent() }}
 
     <div class="heidelpay-error-wrapper" hidden="hidden">
-        {% sw_include '@Storefront/utilities/alert.html.twig' with {
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
             type: "danger",
             content: ""
         } %}
@@ -14,7 +14,7 @@
 {% block page_checkout_confirm_product_table %}
     {% if context.paymentMethod.customFields.heidelpay_frame %}
         {% block heidelpay_checkout_confirm_frame %}
-            {% sw_include '@Storefront/component/heidelpay/base/heidelpay-library.html.twig' %}
+            {% sw_include '@Storefront/storefront/component/heidelpay/base/heidelpay-library.html.twig' %}
 
             {% block page_checkout_heidelpay_form_elements %}
                 <input type="hidden" id="heidelpayResourceId" name="heidelpayResourceId" form="confirmOrderForm">

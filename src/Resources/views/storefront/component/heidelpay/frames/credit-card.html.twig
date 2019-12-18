@@ -6,7 +6,7 @@
          }'>
 
         {% if  shopware.config.HeidelPayment.config.testMode %}
-            {% sw_include '@Storefront/component/heidelpay/frames/testdata/credit-card.html.twig' %}
+            {% sw_include '@Storefront/storefront/component/heidelpay/frames/testdata/credit-card.html.twig' %}
         {% endif %}
 
         {% if page.extensions.heidelpay.displayCreditCardSelection and page.extensions.heidelpay.creditCards|length > 0 %}
@@ -17,11 +17,11 @@
                         <div class="custom-control custom-radio payment-control">
                             <input type="radio" value="{{ creditCard.typeId }}" name="savedCreditCard" id="card-{{ creditCard.id }}" class="custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
                             <label for="card-{{ creditCard.id }}" class="custom-control-label payment-method-label">
-                                <div class="payment-method-description">
-                                    <strong>{{ creditCard.data['number'] }}</strong>
-                                    <p>{{ creditCard.data['holder'] }} ({{ creditCard.data['expiryDate'] }})</p>
-                                </div>
                             </label>
+                            <div class="payment-method-description">
+                                <strong>{{ creditCard.data['number'] }}</strong>
+                                <p>{{ creditCard.data['holder'] }} ({{ creditCard.data['expiryDate'] }})</p>
+                            </div>
                         </div>
                     {% endfor %}
                 {% endblock %}
@@ -30,7 +30,7 @@
                     <div class="custom-control custom-radio payment-control">
                         <input type="radio" value="new" name="savedCreditCard" id="card-new" class="custom-control-input payment-method-input">
                         <label for="card-new" class="custom-control-label payment-method-label">
-                            {{ "HeidelPayment.frame.creditCard.new" | trans  }}
+                            {{ "HeidelPayment.frame.creditCard.new"|trans }}
                         </label>
                     </div>
                 {% endblock %}
@@ -40,7 +40,7 @@
         <div class="heidelpay-credit-card-wrapper-elements">
             {% block heidelpay_frame_credit_card_number %}
                 <div class="heidelpay-frame-row">
-                    <label for="heidelpay-credit-card-number">{{ "HeidelPayment.frame.creditCard.number" | trans  }}</label>
+                    <label for="heidelpay-credit-card-number">{{ "HeidelPayment.frame.creditCard.number"|trans }}</label>
                     <div id="heidelpay-credit-card-number" class="heidelpay-text-input form-control">
                         <img id="heidelpay-credit-card-icon" src="https://static.heidelpay.com/assets/images/common/group-5.svg" alt=""/>
                         <div id="heidelpay-credit-card-number-input"></div>
@@ -54,7 +54,7 @@
 
             {% block heidelpay_frame_credit_card_expiry %}
                 <div class="heidelpay-frame-row">
-                    <label for="heidelpay-credit-card-expiry">{{ "HeidelPayment.frame.creditCard.expiry" | trans  }}</label>
+                    <label for="heidelpay-credit-card-expiry">{{ "HeidelPayment.frame.creditCard.expiry"|trans }}</label>
                     <div id="heidelpay-credit-card-expiry" class="heidelpay-text-input form-control"></div>
                     <div id="heidelpay-credit-card-expiry-error" class="heidelpay-error" hidden>
                         <div class="heidelpay-error-message">
@@ -65,7 +65,7 @@
 
             {% block heidelpay_frame_credit_card_cvc %}
                 <div class="heidelpay-frame-row">
-                    <label for="heidelpay-credit-card-cvc">{{ "HeidelPayment.frame.creditCard.cvc" | trans  }}</label>
+                    <label for="heidelpay-credit-card-cvc">{{ "HeidelPayment.frame.creditCard.cvc"|trans }}</label>
                     <div id="heidelpay-credit-card-cvc" class="heidelpay-text-input form-control"></div>
                     <div id="heidelpay-credit-card-cvc-error" class="heidelpay-error" hidden>
                         <div class="heidelpay-error-message">

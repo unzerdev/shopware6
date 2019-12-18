@@ -12,6 +12,7 @@
         <import resource="entities.xml" />
         <import resource="event_listeners.xml" />
         <import resource="decorators.xml" />
+        <import resource="translations.xml"/>
     </imports>
 
     <services>
