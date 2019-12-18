@@ -27,12 +27,10 @@
         "heidelpay/heidelpay-php": "dev-master"
     },
     "require-dev": {
-        "k10r/codestyle": "^1.0",
         "phpstan/phpstan": "^0.11",
         "phpstan/phpstan-phpunit": "^0.11",
-        "shopware/core": "*",
-        "shopware/administration": "*",
-        "shopware/storefront": "*"
+        "phpunit/phpunit": "^8.1",
+        "k10r/codestyle": "^1.0"
     },
     "extra": {
         "shopware-plugin-class": "HeidelPayment\\HeidelPayment",

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment\Resources\app\storefront\src\snippets\en_GB;
 
-use Shopware\Core\Framework\Snippet\Files\SnippetFileInterface;
+use Shopware\Core\System\Snippet\Files\SnippetFileInterface;
 
 class SnippetFile_en_GB implements SnippetFileInterface
 {
