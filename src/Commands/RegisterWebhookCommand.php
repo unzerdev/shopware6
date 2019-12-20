@@ -17,6 +17,11 @@ use Throwable;
 
 class RegisterWebhookCommand extends Command
 {
+    private const EXIT_CODE_SUCCESS       = 0;
+    private const EXIT_CODE_API_ERROR     = 1;
+    private const EXIT_CODE_UNKNOWN_ERROR = 2;
+    private const EXIT_CODE_INVALID_HOST  = 3;
+
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
@@ -44,7 +49,7 @@ class RegisterWebhookCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
 
@@ -57,7 +62,7 @@ class RegisterWebhookCommand extends Command
             if (empty($host['host']) || empty($host['scheme'])) {
                 $style->warning('The provided host is invalid.');
 
-                return null;
+                return self::EXIT_CODE_INVALID_HOST;
             }
 
             $context = $this->router->getContext();
@@ -72,8 +77,14 @@ class RegisterWebhookCommand extends Command
             $style->success($message);
         } catch (HeidelpayApiException $exception) {
             $style->error($exception->getMerchantMessage());
+
+            return self::EXIT_CODE_API_ERROR;
         } catch (Throwable $exception) {
             $style->error($exception->getMessage());
+
+            return self::EXIT_CODE_UNKNOWN_ERROR;
         }
+
+        return self::EXIT_CODE_SUCCESS;
     }
 }

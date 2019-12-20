@@ -47,9 +47,6 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
     }
 
     /**
-     * TODO: Decide if stateMachineRegistry->transition for the actual write process should be used
-     * TODO: transition needs StateMachineTransitionActions, we need to map actions instead of the payment status
-     *
      * {@inheritdoc}
      */
     public function execute(Webhook $webhook, SalesChannelContext $context): void
