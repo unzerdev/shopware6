@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\ConfigReader;
+namespace HeidelPayment6\Components\ConfigReader;
 
-use HeidelPayment\Components\Struct\Configuration;
+use HeidelPayment6\Components\Struct\Configuration;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigReader implements ConfigReaderInterface
 {
     /** @var string */
-    public const SYSTEM_CONFIG_DOMAIN = 'HeidelPayment.config.';
+    public const SYSTEM_CONFIG_DOMAIN = 'HeidelPayment6.config.';
 
     /** @var SystemConfigService */
     private $systemConfigService;

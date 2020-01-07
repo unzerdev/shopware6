@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Controllers\Storefront;
+namespace HeidelPayment6\Controllers\Storefront;
 
-use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;

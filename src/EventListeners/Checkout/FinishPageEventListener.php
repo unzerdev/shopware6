@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\EventListeners\Checkout;
+namespace HeidelPayment6\EventListeners\Checkout;
 
-use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment\Components\Document\InvoiceGenerator;
-use HeidelPayment\Components\Struct\PageExtension\Checkout\FinishPageExtension;
-use HeidelPayment\Components\Struct\TransferInformation\TransferInformation;
+use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\Document\InvoiceGenerator;
+use HeidelPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
+use HeidelPayment6\Components\Struct\TransferInformation\TransferInformation;
 use heidelpayPHP\Resources\TransactionTypes\Charge;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;

@@ -4,8 +4,8 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment\Commands\RegisterWebhookCommand" >
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
+        <service id="HeidelPayment6\Commands\RegisterWebhookCommand" >
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="router.default" />
 
             <tag name="console.command" />

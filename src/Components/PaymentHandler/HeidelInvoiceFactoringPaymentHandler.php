@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\PaymentHandler;
+namespace HeidelPayment6\Components\PaymentHandler;
 
-use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
-use HeidelPayment\Components\ResourceHydrator\ResourceHydratorInterface;
-use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
+use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\InvoiceFactoring;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;

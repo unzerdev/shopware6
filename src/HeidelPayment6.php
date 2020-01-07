@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment;
+namespace HeidelPayment6;
 
-use HeidelPayment\Installers\CustomFieldInstaller;
-use HeidelPayment\Installers\PaymentInstaller;
+use HeidelPayment6\Installers\CustomFieldInstaller;
+use HeidelPayment6\Installers\PaymentInstaller;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -21,7 +21,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require __DIR__ . '/../vendor/autoload.php';
 }
 
-class HeidelPayment extends Plugin
+class HeidelPayment6 extends Plugin
 {
     public function build(ContainerBuilder $container): void
     {

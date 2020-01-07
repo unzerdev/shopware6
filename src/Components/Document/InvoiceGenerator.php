@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\Document;
+namespace HeidelPayment6\Components\Document;
 
-use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment\Components\Struct\TransferInformation\TransferInformation;
-use HeidelPayment\Installers\PaymentInstaller;
+use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\Struct\TransferInformation\TransferInformation;
+use HeidelPayment6\Installers\PaymentInstaller;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\TransactionTypes\Charge;
 use Shopware\Core\Checkout\Document\DocumentConfiguration;

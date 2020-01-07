@@ -4,11 +4,11 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment\Components\Document\InvoiceGenerator"
+        <service id="HeidelPayment6\Components\Document\InvoiceGenerator"
                  decorates="Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator"
                  public="true">
-            <argument type="service" id="HeidelPayment\Components\Document\InvoiceGenerator.inner"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory"/>
+            <argument type="service" id="HeidelPayment6\Components\Document\InvoiceGenerator.inner"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="Shopware\Core\Checkout\Document\Twig\DocumentTemplateRenderer"/>
             <argument>%kernel.root_dir%</argument>
         </service>

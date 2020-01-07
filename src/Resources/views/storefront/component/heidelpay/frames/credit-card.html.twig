@@ -5,14 +5,14 @@
             "hasSavedCards": "{{ page.extensions.heidelpay.creditCards|length > 0 }}"
          }'>
 
-        {% if  shopware.config.HeidelPayment.config.testMode %}
+        {% if  shopware.config.HeidelPayment6.config.testMode %}
             {% sw_include '@Storefront/storefront/component/heidelpay/frames/testdata/credit-card.html.twig' %}
         {% endif %}
 
         {% if page.extensions.heidelpay.displayCreditCardSelection and page.extensions.heidelpay.creditCards|length > 0 %}
             <div class="heidelpay-saved-cards-wrapper">
                 {% block heidelpay_frame_credit_card_saved_device %}
-                    {# @var creditCard \HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity #}
+                    {# @var creditCard \HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity #}
                     {% for creditCard in page.extensions.heidelpay.creditCards %}
                         <div class="custom-control custom-radio payment-control">
                             <input type="radio" value="{{ creditCard.typeId }}" name="savedCreditCard" id="card-{{ creditCard.id }}" class="custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>

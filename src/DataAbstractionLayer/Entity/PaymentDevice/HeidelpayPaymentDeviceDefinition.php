@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice;
+namespace HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;

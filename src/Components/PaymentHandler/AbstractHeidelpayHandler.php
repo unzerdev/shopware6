@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\PaymentHandler;
+namespace HeidelPayment6\Components\PaymentHandler;
 
-use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
-use HeidelPayment\Components\ResourceHydrator\ResourceHydratorInterface;
-use HeidelPayment\Components\Struct\Configuration;
-use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use HeidelPayment\Installers\CustomFieldInstaller;
+use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
+use HeidelPayment6\Components\Struct\Configuration;
+use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use HeidelPayment6\Installers\CustomFieldInstaller;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Basket;
