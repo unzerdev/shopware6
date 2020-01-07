@@ -23,5 +23,16 @@
 
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="HeidelPayment6\EventListeners\StateMachine\TransitionEventListener">
+            <argument type="service" id="order.repository" />
+            <argument type="service" id="order_delivery.repository" />
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
+            <argument type="service" id="heidel_payment.logger"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>
