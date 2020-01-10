@@ -8,15 +8,9 @@
     "prefer-stable": true,
     "authors": [
         {
-            "name": "heidelpay GmbH",
+            "name": "heidelpay GmbH, Kellerkinder Pluginwerk GmbH",
             "email": "info@heidelpay.com",
             "homepage": "https://www.heidelpay.com"
-        },
-        {
-            "name": "Kellerkinder GmbH",
-            "email": "hallo@kellerkinder.de",
-            "homepage": "https://www.kellerkinder.de/",
-            "role": "Contributor"
         }
     ],
     "config": {
