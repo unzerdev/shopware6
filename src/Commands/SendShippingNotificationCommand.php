@@ -8,6 +8,7 @@ use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\EventListeners\StateMachine\TransitionEventListener;
 use HeidelPayment6\Installers\CustomFieldInstaller;
+use heidelpayPHP\Constants\ApiResponseCodes;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use RuntimeException;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeEntity;
@@ -31,8 +32,6 @@ class SendShippingNotificationCommand extends Command
     private const EXIT_CODE_UNKNOWN_ERROR = 2;
     private const EXIT_CODE_NO_ORDERS     = 3;
     private const EXIT_CODE_CONFIGURATION = 4;
-
-    private const API_ERROR_ALREADY_INSURED = 'COR.700.400.800';
 
     /** @var ConfigReaderInterface */
     private $configReader;
@@ -111,7 +110,7 @@ class SendShippingNotificationCommand extends Command
                 $output->writeln(sprintf("\t<error>%s</error>", $apiException->getMerchantMessage()));
 
                 //Already insured but flag in DB missing!
-                if ($apiException->getCode() === self::API_ERROR_ALREADY_INSURED) {
+                if ($apiException->getCode() === ApiResponseCodes::CORE_ERROR_INSURANCE_ALREADY_ACTIVATED) {
                     $this->setCustomFields($transaction);
 
                     return self::EXIT_CODE_SUCCESS;
