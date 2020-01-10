@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\Struct\PageExtension\Checkout;
+namespace HeidelPayment6\Components\Struct\PageExtension\Checkout;
 
-use HeidelPayment\Components\Struct\TransferInformation\TransferInformation;
+use HeidelPayment6\Components\Struct\TransferInformation\TransferInformation;
 use Shopware\Core\Framework\Struct\Struct;
 
 class FinishPageExtension extends Struct

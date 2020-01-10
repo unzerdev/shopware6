@@ -4,13 +4,13 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceDefinition">
+        <service id="HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceDefinition">
             <tag name="shopware.entity.definition" entity="heidelpay_payment_device"/>
         </service>
 
-        <service id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository">
+        <service id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository">
            <argument type="service" id="heidelpay_payment_device.repository"/>
-            <argument type="service" id="HeidelPayment\Components\AddressHashGenerator\AddressHashGenerator"/>
+            <argument type="service" id="HeidelPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
         </service>
     </services>
 </container>

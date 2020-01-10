@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Controllers\Administration;
+namespace HeidelPayment6\Controllers\Administration;
 
-use HeidelPayment\Components\ArrayHydrator\PaymentArrayHydratorInterface;
-use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\ArrayHydrator\PaymentArrayHydratorInterface;
+use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;

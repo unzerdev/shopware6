@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\ClientFactory;
+namespace HeidelPayment6\Components\ClientFactory;
 
-use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Interfaces\DebugHandlerInterface;
 

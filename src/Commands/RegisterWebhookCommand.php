@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Commands;
+namespace HeidelPayment6\Commands;
 
-use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

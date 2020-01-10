@@ -4,22 +4,22 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment\EventListeners\Checkout\FinishPageEventListener">
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory"/>
+        <service id="HeidelPayment6\EventListeners\Checkout\FinishPageEventListener">
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="HeidelPayment\EventListeners\Checkout\ConfirmPageEventListener">
-            <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
+        <service id="HeidelPayment6\EventListeners\Checkout\ConfirmPageEventListener">
+            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="HeidelPayment\EventListeners\Account\PaymentMethodPageEventListener">
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+        <service id="HeidelPayment6\EventListeners\Account\PaymentMethodPageEventListener">
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

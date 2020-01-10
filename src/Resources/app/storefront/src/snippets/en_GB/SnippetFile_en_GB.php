@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Resources\app\storefront\src\snippets\en_GB;
+namespace HeidelPayment6\Resources\app\storefront\src\snippets\en_GB;
 
 use Shopware\Core\System\Snippet\Files\SnippetFileInterface;
 

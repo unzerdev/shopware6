@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\EventListeners\Account;
+namespace HeidelPayment6\EventListeners\Account;
 
-use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
-use HeidelPayment\Components\Struct\PageExtension\Account\PaymentMethodPageExtension;
-use HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
-use HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
+use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment6\Components\Struct\PageExtension\Account\PaymentMethodPageExtension;
+use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
+use HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

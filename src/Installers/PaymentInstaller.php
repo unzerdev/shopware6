@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Installers;
+namespace HeidelPayment6\Installers;
 
-use HeidelPayment\Components\PaymentHandler\HeidelAlipayPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelDirectDebitGuaranteedPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelDirectDebitPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelEpsPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelGiropayPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelIdealPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelInvoicePaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelPayPalPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelPrePaymentPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelPrzelewyHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelSofortPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelWeChatPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelAlipayPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelDirectDebitGuaranteedPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelDirectDebitPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelEpsPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelGiropayPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelIdealPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelInvoicePaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelPayPalPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelPrePaymentPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelPrzelewyHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelSofortPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelWeChatPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;

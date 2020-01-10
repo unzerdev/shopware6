@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\PaymentHandler;
+namespace HeidelPayment6\Components\PaymentHandler;
 
-use HeidelPayment\Components\BookingMode;
+use HeidelPayment6\Components\BookingMode;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\Paypal;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;

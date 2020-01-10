@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\EventListeners\Checkout;
+namespace HeidelPayment6\EventListeners\Checkout;
 
-use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
-use HeidelPayment\Components\Struct\PageExtension\Checkout\ConfirmPageExtension;
-use HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
-use HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
-use HeidelPayment\Installers\PaymentInstaller;
+use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment6\Components\Struct\PageExtension\Checkout\ConfirmPageExtension;
+use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
+use HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
+use HeidelPayment6\Installers\PaymentInstaller;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
