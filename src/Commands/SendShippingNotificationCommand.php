@@ -13,9 +13,9 @@ use RuntimeException;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeEntity;
 use Shopware\Core\Checkout\Document\DocumentCollection;
 use Shopware\Core\Checkout\Document\DocumentEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
@@ -144,7 +144,7 @@ class SendShippingNotificationCommand extends Command
         $this->transactionRepository->update([$update], $this->context);
     }
 
-    private function getMatchingTransactions(string $stateId): OrderTransactionCollection
+    private function getMatchingTransactions(string $stateId): EntityCollection
     {
         $criteria = new Criteria();
         $criteria->addFilter(
