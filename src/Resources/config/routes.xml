@@ -8,5 +8,5 @@
     <import resource="@HeidelPayment6/Controllers/Storefront/HeidelpayWebhookController.php" type="annotation" />
     <import resource="@HeidelPayment6/Controllers/Storefront/HeidelpayPaymentDeviceController.php" type="annotation" />
     <import resource="@HeidelPayment6/Controllers/Administration/HeidelpayTransactionController.php" type="annotation" />
-
+    <import resource="@HeidelPayment6/Controllers/Administration/HeidelpayConfigurationController.php" type="annotation" />
 </routes>

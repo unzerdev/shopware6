@@ -17,13 +17,23 @@
             class="sw-settings-login-registration__save-action"
             :isLoading="isLoading"
             :processSuccess="isSaveSuccessful"
-            @process-finish="onSaveFinished()"
             :disabled="isLoading || isTesting"
             variant="primary"
             @click="onSave">
             {{ $tc('sw-plugin-config.buttonSave') }}
         </sw-button-process>
         {% endblock %}
+
+        {% block heidel_payment_settings_actions_test %}
+        <sw-button-process
+            :isLoading="isTesting"
+            :processSuccess="isTestSuccessful"
+            :disabled="isLoading"
+            @click="onValidateCredentials">
+            S:TEST!
+        </sw-button-process>
+        {% endblock %}
+
     </template>
     {% endblock %}
 

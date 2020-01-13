@@ -13,6 +13,7 @@ Component.register('heidel-payment-settings', {
 
     inject: [
         'repositoryFactory',
+        'HeidelPaymentConfigurationService'
     ],
 
     data() {
@@ -45,17 +46,49 @@ Component.register('heidel-payment-settings', {
                 || defaultConfig[`HeidelPayment6.settings.${field}`];
         },
 
+        onValidateCredentials() {
+            this.isTestSuccessful = false;
+            this.isTesting = true;
+
+            const credentials = {
+                'publicKey': this.getConfigValue('publicKey'),
+                'privateKey': this.getConfigValue('privateKey'),
+                'salesChannel': this.$refs.systemConfig.currentSalesChannelId,
+            };
+
+            this.HeidelPaymentConfigurationService.validateCredentials(credentials).then(() => {
+                this.createNotificationSuccess({
+                    title: this.$tc('heidel-payment-settings.form.message.success.title'),
+                    message:  this.$tc('heidel-payment-settings.form.message.success.message'),
+                });
+
+                this.isTestSuccessful = true;
+                this.isTesting = false;
+            }).catch(() => {
+                this.createNotificationError({
+                    title: this.$tc('heidel-payment-settings.form.message.error.title'),
+                    message:  this.$tc('heidel-payment-settings.form.message.error.message'),
+                });
+                this.isTesting = false;
+            });
+        },
+
         onSave() {
+            this.isLoading = true;
             this.$refs.systemConfig.saveAll().then(() => {
                 this.createNotificationSuccess({
                     title: this.$tc('sw-plugin-config.titleSaveSuccess'),
                     message: this.$tc('sw-plugin-config.messageSaveSuccess')
                 });
+
+                this.isLoading = false;
             }).catch((err) => {
                 this.createNotificationError({
                     title: this.$tc('sw-plugin-config.titleSaveError'),
                     message: err
                 });
+
+                this.isLoading = false;
             });
         },
 
