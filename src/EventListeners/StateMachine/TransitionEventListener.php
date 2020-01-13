@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace HeidelPayment6\EventListeners\StateMachine;
 
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment6\Components\Event\AutomaticShippingNotificationEvent;
+use HeidelPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use HeidelPayment6\Installers\CustomFieldInstaller;
-use HeidelPayment6\Installers\PaymentInstaller;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Document\DocumentCollection;
@@ -20,15 +20,11 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Event\StateMachineTransitionEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TransitionEventListener implements EventSubscriberInterface
 {
-    public const HANDLED_PAYMENT_METHODS = [
-        PaymentInstaller::PAYMENT_ID_INVOICE_FACTORING,
-        PaymentInstaller::PAYMENT_ID_INVOICE_GUARANTEED,
-    ];
-
     /** @var EntityRepositoryInterface */
     private $orderRepository;
 
@@ -38,29 +34,33 @@ class TransitionEventListener implements EventSubscriberInterface
     /** @var EntityRepositoryInterface */
     private $transactionRepository;
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
-
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var AutomaticShippingValidatorInterface */
+    private $automaticShippingValidator;
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
+
     public function __construct(
         EntityRepositoryInterface $orderRepository,
         EntityRepositoryInterface $orderDeliveryRepository,
         EntityRepositoryInterface $transactionRepository,
-        ConfigReaderInterface $configReader,
+        AutomaticShippingValidatorInterface $automaticShippingValidator,
         ClientFactoryInterface $clientFactory,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        EventDispatcherInterface $eventDispatcher
     ) {
-        $this->orderRepository         = $orderRepository;
-        $this->orderDeliveryRepository = $orderDeliveryRepository;
-        $this->configReader            = $configReader;
-        $this->clientFactory           = $clientFactory;
-        $this->transactionRepository   = $transactionRepository;
-        $this->logger                  = $logger;
+        $this->orderRepository            = $orderRepository;
+        $this->orderDeliveryRepository    = $orderDeliveryRepository;
+        $this->clientFactory              = $clientFactory;
+        $this->transactionRepository      = $transactionRepository;
+        $this->logger                     = $logger;
+        $this->automaticShippingValidator = $automaticShippingValidator;
+        $this->eventDispatcher            = $eventDispatcher;
     }
 
     /**
@@ -77,34 +77,19 @@ class TransitionEventListener implements EventSubscriberInterface
     {
         $order = $this->getOrderFromEvent($event);
 
-        if (!$order) {
-            return;
-        }
-
-        $config             = $this->configReader->read($order->getSalesChannelId());
-        $configuredStatusId = $config->get('statusForAutomaticShippingNotification');
-
-        if (empty($configuredStatusId) || $event->getToPlace()->getId() !== $configuredStatusId) {
+        if (!$order || !$this->automaticShippingValidator->shouldSendAutomaticShipping($order, $event->getToPlace())) {
             return;
         }
 
         $orderTransaction = $order->getTransactions()->first();
-
-        if (!$orderTransaction || !in_array($orderTransaction->getPaymentMethodId(), self::HANDLED_PAYMENT_METHODS, false)) {
-            return;
-        }
-
-        $invoiceId = $this->getInvoiceDocumentId($order->getDocuments());
-
-        if (!$invoiceId) {
-            return;
-        }
+        $invoiceId        = $this->getInvoiceDocumentId($order->getDocuments());
 
         try {
             $client = $this->clientFactory->createClient($order->getSalesChannelId());
             $client->ship($orderTransaction->getId(), $invoiceId);
-
             $this->setCustomFields($event->getContext(), $orderTransaction);
+
+            $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $event->getContext()));
         } catch (RuntimeException $exception) {
             $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                 'trace' => $exception->getTrace(),
@@ -143,7 +128,7 @@ class TransitionEventListener implements EventSubscriberInterface
             /** @var null|OrderDeliveryEntity $orderDeliveryEntity */
             $orderDeliveryEntity = $this->orderDeliveryRepository->search($criteria, $transitionEvent->getContext())->first();
 
-            if (null === $orderDeliveryEntity) {
+            if ($orderDeliveryEntity === null) {
                 return null;
             }
 
@@ -160,16 +145,14 @@ class TransitionEventListener implements EventSubscriberInterface
         return $this->orderRepository->search($criteria, $transitionEvent->getContext())->first();
     }
 
-    private function getInvoiceDocumentId(DocumentCollection $documents): ?string
+    private function getInvoiceDocumentId(DocumentCollection $documents): string
     {
-        $invoice = $documents->filter(static function (DocumentEntity $entity) {
+        return $documents->filter(static function (DocumentEntity $entity) {
             if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
                 return $entity;
             }
 
             return null;
-        })->first();
-
-        return $invoice === null ? null : $invoice->getConfig()['documentNumber'];
+        })->first()->getConfig()['documentNumber'];
     }
 }

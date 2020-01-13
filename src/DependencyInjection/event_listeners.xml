@@ -28,9 +28,10 @@
             <argument type="service" id="order.repository" />
             <argument type="service" id="order_delivery.repository" />
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\Validator\AutomaticShippingValidator"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="heidel_payment.logger"/>
+            <argument type="service" id="event_dispatcher"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

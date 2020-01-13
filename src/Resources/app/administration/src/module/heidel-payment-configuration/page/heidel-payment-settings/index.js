@@ -39,12 +39,7 @@ Component.register('heidel-payment-settings', {
 
     methods: {
         getConfigValue(field) {
-            const salesChannelId = this.$refs.systemConfig.currentSalesChannelId;
             const defaultConfig = this.$refs.systemConfig.actualConfigData.null;
-
-            if (salesChannelId === null) {
-                return this.config[`HeidelPayment6.settings.${field}`];
-            }
 
             return this.config[`HeidelPayment6.settings.${field}`]
                 || defaultConfig[`HeidelPayment6.settings.${field}`];

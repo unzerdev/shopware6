@@ -26,7 +26,7 @@ class HeidelPayment6 extends Plugin
     public function build(ContainerBuilder $container): void
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/DependencyInjection'));
-        $loader->load('services.xml');
+        $loader->load('container.xml');
 
         parent::build($container);
     }

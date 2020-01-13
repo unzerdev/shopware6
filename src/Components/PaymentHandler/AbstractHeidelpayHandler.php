@@ -9,7 +9,7 @@ use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use HeidelPayment6\Components\Struct\Configuration;
 use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use HeidelPayment6\EventListeners\StateMachine\TransitionEventListener;
+use HeidelPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use HeidelPayment6\Installers\CustomFieldInstaller;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
@@ -146,7 +146,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
 
         $shipmentExecuted = !in_array(
             $transaction->getOrderTransaction()->getPaymentMethodId(),
-            TransitionEventListener::HANDLED_PAYMENT_METHODS,
+            AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
             false
         );
         $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);

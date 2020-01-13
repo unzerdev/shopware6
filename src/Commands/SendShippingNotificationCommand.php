@@ -6,7 +6,8 @@ namespace HeidelPayment6\Commands;
 
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
-use HeidelPayment6\EventListeners\StateMachine\TransitionEventListener;
+use HeidelPayment6\Components\Event\AutomaticShippingNotificationEvent;
+use HeidelPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use HeidelPayment6\Installers\CustomFieldInstaller;
 use heidelpayPHP\Constants\ApiResponseCodes;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
@@ -24,6 +25,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class SendShippingNotificationCommand extends Command
 {
@@ -45,12 +47,20 @@ class SendShippingNotificationCommand extends Command
     /** @var Context */
     private $context;
 
-    public function __construct(ConfigReaderInterface $configReader, ClientFactoryInterface $clientFactory, EntityRepositoryInterface $transactionRepository)
-    {
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
+
+    public function __construct(
+        ConfigReaderInterface $configReader,
+        ClientFactoryInterface $clientFactory,
+        EntityRepositoryInterface $transactionRepository,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->configReader          = $configReader;
         $this->clientFactory         = $clientFactory;
         $this->transactionRepository = $transactionRepository;
         $this->context               = Context::createDefaultContext();
+        $this->eventDispatcher       = $eventDispatcher;
 
         parent::__construct();
     }
@@ -75,35 +85,35 @@ class SendShippingNotificationCommand extends Command
             return self::EXIT_CODE_CONFIGURATION;
         }
 
-        $transactions = $this->getMatchingTransactions($configuredState);
-        $max          = $transactions->count();
+        $transactions     = $this->getMatchingTransactions($configuredState);
+        $transactionCount = $transactions->count();
 
-        if ($max === 0) {
+        if ($transactionCount === 0) {
             $output->writeln('<info>No orders found for automatic shipping notification.</info>');
 
             return self::EXIT_CODE_NO_ORDERS;
         }
 
-        $output->writeln(sprintf('<info>Found %s possible order(s) for automatic shipping notification</info>', $max));
-        $current = 0;
+        $output->writeln(sprintf('<info>Found %s possible order(s) for automatic shipping notification</info>', $transactionCount));
+        $currentTransactionCounter = 0;
 
         /** @var OrderTransactionEntity $transaction */
         foreach ($transactions as $transaction) {
-            ++$current;
+            ++$currentTransactionCounter;
 
             $order = $transaction->getOrder();
 
-            $output->write(sprintf('(%s/%s) Order %s', $current, $max, $order->getOrderNumber()));
+            $output->write(sprintf('(%s/%s) Order %s', $currentTransactionCounter, $transactionCount, $order->getOrderNumber()));
 
             $entityFilter = new DocumentTypeEntity();
             $entityFilter->setTechnicalName('invoice');
-            $documentId = $this->getInvoiceDocumentId($order->getDocuments());
+            $invoiceId = $this->getInvoiceDocumentId($order->getDocuments());
 
             try {
                 $client = $this->clientFactory->createClient($order->getSalesChannelId());
-                $client->ship($transaction->getId(), $documentId);
-
+                $client->ship($transaction->getId(), $invoiceId);
                 $this->setCustomFields($transaction);
+                $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $this->context));
 
                 $output->writeln("\t<info>OK</info>");
             } catch (HeidelpayApiException $apiException) {
@@ -112,6 +122,7 @@ class SendShippingNotificationCommand extends Command
                 //Already insured but flag in DB missing!
                 if ($apiException->getCode() === ApiResponseCodes::CORE_ERROR_INSURANCE_ALREADY_ACTIVATED) {
                     $this->setCustomFields($transaction);
+                    $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $this->context));
 
                     return self::EXIT_CODE_SUCCESS;
                 }
@@ -148,7 +159,7 @@ class SendShippingNotificationCommand extends Command
         $criteria = new Criteria();
         $criteria->addFilter(
             new EqualsFilter(sprintf('customFields.%s', CustomFieldInstaller::HEIDELPAY_IS_SHIPPED), false),
-            new EqualsAnyFilter('paymentMethodId', TransitionEventListener::HANDLED_PAYMENT_METHODS),
+            new EqualsAnyFilter('paymentMethodId', AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS),
             new EqualsFilter('order.deliveries.stateId', $stateId),
             new EqualsFilter('order.documents.documentType.technicalName', 'invoice')
         )->addAssociations([
@@ -161,16 +172,14 @@ class SendShippingNotificationCommand extends Command
         return $this->transactionRepository->search($criteria, $this->context)->getEntities();
     }
 
-    private function getInvoiceDocumentId(DocumentCollection $documents): ?string
+    private function getInvoiceDocumentId(DocumentCollection $documents): string
     {
-        $invoice = $documents->filter(static function (DocumentEntity $entity) {
+        return $documents->filter(static function (DocumentEntity $entity) {
             if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
                 return $entity;
             }
 
             return null;
-        })->first();
-
-        return $invoice->getConfig()['documentNumber'];
+        })->first()->getConfig()['documentNumber'];
     }
 }
