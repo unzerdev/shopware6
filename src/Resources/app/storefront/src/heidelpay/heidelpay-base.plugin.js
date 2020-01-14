@@ -39,8 +39,10 @@ export default class HeidelpayBasePlugin extends Plugin {
     setSubmitButtonActive(active) {
         if (active) {
             this.submitButton.classList.remove(this.options.disabledClass);
+            this.submitButton.disabled = false;
         } else {
             this.submitButton.classList.add(this.options.disabledClass);
+            this.submitButton.disabled = true;
         }
     }
 

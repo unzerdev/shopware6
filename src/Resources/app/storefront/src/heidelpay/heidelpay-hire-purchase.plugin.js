@@ -55,6 +55,8 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
             scope: this,
         });
+
+        this.hirePurchase.addEventListener('hirePurchaseEvent', (event) => this._onChangeHirePurchaseForm(event));
     }
 
     _onCreateResource() {
@@ -63,5 +65,15 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         this.hirePurchase.createResource()
             .then((resource) => this.heidelpayPlugin.submitResource(resource))
             .catch((error) => this.heidelpayPlugin.showError(error));
+    }
+
+    _onChangeHirePurchaseForm(event) {
+        if (event.action === 'validate') {
+            if (event.success) {
+                this.heidelpayPlugin.setSubmitButtonActive(true);
+            } else {
+                this.heidelpayPlugin.setSubmitButtonActive(false);
+            }
+        }
     }
 }

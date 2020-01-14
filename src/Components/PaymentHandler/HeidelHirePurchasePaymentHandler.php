@@ -32,7 +32,7 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
             // As soon as it's shorter, use $transaction->getReturnUrl() instead!
             $returnUrl = $this->getReturnUrl();
 
-            $paymentResult = $this->paymentType->charge(
+            $paymentResult = $this->paymentType->authorize(
                 $this->heidelpayBasket->getAmountTotalGross(),
                 $this->heidelpayBasket->getCurrencyCode(),
                 $returnUrl,
