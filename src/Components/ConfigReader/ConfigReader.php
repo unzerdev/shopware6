@@ -10,7 +10,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 class ConfigReader implements ConfigReaderInterface
 {
     /** @var string */
-    public const SYSTEM_CONFIG_DOMAIN = 'HeidelPayment6.config.';
+    public const SYSTEM_CONFIG_DOMAIN = 'HeidelPayment6.settings.';
 
     /** @var SystemConfigService */
     private $systemConfigService;

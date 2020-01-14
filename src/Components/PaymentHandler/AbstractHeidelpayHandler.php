@@ -9,6 +9,7 @@ use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use HeidelPayment6\Components\Struct\Configuration;
 use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use HeidelPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use HeidelPayment6\Installers\CustomFieldInstaller;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
@@ -143,7 +144,12 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             $salesChannelContext->getContext()
         );
 
-        $this->setIsHeidelpayTransaction($transaction, $salesChannelContext);
+        $shipmentExecuted = !in_array(
+            $transaction->getOrderTransaction()->getPaymentMethodId(),
+            AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
+            false
+        );
+        $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
 
         $this->session->remove('heidelpayMetadataId');
     }
@@ -156,12 +162,16 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         return $this->router->generate('heidelpay.payment.finalize', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
-    protected function setIsHeidelpayTransaction(
+    protected function setCustomFields(
         AsyncPaymentTransactionStruct $transaction,
-        SalesChannelContext $salesChannelContext
+        SalesChannelContext $salesChannelContext,
+        bool $shipmentExcecuted
     ): void {
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
-        $customFields = array_merge($customFields, [CustomFieldInstaller::HEIDELPAY_IS_TRANSACTION => true]);
+        $customFields = array_merge($customFields, [
+            CustomFieldInstaller::HEIDELPAY_IS_TRANSACTION => true,
+            CustomFieldInstaller::HEIDELPAY_IS_SHIPPED     => $shipmentExcecuted,
+        ]);
 
         $update = [
             'id'           => $transaction->getOrderTransaction()->getId(),

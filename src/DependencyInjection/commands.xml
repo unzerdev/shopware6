@@ -10,5 +10,14 @@
 
             <tag name="console.command" />
         </service>
+
+        <service id="HeidelPayment6\Commands\SendShippingNotificationCommand" >
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
+            <argument type="service" id="order_transaction.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\Event\BusinessEventDispatcher"/>
+
+            <tag name="console.command" />
+        </service>
     </services>
 </container>

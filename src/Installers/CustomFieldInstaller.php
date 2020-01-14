@@ -16,6 +16,7 @@ class CustomFieldInstaller implements InstallerInterface
 {
     public const HEIDELPAY_FRAME          = 'heidelpay_frame';
     public const HEIDELPAY_IS_TRANSACTION = 'heidelpay_is_transaction';
+    public const HEIDELPAY_IS_SHIPPED     = 'heidelpay_is_shipped';
 
     public const CUSTOM_FIELDS = [
         [
@@ -47,6 +48,17 @@ class CustomFieldInstaller implements InstallerInterface
                         'label' => [
                             'en-GB' => 'Heidelpay transaction',
                             'de-DE' => 'Heidelpay Transaktion',
+                        ],
+                    ],
+                ],
+                [
+                    'name'   => self::HEIDELPAY_IS_SHIPPED,
+                    'type'   => CustomFieldTypes::BOOL,
+                    'id'     => '4962176184c25acbd46f60a15c24b334',
+                    'config' => [
+                        'label' => [
+                            'en-GB' => 'Shipping notification executed',
+                            'de-DE' => 'Versandbenachrichtung erfolgt',
                         ],
                     ],
                 ],

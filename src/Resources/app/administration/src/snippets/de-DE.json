@@ -61,5 +61,11 @@
                 "invoiceNotFoundMessage": "Zu dieser Bestellung wurde keine Rechnung gefunden"
             }
         }
+    },
+    "heidel-payment-settings": {
+        "module": {
+            "title": "Heidelpay",
+            "description": "Heidelpay"
+        }
     }
 }
