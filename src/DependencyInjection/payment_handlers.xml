@@ -230,5 +230,19 @@
 
             <tag name="shopware.payment.method.async" />
         </service>
+
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelHirePurchasePaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="router.default"/>
+            <argument type="service" id="session"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
     </services>
 </container>

@@ -34,3 +34,25 @@
     display: inline-block;
     margin-left: 8px;
 }
+
+.heidelpay-loader {
+    height: 64px;
+}
+
+.heidelpayUI.input input {
+    box-sizing: content-box;
+}
+
+.heidelpayUI.left.input {
+    float: none;
+}
+
+.heidelpayUI.checkbox {
+    border: 0;
+    width: auto;
+    height: auto;
+}
+
+.heidelpayUI.input.icon {
+    margin-top: 8px;
+}

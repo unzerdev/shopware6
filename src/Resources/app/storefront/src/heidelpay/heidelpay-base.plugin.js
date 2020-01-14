@@ -81,6 +81,16 @@ export default class HeidelpayBasePlugin extends Plugin {
         this.setSubmitButtonActive(true);
     }
 
+    renderErrorToElement(error, el) {
+        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
+            errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+
+        errorContent.innerText = error.message;
+        errorWrapper.hidden = false;
+
+        el.appendChild(errorWrapper);
+    }
+
     /**
      * @private
      */
