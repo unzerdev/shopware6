@@ -12,4 +12,6 @@ interface ClientFactoryInterface
     public const DEFAULT_LOCALE = 'en_GB';
 
     public function createClient(string $salesChannelId = '', string $locale = self::DEFAULT_LOCALE): Heidelpay;
+
+    public function createClientFromPrivateKey(string $privateKey, string $locale = self::DEFAULT_LOCALE): Heidelpay;
 }

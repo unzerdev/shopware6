@@ -73,6 +73,10 @@ Component.register('heidel-payment-settings', {
             });
         },
 
+        onTestFinished() {
+            this.isTestSuccessful = false;
+        },
+
         onSave() {
             this.isLoading = true;
             this.$refs.systemConfig.saveAll().then(() => {

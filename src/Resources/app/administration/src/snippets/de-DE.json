@@ -77,7 +77,8 @@
                     "title": "Test fehlgeschlagen",
                     "message": "Die angegebenen API-Zugangsdaten sind nicht korret! Bitte korrigieren Sie die Eingabe und versuchen Sie es erneut."
                 }
-            }
+            },
+            "testButton": "API Zugangsdaten testen"
         }
     }
 }

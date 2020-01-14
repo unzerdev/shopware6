@@ -28,9 +28,10 @@
         <sw-button-process
             :isLoading="isTesting"
             :processSuccess="isTestSuccessful"
+            @process-finish="onTestFinished()"
             :disabled="isLoading"
             @click="onValidateCredentials">
-            S:TEST!
+            {{ $tc('heidel-payment-settings.form.testButton') }}
         </sw-button-process>
         {% endblock %}
 
