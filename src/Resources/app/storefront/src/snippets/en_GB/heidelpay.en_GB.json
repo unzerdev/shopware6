@@ -38,8 +38,8 @@
         "accountPayment": {
             "delete": "Delete",
             "creditCard": "Credit card",
-            "deviceDeleted": "The payment device has been deleted successfully.",
-            "title": "Your saved payment devices"
+            "deviceDeleted": "The mean of payment has been deleted successfully.",
+            "title": "Your saved means of payment"
         }
     }
 }
