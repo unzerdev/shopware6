@@ -66,6 +66,19 @@
         "module": {
             "title": "Heidelpay",
             "description": "Heidelpay"
+        },
+        "form": {
+            "message": {
+                "success": {
+                    "title": "Test succeeded",
+                    "message": "The provided credentials are valid!"
+                },
+                "error": {
+                    "title": "Test failed",
+                    "message": "API Credentials are invalid, please correct them and try again!"
+                }
+            },
+            "testButton": "Test API credentials"
         }
     }
 }

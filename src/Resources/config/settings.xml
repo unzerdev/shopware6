@@ -9,11 +9,13 @@
             <name>publicKey</name>
             <label>Public key</label>
             <label lang="de-DE">Public key</label>
+            <required>true</required>
         </input-field>
         <input-field>
             <name>privateKey</name>
             <label>Private key</label>
             <label lang="de-DE">Private key</label>
+            <required>true</required>
         </input-field>
         <input-field type="bool">
             <name>testMode</name>

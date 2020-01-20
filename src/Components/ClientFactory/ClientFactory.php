@@ -32,4 +32,15 @@ class ClientFactory implements ClientFactoryInterface
 
         return $client;
     }
+
+    public function createClientFromPrivateKey(string $privateKey, string $locale = self::DEFAULT_LOCALE): Heidelpay
+    {
+        $config = $this->configReader->read();
+
+        $client = new Heidelpay($privateKey, $locale);
+        $client->setDebugMode((bool) $config->get('extendedLogging'));
+        $client->setDebugHandler($this->debugHandler);
+
+        return $client;
+    }
 }

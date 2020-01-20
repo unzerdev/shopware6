@@ -66,6 +66,19 @@
         "module": {
             "title": "Heidelpay",
             "description": "Heidelpay"
+        },
+        "form": {
+            "message": {
+                "success": {
+                    "title": "Test erfolgreich",
+                    "message": "Die angegebenen API-Zugangsdaten sind korrekt!"
+                },
+                "error": {
+                    "title": "Test fehlgeschlagen",
+                    "message": "Die angegebenen API-Zugangsdaten sind nicht korret! Bitte korrigieren Sie die Eingabe und versuchen Sie es erneut."
+                }
+            },
+            "testButton": "API Zugangsdaten testen"
         }
     }
 }
