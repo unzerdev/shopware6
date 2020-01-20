@@ -15,7 +15,6 @@
                        form="confirmOrderForm"
                        required="required"
                        {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
-
             </div>
         {% endblock %}
     </div>

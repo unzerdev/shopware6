@@ -27,7 +27,13 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
+        $birthday = $dataBag->get('heidelpayBirthday');
+        $heidelpayCustomer = $this->heidelpayCustomer;
+        $heidelpayCustomer->setBirthDate($birthday);
+
         try {
+            $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($heidelpayCustomer);
+
             // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
             // As soon as it's shorter, use $transaction->getReturnUrl() instead!
             $returnUrl = $this->getReturnUrl();
@@ -36,7 +42,7 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
                 $this->heidelpayBasket->getAmountTotalGross(),
                 $this->heidelpayBasket->getCurrencyCode(),
                 $returnUrl,
-                $this->heidelpayCustomer,
+                $heidelpayCustomer,
                 $transaction->getOrderTransaction()->getId(),
                 $this->heidelpayMetadata,
                 $this->heidelpayBasket
@@ -50,6 +56,10 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
+            echo '<pre>';
+            print_r($apiException);
+            echo '</pre>';
+            exit();
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         }
     }
