@@ -61,5 +61,11 @@
                 "invoiceNotFoundMessage": "No invoice was found for this order."
             }
         }
+    },
+    "heidel-payment-settings": {
+        "module": {
+            "title": "Heidelpay",
+            "description": "Heidelpay"
+        }
     }
 }
