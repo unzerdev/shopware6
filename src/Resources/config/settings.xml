@@ -88,8 +88,8 @@
 
         <input-field type="single-select">
             <name>statusForAutomaticShippingNotification</name>
-            <label>Order status for shipping notification</label>
-            <label lang="de-DE">Bestellstatus für die Versandbenachrichtigung</label>
+            <label>Delivery status for shipping notification</label>
+            <label lang="de-DE">Versandstatus für die Versandbenachrichtigung</label>
             <helpText>Automatic shipping notifications (if active) will be sent if an order enters the selected status. Leave empty to disable automatic shipping notifications.</helpText>
             <helpText lang="de-DE">Die automatische Versandbenachrichtigung wird, wenn aktiv, ausgelöst sobald eine Bestellung den hier ausgewählten Status erhält. Lassen Sie dieses Feld leer, um keine automatischen Versandbenachrichtigungen anzustoßen.</helpText>
         </input-field>
