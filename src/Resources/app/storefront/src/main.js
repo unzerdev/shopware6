@@ -7,6 +7,7 @@ import HeidelpayEpsPlugin from './heidelpay/heidelpay-eps.plugin';
 import HeidelpayIdealPlugin from './heidelpay/heidelpay-ideal.plugin';
 import HeidelpaySepaDirectDebitPlugin from './heidelpay/heidelpay-sepa-direct-debit.plugin';
 import HeidelpaySepaDirectDebitGuaranteedPlugin from './heidelpay/heidelpay-sepa-direct-debit-guaranteed.plugin';
+import HeidelpayHirePurchasePlugin from './heidelpay/heidelpay-hire-purchase.plugin';
 
 const PluginManager = window.PluginManager;
 PluginManager.register('HeidelpayBase', HeidelpayBasePlugin, '[data-heidelpay-base]');
@@ -18,6 +19,7 @@ PluginManager.register('HeidelpayEps', HeidelpayEpsPlugin, '[data-heidelpay-eps]
 PluginManager.register('HeidelpayIdeal', HeidelpayIdealPlugin, '[data-heidelpay-ideal]');
 PluginManager.register('HeidelpaySepaDirectDebit', HeidelpaySepaDirectDebitPlugin, '[data-heidelpay-sepa-direct-debit]');
 PluginManager.register('HeidelpaySepaDirectDebitGuaranteed', HeidelpaySepaDirectDebitGuaranteedPlugin, '[data-heidelpay-sepa-direct-debit-guaranteed]');
+PluginManager.register('HeidelpayHirePurchase', HeidelpayHirePurchasePlugin, '[data-heidelpay-hire-purchase]');
 
 // Necessary for the webpack hot module reloading server
 if (module.hot) {

@@ -39,8 +39,10 @@ export default class HeidelpayBasePlugin extends Plugin {
     setSubmitButtonActive(active) {
         if (active) {
             this.submitButton.classList.remove(this.options.disabledClass);
+            this.submitButton.disabled = false;
         } else {
             this.submitButton.classList.add(this.options.disabledClass);
+            this.submitButton.disabled = true;
         }
     }
 
@@ -79,6 +81,16 @@ export default class HeidelpayBasePlugin extends Plugin {
         errorWrapper.scrollIntoView({ block: 'end', behavior: 'smooth' });
 
         this.setSubmitButtonActive(true);
+    }
+
+    renderErrorToElement(error, el) {
+        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
+            errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+
+        errorContent.innerText = error.message;
+        errorWrapper.hidden = false;
+
+        el.appendChild(errorWrapper);
     }
 
     /**

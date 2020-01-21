@@ -31,5 +31,7 @@
         <service id="HeidelPayment6\Components\Validator\AutomaticShippingValidator">
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
         </service>
+
+        <service id="HeidelPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
     </services>
 </container>

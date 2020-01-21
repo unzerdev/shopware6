@@ -1,0 +1,33 @@
+{% block heidelpay_frame_hire_purchase %}
+    <div class="heidelpay-hire-purchase-wrapper"
+         data-heidelpay-hire-purchase="true"
+         data-heidelpay-hire-purchase-options='{
+            "hirePurchaseCurrency": "{{ page.extensions.heidelpayHirePurchase.currency }}",
+            "hirePurchaseAmount": {{ page.extensions.heidelpayHirePurchase.amount }},
+            "hirePurchaseEffectiveInterest": {{ page.extensions.heidelpayHirePurchase.effectiveInterest }},
+            "hirePurchaseOrderDate": "{{ page.extensions.heidelpayHirePurchase.orderDate }}"
+         }'>
+
+        <div id="element-loader" class="heidelpay-loader">
+            {# Placeholder for the loader element. #}
+        </div>
+
+        {% block heidelpay_frame_hire_purchase_container %}
+            <div id="heidelpay-hire-purchase-container"></div>
+        {% endblock %}
+
+        {% block heidelpay_frame_hire_purchase_birthday %}
+        <label for="heidelpayBirthday" class="heidelpay-label">
+            {{ "account.personalBirthdayLabel"|trans }}
+        </label>
+
+        <input type="date"
+               id="heidelpayBirthday"
+               name="heidelpayBirthday"
+               class="form-control heidelpay-date-input"
+               form="confirmOrderForm"
+               required="required"
+               {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+        {% endblock %}
+    </div>
+{% endblock %}
