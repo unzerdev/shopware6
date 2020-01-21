@@ -56,10 +56,6 @@ class FinishPageEventListener implements EventSubscriberInterface
         }
 
         $heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
-
-        dump($heidelpayClient->fetchKeypair(true));
-        die();
-
         $extension       = new FinishPageExtension();
 
         /** @var OrderTransactionEntity $transaction */

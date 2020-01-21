@@ -72,12 +72,17 @@ class HeidelInvoiceGuaranteedPaymentHandler extends AbstractHeidelpayHandler
             $returnUrl         = $this->getReturnUrl();
             $heidelpayCustomer = $this->heidelpayCustomer;
 
-            if ($salesChannelContext->getCustomer()->getCompany() !== null || $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany() !== null) {
-                $heidelpayCustomer = $this->businessCustomerHydrator->hydrateObject($salesChannelContext, $transaction);
-            }
+            if (empty($this->heidelpayCustomerId)) {
+                if ($salesChannelContext->getCustomer()->getCompany() !== null || $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany() !== null) {
+                    $heidelpayCustomer = $this->businessCustomerHydrator->hydrateObject(
+                        $salesChannelContext,
+                        $transaction
+                    );
+                }
 
-            $heidelpayCustomer->setBirthDate($birthday);
-            $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($heidelpayCustomer);
+                $heidelpayCustomer->setBirthDate($birthday);
+                $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($heidelpayCustomer);
+            }
 
             $paymentResult = $this->paymentType->charge(
                 $this->heidelpayBasket->getAmountTotalGross(),

@@ -58,6 +58,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var SessionInterface */
     protected $session;
 
+    /** @var string */
+    protected $heidelpayCustomerId;
+
     /** @var ResourceHydratorInterface */
     private $basketHydrator;
 
@@ -116,10 +119,16 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
 
         $this->resourceId = $dataBag->get('heidelpayResourceId');
+        $this->heidelpayCustomerId = $dataBag->get('heidelpayCustomerId');
 
         $this->heidelpayBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
-        $this->heidelpayCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
         $this->heidelpayMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
+
+        if (!empty($this->heidelpayCustomerId)) {
+            $this->heidelpayCustomer = $this->heidelpayClient->fetchCustomer($this->heidelpayCustomerId);
+        } else {
+            $this->heidelpayCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
+        }
 
         if (!empty($this->resourceId)) {
             $this->paymentType = $this->heidelpayClient->fetchPaymentType($this->resourceId);
