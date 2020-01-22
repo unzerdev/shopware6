@@ -28,8 +28,8 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     public function __construct(HeidelpayPaymentDeviceRepositoryInterface $deviceRepository, ConfigReaderInterface $configReader, PaymentFrameFactoryInterface $paymentFrameFactory)
     {
-        $this->deviceRepository = $deviceRepository;
-        $this->configReader     = $configReader;
+        $this->deviceRepository    = $deviceRepository;
+        $this->configReader        = $configReader;
         $this->paymentFrameFactory = $paymentFrameFactory;
     }
 
@@ -65,7 +65,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     private function addPaymentFrameExtension(CheckoutConfirmPageLoadedEvent $event): void
     {
-        $paymentId = $event->getSalesChannelContext()->getPaymentMethod()->getId();
+        $paymentId           = $event->getSalesChannelContext()->getPaymentMethod()->getId();
         $mappedFrameTemplate = $this->paymentFrameFactory->getPaymentFrame($paymentId);
 
         if (!$mappedFrameTemplate) {

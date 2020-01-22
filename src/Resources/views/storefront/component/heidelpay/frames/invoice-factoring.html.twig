@@ -2,7 +2,7 @@
     <div class="heidelpay-invoice-factoring-wrapper"
          data-heidelpay-invoice-factoring="true"
          data-heidelpay-invoice-factoring-options='{
-            "isB2BCustomer": {{ context.customer.activeBillingAddress.company is not empty }},
+            "isB2BCustomer": "{{ context.customer.activeBillingAddress.company is not empty }}",
             "customerInfo": {{ context.customer|json_encode }}
          }'>
 
@@ -13,6 +13,7 @@
                 </div>
 
                 <input type="hidden" id="heidelpayCustomerId" name="heidelpayCustomerId" form="confirmOrderForm">
+                {% endblock %}
             {% else %}
                 {% block heidelpay_frame_invoice_factoring_birthday %}
                     <label for="heidelpayBirthday" class="heidelpay-label">

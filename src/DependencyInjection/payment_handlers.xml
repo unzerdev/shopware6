@@ -43,7 +43,6 @@
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="router.default"/>
             <argument type="service" id="session"/>
-            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -58,7 +57,6 @@
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="router.default"/>
             <argument type="service" id="session"/>
-            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
 
             <tag name="shopware.payment.method.async" />
         </service>

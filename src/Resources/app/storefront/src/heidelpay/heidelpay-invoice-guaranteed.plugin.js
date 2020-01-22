@@ -26,8 +26,6 @@ export default class HeidelpayInvoiceGuaranteedPlugin extends Plugin {
     static b2bCustomerProvider = null;
 
     init() {
-        console.log(this.options.customerInfo);
-
         this.heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
         this.invoiceGuaranteed = this.heidelpayPlugin.heidelpayInstance.InvoiceGuaranteed();
 
@@ -42,7 +40,7 @@ export default class HeidelpayInvoiceGuaranteedPlugin extends Plugin {
         this.b2bCustomerProvider = this.heidelpayPlugin.heidelpayInstance.B2BCustomer();
 
         this.b2bCustomerProvider.b2bCustomerEventHandler = (event) => this._onValidateB2bForm(event);
-        this.b2bCustomerProvider.initFormFields(this._getB2bCustomerObject());
+        this.b2bCustomerProvider.initFormFields(this.heidelpayPlugin.getB2bCustomerObject(this.options.customerInfo));
 
         this.b2bCustomerProvider.create({
             containerId: 'heidelpay-b2b-form',
@@ -63,11 +61,9 @@ export default class HeidelpayInvoiceGuaranteedPlugin extends Plugin {
         this.heidelpayPlugin.setSubmitButtonActive(false);
 
         if (this.options.isB2BCustomer) {
-            this.b2bCustomerProvider.createCustomer().then((data) => {
-                this._onB2bCustomerCreated(data.id);
-            }).catch((error) => {
-                this._handleError(error);
-            });
+            this.b2bCustomerProvider.createCustomer()
+                .then((data) => this._onB2bCustomerCreated(data.id))
+                .catch((error) => this._handleError(error));
         } else {
             this.invoiceGuaranteed.createResource()
                 .then((resource) => this._submitPayment(resource))
@@ -84,12 +80,8 @@ export default class HeidelpayInvoiceGuaranteedPlugin extends Plugin {
         resourceIdElement.value = b2bCustomerId;
 
         this.invoiceGuaranteed.createResource()
-            .then((resource) => {
-                this._submitPayment(resource);
-            })
-            .catch((error) => {
-                this._handleError(error);
-            });
+            .then((resource) => this._submitPayment(resource))
+            .catch((error) => this._handleError(error));
     }
 
     /**
@@ -107,28 +99,5 @@ export default class HeidelpayInvoiceGuaranteedPlugin extends Plugin {
      */
     _handleError(error) {
         this.heidelpayPlugin.showError(error);
-    }
-
-    _getB2bCustomerObject() {
-        return {
-            firstname: this.options.customerInfo.firstName,
-            lastname: this.options.customerInfo.lastName,
-            company: this.options.customerInfo.activeBillingAddress.company,
-            salutation: this.options.customerInfo.salutation.salutationKey,
-            birthDate: this.options.customerInfo.lastName.birthday,
-            email: this.options.customerInfo.email,
-            billingAddress: {
-                street: this.options.customerInfo.activeBillingAddress.street,
-                zip: this.options.customerInfo.activeBillingAddress.zipcode,
-                city: this.options.customerInfo.activeBillingAddress.city,
-                country: this.options.customerInfo.activeBillingAddress.country.name,
-            },
-            shippingAddress: {
-                street: this.options.customerInfo.activeShippingAddress.street,
-                zip: this.options.customerInfo.activeShippingAddress.zipcode,
-                city: this.options.customerInfo.activeShippingAddress.city,
-                country: this.options.customerInfo.activeShippingAddress.country.name,
-            },
-        }
     }
 }

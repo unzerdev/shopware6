@@ -27,7 +27,7 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $birthday = $dataBag->get('heidelpayBirthday');
+        $birthday          = $dataBag->get('heidelpayBirthday');
         $heidelpayCustomer = $this->heidelpayCustomer;
         $heidelpayCustomer->setBirthDate($birthday);
 
@@ -56,10 +56,6 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
-            echo '<pre>';
-            print_r($apiException);
-            echo '</pre>';
-            exit();
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         }
     }

@@ -156,4 +156,33 @@ export default class HeidelpayBasePlugin extends Plugin {
         errorContent.innerText = '';
         errorWrapper.hidden = true;
     }
+
+    /**
+     *
+     * @param {object} customerInfo
+     * @return {object}
+     * @public
+     */
+    getB2bCustomerObject(customerInfo) {
+        return {
+            firstname: customerInfo.firstName,
+            lastname: customerInfo.lastName,
+            company: customerInfo.activeBillingAddress.company,
+            salutation: customerInfo.salutation.salutationKey,
+            birthDate: customerInfo.lastName.birthday,
+            email: customerInfo.email,
+            billingAddress: {
+                street: customerInfo.activeBillingAddress.street,
+                zip: customerInfo.activeBillingAddress.zipcode,
+                city: customerInfo.activeBillingAddress.city,
+                country: customerInfo.activeBillingAddress.country.name,
+            },
+            shippingAddress: {
+                street: customerInfo.activeShippingAddress.street,
+                zip: customerInfo.activeShippingAddress.zipcode,
+                city: customerInfo.activeShippingAddress.city,
+                country: customerInfo.activeShippingAddress.country.name,
+            },
+        }
+    }
 }

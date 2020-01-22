@@ -118,7 +118,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $this->pluginConfig    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
 
-        $this->resourceId = $dataBag->get('heidelpayResourceId');
+        $this->resourceId          = $dataBag->get('heidelpayResourceId');
         $this->heidelpayCustomerId = $dataBag->get('heidelpayCustomerId');
 
         $this->heidelpayBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);

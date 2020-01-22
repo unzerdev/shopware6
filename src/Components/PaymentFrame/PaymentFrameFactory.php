@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\PaymentFrame;
 
-use HeidelPayment6\Installers\PaymentInstaller;
-
 class PaymentFrameFactory implements PaymentFrameFactoryInterface
 {
     public function getPaymentFrame(string $paymentMethodId): ?string
@@ -17,4 +15,3 @@ class PaymentFrameFactory implements PaymentFrameFactoryInterface
         return self::DEFAULT_FRAME_MAPPING[$paymentMethodId];
     }
 }
-

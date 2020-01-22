@@ -1,6 +1,11 @@
 import Plugin from 'src/plugin-system/plugin.class';
 
 export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
+    static options = {
+        isB2BCustomer: false,
+        customerInfo: null,
+    };
+
     /**
      * @type {Object}
      *
@@ -16,30 +21,28 @@ export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
     static heidelpayPlugin = null;
 
     /**
-     * @type {Object}
-     *
-     * @public
+     * @type {object}
      */
-    static b2bCustomer = null;
+    static b2bCustomerProvider = null;
 
     init() {
         this.heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
         this.invoiceFactoring = this.heidelpayPlugin.heidelpayInstance.InvoiceFactoring();
-        this.b2bCustomer = this.heidelpayPlugin.heidelpayInstance.B2BCustomer();
 
-        this._createForm();
+        if (this.options.isB2BCustomer) {
+            this._createB2bForm();
+        }
+
         this._registerEvents();
     }
 
-    _createForm() {
-        this.b2bCustomer.initFormFields({
-            'companyInfo': {
-                'commercialSector': 'AIR_TRANSPORT',
-            },
-        });
+    _createB2bForm() {
+        this.b2bCustomerProvider = this.heidelpayPlugin.heidelpayInstance.B2BCustomer();
+        this.b2bCustomerProvider.b2bCustomerEventHandler = (event) => this._onValidateB2bForm(event);
+        this.b2bCustomerProvider.initFormFields(this.heidelpayPlugin.getB2bCustomerObject(this.options.customerInfo));
 
-        this.b2bCustomer.create({
-            containerId: 'heidelpay-invoice-commercial-sector',
+        this.b2bCustomerProvider.create({
+            containerId: 'heidelpay-b2b-form',
         });
     }
 
@@ -52,11 +55,33 @@ export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
     _onCreateResource() {
         this.heidelpayPlugin.setSubmitButtonActive(false);
 
+        if (this.options.isB2BCustomer) {
+            this.b2bCustomerProvider.createCustomer()
+                .then((data) => this._onB2bCustomerCreated(data.id))
+                .catch((error) => this._handleError(error));
+        } else {
+            this.invoiceFactoring.createResource()
+                .then((resource) => this._submitPayment(resource))
+                .catch((error) => this._handleError(error));
+        }
+    }
+
+    /**
+     * @param {string} b2bCustomerId
+     * @private
+     */
+    _onB2bCustomerCreated(b2bCustomerId) {
+        const resourceIdElement = document.getElementById('heidelpayCustomerId');
+        resourceIdElement.value = b2bCustomerId;
+
         this.invoiceFactoring.createResource()
             .then((resource) => this._submitPayment(resource))
             .catch((error) => this._handleError(error));
     }
 
+    _onValidateB2bForm(event) {
+        this.heidelpayPlugin.setSubmitButtonActive(event.success);
+    }
 
     /**
      * @param {Object} resource
