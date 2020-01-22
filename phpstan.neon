@@ -2,7 +2,8 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
 
 parameters:
-    reportUnmatchedIgnoredErrors: true
+    level: 5
+    reportUnmatchedIgnoredErrors: false
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
-        - '#does not accept object#'
+        - '#Property(.*)does not accept object(.*)#'
