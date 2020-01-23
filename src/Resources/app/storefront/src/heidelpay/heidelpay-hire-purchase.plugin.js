@@ -6,6 +6,9 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         hirePurchaseCurrency: '',
         hirePurchaseEffectiveInterest: 0.0,
         hirePurchaseOrderDate: '',
+        installmentsTotalValueElementId: 'heidelpay-installments-total',
+        currencyIso: 'EUR',
+        currencyFormatLocale: 'en-GB',
     };
 
     /**
@@ -44,13 +47,13 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
             effectiveInterest: this.options.hirePurchaseEffectiveInterest,
             orderDate: this.options.hirePurchaseOrderDate,
         }).then(() => {
+            //Hide the loading indicator
             this.el.firstElementChild.hidden = true;
         }).catch((error) => {
             this.heidelpayPlugin.renderErrorToElement(error, this.el.firstElementChild);
             this.heidelpayPlugin.setSubmitButtonActive(false);
         }).finally(() => {
             ElementLoadingIndicatorUtil.remove(this.el.firstElementChild);
-
         });
     }
 
@@ -89,5 +92,17 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
                 this.heidelpayPlugin.setSubmitButtonActive(false);
             }
         }
+
+        if (event.currentStep === 'plan-detail') {
+            const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId);
+            installmentAmountTotalElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalAmount) + '*';
+        }
+    }
+
+    _formatCurrency(value) {
+        return value.toLocaleString(this.options.currencyFormatLocale, {
+            style: 'currency',
+            currency: this.options.currencyIso,
+        });
     }
 }

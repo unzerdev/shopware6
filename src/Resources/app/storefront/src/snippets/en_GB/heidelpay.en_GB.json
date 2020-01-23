@@ -33,6 +33,14 @@
                     "accept": "Accept SEPA direct debit mandate",
                     "error": "Please accept the SEPA direct debit mandate in order to continue."
                 }
+            },
+            "hirePurchase": {
+                "totalAmount": "Total incl. interest",
+                "testData": {
+                    "accountHolder": "Account holder",
+                    "iban": "IBAN",
+                    "birthday": "Birthday"
+                }
             }
         },
         "accountPayment": {
@@ -40,6 +48,8 @@
             "creditCard": "Credit card",
             "deviceDeleted": "The mean of payment has been deleted successfully.",
             "title": "Your saved means of payment"
+            "deviceDeleted": "The payment device has been deleted successfully.",
+            "title": "Your saved payment devices"
         }
     }
 }

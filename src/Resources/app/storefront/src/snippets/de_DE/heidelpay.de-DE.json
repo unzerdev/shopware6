@@ -34,6 +34,14 @@
                     "accept": "SEPA Lastschrift-Mandat akzeptieren",
                     "error": "Bitte akzeptieren Sie das SEPA Lastschrift-Mandat um fortzufahren."
                 }
+            },
+            "hirePurchase": {
+                "totalAmount": "Gesamtsumme mit Zinsen",
+                "testData": {
+                    "accountHolder": "Kontoinhaber",
+                    "iban": "IBAN",
+                    "birthday": "Geburtsdatum"
+                }
             }
         },
         "accountPayment": {

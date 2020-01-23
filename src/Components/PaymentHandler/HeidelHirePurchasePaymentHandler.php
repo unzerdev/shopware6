@@ -46,6 +46,14 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
                 $this->heidelpayBasket
             );
 
+            if ($paymentResult->getPayment()) {
+                $paymentResult->getPayment()->charge();
+            } else {
+                throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Payment process interrupted');
+            }
+
+            $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());
+
             if ($paymentResult->getPayment() && !empty($paymentResult->getRedirectUrl())) {
                 $returnUrl = $paymentResult->getRedirectUrl();
             }
