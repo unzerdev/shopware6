@@ -293,15 +293,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_HIRE_PURCHASE,
             'handlerIdentifier' => HeidelHirePurchasePaymentHandler::class,
-            'name'              => 'FlexiPay® Installment (heidelpay)',
+            'name'              => 'FlexiPay® Rate (heidelpay)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'FlexiPay® Ratenkauf (heidelpay)',
-                    'description' => 'FlexiPay® Ratenkauf mit heidelpay',
+                    'name'        => 'FlexiPay® Rate (heidelpay)',
+                    'description' => 'FlexiPay® Rate payments mit heidelpay',
                 ],
                 'en-GB' => [
-                    'name'        => 'FlexiPay® Installment (heidelpay)',
-                    'description' => 'FlexiPay® installments with heidelpay',
+                    'name'        => 'FlexiPay® Rate (heidelpay)',
+                    'description' => 'FlexiPay® Rate payments with heidelpay',
                 ],
             ],
         ],

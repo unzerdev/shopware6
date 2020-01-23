@@ -28,18 +28,27 @@ export default class HeidelpaySepaDirectDebitPlugin extends Plugin {
         this._registerEvents();
     }
 
+    /**
+     * @private
+     */
     _createForm() {
         this.sepa.create('sepa-direct-debit', {
             containerId: 'heidelpay-sepa-container',
         });
     }
 
+    /**
+     * @private
+     */
     _registerEvents() {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
             scope: this,
         });
     }
 
+    /**
+     * @private
+     */
     _onCreateResource() {
         const mandateAcceptedCheckbox = document.getElementById(this.options.acceptMandateId);
 
@@ -62,6 +71,7 @@ export default class HeidelpaySepaDirectDebitPlugin extends Plugin {
 
     /**
      * @param {Object} resource
+     *
      * @private
      */
     _submitPayment(resource) {

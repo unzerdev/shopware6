@@ -21,7 +21,7 @@ export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
     static heidelpayPlugin = null;
 
     /**
-     * @type {object}
+     * @type {Object}
      */
     static b2bCustomerProvider = null;
 
@@ -36,6 +36,18 @@ export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
         this._registerEvents();
     }
 
+    /**
+     * @private
+     */
+    _registerEvents() {
+        this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
+            scope: this,
+        });
+    }
+
+    /**
+     * @private
+     */
     _createB2bForm() {
         this.b2bCustomerProvider = this.heidelpayPlugin.heidelpayInstance.B2BCustomer();
         this.b2bCustomerProvider.b2bCustomerEventHandler = (event) => this._onValidateB2bForm(event);
@@ -46,12 +58,9 @@ export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
         });
     }
 
-    _registerEvents() {
-        this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
-            scope: this,
-        });
-    }
-
+    /**
+     * @private
+     */
     _onCreateResource() {
         this.heidelpayPlugin.setSubmitButtonActive(false);
 
@@ -67,7 +76,8 @@ export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
     }
 
     /**
-     * @param {string} b2bCustomerId
+     * @param {String} b2bCustomerId
+     *
      * @private
      */
     _onB2bCustomerCreated(b2bCustomerId) {
@@ -79,12 +89,18 @@ export default class HeidelpayInvoiceFactoringPlugin extends Plugin {
             .catch((error) => this._handleError(error));
     }
 
+    /**
+     * @param {Object} event
+     *
+     * @private
+     */
     _onValidateB2bForm(event) {
         this.heidelpayPlugin.setSubmitButtonActive(event.success);
     }
 
     /**
      * @param {Object} resource
+     *
      * @private
      */
     _submitPayment(resource) {

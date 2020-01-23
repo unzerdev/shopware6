@@ -31,6 +31,9 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         this._registerEvents();
     }
 
+    /**
+     * @private
+     */
     _createForm() {
         ElementLoadingIndicatorUtil.create(this.el.firstElementChild);
 
@@ -51,6 +54,9 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         });
     }
 
+    /**
+     * @private
+     */
     _registerEvents() {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
             scope: this,
@@ -59,6 +65,9 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         this.hirePurchase.addEventListener('hirePurchaseEvent', (event) => this._onChangeHirePurchaseForm(event));
     }
 
+    /**
+     * @private
+     */
     _onCreateResource() {
         this.heidelpayPlugin.setSubmitButtonActive(false);
 
@@ -67,6 +76,11 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
             .catch((error) => this.heidelpayPlugin.showError(error));
     }
 
+    /**
+     * @param {Object} event
+     *
+     * @private
+     */
     _onChangeHirePurchaseForm(event) {
         if (event.action === 'validate') {
             if (event.success) {

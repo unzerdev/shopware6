@@ -6,7 +6,7 @@
          }'>
 
         {% block heidelpay_frame_sepa_direct_debit_test_data %}
-            {% if  shopware.config.HeidelPayment6.settings.testMode %}
+            {% if shopware.config.HeidelPayment6.settings.testMode %}
                 {% sw_include '@Storefront/storefront/component/heidelpay/frames/testdata/sepa.html.twig' %}
             {% endif %}
         {% endblock %}

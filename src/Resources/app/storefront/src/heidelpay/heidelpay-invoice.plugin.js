@@ -33,12 +33,18 @@ export default class HeidelpayInvoicePlugin extends Plugin {
         this._registerEvents();
     }
 
+    /**
+     * @private
+     */
     _registerEvents() {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
             scope: this,
         });
     }
 
+    /**
+     * @private
+     */
     _onCreateResource() {
         this.heidelpayPlugin.setSubmitButtonActive(false);
 
@@ -50,6 +56,7 @@ export default class HeidelpayInvoicePlugin extends Plugin {
 
     /**
      * @param {Object} resource
+     *
      * @private
      */
     _submitPayment(resource) {

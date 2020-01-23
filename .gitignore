@@ -2,3 +2,5 @@
 vendor
 .phpunit.result.cache
 .idea
+.package-lock.json
+

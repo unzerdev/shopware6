@@ -56,6 +56,9 @@ export default class HeidelpayBasePlugin extends Plugin {
         this.confirmForm.submit();
     }
 
+    /**
+     * @param {String} typeId
+     */
     submitTypeId(typeId) {
         const resourceIdElement = document.getElementById(this.options.resourceIdElementId);
         resourceIdElement.value = typeId;
@@ -64,8 +67,8 @@ export default class HeidelpayBasePlugin extends Plugin {
     }
 
     /**
-     * @param { Object } error
-     * @param { Boolean } append
+     * @param {Object} error
+     * @param {Boolean} append
      */
     showError(error, append = false) {
         const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
@@ -83,6 +86,10 @@ export default class HeidelpayBasePlugin extends Plugin {
         this.setSubmitButtonActive(true);
     }
 
+    /**
+     * @param {Object} error
+     * @param {HTMLElement} el
+     */
     renderErrorToElement(error, el) {
         const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
             errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
@@ -101,6 +108,9 @@ export default class HeidelpayBasePlugin extends Plugin {
     }
 
     /**
+     *
+     * @param {Object} event
+     *
      * @private
      */
     _onSubmitButtonClick(event) {
@@ -117,7 +127,8 @@ export default class HeidelpayBasePlugin extends Plugin {
     }
 
     /**
-     * @return {boolean}
+     * @return {Boolean}
+     *
      * @private
      */
     _validateForm() {
@@ -159,8 +170,9 @@ export default class HeidelpayBasePlugin extends Plugin {
 
     /**
      *
-     * @param {object} customerInfo
-     * @return {object}
+     * @param {Object} customerInfo
+     * @return {Object}
+     *
      * @public
      */
     getB2bCustomerObject(customerInfo) {

@@ -6,16 +6,17 @@
             "customerInfo": {{ context.customer|json_encode }}
          }'>
 
-            <div class="heidelpay-frame-row">
-                {% if context.customer.activeBillingAddress.company is not empty %}
-                    {% block heidelpay_frame_invoice_guaranteed_b2b_form %}
+        <div class="heidelpay-frame-row">
+            {% if context.customer.activeBillingAddress.company is not empty %}
+                {% block heidelpay_frame_invoice_guaranteed_b2b_form %}
                     <div id="heidelpay-b2b-form" class="field">
                     </div>
 
                     <input type="hidden" id="heidelpayCustomerId" name="heidelpayCustomerId" form="confirmOrderForm">
-                    {% endblock %}
-                {% else %}
-                    {% block heidelpay_frame_invoice_guaranteed_birthday %}
+                {% endblock %}
+            {% else %}
+                {% block heidelpay_frame_invoice_guaranteed_birthday %}
+                    <div id="heidelpay-b2c-form">
                         <label for="heidelpayBirthday" class="heidelpay-label">
                             {{ "account.personalBirthdayLabel"|trans }}
                         </label>
@@ -26,8 +27,9 @@
                                form="confirmOrderForm"
                                required="required"
                                {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
-                    {% endblock %}
-                {% endif %}
-            </div>
+                    </div>
+                {% endblock %}
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

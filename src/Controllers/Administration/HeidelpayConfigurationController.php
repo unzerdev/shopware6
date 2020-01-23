@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment6\Controllers\Administration;
 
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
