@@ -300,8 +300,8 @@ class PaymentInstaller implements InstallerInterface
                     'description' => 'FlexiPay® Rate payments mit heidelpay',
                 ],
                 'en-GB' => [
-                    'name'        => 'FlexiPay® Rate (heidelpay)',
-                    'description' => 'FlexiPay® Rate payments with heidelpay',
+                    'name'        => 'FlexiPay® Installment (heidelpay)',
+                    'description' => 'FlexiPay® Installment payments with heidelpay',
                 ],
             ],
         ],
