@@ -51,6 +51,9 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         }
     }
 
+    /**
+     * @private
+     */
     _createForm() {
         this.creditCard = this._heidelpayPlugin.heidelpayInstance.Card();
 
@@ -72,6 +75,9 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         this.creditCard.addEventListener('change', this._onChangeForm.bind(this));
     }
 
+    /**
+     * @private
+     */
     _registerEvents() {
         if (this.options.hasSavedCards) {
             const radioButtons = DomAccess.querySelectorAll(this.el, this.options.radioButtonSelector);
@@ -86,6 +92,11 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         });
     }
 
+    /**
+     * @param {Object} event
+     *
+     * @private
+     */
     _onRadioButtonChange(event) {
         const targetElement = event.target,
             heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
@@ -156,6 +167,9 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         );
     }
 
+    /**
+     * @private
+     */
     _onCreateResource() {
         let checkedRadioButton = null;
 
@@ -201,6 +215,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
 
     /**
      * @param {Object} resource
+     *
      * @private
      */
     _submitPayment(resource) {
@@ -217,8 +232,8 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
     }
 
     /**
-     *
      * @param {String} brand
+     *
      * @private
      */
     _getBrandImageUrl(brand) {

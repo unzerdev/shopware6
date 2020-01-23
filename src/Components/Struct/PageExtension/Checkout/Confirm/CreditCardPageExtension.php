@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Struct\PageExtension\Checkout;
+namespace HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
 use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use Shopware\Core\Framework\Struct\Struct;
 
-class ConfirmPageExtension extends Struct
+class CreditCardPageExtension extends Struct
 {
     /** @var HeidelpayPaymentDeviceEntity[] */
     protected $creditCards = [];
@@ -33,7 +33,7 @@ class ConfirmPageExtension extends Struct
     /**
      * @param HeidelpayPaymentDeviceEntity[] $creditCards
      *
-     * @return ConfirmPageExtension
+     * @return CreditCardPageExtension
      */
     public function setCreditCards(array $creditCards): self
     {

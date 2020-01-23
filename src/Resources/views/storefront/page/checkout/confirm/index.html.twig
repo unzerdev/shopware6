@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block page_checkout_confirm_product_table %}
-    {% if context.paymentMethod.customFields.heidelpay_frame %}
+    {% if page.extensions.heidelpayPaymentFrame.paymentFrame %}
         {% block heidelpay_checkout_confirm_frame %}
             {% sw_include '@Storefront/storefront/component/heidelpay/base/heidelpay-library.html.twig' %}
 
@@ -39,7 +39,7 @@
 
                             {% block heidelpay_checkout_confirm_frame_card_body_frame %}
                                 <div class="heidelpay-frame">
-                                    {% sw_include context.paymentMethod.customFields.heidelpay_frame ignore missing %}
+                                    {% sw_include page.extensions.heidelpayPaymentFrame.paymentFrame ignore missing %}
                                 </div>
                             {% endblock %}
                         {% endblock %}

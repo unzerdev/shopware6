@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace HeidelPayment6\Components\PaymentHandler;
 
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
+use heidelpayPHP\Resources\PaymentTypes\HirePurchaseDirectDebit;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class HeidelInvoiceGuaranteedPaymentHandler extends AbstractHeidelpayHandler
+class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
 {
-    /** @var InvoiceGuaranteed */
+    /** @var HirePurchaseDirectDebit */
     protected $paymentType;
 
     /**
@@ -27,20 +27,18 @@ class HeidelInvoiceGuaranteedPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $birthday = $dataBag->get('heidelpayBirthday');
+        $birthday          = $dataBag->get('heidelpayBirthday');
+        $heidelpayCustomer = $this->heidelpayCustomer;
+        $heidelpayCustomer->setBirthDate($birthday);
 
         try {
+            $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($heidelpayCustomer);
+
             // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
             // As soon as it's shorter, use $transaction->getReturnUrl() instead!
-            $returnUrl         = $this->getReturnUrl();
-            $heidelpayCustomer = $this->heidelpayCustomer;
+            $returnUrl = $this->getReturnUrl();
 
-            if (empty($this->heidelpayCustomerId)) {
-                $heidelpayCustomer->setBirthDate($birthday);
-                $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($heidelpayCustomer);
-            }
-
-            $paymentResult = $this->paymentType->charge(
+            $paymentResult = $this->paymentType->authorize(
                 $this->heidelpayBasket->getAmountTotalGross(),
                 $this->heidelpayBasket->getCurrencyCode(),
                 $returnUrl,

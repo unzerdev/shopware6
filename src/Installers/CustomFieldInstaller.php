@@ -30,17 +30,6 @@ class CustomFieldInstaller implements InstallerInterface
             ],
             'customFields' => [
                 [
-                    'name'   => self::HEIDELPAY_FRAME,
-                    'type'   => CustomFieldTypes::TEXT,
-                    'id'     => 'ef604f17f5be45ccbe3fe9315aac8a84',
-                    'config' => [
-                        'label' => [
-                            'en-GB' => 'Checkout template',
-                            'de-DE' => 'Kassen-Template',
-                        ],
-                    ],
-                ],
-                [
                     'name'   => self::HEIDELPAY_IS_TRANSACTION,
                     'type'   => CustomFieldTypes::BOOL,
                     'id'     => '6bb838751d65478992a5c0a1e80cb5fd',

@@ -13,6 +13,7 @@
         <service id="HeidelPayment6\EventListeners\Checkout\ConfirmPageEventListener">
             <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

@@ -39,8 +39,10 @@ export default class HeidelpayBasePlugin extends Plugin {
     setSubmitButtonActive(active) {
         if (active) {
             this.submitButton.classList.remove(this.options.disabledClass);
+            this.submitButton.disabled = false;
         } else {
             this.submitButton.classList.add(this.options.disabledClass);
+            this.submitButton.disabled = true;
         }
     }
 
@@ -54,6 +56,9 @@ export default class HeidelpayBasePlugin extends Plugin {
         this.confirmForm.submit();
     }
 
+    /**
+     * @param {String} typeId
+     */
     submitTypeId(typeId) {
         const resourceIdElement = document.getElementById(this.options.resourceIdElementId);
         resourceIdElement.value = typeId;
@@ -62,8 +67,8 @@ export default class HeidelpayBasePlugin extends Plugin {
     }
 
     /**
-     * @param { Object } error
-     * @param { Boolean } append
+     * @param {Object} error
+     * @param {Boolean} append
      */
     showError(error, append = false) {
         const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
@@ -82,6 +87,20 @@ export default class HeidelpayBasePlugin extends Plugin {
     }
 
     /**
+     * @param {Object} error
+     * @param {HTMLElement} el
+     */
+    renderErrorToElement(error, el) {
+        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
+            errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+
+        errorContent.innerText = error.message;
+        errorWrapper.hidden = false;
+
+        el.appendChild(errorWrapper);
+    }
+
+    /**
      * @private
      */
     _registerEvents() {
@@ -89,6 +108,9 @@ export default class HeidelpayBasePlugin extends Plugin {
     }
 
     /**
+     *
+     * @param {Object} event
+     *
      * @private
      */
     _onSubmitButtonClick(event) {
@@ -105,7 +127,8 @@ export default class HeidelpayBasePlugin extends Plugin {
     }
 
     /**
-     * @return {boolean}
+     * @return {Boolean}
+     *
      * @private
      */
     _validateForm() {
@@ -143,5 +166,35 @@ export default class HeidelpayBasePlugin extends Plugin {
 
         errorContent.innerText = '';
         errorWrapper.hidden = true;
+    }
+
+    /**
+     *
+     * @param {Object} customerInfo
+     * @return {Object}
+     *
+     * @public
+     */
+    getB2bCustomerObject(customerInfo) {
+        return {
+            firstname: customerInfo.firstName,
+            lastname: customerInfo.lastName,
+            company: customerInfo.activeBillingAddress.company,
+            salutation: customerInfo.salutation.salutationKey,
+            birthDate: customerInfo.lastName.birthday,
+            email: customerInfo.email,
+            billingAddress: {
+                street: customerInfo.activeBillingAddress.street,
+                zip: customerInfo.activeBillingAddress.zipcode,
+                city: customerInfo.activeBillingAddress.city,
+                country: customerInfo.activeBillingAddress.country.name,
+            },
+            shippingAddress: {
+                street: customerInfo.activeShippingAddress.street,
+                zip: customerInfo.activeShippingAddress.zipcode,
+                city: customerInfo.activeShippingAddress.city,
+                country: customerInfo.activeShippingAddress.country.name,
+            },
+        }
     }
 }

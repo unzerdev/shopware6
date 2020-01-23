@@ -23,18 +23,27 @@ export default class HeidelpayEpsPlugin extends Plugin {
         this._registerEvents();
     }
 
+    /**
+     * @private
+     */
     _createForm() {
         this.eps.create('eps', {
             containerId: 'heidelpay-eps-container',
         });
     }
 
+    /**
+     * @private
+     */
     _registerEvents() {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
             scope: this,
         });
     }
 
+    /**
+     * @private
+     */
     _onCreateResource() {
         this.heidelpayPlugin.setSubmitButtonActive(false);
 
@@ -46,6 +55,7 @@ export default class HeidelpayEpsPlugin extends Plugin {
 
     /**
      * @param {Object} resource
+     *
      * @private
      */
     _submitPayment(resource) {
