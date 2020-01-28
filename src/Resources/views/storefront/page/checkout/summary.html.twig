@@ -2,9 +2,31 @@
 
 {# Extension for the cart summary should only apply to HirePurchase since it modifies the prices accordingly to the selected rate! #}
 {% block page_checkout_summary_total %}
-    {{ parent() }}
-
     {% if context.paymentMethod.id is constant("HeidelPayment6\\Installers\\PaymentInstaller::PAYMENT_ID_HIRE_PURCHASE") %}
+        {% block page_checkout_summary_heidelpay_installment_interest_label %}
+            <dt class="col-7 checkout-aside-summary-label">
+                {{ "HeidelPayment.frame.hirePurchase.totalInterest"|trans|sw_sanitize }}
+            </dt>
+        {% endblock %}
+
+        {% block page_checkout_summary_heidelpay_installment_interest_value %}
+            <dd class="col-5 checkout-aside-summary-value" id="heidelpay-installments-interest">
+                {{ 0|currency }}
+            </dd>
+        {% endblock %}
+
+        {% block page_checkout_summary_total_label %}
+            <dt class="col-7 checkout-aside-summary-label">
+                {{ "checkout.summaryTotalPrice"|trans|sw_sanitize }}
+            </dt>
+        {% endblock %}
+
+        {% block page_checkout_summary_total_value %}
+            <dd class="col-5 checkout-aside-summary-value">
+                {{ summary.price.totalPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+            </dd>
+        {% endblock %}
+
         {% block page_checkout_summary_heidelpay_installment_total_label %}
             <dt class="col-7 checkout-aside-summary-label checkout-aside-summary-total">
                 {{ "HeidelPayment.frame.hirePurchase.totalAmount"|trans }}
@@ -16,5 +38,10 @@
                 {{ summary.price.totalPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
             </dd>
         {% endblock %}
+    {% endif %}
+
+
+    {% if context.paymentMethod.id is constant("HeidelPayment6\\Installers\\PaymentInstaller::PAYMENT_ID_HIRE_PURCHASE") %}
+
     {% endif %}
 {% endblock %}

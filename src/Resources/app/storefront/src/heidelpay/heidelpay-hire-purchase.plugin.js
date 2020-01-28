@@ -7,6 +7,7 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         hirePurchaseEffectiveInterest: 0.0,
         hirePurchaseOrderDate: '',
         installmentsTotalValueElementId: 'heidelpay-installments-total',
+        installmentsInterestValueElementId: 'heidelpay-installments-interest',
         currencyIso: 'EUR',
         currencyFormatLocale: 'en-GB',
     };
@@ -94,8 +95,13 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         }
 
         if (event.currentStep === 'plan-detail') {
-            const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId);
+            console.log(this.hirePurchase.selectedInstallmentPlan);
+
+            const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId),
+                installmentInterestElement = document.getElementById(this.options.installmentsInterestValueElementId);
+
             installmentAmountTotalElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalAmount) + '*';
+            installmentInterestElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalInterestAmount);
         }
     }
 

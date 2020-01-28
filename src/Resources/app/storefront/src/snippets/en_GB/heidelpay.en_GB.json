@@ -36,6 +36,7 @@
             },
             "hirePurchase": {
                 "totalAmount": "Total incl. interest",
+                "totalInterest": "Interest on hire purchase",
                 "testData": {
                     "accountHolder": "Account holder",
                     "iban": "IBAN",
@@ -48,8 +49,6 @@
             "creditCard": "Credit card",
             "deviceDeleted": "The mean of payment has been deleted successfully.",
             "title": "Your saved means of payment"
-            "deviceDeleted": "The payment device has been deleted successfully.",
-            "title": "Your saved payment devices"
         }
     }
 }

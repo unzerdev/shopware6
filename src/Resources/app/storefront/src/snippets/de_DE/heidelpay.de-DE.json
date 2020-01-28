@@ -36,7 +36,8 @@
                 }
             },
             "hirePurchase": {
-                "totalAmount": "Gesamtsumme mit Zinsen",
+                "totalAmount": "Gesamtsumme inkl. Zinsen",
+                "totalInterest": "Zinsen für Ratenkauf",
                 "testData": {
                     "accountHolder": "Kontoinhaber",
                     "iban": "IBAN",
