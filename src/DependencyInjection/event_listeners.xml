@@ -36,5 +36,11 @@
 
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="HeidelPayment6\EventListeners\DataAbstractionLayer\OrderTransactionEventListener">
+            <argument type="service"
+                      id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>

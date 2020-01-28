@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace HeidelPayment6\EventListeners\Checkout;
 
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment6\Components\Document\InvoiceGenerator;
 use HeidelPayment6\Components\Struct\HirePurchase\InstallmentInfo;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
-use HeidelPayment6\Components\Struct\TransferInformation\TransferInformation;
 use HeidelPayment6\Installers\PaymentInstaller;
 use heidelpayPHP\Resources\InstalmentPlan;
-use heidelpayPHP\Resources\TransactionTypes\Charge;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -57,16 +54,9 @@ class FinishPageEventListener implements EventSubscriberInterface
 
             if ($payment->getPaymentType() instanceof InstalmentPlan) {
                 $installmentInfo = (new InstallmentInfo())->fromInstalmentPlan($payment->getPaymentType());
-
                 $extension->addInstallmentInfo($installmentInfo);
 
                 continue;
-            }
-
-            if (in_array($transaction->getPaymentMethodId(), InvoiceGenerator::SUPPORTED_PAYMENT_METHODS, false)) {
-                /** @var Charge $charge */
-                $charge = $payment->getChargeByIndex(0);
-                $extension->addTransferInformation((new TransferInformation())->fromCharge($charge));
             }
         }
 
