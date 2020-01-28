@@ -3,7 +3,6 @@ import Plugin from 'src/plugin-system/plugin.class';
 export default class HeidelpayBasePlugin extends Plugin {
     static options = {
         publicKey: null,
-        locale: null,
         submitButtonId: 'confirmFormSubmit',
         disabledClass: 'disabled',
         resourceIdElementId: 'heidelpayResourceId',
@@ -21,9 +20,7 @@ export default class HeidelpayBasePlugin extends Plugin {
     static heidelpayInstance = null;
 
     init() {
-        this.heidelpayInstance = new window.heidelpay(this.options.publicKey, {
-            locale: this.options.locale,
-        });
+        this.heidelpayInstance = new window.heidelpay(this.options.publicKey);
 
         this.submitButton = document.getElementById(this.options.submitButtonId);
         this.confirmForm = document.getElementById(this.options.confirmFormId);
