@@ -5,8 +5,13 @@
 
     <services>
         <service id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+
         <service id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
-        <service id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+
+        <service id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator">
+            <argument>%kernel.shopware_version%</argument>
+        </service>
+
         <service id="HeidelPayment6\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
 
         <service id="HeidelPayment6\Components\ArrayHydrator\PaymentArrayHydrator" />

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\PaymentHandler;
 
+use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\Wechatpay;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -14,6 +15,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class HeidelWeChatPaymentHandler extends AbstractHeidelpayHandler
 {
+    use CanCharge;
+
     /**
      * {@inheritdoc}
      */
@@ -24,29 +27,10 @@ class HeidelWeChatPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $this->paymentType = new Wechatpay();
-        $this->paymentType->setParentResource($this->heidelpayClient);
-
         try {
-            // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-            // As soon as it's shorter, use $transaction->getReturnUrl() instead!
-            $returnUrl = $this->getReturnUrl();
+            $this->paymentType = $this->heidelpayClient->createPaymentType(new Wechatpay());
 
-            $result = $this->paymentType->charge(
-                $this->heidelpayBasket->getAmountTotalGross(),
-                $this->heidelpayBasket->getCurrencyCode(),
-                $returnUrl,
-                $this->heidelpayCustomer,
-                $this->heidelpayBasket->getOrderId(),
-                $this->heidelpayMetadata,
-                $this->heidelpayBasket
-            );
-
-            $this->session->set('heidelpayMetadataId', $result->getPayment()->getMetadata()->getId());
-
-            if ($result->getPayment() && !empty($result->getRedirectUrl())) {
-                $returnUrl = $result->getRedirectUrl();
-            }
+            $returnUrl = $this->charge($transaction->getReturnUrl());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\PaymentHandler;
 
+use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\PIS;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -14,8 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class HeidelFlexipayPaymentHandler extends AbstractHeidelpayHandler
 {
-    /** @var PIS */
-    protected $paymentType;
+    use CanCharge;
 
     /**
      * {@inheritdoc}
@@ -27,29 +27,10 @@ class HeidelFlexipayPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $this->paymentType = new PIS();
-        $this->paymentType->setParentResource($this->heidelpayClient);
-
         try {
-            // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-            // As soon as it's shorter, use $transaction->getReturnUrl() instead!
-            $returnUrl = $this->getReturnUrl();
+            $this->paymentType = $this->heidelpayClient->createPaymentType(new PIS());
 
-            $result = $this->paymentType->charge(
-                $this->heidelpayBasket->getAmountTotalGross(),
-                $this->heidelpayBasket->getCurrencyCode(),
-                $returnUrl,
-                $this->heidelpayCustomer,
-                $this->heidelpayBasket->getOrderId(),
-                $this->heidelpayMetadata,
-                $this->heidelpayBasket
-            );
-
-            $this->session->set('heidelpayMetadataId', $result->getPayment()->getMetadata()->getId());
-
-            if ($result->getPayment() && !empty($result->getRedirectUrl())) {
-                $returnUrl = $result->getRedirectUrl();
-            }
+            $returnUrl = $this->charge($transaction->getReturnUrl());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {

@@ -25,9 +25,6 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInterface
 {
@@ -55,9 +52,6 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var Configuration */
     protected $pluginConfig;
 
-    /** @var SessionInterface */
-    protected $session;
-
     /** @var string */
     protected $heidelpayCustomerId;
 
@@ -79,9 +73,6 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
-    /** @var RouterInterface */
-    private $router;
-
     /** @var string */
     private $resourceId;
 
@@ -95,9 +86,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         EntityRepositoryInterface $transactionRepository,
         ConfigReaderInterface $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactoryInterface $clientFactory,
-        RouterInterface $router, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-        SessionInterface $session // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
+        ClientFactoryInterface $clientFactory
     ) {
         $this->basketHydrator          = $basketHydrator;
         $this->customerHydrator        = $customerHydrator;
@@ -106,8 +95,6 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $this->configReader            = $configService;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->clientFactory           = $clientFactory;
-        $this->router                  = $router;
-        $this->session                 = $session;
     }
 
     public function pay(
@@ -158,17 +145,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
             false
         );
+
         $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
-
-        $this->session->remove('heidelpayMetadataId');
-    }
-
-    /**
-     * @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-     */
-    protected function getReturnUrl(): string
-    {
-        return $this->router->generate('heidelpay.payment.finalize', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     protected function setCustomFields(

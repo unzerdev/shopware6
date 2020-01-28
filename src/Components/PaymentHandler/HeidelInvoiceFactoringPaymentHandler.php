@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\PaymentHandler;
 
+use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Resources\PaymentTypes\InvoiceFactoring;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -14,8 +14,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
 {
-    /** @var InvoiceFactoring */
-    protected $paymentType;
+    use CanCharge;
 
     /**
      * {@inheritdoc}
@@ -30,31 +29,12 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
         $birthday = $dataBag->get('heidelpayBirthday');
 
         try {
-            // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-            // As soon as it's shorter, use $transaction->getReturnUrl() instead!
-            $returnUrl         = $this->getReturnUrl();
-            $heidelpayCustomer = $this->heidelpayCustomer;
-
             if (empty($this->heidelpayCustomerId)) {
-                $heidelpayCustomer->setBirthDate($birthday);
-                $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($heidelpayCustomer);
+                $this->heidelpayCustomer->setBirthDate($birthday);
+                $this->heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($this->heidelpayCustomer);
             }
 
-            $paymentResult = $this->paymentType->charge(
-                $this->heidelpayBasket->getAmountTotalGross(),
-                $this->heidelpayBasket->getCurrencyCode(),
-                $returnUrl,
-                $heidelpayCustomer,
-                $transaction->getOrderTransaction()->getId(),
-                $this->heidelpayMetadata,
-                $this->heidelpayBasket
-            );
-
-            $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());
-
-            if ($paymentResult->getPayment() && !empty($paymentResult->getRedirectUrl())) {
-                $returnUrl = $paymentResult->getRedirectUrl();
-            }
+            $returnUrl = $this->charge($transaction->getReturnUrl());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
