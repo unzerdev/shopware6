@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\PaymentHandler;
 
-use HeidelPayment6\Components\BookingMode;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\Paypal;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -34,30 +33,17 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
         try {
             // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
             // As soon as it's shorter, use $transaction->getReturnUrl() instead!
-            $returnUrl   = $this->getReturnUrl();
-            $bookingMode = $this->pluginConfig->get('bookingModePayPal');
+            $returnUrl = $this->getReturnUrl();
 
-            if ($bookingMode === BookingMode::CHARGE) {
-                $paymentResult = $this->paymentType->charge(
-                    $this->heidelpayBasket->getAmountTotalGross(),
-                    $this->heidelpayBasket->getCurrencyCode(),
-                    $returnUrl,
-                    $this->heidelpayCustomer,
-                    $transaction->getOrderTransaction()->getId(),
-                    $this->heidelpayMetadata,
-                    $this->heidelpayBasket
-                );
-            } else {
-                $paymentResult = $this->paymentType->authorize(
-                    $this->heidelpayBasket->getAmountTotalGross(),
-                    $this->heidelpayBasket->getCurrencyCode(),
-                    $returnUrl,
-                    $this->heidelpayCustomer,
-                    $transaction->getOrderTransaction()->getId(),
-                    $this->heidelpayMetadata,
-                    $this->heidelpayBasket
-                );
-            }
+            $paymentResult = $this->paymentType->charge(
+                $this->heidelpayBasket->getAmountTotalGross(),
+                $this->heidelpayBasket->getCurrencyCode(),
+                $returnUrl,
+                $this->heidelpayCustomer,
+                $transaction->getOrderTransaction()->getId(),
+                $this->heidelpayMetadata,
+                $this->heidelpayBasket
+            );
 
             $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());
 

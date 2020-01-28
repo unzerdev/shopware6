@@ -62,26 +62,6 @@
             <label>Register credit cards</label>
             <label lang="de-DE">Kreditkarten registrieren</label>
         </input-field>
-
-        <input-field type="single-select">
-            <name>bookingModePayPal</name>
-            <label>Booking mode PayPal</label>
-            <label lang="de-DE">Buchungsmodus für PayPal</label>
-            <helpText>If you select the charge option, the amount is debited immediately; if you select the Authorization option, the amount must be collected manually later.</helpText>
-            <helpText lang="de-DE">Bei der Option Direkt wird der Betrag sofort abgebucht, wählen Sie hingegen die Option Authorisierung muss der Betrag später manuell eingezogen werden.</helpText>
-            <options>
-                <option>
-                    <id>charge</id>
-                    <name>charge</name>
-                    <name lang="de-DE">Direkt</name>
-                </option>
-                <option>
-                    <id>authorize</id>
-                    <name>authorize</name>
-                    <name lang="de-DE">Authorisierung</name>
-                </option>
-            </options>
-        </input-field>
     </card>
 
     <card>
