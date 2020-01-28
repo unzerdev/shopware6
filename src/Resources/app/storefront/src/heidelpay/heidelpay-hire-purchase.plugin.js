@@ -8,6 +8,7 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         hirePurchaseOrderDate: '',
         installmentsTotalValueElementId: 'heidelpay-installments-total',
         installmentsInterestValueElementId: 'heidelpay-installments-interest',
+        formLoadingIndicatorSelector: '#element-loader',
         currencyIso: 'EUR',
         currencyFormatLocale: 'en-GB',
     };
@@ -39,7 +40,9 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
      * @private
      */
     _createForm() {
-        ElementLoadingIndicatorUtil.create(this.el.firstElementChild);
+        const loadingIndicatorElement = this.el.querySelector(this.options.formLoadingIndicatorSelector);
+
+        ElementLoadingIndicatorUtil.create(loadingIndicatorElement);
 
         this.hirePurchase.create({
             containerId: 'heidelpay-hire-purchase-container',
@@ -49,12 +52,12 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
             orderDate: this.options.hirePurchaseOrderDate,
         }).then(() => {
             //Hide the loading indicator
-            this.el.firstElementChild.hidden = true;
+            loadingIndicatorElement.hidden = true;
         }).catch((error) => {
-            this.heidelpayPlugin.renderErrorToElement(error, this.el.firstElementChild);
+            this.heidelpayPlugin.renderErrorToElement(error, loadingIndicatorElement);
             this.heidelpayPlugin.setSubmitButtonActive(false);
         }).finally(() => {
-            ElementLoadingIndicatorUtil.remove(this.el.firstElementChild);
+            ElementLoadingIndicatorUtil.remove(loadingIndicatorElement);
         });
     }
 
@@ -95,8 +98,6 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         }
 
         if (event.currentStep === 'plan-detail') {
-            console.log(this.hirePurchase.selectedInstallmentPlan);
-
             const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId),
                 installmentInterestElement = document.getElementById(this.options.installmentsInterestValueElementId);
 
