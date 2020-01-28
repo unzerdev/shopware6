@@ -19,7 +19,7 @@ trait CanAuthorize
             throw new RuntimeException('Trait can only be used in a payment handler context which extends the AbstractHeidelpayHandler class');
         }
 
-        if (!$this->paymentType) {
+        if ($this->paymentType === null) {
             throw new RuntimeException('PaymentType can not be null');
         }
 

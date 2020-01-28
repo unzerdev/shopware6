@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace HeidelPayment6\Components\PaymentHandler;
 
 use heidelpayPHP\Exceptions\HeidelpayApiException;
+use heidelpayPHP\Resources\PaymentTypes\HirePurchaseDirectDebit;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
