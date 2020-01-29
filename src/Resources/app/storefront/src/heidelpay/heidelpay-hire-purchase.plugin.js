@@ -8,7 +8,7 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         hirePurchaseOrderDate: '',
         installmentsTotalValueElementId: 'heidelpay-installments-total',
         installmentsInterestValueElementId: 'heidelpay-installments-interest',
-        formLoadingIndicatorSelector: '#element-loader',
+        formLoadingIndicatorElementId: 'element-loader',
         currencyIso: 'EUR',
         currencyFormatLocale: 'en-GB',
         starSymbol: '*',
@@ -41,7 +41,7 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
      * @private
      */
     _createForm() {
-        const loadingIndicatorElement = this.el.querySelector(this.options.formLoadingIndicatorSelector);
+        const loadingIndicatorElement = document.getElementById(this.options.formLoadingIndicatorElementId);
 
         ElementLoadingIndicatorUtil.create(loadingIndicatorElement);
 
