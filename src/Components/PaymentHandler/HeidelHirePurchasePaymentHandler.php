@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\PaymentHandler;
 
+use HeidelPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Resources\PaymentTypes\HirePurchaseDirectDebit;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -14,8 +14,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
 {
-    /** @var HirePurchaseDirectDebit */
-    protected $paymentType;
+    use CanAuthorize;
 
     /**
      * {@inheritdoc}
@@ -27,35 +26,18 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $birthday          = $dataBag->get('heidelpayBirthday');
-        $heidelpayCustomer = $this->heidelpayCustomer;
-        $heidelpayCustomer->setBirthDate($birthday);
+        $birthday = $dataBag->get('heidelpayBirthday');
+        $this->heidelpayCustomer->setBirthDate($birthday);
 
         try {
-            $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($heidelpayCustomer);
+            $this->heidelpayClient->createOrUpdateCustomer($this->heidelpayCustomer);
 
-            $returnUrl = $transaction->getReturnUrl();
+            $returnUrl = $this->authorize($transaction->getReturnUrl());
 
-            $paymentResult = $this->paymentType->authorize(
-                $this->heidelpayBasket->getAmountTotalGross(),
-                $this->heidelpayBasket->getCurrencyCode(),
-                $returnUrl,
-                $heidelpayCustomer,
-                $transaction->getOrderTransaction()->getId(),
-                $this->heidelpayMetadata,
-                $this->heidelpayBasket
-            );
-
-            if ($paymentResult->getPayment()) {
-                $paymentResult->getPayment()->charge();
+            if ($this->payment) {
+                $this->payment->charge();
             } else {
                 throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Payment process interrupted');
-            }
-
-            $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());
-
-            if ($paymentResult->getPayment() && !empty($paymentResult->getRedirectUrl())) {
-                $returnUrl = $paymentResult->getRedirectUrl();
             }
 
             return new RedirectResponse($returnUrl);

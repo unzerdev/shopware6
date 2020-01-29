@@ -11,7 +11,11 @@
 
         {% block page_checkout_summary_heidelpay_installment_interest_value %}
             <dd class="col-5 checkout-aside-summary-value" id="heidelpay-installments-interest">
-                {{ 0|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {% if page.extensions.heidelpay and (page.extensions.heidelpay.installmentInformation|length > 0) %}
+                    {{ page.extensions.heidelpay.installmentInformation[0].totalInterestAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {% else %}
+                    {{ 0|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {% endif %}
             </dd>
         {% endblock %}
 
@@ -35,7 +39,11 @@
 
         {% block page_checkout_summary_heidelpay_installment_total_value %}
             <dd class="col-5 checkout-aside-summary-value checkout-aside-summary-total" id="heidelpay-installments-total">
-                {{ summary.price.totalPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {% if page.extensions.heidelpay and (page.extensions.heidelpay.installmentInformation|length > 0) %}
+                    {{ page.extensions.heidelpay.installmentInformation[0].totalAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {% else %}
+                    {{ summary.price.totalPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {% endif %}
             </dd>
         {% endblock %}
     {% endif %}
