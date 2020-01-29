@@ -33,12 +33,7 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
             $this->heidelpayClient->createOrUpdateCustomer($this->heidelpayCustomer);
 
             $returnUrl = $this->authorize($transaction->getReturnUrl());
-
-            if ($this->payment) {
-                $this->payment->charge();
-            } else {
-                throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Payment process interrupted');
-            }
+            $this->payment->charge();
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
