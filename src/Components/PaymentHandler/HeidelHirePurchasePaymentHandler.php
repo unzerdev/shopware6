@@ -34,9 +34,7 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
         try {
             $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($heidelpayCustomer);
 
-            // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-            // As soon as it's shorter, use $transaction->getReturnUrl() instead!
-            $returnUrl = $this->getReturnUrl();
+            $returnUrl = $transaction->getReturnUrl();
 
             $paymentResult = $this->paymentType->authorize(
                 $this->heidelpayBasket->getAmountTotalGross(),
@@ -47,8 +45,6 @@ class HeidelHirePurchasePaymentHandler extends AbstractHeidelpayHandler
                 $this->heidelpayMetadata,
                 $this->heidelpayBasket
             );
-
-            $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());
 
             if ($paymentResult->getPayment() && !empty($paymentResult->getRedirectUrl())) {
                 $returnUrl = $paymentResult->getRedirectUrl();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\PaymentHandler;
 
+use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\Prepayment;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -14,8 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class HeidelPrePaymentPaymentHandler extends AbstractHeidelpayHandler
 {
-    /** @var Prepayment */
-    protected $paymentType;
+    use CanCharge;
 
     /**
      * {@inheritdoc}
@@ -27,29 +27,10 @@ class HeidelPrePaymentPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $this->paymentType = new Prepayment();
-        $this->paymentType->setParentResource($this->heidelpayClient);
-
         try {
-            // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-            // As soon as it's shorter, use $transaction->getReturnUrl() instead!
-            $returnUrl = $this->getReturnUrl();
+            $this->paymentType = $this->heidelpayClient->createPaymentType(new Prepayment());
 
-            $paymentResult = $this->paymentType->charge(
-                $this->heidelpayBasket->getAmountTotalGross(),
-                $this->heidelpayBasket->getCurrencyCode(),
-                $returnUrl,
-                $this->heidelpayCustomer,
-                $transaction->getOrderTransaction()->getId(),
-                $this->heidelpayMetadata,
-                $this->heidelpayBasket
-            );
-
-            $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());
-
-            if ($paymentResult->getPayment() && !empty($paymentResult->getRedirectUrl())) {
-                $returnUrl = $paymentResult->getRedirectUrl();
-            }
+            $returnUrl = $this->charge($transaction->getReturnUrl());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {

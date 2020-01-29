@@ -14,7 +14,6 @@ use Shopware\Core\System\CustomField\CustomFieldTypes;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    public const HEIDELPAY_FRAME          = 'heidelpay_frame';
     public const HEIDELPAY_IS_TRANSACTION = 'heidelpay_is_transaction';
     public const HEIDELPAY_IS_SHIPPED     = 'heidelpay_is_shipped';
 

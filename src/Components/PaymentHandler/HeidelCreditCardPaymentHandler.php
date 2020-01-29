@@ -7,6 +7,8 @@ namespace HeidelPayment6\Components\PaymentHandler;
 use HeidelPayment6\Components\BookingMode;
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment6\Components\PaymentHandler\Traits\CanAuthorize;
+use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
 use HeidelPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
@@ -21,11 +23,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
 {
+    use CanCharge;
+    use CanAuthorize;
+
     /** @var Card */
     protected $paymentType;
 
@@ -40,8 +43,6 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
         ConfigReaderInterface $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
-        RouterInterface $router, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-        SessionInterface $session, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
         HeidelpayPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
@@ -51,9 +52,7 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
             $transactionRepository,
             $configService,
             $transactionStateHandler,
-            $clientFactory,
-            $router,
-            $session
+            $clientFactory
         );
 
         $this->deviceRepository = $deviceRepository;
@@ -77,42 +76,12 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
         $registerCreditCards = $this->pluginConfig->get('registerCreditCard');
 
         try {
-            // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-            // As soon as it's shorter, use $transaction->getReturnUrl() instead!
-            $returnUrl = $this->getReturnUrl();
-
-            if ($bookingMode === BookingMode::CHARGE) {
-                $paymentResult = $this->paymentType->charge(
-                    $this->heidelpayBasket->getAmountTotalGross(),
-                    $this->heidelpayBasket->getCurrencyCode(),
-                    $returnUrl,
-                    $this->heidelpayCustomer,
-                    $transaction->getOrderTransaction()->getId(),
-                    $this->heidelpayMetadata,
-                    $this->heidelpayBasket,
-                    true
-                );
-            } else {
-                $paymentResult = $this->paymentType->authorize(
-                    $this->heidelpayBasket->getAmountTotalGross(),
-                    $this->heidelpayBasket->getCurrencyCode(),
-                    $returnUrl,
-                    $this->heidelpayCustomer,
-                    $transaction->getOrderTransaction()->getId(),
-                    $this->heidelpayMetadata,
-                    $this->heidelpayBasket,
-                    true
-                );
-            }
+            $returnUrl = $bookingMode === BookingMode::CHARGE
+                ? $this->charge($transaction->getReturnUrl())
+                : $this->authorize($transaction->getReturnUrl());
 
             if ($registerCreditCards && $salesChannelContext->getCustomer() !== null) {
                 $this->saveCreditCard($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
-            }
-
-            $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());
-
-            if ($paymentResult->getPayment() && !empty($paymentResult->getRedirectUrl())) {
-                $returnUrl = $paymentResult->getRedirectUrl();
             }
 
             return new RedirectResponse($returnUrl);

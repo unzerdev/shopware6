@@ -6,15 +6,6 @@
     <services>
         <defaults public="true"/>
 
-        <service id="HeidelPayment6\Controllers\Storefront\HeidelpayRedirectController">
-            <argument type="service" id="session"/>
-            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
-
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
-
         <service id="HeidelPayment6\Controllers\Storefront\HeidelpayWebhookController">
             <argument type="tagged" tag="heidelpay.webhook_handler" />
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader" />

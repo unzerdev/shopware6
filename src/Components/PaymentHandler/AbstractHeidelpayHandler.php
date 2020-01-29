@@ -11,6 +11,7 @@ use HeidelPayment6\Components\Struct\Configuration;
 use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use HeidelPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use HeidelPayment6\Installers\CustomFieldInstaller;
+use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Basket;
@@ -18,16 +19,16 @@ use heidelpayPHP\Resources\Customer;
 use heidelpayPHP\Resources\Metadata;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
+use RuntimeException;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
+use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
+use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInterface
 {
@@ -55,9 +56,6 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var Configuration */
     protected $pluginConfig;
 
-    /** @var SessionInterface */
-    protected $session;
-
     /** @var string */
     protected $heidelpayCustomerId;
 
@@ -79,9 +77,6 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
-    /** @var RouterInterface */
-    private $router;
-
     /** @var string */
     private $resourceId;
 
@@ -95,9 +90,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         EntityRepositoryInterface $transactionRepository,
         ConfigReaderInterface $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactoryInterface $clientFactory,
-        RouterInterface $router, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-        SessionInterface $session // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
+        ClientFactoryInterface $clientFactory
     ) {
         $this->basketHydrator          = $basketHydrator;
         $this->customerHydrator        = $customerHydrator;
@@ -106,8 +99,6 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $this->configReader            = $configService;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->clientFactory           = $clientFactory;
-        $this->router                  = $router;
-        $this->session                 = $session;
     }
 
     public function pay(
@@ -115,26 +106,32 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
-        $this->pluginConfig    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
+        try {
+            $this->pluginConfig    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+            $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
 
-        $this->resourceId          = $dataBag->get('heidelpayResourceId');
-        $this->heidelpayCustomerId = $dataBag->get('heidelpayCustomerId');
+            $this->resourceId          = $dataBag->get('heidelpayResourceId');
+            $this->heidelpayCustomerId = $dataBag->get('heidelpayCustomerId');
 
-        $this->heidelpayBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
-        $this->heidelpayMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->heidelpayBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->heidelpayMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
 
-        if (!empty($this->heidelpayCustomerId)) {
-            $this->heidelpayCustomer = $this->heidelpayClient->fetchCustomer($this->heidelpayCustomerId);
-        } else {
-            $this->heidelpayCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
+            if (!empty($this->heidelpayCustomerId)) {
+                $this->heidelpayCustomer = $this->heidelpayClient->fetchCustomer($this->heidelpayCustomerId);
+            } else {
+                $this->heidelpayCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
+            }
+
+            if (!empty($this->resourceId)) {
+                $this->paymentType = $this->heidelpayClient->fetchPaymentType($this->resourceId);
+            }
+
+            return new RedirectResponse($transaction->getReturnUrl());
+        } catch (HeidelpayApiException $apiException) {
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        } catch (RuntimeException $exception) {
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
-
-        if (!empty($this->resourceId)) {
-            $this->paymentType = $this->heidelpayClient->fetchPaymentType($this->resourceId);
-        }
-
-        return new RedirectResponse($transaction->getReturnUrl());
     }
 
     public function finalize(
@@ -142,33 +139,30 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         Request $request,
         SalesChannelContext $salesChannelContext
     ): void {
-        $this->pluginConfig    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
+        try {
+            $this->pluginConfig    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+            $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
 
-        $payment = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
+            $payment = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
 
-        $this->transactionStateHandler->transformTransactionState(
-            $transaction->getOrderTransaction(),
-            $payment,
-            $salesChannelContext->getContext()
-        );
+            $this->transactionStateHandler->transformTransactionState(
+                $transaction->getOrderTransaction(),
+                $payment,
+                $salesChannelContext->getContext()
+            );
 
-        $shipmentExecuted = !in_array(
-            $transaction->getOrderTransaction()->getPaymentMethodId(),
-            AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
-            false
-        );
-        $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
+            $shipmentExecuted = !in_array(
+                $transaction->getOrderTransaction()->getPaymentMethodId(),
+                AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
+                false
+            );
 
-        $this->session->remove('heidelpayMetadataId');
-    }
-
-    /**
-     * @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-     */
-    protected function getReturnUrl(): string
-    {
-        return $this->router->generate('heidelpay.payment.finalize', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
+        } catch (HeidelpayApiException $apiException) {
+            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        } catch (RuntimeException $exception) {
+            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+        }
     }
 
     protected function setCustomFields(
