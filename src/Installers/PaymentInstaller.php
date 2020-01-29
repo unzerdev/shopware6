@@ -340,6 +340,11 @@ class PaymentInstaller implements InstallerInterface
         $this->setAllPaymentMethodsActive(false, $context);
     }
 
+    public static function getPaymentIds(): array
+    {
+        return array_column(self::PAYMENT_METHODS, 'id');
+    }
+
     private function setAllPaymentMethodsActive(bool $active, InstallContext $context): void
     {
         $upsertPayload = [];

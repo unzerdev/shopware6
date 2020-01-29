@@ -5,12 +5,19 @@
             "hirePurchaseCurrency": "{{ page.extensions.heidelpayHirePurchase.currency }}",
             "hirePurchaseAmount": {{ page.extensions.heidelpayHirePurchase.amount }},
             "hirePurchaseEffectiveInterest": {{ page.extensions.heidelpayHirePurchase.effectiveInterest }},
-            "hirePurchaseOrderDate": "{{ page.extensions.heidelpayHirePurchase.orderDate }}"
+            "hirePurchaseOrderDate": "{{ page.extensions.heidelpayHirePurchase.orderDate }}",
+            "currencyIso": "{{ context.currency.isoCode }}",
+            "currencyFormatLocale": "{{ app.request.locale }}",
+            "starSymbol": "{{ "general.star"|trans }}"
          }'>
 
         <div id="element-loader" class="heidelpay-loader">
             {# Placeholder for the loader element. #}
         </div>
+
+        {% if  shopware.config.HeidelPayment6.settings.testMode %}
+            {% sw_include '@Storefront/storefront/component/heidelpay/frames/testdata/hire-purchase.html.twig' %}
+        {% endif %}
 
         {% block heidelpay_frame_hire_purchase_container %}
             <div id="heidelpay-hire-purchase-container"></div>

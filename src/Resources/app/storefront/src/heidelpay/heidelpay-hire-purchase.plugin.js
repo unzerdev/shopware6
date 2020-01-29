@@ -6,6 +6,12 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         hirePurchaseCurrency: '',
         hirePurchaseEffectiveInterest: 0.0,
         hirePurchaseOrderDate: '',
+        installmentsTotalValueElementId: 'heidelpay-installments-total',
+        installmentsInterestValueElementId: 'heidelpay-installments-interest',
+        formLoadingIndicatorElementId: 'element-loader',
+        currencyIso: 'EUR',
+        currencyFormatLocale: 'en-GB',
+        starSymbol: '*',
     };
 
     /**
@@ -35,7 +41,9 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
      * @private
      */
     _createForm() {
-        ElementLoadingIndicatorUtil.create(this.el.firstElementChild);
+        const loadingIndicatorElement = document.getElementById(this.options.formLoadingIndicatorElementId);
+
+        ElementLoadingIndicatorUtil.create(loadingIndicatorElement);
 
         this.hirePurchase.create({
             containerId: 'heidelpay-hire-purchase-container',
@@ -44,13 +52,13 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
             effectiveInterest: this.options.hirePurchaseEffectiveInterest,
             orderDate: this.options.hirePurchaseOrderDate,
         }).then(() => {
-            this.el.firstElementChild.hidden = true;
+            //Hide the loading indicator
+            loadingIndicatorElement.hidden = true;
         }).catch((error) => {
-            this.heidelpayPlugin.renderErrorToElement(error, this.el.firstElementChild);
+            this.heidelpayPlugin.renderErrorToElement(error, loadingIndicatorElement);
             this.heidelpayPlugin.setSubmitButtonActive(false);
         }).finally(() => {
-            ElementLoadingIndicatorUtil.remove(this.el.firstElementChild);
-
+            ElementLoadingIndicatorUtil.remove(loadingIndicatorElement);
         });
     }
 
@@ -89,5 +97,20 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
                 this.heidelpayPlugin.setSubmitButtonActive(false);
             }
         }
+
+        if (event.currentStep === 'plan-detail') {
+            const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId),
+                installmentInterestElement = document.getElementById(this.options.installmentsInterestValueElementId);
+
+            installmentAmountTotalElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalAmount) + this.options.starSymbol;
+            installmentInterestElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalInterestAmount) + this.options.starSymbol;
+        }
+    }
+
+    _formatCurrency(value) {
+        return value.toLocaleString(this.options.currencyFormatLocale, {
+            style: 'currency',
+            currency: this.options.currencyIso,
+        });
     }
 }

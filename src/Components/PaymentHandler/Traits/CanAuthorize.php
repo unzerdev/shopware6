@@ -38,7 +38,9 @@ trait CanAuthorize
             true
         );
 
-        if ($paymentResult->getPayment() && !empty($paymentResult->getRedirectUrl())) {
+        $this->payment = $paymentResult->getPayment();
+
+        if ($this->payment !== null && !empty($paymentResult->getRedirectUrl())) {
             return $paymentResult->getRedirectUrl();
         }
 
