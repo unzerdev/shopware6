@@ -11,6 +11,7 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         formLoadingIndicatorSelector: '#element-loader',
         currencyIso: 'EUR',
         currencyFormatLocale: 'en-GB',
+        starSymbol: '*',
     };
 
     /**
@@ -101,8 +102,8 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
             const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId),
                 installmentInterestElement = document.getElementById(this.options.installmentsInterestValueElementId);
 
-            installmentAmountTotalElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalAmount) + '*';
-            installmentInterestElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalInterestAmount);
+            installmentAmountTotalElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalAmount) + this.options.starSymbol;
+            installmentInterestElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalInterestAmount) + this.options.starSymbol;
         }
     }
 

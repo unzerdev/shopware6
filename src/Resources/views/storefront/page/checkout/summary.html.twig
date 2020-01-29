@@ -11,7 +11,7 @@
 
         {% block page_checkout_summary_heidelpay_installment_interest_value %}
             <dd class="col-5 checkout-aside-summary-value" id="heidelpay-installments-interest">
-                {{ 0|currency }}
+                {{ 0|currency }}{{ "general.star"|trans|sw_sanitize }}
             </dd>
         {% endblock %}
 

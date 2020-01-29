@@ -7,7 +7,8 @@
             "hirePurchaseEffectiveInterest": {{ page.extensions.heidelpayHirePurchase.effectiveInterest }},
             "hirePurchaseOrderDate": "{{ page.extensions.heidelpayHirePurchase.orderDate }}",
             "currencyIso": "{{ context.currency.isoCode }}",
-            "currencyFormatLocale": "{{ app.request.locale }}"
+            "currencyFormatLocale": "{{ app.request.locale }}",
+            "starSymbol": "{{ "general.star"|trans }}"
          }'>
 
         <div id="element-loader" class="heidelpay-loader">
