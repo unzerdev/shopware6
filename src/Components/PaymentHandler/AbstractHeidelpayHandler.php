@@ -146,10 +146,10 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             $this->payment = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
 
             $this->transactionStateHandler->transformTransactionState(
-            $transaction->getOrderTransaction(),
-            $this->payment,
-            $salesChannelContext->getContext()
-        );
+                $transaction->getOrderTransaction(),
+                $this->payment,
+                $salesChannelContext->getContext()
+            );
 
             $shipmentExecuted = !in_array(
                 $transaction->getOrderTransaction()->getPaymentMethodId(),
