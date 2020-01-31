@@ -16,10 +16,21 @@ trait HasTransferInfoTrait
     /** @var HeidelpayTransferInfoRepositoryInterface */
     protected $transferInfoRepository;
 
-    private function saveTransferInfo(string $transactionId, Charge $charge, Context $context): EntityWrittenContainerEvent
+    private function saveTransferInfo(string $transactionId, Context $context): EntityWrittenContainerEvent
     {
-        if ($this->transferInfoRepository === null) {
+        if (!isset($this->transferInfoRepository)) {
             throw new RuntimeException('TransferInfoRepository can not be null');
+        }
+
+        if (!isset($this->payment)) {
+            throw new RuntimeException('Payment can not be null');
+        }
+
+        /** @var null|Charge $charge */
+        $charge = $this->payment->getChargeByIndex(0);
+
+        if (!isset($charge)) {
+            throw new RuntimeException('Payment has not been charged');
         }
 
         $transferInfo = (new TransferInformation())->fromCharge($charge);

@@ -12,7 +12,6 @@ use HeidelPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepositoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Resources\TransactionTypes\Charge;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -60,10 +59,7 @@ class HeidelInvoicePaymentHandler extends AbstractHeidelpayHandler
 
         try {
             $returnUrl = $this->charge($transaction->getReturnUrl());
-
-            /** @var Charge $charge */
-            $charge = $this->payment->getChargeByIndex(0);
-            $this->saveTransferInfo($transaction->getOrderTransaction()->getId(), $charge, $salesChannelContext->getContext());
+            $this->saveTransferInfo($transaction->getOrderTransaction()->getId(), $salesChannelContext->getContext());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
