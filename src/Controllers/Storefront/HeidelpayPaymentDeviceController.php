@@ -34,7 +34,7 @@ class HeidelpayPaymentDeviceController extends StorefrontController
 
         $context  = $salesChannelContext->getContext();
         $deviceId = $request->get('id');
-        $device   = $this->deviceRepository->get($deviceId, $context);
+        $device   = $this->deviceRepository->read($deviceId, $context);
 
         if ($device === null || $device->getCustomerId() !== $salesChannelContext->getCustomer()->getId()) {
             $this->generateUrl('frontend.account.payment.page');

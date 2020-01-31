@@ -97,7 +97,7 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
     /**
      * {@inheritdoc}
      */
-    public function get(string $id, Context $context): ?HeidelpayPaymentDeviceEntity
+    public function read(string $id, Context $context): ?HeidelpayPaymentDeviceEntity
     {
         $criteria = new Criteria();
         $criteria->addFilter(
