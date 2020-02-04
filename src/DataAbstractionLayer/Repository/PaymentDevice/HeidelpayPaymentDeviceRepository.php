@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice;
+namespace HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice;
 
-use HeidelPayment\Components\AddressHashGenerator\AddressHashGeneratorInterface;
-use HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
+use HeidelPayment6\Components\AddressHashGenerator\AddressHashGeneratorInterface;
+use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -97,7 +97,7 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
     /**
      * {@inheritdoc}
      */
-    public function get(string $id, Context $context): ?HeidelpayPaymentDeviceEntity
+    public function read(string $id, Context $context): ?HeidelpayPaymentDeviceEntity
     {
         $criteria = new Criteria();
         $criteria->addFilter(

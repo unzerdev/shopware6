@@ -1,0 +1,17 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-detail.html.twig' %}
+
+{% block page_account_order_item_detail_table_header %}
+    {% for transaction in order.transactions %}
+        {% if transaction.extensions.heidelpayTransferInfo %}
+            {% block page_account_order_item_detail_heidelpay_payment_instructions %}
+                <div class="heidelpay-transfer-information-wrapper">
+                    {% sw_include '@Storefront/storefront/component/heidelpay/finish/transfer-information.html.twig' with {
+                        'transferInformation': transaction.extensions.heidelpayTransferInfo
+                    } %}
+                </div>
+            {% endblock %}
+        {% endif %}
+    {% endfor %}
+
+    {{ parent() }}
+{% endblock %}

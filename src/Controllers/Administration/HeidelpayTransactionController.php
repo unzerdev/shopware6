@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Controllers\Administration;
+namespace HeidelPayment6\Controllers\Administration;
 
-use HeidelPayment\Components\ArrayHydrator\PaymentArrayHydratorInterface;
-use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\ArrayHydrator\PaymentArrayHydratorInterface;
+use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
+use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -161,10 +162,30 @@ class HeidelpayTransactionController extends AbstractController
             throw new NotFoundHttpException();
         }
 
+        /** @var DocumentEntity[] $documents */
+        $documents = $transaction->getOrder()->getDocuments()->getElements();
+        $invoiceId = null;
+
+        foreach ($documents as $document) {
+            if ($document->getDocumentType()->getTechnicalName() === 'invoice') {
+                $invoiceId = $document->getConfig()['documentNumber'];
+            }
+        }
+
+        if (!$invoiceId) {
+            return new JsonResponse(
+                [
+                    'status'  => false,
+                    'message' => 'invoice-missing-error',
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $client->ship($orderTransactionId);
+            $client->ship($orderTransactionId, $invoiceId);
         } catch (HeidelpayApiException $exception) {
             return new JsonResponse(
                 [
@@ -188,7 +209,11 @@ class HeidelpayTransactionController extends AbstractController
     private function getOrderTransaction(string $orderTransaction, Context $context): ?OrderTransactionEntity
     {
         $criteria = new Criteria([$orderTransaction]);
-        $criteria->addAssociation('order');
+        $criteria->addAssociations([
+            'order',
+            'order.documents',
+            'order.documents.documentType',
+        ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();
     }

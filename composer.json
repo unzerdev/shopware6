@@ -1,37 +1,36 @@
 {
-    "name": "heidel/payment",
+    "name": "heidel/payment6",
     "description": "Heidelpay payment integration for Shopware 6",
     "version": "v1.0.0",
     "type": "shopware-platform-plugin",
     "license": "Commercial",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "authors": [
         {
-            "name": "heidelpay GmbH",
+            "name": "heidelpay GmbH, Kellerkinder Pluginwerk GmbH",
             "email": "info@heidelpay.com",
             "homepage": "https://www.heidelpay.com"
-        },
-        {
-            "name": "Kellerkinder GmbH",
-            "email": "hallo@kellerkinder.de",
-            "homepage": "https://www.kellerkinder.de/",
-            "role": "Contributor"
         }
     ],
     "config": {
         "sort-packages": true
     },
     "require": {
-        "heidelpay/heidelpay-php": "dev-master"
+        "php": "^7.2",
+        "heidelpay/heidelpay-php": "~1.2.0",
+        "shopware/core": "*",
+        "shopware/administration": "*",
+        "shopware/storefront": "*"
     },
     "require-dev": {
-        "k10r/codestyle": "^1.0",
         "phpstan/phpstan": "^0.11",
         "phpstan/phpstan-phpunit": "^0.11",
         "phpunit/phpunit": "^8.1",
-        "shopware/platform": "v6.0.0+ea1.1"
+        "k10r/codestyle": "^1.0"
     },
     "extra": {
-        "shopware-plugin-class": "HeidelPayment\\HeidelPayment",
+        "shopware-plugin-class": "HeidelPayment6\\HeidelPayment6",
         "plugin-icon": "src/Resources/public/plugin.png",
         "copyright": "(c) heidelpay GmbH",
         "label": {
@@ -53,7 +52,11 @@
     },
     "autoload": {
         "psr-4": {
-            "HeidelPayment\\": "src/"
+            "HeidelPayment6\\": "src/"
         }
+    },
+    "conflict": {
+        "shopware/storefront": "<6,>=7",
+        "shopware/administration": "<6,>=7"
     }
 }

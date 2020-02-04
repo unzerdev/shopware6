@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\Struct;
+namespace HeidelPayment6\Components\Struct;
 
 class Webhook
 {

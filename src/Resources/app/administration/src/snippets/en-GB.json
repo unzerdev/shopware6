@@ -1,0 +1,84 @@
+{
+    "heidel-payment": {
+        "tabTitle": "Heidelpay",
+        "paymentDetails": {
+            "history": {
+                "cardTitle": "Payment History",
+                "column": {
+                    "type": "Type",
+                    "amount": "Amount",
+                    "date": "Date"
+                },
+                "type": {
+                    "authorization": "Authorization",
+                    "charge": "Charging",
+                    "shipment": "Shipping notification",
+                    "cancellation": "Refund",
+                    "default": ""
+                }
+            },
+            "actions": {
+                "chargeButton": "Charge",
+                "shipButton": "Shipping notice",
+                "refundButton": "Refund"
+            },
+            "detail": {
+                "cardTitle": "Payment Details",
+                "amountTotal": "Amount (gross)",
+                "amountTotalVat": "Amount (net)",
+                "currency": "Currency",
+                "shortId": "Short-ID",
+                "id": "Payment-ID",
+                "state": "State"
+            },
+            "metadata": {
+                "cardTitle": "Metadata",
+                "column": {
+                    "key": "Key",
+                    "value": "Value"
+                }
+            },
+            "basket": {
+                "cardTitle": "Basket",
+                "column":{
+                    "quantity": "Quantity",
+                    "title": "Title",
+                    "amountGross": "Amount (gross)",
+                    "amountNet": "Amount (net)"
+                }
+            },
+            "notifications": {
+                "genericErrorMessage": "An error has occoured!",
+                "refundSuccessTitle": "Refund",
+                "refundSuccessMessage": "The reimbursement was successfully completed.",
+                "refundErrorTitle": "Refund",
+                "chargeSuccessTitle": "Charge",
+                "chargeSuccessMessage": "The collection of the payment was carried out successfully.",
+                "chargeErrorTitle": "Charge",
+                "shipSuccessTitle": "Shipping notice",
+                "shipSuccessMessage": "The shipping notification was successfully sent.",
+                "shipErrorTitle": "Shipping notice",
+                "invoiceNotFoundMessage": "No invoice was found for this order."
+            }
+        }
+    },
+    "heidel-payment-settings": {
+        "module": {
+            "title": "Heidelpay",
+            "description": "Heidelpay"
+        },
+        "form": {
+            "message": {
+                "success": {
+                    "title": "Test succeeded",
+                    "message": "The provided credentials are valid!"
+                },
+                "error": {
+                    "title": "Test failed",
+                    "message": "API Credentials are invalid, please correct them and try again!"
+                }
+            },
+            "testButton": "Test API credentials"
+        }
+    }
+}

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\WebhookHandler;
+namespace HeidelPayment6\Components\WebhookHandler;
 
-use HeidelPayment\Components\Struct\Webhook;
+use HeidelPayment6\Components\Struct\Webhook;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface WebhookHandlerInterface

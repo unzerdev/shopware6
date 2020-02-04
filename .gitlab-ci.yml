@@ -1,9 +1,7 @@
 stages:
     - setup
     - test
-
-cache:
-    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    - package
 
 variables:
     MYSQL_ROOT_PASSWORD: shopware
@@ -11,13 +9,17 @@ variables:
     MYSQL_DATABASE: shopware
     MYSQL_USER: shopware
     MYSQL_PASSWORD: shopware
-    SHOPWARE_BRANCH: 'v6.0.0+ea1.1'
+    PLUGIN_NAME: HeidelPayment6
+    SHOPWARE_VERSION: "6.1" # Tag
+
+cache:
+    key: "$PLUGIN_NAME-$CI_COMMIT_REF_SLUG"
 
 composer:
     stage: setup
-    image: "edbizarro/gitlab-ci-pipeline-php:7.3"
+    image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     script:
-        - composer install --no-ansi --no-interaction --no-progress --optimize-autoloader
+        - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     artifacts:
         paths:
             - vendor/
@@ -29,16 +31,22 @@ composer:
 
 phpstan:
     stage: test
-    image: "edbizarro/gitlab-ci-pipeline-php:7.3"
+    image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     dependencies:
         - composer
     script:
-        - composer install
-        - vendor/bin/phpstan analyse -l 5 -c phpstan.neon src
+        - git clone -b ${SHOPWARE_VERSION} https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
+        - git clone -b ${SHOPWARE_VERSION} https://github.com/shopware/platform "${CI_PROJECT_DIR}/opt/shopware/platform"
+        - mv ${CI_PROJECT_DIR}/opt /tmp/opt
+        - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${PLUGIN_NAME}
+        - mv /tmp/opt ${CI_PROJECT_DIR}/opt
+        - cd ${CI_PROJECT_DIR}/opt/shopware && composer install --no-interaction --optimize-autoloader --no-suggest --no-scripts
+        - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${PLUGIN_NAME}
+        - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${PLUGIN_NAME} && vendor/bin/phpstan analyse -c phpstan.neon --autoload-file=${CI_PROJECT_DIR}/opt/shopware/vendor/autoload.php src
 
 codestyle:
     stage: test
-    image: "edbizarro/gitlab-ci-pipeline-php:7.3"
+    image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     dependencies:
         - composer
     script:
@@ -47,23 +55,13 @@ codestyle:
         key: global
         paths:
             - .php_cs.cache
-
-phpunit:
-    image: "edbizarro/gitlab-ci-pipeline-php:7.3"
-    stage: test
-    services:
-        - mysql:5.7
-    dependencies:
-        - composer
+package:
+    image: kellerkinder/shopware-package-plugin:latest
+    stage: package
+    only:
+        - master
     script:
-        - sudo apt-get update && sudo apt-get install default-mysql-client -y
-        - git clone https://github.com/shopware/development -b "${SHOPWARE_BRANCH}" "${CI_PROJECT_DIR}/opt/shopware"
-        - mv ${CI_PROJECT_DIR}/opt /tmp/opt
-        - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/HeidelPayment
-        - cd /tmp/opt/shopware/custom/plugins/HeidelPayment && composer install
-        - mv /tmp/opt ${CI_PROJECT_DIR}/opt
-        - 'printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"mysql\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"${MYSQL_DATABASE}\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"${MYSQL_ROOT_PASSWORD}\"" > "${CI_PROJECT_DIR}/opt/shopware/.psh.yaml.override"'
-        - cd ${CI_PROJECT_DIR}/opt/shopware && php ${CI_PROJECT_DIR}/opt/shopware/psh.phar init
-        - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:refresh
-        - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:install --activate HeidelPayment
-        - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/HeidelPayment && ${CI_PROJECT_DIR}/opt/shopware/vendor/bin/phpunit
+        - package-plugin
+    artifacts:
+        paths:
+            - $PLUGIN_NAME.zip

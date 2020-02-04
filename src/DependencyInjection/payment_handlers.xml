@@ -4,201 +4,211 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelCreditCardPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
-            <argument type="service" id="HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelInvoicePaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelInvoicePaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelSofortPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelSofortPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelEpsPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelEpsPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelPayPalPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelPayPalPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelFlexipayPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelFlexipayPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelDirectDebitPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelDirectDebitPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelDirectDebitGuaranteedPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelDirectDebitGuaranteedPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelIdealPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelIdealPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelGiropayPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelGiropayPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelPrePaymentPaymentHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelPrePaymentPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="HeidelPayment\Components\PaymentHandler\HeidelPrzelewyHandler">
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelPrzelewyHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelAlipayPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelWeChatPaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentHandler\HeidelHirePurchasePaymentHandler">
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
 
             <tag name="shopware.payment.method.async" />
         </service>

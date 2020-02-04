@@ -2,30 +2,27 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\PaymentHandler;
+namespace HeidelPayment6\Components\PaymentHandler;
 
-use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
-use HeidelPayment\Components\ResourceHydrator\ResourceHydratorInterface;
-use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
+use HeidelPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
+use HeidelPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
+use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepositoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Resources\PaymentTypes\InvoiceFactoring;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
 {
-    /** @var InvoiceFactoring */
-    protected $paymentType;
-
-    /** @var ResourceHydratorInterface */
-    private $businessCustomerHydrator;
+    use HasTransferInfoTrait;
+    use CanCharge;
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
@@ -35,10 +32,10 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
         ConfigReaderInterface $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
-        RouterInterface $router, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-        SessionInterface $session, // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-        ResourceHydratorInterface $businessCustomerHydrator
+        HeidelpayTransferInfoRepositoryInterface $transferInfoRepository
     ) {
+        $this->transferInfoRepository = $transferInfoRepository;
+
         parent::__construct(
             $basketHydrator,
             $customerHydrator,
@@ -46,12 +43,8 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
             $transactionRepository,
             $configService,
             $transactionStateHandler,
-            $clientFactory,
-            $router,
-            $session
+            $clientFactory
         );
-
-        $this->businessCustomerHydrator = $businessCustomerHydrator;
     }
 
     /**
@@ -67,33 +60,13 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
         $birthday = $dataBag->get('heidelpayBirthday');
 
         try {
-            // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-            // As soon as it's shorter, use $transaction->getReturnUrl() instead!
-            $returnUrl         = $this->getReturnUrl();
-            $heidelpayCustomer = $this->heidelpayCustomer;
-
-            if ($salesChannelContext->getCustomer()->getCompany() !== null || $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany() !== null) {
-                $heidelpayCustomer = $this->businessCustomerHydrator->hydrateObject($salesChannelContext, $transaction);
+            if (empty($this->heidelpayCustomerId)) {
+                $this->heidelpayCustomer->setBirthDate($birthday);
+                $this->heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($this->heidelpayCustomer);
             }
 
-            $heidelpayCustomer->setBirthDate($birthday);
-            $heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($heidelpayCustomer);
-
-            $paymentResult = $this->paymentType->charge(
-                $this->heidelpayBasket->getAmountTotalGross(),
-                $this->heidelpayBasket->getCurrencyCode(),
-                $returnUrl,
-                $heidelpayCustomer,
-                $transaction->getOrderTransaction()->getId(),
-                $this->heidelpayMetadata,
-                $this->heidelpayBasket
-            );
-
-            $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());
-
-            if ($paymentResult->getPayment() && !empty($paymentResult->getRedirectUrl())) {
-                $returnUrl = $paymentResult->getRedirectUrl();
-            }
+            $returnUrl = $this->charge($transaction->getReturnUrl());
+            $this->saveTransferInfo($transaction->getOrderTransaction()->getId(), $salesChannelContext->getContext());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {

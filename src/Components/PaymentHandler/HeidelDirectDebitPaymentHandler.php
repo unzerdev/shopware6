@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\PaymentHandler;
+namespace HeidelPayment6\Components\PaymentHandler;
 
+use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\SepaDirectDebit;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -14,6 +15,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
 {
+    use CanCharge;
+
     /** @var SepaDirectDebit */
     protected $paymentType;
 
@@ -32,25 +35,7 @@ class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
         }
 
         try {
-            // @deprecated Should be removed as soon as the shopware finalize URL is shorter so that Heidelpay can handle it!
-            // As soon as it's shorter, use $transaction->getReturnUrl() instead!
-            $returnUrl = $this->getReturnUrl();
-
-            $paymentResult = $this->paymentType->charge(
-                $this->heidelpayBasket->getAmountTotalGross(),
-                $this->heidelpayBasket->getCurrencyCode(),
-                $returnUrl,
-                $this->heidelpayCustomer,
-                $transaction->getOrderTransaction()->getId(),
-                $this->heidelpayMetadata,
-                $this->heidelpayBasket
-            );
-
-            $this->session->set('heidelpayMetadataId', $paymentResult->getPayment()->getMetadata()->getId());
-
-            if ($paymentResult->getPayment() && !empty($paymentResult->getRedirectUrl())) {
-                $returnUrl = $paymentResult->getRedirectUrl();
-            }
+            $returnUrl = $this->charge($transaction->getReturnUrl());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {

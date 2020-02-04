@@ -4,9 +4,18 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment\Commands\RegisterWebhookCommand" >
-            <argument type="service" id="HeidelPayment\Components\ClientFactory\ClientFactory" />
+        <service id="HeidelPayment6\Commands\RegisterWebhookCommand" >
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="router.default" />
+
+            <tag name="console.command" />
+        </service>
+
+        <service id="HeidelPayment6\Commands\SendShippingNotificationCommand" >
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
+            <argument type="service" id="order_transaction.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\Event\BusinessEventDispatcher"/>
 
             <tag name="console.command" />
         </service>

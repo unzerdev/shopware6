@@ -1,27 +1,35 @@
 {% block heidelpay_frame_invoice_factoring %}
     <div class="heidelpay-invoice-factoring-wrapper"
-         data-heidelpay-invoice-factoring="true">
+         data-heidelpay-invoice-factoring="true"
+         data-heidelpay-invoice-factoring-options='{
+            "isB2BCustomer": "{{ context.customer.activeBillingAddress.company is not empty }}",
+            "customerInfo": {{ context.customer|json_encode }}
+         }'>
 
-        {% block heidelpay_frame_invoice_factoring_birthday %}
-            <div class="heidelpay-frame-row">
-                <label for="heidelpayBirthday">
-                    {{ "account.personalBirthdayLabel"|trans }}
-                </label>
+        <div class="heidelpay-frame-row">
+            {% if context.customer.activeBillingAddress.company is not empty %}
+                {% block heidelpay_frame_invoice_factoring_b2b_form %}
+                <div id="heidelpay-b2b-form" class="field">
+                </div>
 
-                <input type="date"
-                       id="heidelpayBirthday"
-                       name="heidelpayBirthday"
-                       class="form-control heidelpay-date-input"
-                       form="confirmOrderForm"
-                       required="required"
-                       {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
-
-                {% if context.customer.activeBillingAddress.company %}
-                    <div id="heidelpay-invoice-commercial-sector">
-
+                <input type="hidden" id="heidelpayCustomerId" name="heidelpayCustomerId" form="confirmOrderForm">
+                {% endblock %}
+            {% else %}
+                {% block heidelpay_frame_invoice_factoring_birthday %}
+                    <div id="heidelpay-b2c-form">
+                        <label for="heidelpayBirthday" class="heidelpay-label">
+                            {{ "account.personalBirthdayLabel"|trans }}
+                        </label>
+                        <input type="date"
+                               id="heidelpayBirthday"
+                               name="heidelpayBirthday"
+                               class="form-control heidelpay-date-input"
+                               form="confirmOrderForm"
+                               required="required"
+                               {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
                     </div>
-                {% endif %}
-            </div>
-        {% endblock %}
+                {% endblock %}
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

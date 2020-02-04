@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\TransactionStateHandler;
+namespace HeidelPayment6\Components\TransactionStateHandler;
 
 use heidelpayPHP\Resources\Payment;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;

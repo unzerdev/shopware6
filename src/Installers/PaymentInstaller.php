@@ -2,22 +2,25 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Installers;
+namespace HeidelPayment6\Installers;
 
-use HeidelPayment\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelDirectDebitGuaranteedPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelDirectDebitPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelEpsPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelGiropayPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelIdealPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelInvoicePaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelPayPalPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelPrePaymentPaymentHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelPrzelewyHandler;
-use HeidelPayment\Components\PaymentHandler\HeidelSofortPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelAlipayPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelDirectDebitGuaranteedPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelDirectDebitPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelEpsPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelGiropayPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelHirePurchasePaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelIdealPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelInvoicePaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelPayPalPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelPrePaymentPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelPrzelewyHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelSofortPaymentHandler;
+use HeidelPayment6\Components\PaymentHandler\HeidelWeChatPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -42,6 +45,9 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_DIRECT_DEBIT_GUARANTEED = '5123af5ce94a4a286641973e8de7eb60';
     public const PAYMENT_ID_PRZELEWY24              = 'cd6f59d572e6c90dff77a48ce16b44db';
     public const PAYMENT_ID_PRE_PAYMENT             = '085b64d0028a8bd447294e03c4eb411a';
+    public const PAYMENT_ID_ALIPAY                  = 'bc4c2cbfb5fda0bf549e4807440d0a54';
+    public const PAYMENT_ID_WE_CHAT                 = 'fd96d03535a46d197f5adac17c9f8bac';
+    public const PAYMENT_ID_HIRE_PURCHASE           = '4b9f8d08b46a83839fd0eb14fe00efe6';
 
     public const PAYMENT_METHODS = [
         [
@@ -58,9 +64,6 @@ class PaymentInstaller implements InstallerInterface
                     'description' => 'Credit card payments with heidelpay',
                 ],
             ],
-            'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/credit-card.html.twig',
-            ],
         ],
         [
             'id'                => self::PAYMENT_ID_INVOICE,
@@ -75,9 +78,6 @@ class PaymentInstaller implements InstallerInterface
                     'name'        => 'Invoice (heidelpay)',
                     'description' => 'Invoice payments with heidelpay',
                 ],
-            ],
-            'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/invoice.html.twig',
             ],
         ],
         [
@@ -109,9 +109,6 @@ class PaymentInstaller implements InstallerInterface
                     'description' => 'Invoice guaranteed payments with heidelpay',
                 ],
             ],
-            'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/invoice-guaranteed.html.twig',
-            ],
         ],
         [
             'id'                => self::PAYMENT_ID_INVOICE_FACTORING,
@@ -127,9 +124,6 @@ class PaymentInstaller implements InstallerInterface
                     'description' => 'Invoice factoring payments with heidelpay',
                 ],
             ],
-            'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/invoice-factoring.html.twig',
-            ],
         ],
         [
             'id'                => self::PAYMENT_ID_EPS,
@@ -144,9 +138,6 @@ class PaymentInstaller implements InstallerInterface
                     'name'        => 'EPS (heidelpay)',
                     'description' => 'EPS payments with Heidelpay',
                 ],
-            ],
-            'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/eps.html.twig',
             ],
         ],
         [
@@ -193,9 +184,6 @@ class PaymentInstaller implements InstallerInterface
                     'description' => 'iDEAL payments with heidelpay',
                 ],
             ],
-            'customFields' => [
-                CustomFieldInstaller::HEIDELPAY_FRAME => '@Storefront/component/heidelpay/frames/ideal.html.twig',
-            ],
         ],
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
@@ -211,9 +199,6 @@ class PaymentInstaller implements InstallerInterface
                     'description' => 'SEPA direct debit payments with Heidelpay',
                 ],
             ],
-            'customFields' => [
-                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/sepa_direct_debit.html.twig',
-            ],
         ],
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED,
@@ -228,9 +213,6 @@ class PaymentInstaller implements InstallerInterface
                     'name'        => 'SEPA direct debit guaranteed (heidelpay)',
                     'description' => 'Guaranteed SEPA direct debit payments with Heidelpay',
                 ],
-            ],
-            'customFields' => [
-                'heidelpay_frame' => '@Storefront/component/heidelpay/frames/sepa_direct_debit_guaranteed.html.twig',
             ],
         ],
         [
@@ -278,6 +260,57 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
         ],
+        [
+            'id'                => self::PAYMENT_ID_WE_CHAT,
+            'handlerIdentifier' => HeidelWeChatPaymentHandler::class,
+            'name'              => 'WeChat (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'WeChat (heidelpay)',
+                    'description' => 'WeChat Zahlungen mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'WeChat (heidelpay)',
+                    'description' => 'WeChat payments with heidelpay',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_ALIPAY,
+            'handlerIdentifier' => HeidelAlipayPaymentHandler::class,
+            'name'              => 'Alipay (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Alipay (heidelpay)',
+                    'description' => 'Alipay Zahlungen mit Heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'Alipay (heidelpay)',
+                    'description' => 'Alipay payments with heidelpay',
+                ],
+            ],
+        ],
+        /*
+         * Removed due to Heidelpay API issues.
+         * TODO: Revert when all of the API problems were solved by heidelpay.
+         *
+        [
+            'id'                => self::PAYMENT_ID_HIRE_PURCHASE,
+            'handlerIdentifier' => HeidelHirePurchasePaymentHandler::class,
+            'name'              => 'FlexiPay® Rate (heidelpay)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'FlexiPay® Rate (heidelpay)',
+                    'description' => 'FlexiPay® Ratenzahlungen mit heidelpay',
+                ],
+                'en-GB' => [
+                    'name'        => 'FlexiPay® Instalment (heidelpay)',
+                    'description' => 'FlexiPay® Instalment payments with heidelpay',
+                ],
+            ],
+        ],
+
+        */
     ];
 
     /** @var EntityRepositoryInterface */
@@ -311,6 +344,11 @@ class PaymentInstaller implements InstallerInterface
     public function deactivate(DeactivateContext $context): void
     {
         $this->setAllPaymentMethodsActive(false, $context);
+    }
+
+    public static function getPaymentIds(): array
+    {
+        return array_column(self::PAYMENT_METHODS, 'id');
     }
 
     private function setAllPaymentMethodsActive(bool $active, InstallContext $context): void

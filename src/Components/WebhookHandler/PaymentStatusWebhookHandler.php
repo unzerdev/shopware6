@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\WebhookHandler;
+namespace HeidelPayment6\Components\WebhookHandler;
 
-use HeidelPayment\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment\Components\Struct\Webhook;
-use HeidelPayment\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\Struct\Webhook;
+use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use heidelpayPHP\Resources\Payment;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -47,9 +47,6 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
     }
 
     /**
-     * TODO: Decide if stateMachineRegistry->transition for the actual write process should be used
-     * TODO: transition needs StateMachineTransitionActions, we need to map actions instead of the payment status
-     *
      * {@inheritdoc}
      */
     public function execute(Webhook $webhook, SalesChannelContext $context): void

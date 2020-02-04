@@ -4,11 +4,16 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment\Components\ResourceHydrator\BasketResourceHydrator"/>
-        <service id="HeidelPayment\Components\ResourceHydrator\CustomerResourceHydrator"/>
-        <service id="HeidelPayment\Components\ResourceHydrator\MetadataResourceHydrator"/>
-        <service id="HeidelPayment\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
+        <service id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
 
-        <service id="HeidelPayment\Components\ArrayHydrator\PaymentArrayHydrator" />
+        <service id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+
+        <service id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator">
+            <argument>%kernel.shopware_version%</argument>
+        </service>
+
+        <service id="HeidelPayment6\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
+
+        <service id="HeidelPayment6\Components\ArrayHydrator\PaymentArrayHydrator" />
     </services>
 </container>
