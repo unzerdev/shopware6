@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment6;
 
+use HeidelPayment6\Components\HeidelpayClassLoader;
 use HeidelPayment6\Installers\CustomFieldInstaller;
 use HeidelPayment6\Installers\PaymentInstaller;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -18,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    require __DIR__ . '/../vendor/autoload.php';
+    (new HeidelpayClassLoader())->register();
 }
 
 class HeidelPayment6 extends Plugin
