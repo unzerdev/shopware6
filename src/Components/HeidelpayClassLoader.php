@@ -9,7 +9,7 @@ use Composer\Autoload\ClassLoader;
 final class HeidelpayClassLoader extends ClassLoader
 {
     private const VENDOR_DEPENDENCIES_PSR4 = [
-        'heidelpayPHP\\'    => 'heidelpay/heidelpay-php/src/',
+        'heidelpayPHP\\' => 'heidelpay/heidelpay-php/src/',
     ];
 
     public function __construct()
