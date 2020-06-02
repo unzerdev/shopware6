@@ -77,9 +77,6 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
-    /** @var string */
-    private $resourceId;
-
     /** @var ConfigReaderInterface */
     private $configReader;
 
@@ -110,11 +107,10 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             $this->pluginConfig    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
             $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
 
-            $this->resourceId          = $dataBag->get('heidelpayResourceId');
+            $resourceId                = $dataBag->get('heidelpayResourceId');
             $this->heidelpayCustomerId = $dataBag->get('heidelpayCustomerId');
-
-            $this->heidelpayBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
-            $this->heidelpayMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->heidelpayBasket     = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->heidelpayMetadata   = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
 
             if (!empty($this->heidelpayCustomerId)) {
                 $this->heidelpayCustomer = $this->heidelpayClient->fetchCustomer($this->heidelpayCustomerId);
@@ -122,8 +118,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
                 $this->heidelpayCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
             }
 
-            if (!empty($this->resourceId)) {
-                $this->paymentType = $this->heidelpayClient->fetchPaymentType($this->resourceId);
+            if (!empty($resourceId)) {
+                $this->paymentType = $this->heidelpayClient->fetchPaymentType($resourceId);
             }
 
             return new RedirectResponse($transaction->getReturnUrl());

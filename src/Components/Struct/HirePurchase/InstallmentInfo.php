@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HeidelPayment6\Components\Struct\HirePurchase;
 
 use heidelpayPHP\Resources\InstalmentPlan;

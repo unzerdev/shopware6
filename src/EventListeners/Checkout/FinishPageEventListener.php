@@ -8,6 +8,7 @@ use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment6\Components\Struct\HirePurchase\InstallmentInfo;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
 use HeidelPayment6\Installers\PaymentInstaller;
+use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\InstalmentPlan;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
@@ -33,9 +34,8 @@ class FinishPageEventListener implements EventSubscriberInterface
     public function onCheckoutFinish(CheckoutFinishPageLoadedEvent $event): void
     {
         $salesChannelContext = $event->getSalesChannelContext();
-
-        $page              = $event->getPage();
-        $orderTransactions = $page->getOrder()->getTransactions();
+        $page                = $event->getPage();
+        $orderTransactions   = $page->getOrder()->getTransactions();
 
         if (!$orderTransactions) {
             return;
@@ -50,13 +50,16 @@ class FinishPageEventListener implements EventSubscriberInterface
                 continue;
             }
 
-            $payment = $heidelpayClient->fetchPaymentByOrderId($transaction->getId());
+            try {
+                $payment     = $heidelpayClient->fetchPaymentByOrderId($transaction->getId());
+                $paymentType = $payment->getPaymentType();
 
-            if ($payment->getPaymentType() instanceof InstalmentPlan) {
-                $installmentInfo = (new InstallmentInfo())->fromInstalmentPlan($payment->getPaymentType());
-                $extension->addInstallmentInfo($installmentInfo);
-
-                continue;
+                if ($paymentType instanceof InstalmentPlan) {
+                    $installmentInfo = (new InstallmentInfo())->fromInstalmentPlan($paymentType);
+                    $extension->addInstallmentInfo($installmentInfo);
+                }
+            } catch (HeidelpayApiException $exception) {
+                //catch payment not found exception so that shopware can handle its own errors
             }
         }
 

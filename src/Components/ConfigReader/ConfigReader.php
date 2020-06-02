@@ -33,7 +33,10 @@ class ConfigReader implements ConfigReaderInterface
         foreach ($values as $key => $value) {
             $property = substr($key, strlen(self::SYSTEM_CONFIG_DOMAIN));
 
-            $config[$property] = $value;
+            if ($property) {
+                /** @var string $property */
+                $config[$property] = $value;
+            }
         }
 
         return new Configuration($config);

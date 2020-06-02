@@ -11,7 +11,6 @@ use HeidelPayment6\Components\PaymentHandler\HeidelDirectDebitPaymentHandler;
 use HeidelPayment6\Components\PaymentHandler\HeidelEpsPaymentHandler;
 use HeidelPayment6\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
 use HeidelPayment6\Components\PaymentHandler\HeidelGiropayPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelHirePurchasePaymentHandler;
 use HeidelPayment6\Components\PaymentHandler\HeidelIdealPaymentHandler;
 use HeidelPayment6\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler;
 use HeidelPayment6\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;

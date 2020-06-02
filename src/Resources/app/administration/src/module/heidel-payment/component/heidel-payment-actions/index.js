@@ -15,7 +15,7 @@ Component.register('heidel-payment-actions', {
         return {
             isLoading: false,
             isSuccessful: false,
-            transactionAmount: this.paymentResource.basket.amountTotalGross
+            transactionAmount: this.transactionResource.amount
         };
     },
 
@@ -39,6 +39,12 @@ Component.register('heidel-payment-actions', {
         isRefundPossible: function () {
             return this.transactionResource.type === 'charge';
         }
+    },
+
+    created() {
+        window.console.log(this);
+        window.console.log(this.paymentResource);
+        window.console.log(this.transactionResource);
     },
 
     methods: {
