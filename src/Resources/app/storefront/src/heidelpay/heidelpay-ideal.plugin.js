@@ -28,7 +28,7 @@ export default class HeidelpayIdealPlugin extends Plugin {
      */
     _createForm() {
         this.ideal.create('ideal', {
-            containerId: 'heidelpay-ideal-container',
+            containerId: 'heidelpay-ideal-container'
         });
     }
 
@@ -37,7 +37,7 @@ export default class HeidelpayIdealPlugin extends Plugin {
      */
     _registerEvents() {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
-            scope: this,
+            scope: this
         });
     }
 

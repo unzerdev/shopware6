@@ -2,5 +2,6 @@
 vendor
 .phpunit.result.cache
 .idea
-.package-lock.json
-
+package-lock.json
+cypress.json
+node_modules
