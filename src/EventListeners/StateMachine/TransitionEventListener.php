@@ -84,6 +84,12 @@ class TransitionEventListener implements EventSubscriberInterface
         $orderTransaction = $order->getTransactions()->first();
         $invoiceId        = $this->getInvoiceDocumentId($order->getDocuments());
 
+        if (empty($orderTransaction) || empty($invoiceId)) {
+            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice or orderTransaction couldn\'t be found', $order->getOrderNumber()));
+
+            return;
+        }
+
         try {
             $client = $this->clientFactory->createClient($order->getSalesChannelId());
             $client->ship($orderTransaction->getId(), $invoiceId);
@@ -147,12 +153,18 @@ class TransitionEventListener implements EventSubscriberInterface
 
     private function getInvoiceDocumentId(DocumentCollection $documents): string
     {
-        return $documents->filter(static function (DocumentEntity $entity) {
+        $firstDocument = $documents->filter(static function (DocumentEntity $entity) {
             if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
                 return $entity;
             }
 
             return null;
-        })->first()->getConfig()['documentNumber'];
+        })->first();
+
+        if (!empty($firstDocument)) {
+            return $firstDocument->getConfig()['documentNumber'];
+        }
+
+        return '';
     }
 }
