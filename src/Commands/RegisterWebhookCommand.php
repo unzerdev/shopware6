@@ -65,10 +65,11 @@ class RegisterWebhookCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $style        = new SymfonyStyle($input, $output);
-        $providedHost = $input->getArgument('host');
-        $parsedHost   = parse_url($input->getArgument('host'));
+        $providedHost = $input->getArgument('host') ?? '';
+        $parsedHost   = parse_url($providedHost);
 
-        if (empty($parsedHost['host']) || empty($parsedHost['scheme'])) {
+        if (!is_array($parsedHost) ||
+            (is_array($parsedHost) && (empty($parsedHost['host']) || empty($parsedHost['scheme'])))) {
             $style->warning('The provided host is invalid.');
 
             return self::EXIT_CODE_INVALID_HOST;
@@ -136,12 +137,10 @@ class RegisterWebhookCommand extends Command
     {
         $context = $this->router->getContext();
 
-        if (!$context) {
-            return null;
+        if ($context !== null) {
+            $context->setHost($host['host']);
+            $context->setScheme($host['scheme']);
         }
-
-        $context->setHost($host['host']);
-        $context->setScheme($host['scheme']);
 
         return $context;
     }

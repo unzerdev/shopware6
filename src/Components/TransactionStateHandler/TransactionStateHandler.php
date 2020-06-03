@@ -41,7 +41,8 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
                 $this->orderTransactionStateHandler->cancel($transactionId, $context);
             } elseif ($payment->isChargeBack()) {
                 $this->orderTransactionStateHandler->payPartially($transactionId, $context);
-            } elseif ($transaction->getStateMachineState()->getTechnicalName() !== self::STATE_OPEN) {
+            } elseif ($transaction->getStateMachineState() !== null &&
+                $transaction->getStateMachineState()->getTechnicalName() !== self::STATE_OPEN) {
                 $this->orderTransactionStateHandler->reopen($transactionId, $context);
             }
         } catch (IllegalTransitionException $exception) {
