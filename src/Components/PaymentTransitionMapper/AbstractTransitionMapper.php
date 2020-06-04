@@ -41,6 +41,8 @@ abstract class AbstractTransitionMapper
             $status = StateMachineTransitionActions::ACTION_CANCEL;
         } elseif ($paymentObject->isPartlyPaid()) {
             $status = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
+        } elseif ($paymentObject->isPaymentReview()) {
+            $status = StateMachineTransitionActions::ACTION_DO_PAY;
         } elseif ($paymentObject->isCompleted()) {
             $status = StateMachineTransitionActions::ACTION_DO_PAY;
         }
@@ -76,6 +78,10 @@ abstract class AbstractTransitionMapper
 
         if ($shippedAmount === ($totalAmount - $cancelledAmount)) {
             return StateMachineTransitionActions::ACTION_DO_PAY;
+        }
+
+        if ($shippedAmount < ($totalAmount - $cancelledAmount)) {
+            return StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
         }
 
         return $currentStatus;

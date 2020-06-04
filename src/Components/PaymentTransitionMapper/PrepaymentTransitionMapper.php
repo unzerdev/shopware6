@@ -20,10 +20,6 @@ class PrepaymentTransitionMapper extends AbstractTransitionMapper
 
     public function getTargetPaymentStatus(Payment $paymentObject): string
     {
-        if ($paymentObject->isPending()) {
-            throw new TransitionMapperException(Prepayment::getResourceName());
-        }
-
         if ($paymentObject->isCanceled()) {
             $status = $this->checkForRefund($paymentObject);
 

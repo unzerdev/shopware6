@@ -10,6 +10,7 @@ use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\Alipay;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\InvoiceFactoring;
+use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
 
 class InvoiceFactoringTransitionMapper extends AbstractTransitionMapper
 {
@@ -20,10 +21,6 @@ class InvoiceFactoringTransitionMapper extends AbstractTransitionMapper
 
     public function getTargetPaymentStatus(Payment $paymentObject): string
     {
-        if ($paymentObject->isPending()) {
-            throw new TransitionMapperException(InvoiceFactoring::getResourceName());
-        }
-
         if ($paymentObject->isCanceled()) {
             $status = $this->checkForRefund($paymentObject);
 
@@ -31,9 +28,15 @@ class InvoiceFactoringTransitionMapper extends AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException(InvoiceFactoring::getResourceName());
+            throw new TransitionMapperException(InvoiceGuaranteed::getResourceName());
         }
 
-        return $this->mapPaymentStatus($paymentObject);
+        $mappedStatus = $this->mapPaymentStatus($paymentObject);
+
+        if($paymentObject->isPending()) {
+            return $this->checkForShipment($paymentObject, $mappedStatus);
+        }
+
+        return $mappedStatus;
     }
 }

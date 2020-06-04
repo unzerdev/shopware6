@@ -20,10 +20,6 @@ class InvoiceGuaranteedTransitionMapper extends AbstractTransitionMapper
 
     public function getTargetPaymentStatus(Payment $paymentObject): string
     {
-        if ($paymentObject->isPending()) {
-            throw new TransitionMapperException(InvoiceGuaranteed::getResourceName());
-        }
-
         if ($paymentObject->isCanceled()) {
             $status = $this->checkForRefund($paymentObject);
 
@@ -34,6 +30,12 @@ class InvoiceGuaranteedTransitionMapper extends AbstractTransitionMapper
             throw new TransitionMapperException(InvoiceGuaranteed::getResourceName());
         }
 
-        return $this->mapPaymentStatus($paymentObject);
+        $mappedStatus = $this->mapPaymentStatus($paymentObject);
+
+        if($paymentObject->isPending()) {
+            return $this->checkForShipment($paymentObject, $mappedStatus);
+        }
+
+        return $mappedStatus;
     }
 }
