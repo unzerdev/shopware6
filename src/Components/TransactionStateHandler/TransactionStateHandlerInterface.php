@@ -10,6 +10,9 @@ use Shopware\Core\Framework\Context;
 
 interface TransactionStateHandlerInterface
 {
+    /**
+     * Determines transition by payment and executes the transition if valid
+     */
     public function transformTransactionState(
         OrderTransactionEntity $transaction,
         Payment $payment,

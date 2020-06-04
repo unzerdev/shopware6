@@ -5,7 +5,8 @@
 
     <services>
         <service id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler">
-            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+            <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
+            <argument type="service" id="HeidelPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory"/>
         </service>
 
         <service id="HeidelPayment6\Components\ConfigReader\ConfigReader">

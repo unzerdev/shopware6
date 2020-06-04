@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="HeidelPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory">
+            <argument type="tagged" tag="heidelpay.transition_mapper" />
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\AliPayTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\CreditCardTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\EpsTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\FlexipayDirectTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\GiropayTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\IdealTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\InvoiceFactoringTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\InvoiceGuaranteedTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\InvoiceTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\PayPalTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\PrepaymentTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\PrzelewyTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\SepaDirectDebitGuaranteedTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\SepaDirectDebitTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\SofortTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\WeChatTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+    </services>
+</container>
