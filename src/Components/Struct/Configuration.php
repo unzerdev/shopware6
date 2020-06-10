@@ -13,7 +13,7 @@ class Configuration
         $this->configuration = $configuration;
     }
 
-    public function get(string $key, $default = '')
+    public function get(string $key, $default = null)
     {
         if (!array_key_exists($key, $this->configuration)) {
             return $default;
