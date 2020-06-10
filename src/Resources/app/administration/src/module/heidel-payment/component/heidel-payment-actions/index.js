@@ -41,12 +41,6 @@ Component.register('heidel-payment-actions', {
         }
     },
 
-    created() {
-        window.console.log(this);
-        window.console.log(this.paymentResource);
-        window.console.log(this.transactionResource);
-    },
-
     methods: {
         charge() {
             this.isLoading = true;

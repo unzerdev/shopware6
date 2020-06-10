@@ -6,6 +6,7 @@
     <services>
         <service id="HeidelPayment6\EventListeners\Checkout\FinishPageEventListener">
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
+            <argument type="service" id="heidel_payment.logger"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

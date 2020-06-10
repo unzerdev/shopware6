@@ -10,6 +10,7 @@ use HeidelPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
 use HeidelPayment6\Installers\PaymentInstaller;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\InstalmentPlan;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -19,9 +20,13 @@ class FinishPageEventListener implements EventSubscriberInterface
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
-    public function __construct(ClientFactoryInterface $clientFactory)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(ClientFactoryInterface $clientFactory, LoggerInterface $logger)
     {
         $this->clientFactory = $clientFactory;
+        $this->logger        = $logger;
     }
 
     public static function getSubscribedEvents(): array
@@ -60,6 +65,12 @@ class FinishPageEventListener implements EventSubscriberInterface
                 }
             } catch (HeidelpayApiException $exception) {
                 //catch payment not found exception so that shopware can handle its own errors
+                $this->logger->error($exception->getMessage(), [
+                    'code'          => $exception->getCode(),
+                    'clientMessage' => $exception->getClientMessage(),
+                    'file'          => $exception->getFile(),
+                    'trace'         => $exception->getTrace(),
+                ]);
             }
         }
 

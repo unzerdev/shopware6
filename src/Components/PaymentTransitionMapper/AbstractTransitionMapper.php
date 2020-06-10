@@ -10,15 +10,13 @@ use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\TransactionTypes\Shipment;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
-use Symfony\Component\Translation\Reader\TranslationReader;
 
 abstract class AbstractTransitionMapper
 {
     public const PAYMENT_STATUS_PENDING_ALLOWED = [
         PaymentInstaller::PAYMENT_ID_PRE_PAYMENT,
-        PaymentInstaller::PAYMENT_ID_INVOICE
+        PaymentInstaller::PAYMENT_ID_INVOICE,
     ];
-
 
     public const INVALID_STATUS = 'invalid';
 

@@ -25,7 +25,7 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         StateMachineRegistry $stateMachineRegistry,
         PaymentTransitionMapperFactory $transitionMapperFactory
     ) {
-        $this->stateMachineRegistry = $stateMachineRegistry;
+        $this->stateMachineRegistry    = $stateMachineRegistry;
         $this->transitionMapperFactory = $transitionMapperFactory;
     }
 
@@ -39,11 +39,11 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
     ): void {
         $transitionMapper = $this->transitionMapperFactory->getTransitionMapper($payment->getPaymentType());
 
-        if(empty($transitionMapper)) {
+        if (empty($transitionMapper)) {
             return;
         }
 
-        $transition = $transitionMapper->getTargetPaymentStatus($payment);
+        $transition    = $transitionMapper->getTargetPaymentStatus($payment);
         $transactionId = $transaction->getId();
 
         try {
