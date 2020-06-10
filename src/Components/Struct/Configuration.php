@@ -13,10 +13,7 @@ class Configuration
         $this->configuration = $configuration;
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function get(string $key, string $default = '')
+    public function get(string $key, $default = null)
     {
         if (!array_key_exists($key, $this->configuration)) {
             return $default;

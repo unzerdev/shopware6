@@ -290,10 +290,6 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
         ],
-        /*
-         * Removed due to Heidelpay API issues.
-         * TODO: Revert when all of the API problems were solved by heidelpay.
-         *
         [
             'id'                => self::PAYMENT_ID_HIRE_PURCHASE,
             'handlerIdentifier' => HeidelHirePurchasePaymentHandler::class,
@@ -309,8 +305,6 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
         ],
-
-        */
     ];
 
     /** @var EntityRepositoryInterface */

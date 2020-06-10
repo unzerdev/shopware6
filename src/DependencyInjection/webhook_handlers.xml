@@ -8,6 +8,7 @@
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler" />
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="heidel_payment.logger" />
 
             <tag name="heidelpay.webhook_handler" />
         </service>

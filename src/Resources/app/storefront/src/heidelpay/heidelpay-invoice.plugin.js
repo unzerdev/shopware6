@@ -2,7 +2,7 @@ import Plugin from 'src/plugin-system/plugin.class';
 
 export default class HeidelpayInvoicePlugin extends Plugin {
     static options = {
-        heidelpayCardId: 'heidelpay-card',
+        heidelpayCardId: 'heidelpay-card'
     };
 
     /**
@@ -38,7 +38,7 @@ export default class HeidelpayInvoicePlugin extends Plugin {
      */
     _registerEvents() {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
-            scope: this,
+            scope: this
         });
     }
 

@@ -8,10 +8,12 @@ use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment6\Components\Struct\Webhook;
 use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use heidelpayPHP\Resources\Payment;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Uuid\Exception\InvalidUuidException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 /**
@@ -28,14 +30,19 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
     /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
 
+    /** @var LoggerInterface */
+    private $logger;
+
     public function __construct(
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
-        EntityRepositoryInterface $orderTransactionRepository
+        EntityRepositoryInterface $orderTransactionRepository,
+        LoggerInterface $logger
     ) {
         $this->transactionStateHandler    = $transactionStateHandler;
         $this->clientFactory              = $clientFactory;
         $this->orderTransactionRepository = $orderTransactionRepository;
+        $this->logger                     = $logger;
     }
 
     /**
@@ -75,6 +82,18 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
     {
         $criteria = new Criteria([$payment->getOrderId()]);
 
-        return $this->orderTransactionRepository->search($criteria, $context)->first();
+        try {
+            $orderTransactions = $this->orderTransactionRepository->search($criteria, $context);
+
+            if (empty($orderTransactions)) {
+                return null;
+            }
+
+            return $orderTransactions->first();
+        } catch (InvalidUuidException $exception) {
+            $this->logger->error($exception->getMessage(), $exception->getTrace());
+
+            return null;
+        }
     }
 }

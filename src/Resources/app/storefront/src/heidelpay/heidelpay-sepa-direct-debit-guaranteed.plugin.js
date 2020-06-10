@@ -3,7 +3,7 @@ import Plugin from 'src/plugin-system/plugin.class';
 export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
     static options = {
         acceptMandateId: 'acceptSepaMandate',
-        mandateNotAcceptedError: 'Please accept the SEPA direct debit mandate in order to continue.',
+        mandateNotAcceptedError: 'Please accept the SEPA direct debit mandate in order to continue.'
     };
 
     /**
@@ -33,7 +33,7 @@ export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
      */
     _createForm() {
         this.sepa.create('sepa-direct-debit-guaranteed', {
-            containerId: 'heidelpay-sepa-container',
+            containerId: 'heidelpay-sepa-container'
         });
     }
 
@@ -42,7 +42,7 @@ export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
      */
     _registerEvents() {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
-            scope: this,
+            scope: this
         });
     }
 
@@ -54,7 +54,7 @@ export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
 
         if (!mandateAcceptedCheckbox.checked) {
             this._handleError({
-                'message': this.options.mandateNotAcceptedError,
+                'message': this.options.mandateNotAcceptedError
             });
 
             mandateAcceptedCheckbox.classList.add('is-invalid');

@@ -10,7 +10,7 @@ variables:
     MYSQL_USER: shopware
     MYSQL_PASSWORD: shopware
     PLUGIN_NAME: HeidelPayment6
-    SHOPWARE_VERSION: "6.1" # Tag
+    SHOPWARE_VERSION: "6.2" # Tag
 
 cache:
     key: "$PLUGIN_NAME-$CI_COMMIT_REF_SLUG"
