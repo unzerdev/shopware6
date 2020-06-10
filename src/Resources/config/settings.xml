@@ -62,6 +62,13 @@
             <label>Register credit cards</label>
             <label lang="de-DE">Kreditkarten registrieren</label>
         </input-field>
+
+        <input-field type="float">
+            <name>hirePurchaseEffectiveInterest</name>
+            <label>Hire purchase effective interest</label>
+            <label lang="de-DE">effektive Verzinsung</label>
+            <defaultValue>4.5</defaultValue>
+        </input-field>
     </card>
 
     <card>
