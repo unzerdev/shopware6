@@ -1,0 +1,38 @@
+{% block heidel_payment_payment_register_webhook %}
+<div class="register-webhook--container">
+    <sw-button-process
+            :isLoading="isRegistering"
+            :processSuccess="isRegistrationSuccessful"
+            @process-finish="onRegistrationFinished()"
+            :disabled="isLoading"
+            @click="openModal">
+        {{ $tc('heidel-payment-settings.form.webhookButton') }}
+    </sw-button-process>
+    <sw-modal v-if="showWebhookModal" @modal-close="closeModal"
+              :title="$tc(`heidel-payment-settings.modal.webhook.title`)" class="heidel-payment-detail--webhook-modal">
+        <sw-data-grid
+                v-on:select-item="onSelectItem"
+                :dataSource="salesChannelDomains"
+                :columns="salesChannelDomainColumns"
+                :showActions="false"
+                :showSelection="true">
+        </sw-data-grid>
+
+        <template slot="modal-footer">
+            <sw-checkbox-field :label="$tc(`heidel-payment-settings.modal.webhook.clearWebhooks`)" v-model="clearWebhooks"></sw-checkbox-field>
+
+            <sw-button :disabled="isLoading" @click="closeModal">
+                {{ $tc('heidel-payment-settings.modal.close') }}
+            </sw-button>
+
+            <sw-button-process
+                    @click="registerWebhooks"
+                    @process-finish="onRegistrationFinished()"
+                    :isLoading="isLoading" :processSuccess="isRegistrationSuccessful" :disabled="isLoading"
+                    variant="primary">
+                {{ $tc('heidel-payment-settings.modal.webhook.submit') }}
+            </sw-button-process>
+        </template>
+    </sw-modal>
+</div>
+{% endblock %}

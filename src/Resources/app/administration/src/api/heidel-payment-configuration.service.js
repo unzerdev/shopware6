@@ -19,6 +19,20 @@ class HeidelPaymentConfigurationService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    registerWebhooks(data) {
+        return this.httpClient
+            .post(
+                `_action/${this.getApiBasePath()}/register-webhooks`,
+                data,
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 Application.addServiceProvider('HeidelPaymentConfigurationService', (container) => {

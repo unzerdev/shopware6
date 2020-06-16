@@ -4,22 +4,19 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Commands;
 
-use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use HeidelPayment6\Components\WebhookRegistrator\WebhookRegistrator;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelDomain\SalesChannelDomainEntity;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\Router;
 use Throwable;
 
 class RegisterWebhookCommand extends Command
@@ -56,29 +53,20 @@ class RegisterWebhookCommand extends Command
         $style  = new SymfonyStyle($input, $output);
         $domain = $this->handleDomain($input->getArgument('host') ?? '', $style);
 
-        if(null === $domain) {
+        if (null === $domain) {
             return WebhookRegistrator::EXIT_CODE_INVALID_HOST;
         }
 
-
         try {
-            $context = $this->getContext($domain);
+            $domainDataBag = new RequestDataBag([
+                new RequestDataBag([
+                    'id'  => $domain->getId(),
+                    'url' => $domain->getUrl(),
+                ]),
+            ]);
 
-            if (!$context) {
-                return WebhookRegistrator::EXIT_CODE_UNKNOWN_ERROR;
-            }
-
-
-            $this->webhookRegistrator->clearWebhooks();
-            $result = $this->webhookRegistrator->registerWebhook();
-
-            if(null === $result) {
-                return WebhookRegistrator::EXIT_CODE_API_ERROR;
-            }
-
-            $message = sprintf('The webhooks have been registered to the following URL: %s', $result->getUrl());
-
-            $style->success($message);
+            $this->webhookRegistrator->clearWebhooks($domainDataBag);
+            $result = $this->webhookRegistrator->registerWebhook($domainDataBag);
         } catch (HeidelpayApiException $exception) {
             $style->error($exception->getMerchantMessage());
 
@@ -89,12 +77,20 @@ class RegisterWebhookCommand extends Command
             return WebhookRegistrator::EXIT_CODE_UNKNOWN_ERROR;
         }
 
+        if (null === $result) {
+            return WebhookRegistrator::EXIT_CODE_API_ERROR;
+        }
+
+        $style->success(
+            sprintf('The webhooks have been registered to the following URL: %s', $input->getArgument('host') ?? '')
+        );
+
         return WebhookRegistrator::EXIT_CODE_SUCCESS;
     }
 
     protected function handleDomain(string $providedHost, SymfonyStyle $style): ?SalesChannelDomainEntity
     {
-        $parsedHost   = parse_url($providedHost);
+        $parsedHost = parse_url($providedHost);
 
         if (!is_array($parsedHost) ||
             (is_array($parsedHost) && (empty($parsedHost['host']) || empty($parsedHost['scheme'])))) {
@@ -110,8 +106,8 @@ class RegisterWebhookCommand extends Command
 
             $possibleDomains = [];
             /** @var SalesChannelDomainEntity $salesChannelDomain */
-            foreach ($this->domainRepository->search(new Criteria(), Context::createDefaultContext()) as $salesChannelDomain) {
-                $possibleDomains[] = [$salesChannelDomain->getUrl()];
+            foreach ($this->domainRepository->search(new Criteria(), Context::createDefaultContext()) as $domainResult) {
+                $possibleDomains[] = [$domainResult->getUrl()];
             }
 
             $style->table(['Possible domains'], $possibleDomains);
@@ -124,23 +120,8 @@ class RegisterWebhookCommand extends Command
     {
         $domainCriteria = new Criteria();
         $domainCriteria->addFilter(new EqualsFilter('url', $url));
-
         $salesChannelResult = $this->domainRepository->search($domainCriteria, Context::createDefaultContext());
         /** @var null|SalesChannelDomainEntity $firstResult */
-        $firstResult = $salesChannelResult->first();
-
-        return $firstResult
-    }
-
-    protected function getContext($host): ?RequestContext
-    {
-        $context = $this->router->getContext();
-
-        if ($context !== null) {
-            $context->setHost($host['host']);
-            $context->setScheme($host['scheme']);
-        }
-
-        return $context;
+        return $salesChannelResult->first();
     }
 }

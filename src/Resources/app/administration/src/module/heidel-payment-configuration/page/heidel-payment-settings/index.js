@@ -23,6 +23,7 @@ Component.register('heidel-payment-settings', {
             isTestSuccessful: false,
             isSaveSuccessful: false,
             config: {},
+            showWebhookModal: false
         };
     },
 
@@ -120,5 +121,13 @@ Component.register('heidel-payment-settings', {
 
             return criteria;
         },
+
+        openWebhookModal() {
+            this.showWebhookModal = true;
+        },
+
+        closeWebhookModal() {
+            this.showWebhookModal = false;
+        }
     },
 });

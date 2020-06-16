@@ -1,5 +1,7 @@
 const { Module } = Shopware;
 
+import './component/register-webhook';
+
 import './extension/sw-plugin-list';
 
 import './page/heidel-payment-settings';

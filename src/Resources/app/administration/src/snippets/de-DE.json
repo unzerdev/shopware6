@@ -78,7 +78,32 @@
                     "message": "Die angegebenen API-Zugangsdaten sind nicht korret! Bitte korrigieren Sie die Eingabe und versuchen Sie es erneut."
                 }
             },
-            "testButton": "API Zugangsdaten testen"
+            "testButton": "API Zugangsdaten testen",
+            "webhookButton": "Webhooks registrieren testen"
+        },
+        "modal": {
+            "close": "Schließen",
+            "webhook": {
+                "title": "Webhooks",
+                "submit": "Webhooks registrieren",
+                "clearWebhooks": "Webhooks entfernen"
+            }
+        },
+        "webhook": {
+            "messagePrefix": "Domain: ",
+            "register": {
+                "done": "Webhook registriert"
+            },
+            "clear": {
+                "done": "Webhook entfernt"
+            },
+            "missing": {
+                "fields": "Nicht alle benötigten Felder sind vorhanden",
+                "context": "Der Kontext konnte nicht aktualisiert werden"
+            },
+            "notFound": {
+                "salesChannelDomain": "Die spezifizierte Domain wurde nicht gefunden"
+            }
         }
     }
 }
