@@ -3,6 +3,8 @@
         {% block heidel_payment_actions_amount_field %}
             <div class="heidel-payment-actions--input">
                 <sw-number-field
+                        :min="0.01"
+                        :max="maxTransactionAmount"
                     v-model="transactionAmount">
                 </sw-number-field>
             </div>
