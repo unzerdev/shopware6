@@ -18,8 +18,6 @@ Component.override('sw-order-create-details-footer', {
                 ])
             );
 
-            window.console.log(paymentCriteria);
-
             return paymentCriteria;
         },
     },
