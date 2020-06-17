@@ -54,7 +54,7 @@ export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
 
         if (!mandateAcceptedCheckbox.checked) {
             this._handleError({
-                'message': this.options.mandateNotAcceptedError
+                message: this.options.mandateNotAcceptedError
             });
 
             mandateAcceptedCheckbox.classList.add('is-invalid');

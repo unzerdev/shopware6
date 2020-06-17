@@ -1,7 +1,7 @@
+import template from './sw-order.html.twig';
+
 const { Component, Context } = Shopware;
 const { Criteria } = Shopware.Data;
-
-import template from './sw-order.html.twig';
 
 Component.override('sw-order-detail', {
     template,
@@ -19,7 +19,7 @@ Component.override('sw-order-detail', {
 
         paymentMethodStore() {
             return State.getStore('payment_method');
-        },
+        }
     },
 
     watch: {
@@ -52,5 +52,5 @@ Component.override('sw-order-detail', {
             },
             immediate: true
         }
-    },
+    }
 });

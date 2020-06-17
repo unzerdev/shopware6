@@ -85,21 +85,32 @@
             "close": "Close",
             "webhook": {
                 "title": "Webhooks",
-                "submit": "Register webhooks",
-                "clearWebhooks": "Clear webhooks"
+                "submit": {
+                    "register": "Register webhooks",
+                    "clear": "Clear webhooks"
+                }
             }
         },
         "webhook": {
             "messagePrefix": "Domain: ",
             "register": {
-                "done": "Webhook registered"
+                "done": "Webhook registered | Webhooks registered",
+                "error": {
+                    "title": "Something went wrong",
+                    "message": "Webhook could not be registered | Webhooks could not be registered"
+                }
             },
             "clear": {
-                "done": "Webhook removed"
+                "done": "Webhook cleared | Webhooks cleared",
+                "error": {
+                    "title": "Something went wrong",
+                    "message": "Webhook could not be cleared | Webhooks could not be cleared"
+                }
             },
             "missing": {
                 "fields": "Some mandatory fields are missing",
-                "context": "The context could not be refreshed"
+                "context": "The context could not be refreshed",
+                "selection": "No domain was selected"
             },
             "notFound": {
                 "salesChannelDomain": "The selected domain could not be found"

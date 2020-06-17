@@ -26,7 +26,7 @@ Shopware.Component.register('heidel-payment-register-webhook', {
                     dataIndex: 'url',
                     label: 'URL'
                 }
-            ]
+            ];
         },
 
         salesChannelDomainRepository() {
@@ -49,9 +49,10 @@ Shopware.Component.register('heidel-payment-register-webhook', {
             isLoading: false,
             isRegistering: false,
             isRegistrationSuccessful: false,
+            isClearing: false,
+            isClearingSuccessful: false,
             salesChannelDomains: {},
-            selection: [],
-            clearWebhooks: false
+            selection: []
         };
     },
 
@@ -72,46 +73,75 @@ Shopware.Component.register('heidel-payment-register-webhook', {
         },
 
         registerWebhooks() {
-            var me = this;
+            const me = this;
             this.isRegistrationSuccessful = false;
             this.isRegistering = true;
             this.isLoading = true;
 
             this.HeidelPaymentConfigurationService.registerWebhooks({
-                selection: me.selection,
-                clearWebhooks: me.clearWebhooks
+                selection: me.selection
             })
                 .then((response) => {
                     me.isRegistrationSuccessful = true;
 
-                    if(undefined !== response['clear']) {
-                        me.messageGeneration(response['clear']);
-                    }
-
-                    if(undefined !== response['register']) {
-                        me.messageGeneration(response['register']);
+                    if (undefined !== response.register) {
+                        me.messageGeneration(response.register);
                     }
                 })
                 .catch((response) => {
-                    if(undefined !== response['clear']) {
-                        me.messageGeneration(response['clear']);
+                    if (undefined !== response.register) {
+                        me.messageGeneration(response.register);
                     }
 
-                    if(undefined !== response['register']) {
-                        me.messageGeneration(response['register']);
-                    }
                     this.createNotificationError({
-                        title: this.$tc('heidel-payment-settings.modal.webhook.error.title'),
-                        response:  this.$tc('heidel-payment-settings.modal.webhook.error.response'),
+                        title: this.$tc('heidel-payment-settings.webhook.register.error.title', response.length),
+                        message: this.$tc('heidel-payment-settings.webhook.register.error.message', response.length)
                     });
                 })
                 .finally((response) => {
                     me.isLoading = false;
+                    me.isRegistering = false;
+                });
+        },
+
+        clearWebhooks() {
+            const me = this;
+            this.isClearingSuccessful = false;
+            this.isClearing = true;
+            this.isLoading = true;
+
+            this.HeidelPaymentConfigurationService.clearWebhooks({
+                selection: me.selection
+            })
+                .then((response) => {
+                    me.isClearingSuccessful = true;
+
+                    if (undefined !== response.clear) {
+                        me.messageGeneration(response.clear);
+                    }
+                })
+                .catch((response) => {
+                    if (undefined !== response.clear) {
+                        me.messageGeneration(response.clear);
+                    }
+
+                    this.createNotificationError({
+                        title: this.$tc('heidel-payment-settings.webhook.clear.error.title', response.length),
+                        message: this.$tc('heidel-payment-settings.webhook.clear.error.message', response.length)
+                    });
+                })
+                .finally((response) => {
+                    me.isLoading = false;
+                    me.isClearing = false;
                 });
         },
 
         onRegistrationFinished() {
             this.isRegistrationSuccessful = false;
+        },
+
+        onClearingFinished() {
+            this.isClearingSuccessful = false;
         },
 
         onSelectItem(id, selected) {
@@ -120,7 +150,6 @@ Shopware.Component.register('heidel-payment-register-webhook', {
             }
 
             this.selection.forEach((selection) => {
-                window.console.log(selection);
                 if (selection.id === id) {
                     selection.selected = selected;
                 }
@@ -137,17 +166,18 @@ Shopware.Component.register('heidel-payment-register-webhook', {
         },
 
         messageGeneration(data) {
-            for(const domain in data) {
+            const domainAmount = data.length;
+            for (const domain in data) {
                 if (undefined !== data[domain]) {
                     if (undefined !== data[domain]['message']) {
                         this.createNotificationSuccess({
-                            title: this.$tc(data[domain]['message']),
-                            message: this.$tc('heidel-payment-settings.webhook.messagePrefix') + domain,
+                            title: this.$tc(data[domain]['message'], domainAmount),
+                            message: this.$tc('heidel-payment-settings.webhook.messagePrefix', domainAmount) + domain
                         });
                     } else {
                         this.createNotificationSuccess({
-                            title: this.$tc(data[domain]),
-                            message: this.$tc('heidel-payment-settings.webhook.messagePrefix') + domain,
+                            title: this.$tc(data[domain], domainAmount),
+                            message: this.$tc('heidel-payment-settings.webhook.messagePrefix', domainAmount) + domain
                         });
                     }
                 }

@@ -19,18 +19,24 @@
         </sw-data-grid>
 
         <template slot="modal-footer">
-            <sw-checkbox-field :label="$tc(`heidel-payment-settings.modal.webhook.clearWebhooks`)" v-model="clearWebhooks"></sw-checkbox-field>
-
             <sw-button :disabled="isLoading" @click="closeModal">
                 {{ $tc('heidel-payment-settings.modal.close') }}
             </sw-button>
+
+            <sw-button-process
+                    @click="clearWebhooks"
+                    @process-finish="onClearingFinished()"
+                    :isLoading="isLoading" :processSuccess="isClearingSuccessful" :disabled="isLoading"
+                    variant="primary">
+                {{ $tc('heidel-payment-settings.modal.webhook.submit.clear') }}
+            </sw-button-process>
 
             <sw-button-process
                     @click="registerWebhooks"
                     @process-finish="onRegistrationFinished()"
                     :isLoading="isLoading" :processSuccess="isRegistrationSuccessful" :disabled="isLoading"
                     variant="primary">
-                {{ $tc('heidel-payment-settings.modal.webhook.submit') }}
+                {{ $tc('heidel-payment-settings.modal.webhook.submit.register') }}
             </sw-button-process>
         </template>
     </sw-modal>

@@ -10,6 +10,7 @@ use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -76,23 +77,59 @@ class HeidelpayConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidel_payment/register-webhooks", name="api.action.heidelpay.register.webhooks", methods={"POST"})
+     * @Route("/api/v{version}/_action/heidel_payment/register-webhooks", name="api.action.heidelpay.webhooks.register", methods={"POST"})
      */
-    public function registerWebhooks(RequestDataBag $dataBag)
+    public function registerWebhooks(RequestDataBag $dataBag): JsonResponse
     {
         $responseCode = 200;
         $result       = [];
+        /** @var DataBag $selection */
+        $selection = $dataBag->get('selection', new DataBag());
+
+        if($selection->count() < 1) {
+            return new JsonResponse([], 400);
+        }
 
         try {
-            if ($dataBag->has('clearWebhooks') && $dataBag->get('clearWebhooks', false)) {
-                $result['clear'] = $this->webhookRegistrator->clearWebhooks($dataBag->get('selection', []));
-            }
-
             $result['register'] = $this->webhookRegistrator->registerWebhook($dataBag->get('selection', []));
             $this->logger->info('Webhhooks registered!');
         } catch (HeidelpayApiException | Throwable $exception) {
-            $this->logger->alert('Webhook registration failed!');
-            $this->logger->error($exception->getMessage());
+            $this->logger->error('Webhook registration failed!', [
+                'message' => $exception->getMessage(),
+                'code'    => $exception->getCode(),
+                'file'    => $exception->getFile(),
+                'trace'   => $exception->getTraceAsString(),
+            ]);
+            $responseCode = 400;
+        }
+
+        return new JsonResponse($result, $responseCode);
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/heidel_payment/clear-webhooks", name="api.action.heidelpay.webhooks.clear", methods={"POST"})
+     */
+    public function clearWebhooks(RequestDataBag $dataBag): JsonResponse
+    {
+        $responseCode = 200;
+        $result       = [];
+        /** @var DataBag $selection */
+        $selection = $dataBag->get('selection', new DataBag());
+
+        if($selection->count() < 1) {
+            return new JsonResponse([], 400);
+        }
+
+        try {
+            $result['clear'] = $this->webhookRegistrator->clearWebhooks($dataBag->get('selection', []));
+            $this->logger->info('Webhhooks cleared!');
+        } catch (HeidelpayApiException | Throwable $exception) {
+            $this->logger->error('Webhook clearing failed!', [
+                'message' => $exception->getMessage(),
+                'code'    => $exception->getCode(),
+                'file'    => $exception->getFile(),
+                'trace'   => $exception->getTraceAsString(),
+            ]);
             $responseCode = 400;
         }
 

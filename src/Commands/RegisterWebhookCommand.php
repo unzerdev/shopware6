@@ -77,7 +77,7 @@ class RegisterWebhookCommand extends Command
             return WebhookRegistrator::EXIT_CODE_UNKNOWN_ERROR;
         }
 
-        if (null === $result) {
+        if (empty($result)) {
             return WebhookRegistrator::EXIT_CODE_API_ERROR;
         }
 
