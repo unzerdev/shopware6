@@ -75,18 +75,14 @@ Shopware.Component.register('heidel-payment-register-webhook', {
                 .then((response) => {
                     me.isRegistrationSuccessful = true;
 
-                    if (undefined !== response.register) {
-                        me.messageGeneration(response.register);
+                    if (undefined !== response) {
+                        me.messageGeneration(response);
                     }
                 })
-                .catch((response) => {
-                    if (undefined !== response.register) {
-                        me.messageGeneration(response.register);
-                    }
-
+                .catch(() => {
                     this.createNotificationError({
-                        title: this.$tc('heidel-payment-settings.webhook.register.error.title', response.length),
-                        message: this.$tc('heidel-payment-settings.webhook.register.error.message', response.length)
+                        title: this.$tc('heidel-payment-settings.webhook.globalError.title'),
+                        message: this.$tc('heidel-payment-settings.webhook.globalError.message')
                     });
                 })
                 .finally(() => {
@@ -107,18 +103,14 @@ Shopware.Component.register('heidel-payment-register-webhook', {
                 .then((response) => {
                     me.isClearingSuccessful = true;
 
-                    if (undefined !== response.clear) {
-                        me.messageGeneration(response.clear);
+                    if (undefined !== response) {
+                        me.messageGeneration(response);
                     }
                 })
-                .catch((response) => {
-                    if (undefined !== response.clear) {
-                        me.messageGeneration(response.clear);
-                    }
-
+                .catch(() => {
                     this.createNotificationError({
-                        title: this.$tc('heidel-payment-settings.webhook.clear.error.title', response.length),
-                        message: this.$tc('heidel-payment-settings.webhook.clear.error.message', response.length)
+                        title: this.$tc('heidel-payment-settings.webhook.globalError.title'),
+                        message: this.$tc('heidel-payment-settings.webhook.globalError.message')
                     });
                 })
                 .finally(() => {
@@ -141,21 +133,22 @@ Shopware.Component.register('heidel-payment-register-webhook', {
 
         messageGeneration(data) {
             const domainAmount = data.length;
-            for (const domain in data) {
-                if (undefined !== data[domain]) {
-                    if (undefined !== data[domain].message) {
-                        this.createNotificationSuccess({
-                            title: this.$tc(data[domain].message, domainAmount),
-                            message: this.$tc('heidel-payment-settings.webhook.messagePrefix', domainAmount) + domain
-                        });
-                    } else {
-                        this.createNotificationSuccess({
-                            title: this.$tc(data[domain], domainAmount),
-                            message: this.$tc('heidel-payment-settings.webhook.messagePrefix', domainAmount) + domain
-                        });
-                    }
+
+            Object.keys(data).forEach((domain) => {
+                window.console.warn(domain);
+                window.console.log(data[domain]);
+                if (data[domain].success) {
+                    this.createNotificationSuccess({
+                        title: this.$tc(data[domain].message, domainAmount),
+                        message: this.$tc('heidel-payment-settings.webhook.messagePrefix', domainAmount) + domain
+                    });
+                } else {
+                    this.createNotificationError({
+                        title: this.$tc(data[domain].message, domainAmount),
+                        message: this.$tc('heidel-payment-settings.webhook.messagePrefix', domainAmount) + domain
+                    });
                 }
-            }
+            });
         }
     }
 });

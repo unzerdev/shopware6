@@ -5,16 +5,20 @@ declare(strict_types=1);
 namespace HeidelPayment6\Components\WebhookRegistrator;
 
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Heidelpay;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelDomain\SalesChannelDomainEntity;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
+use Throwable;
 
 class WebhookRegistrator implements WebhookRegistratorInterface
 {
@@ -22,6 +26,9 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     public const EXIT_CODE_API_ERROR     = 1;
     public const EXIT_CODE_UNKNOWN_ERROR = 2;
     public const EXIT_CODE_INVALID_HOST  = 3;
+
+    /** @var null|RequestContext */
+    protected $context;
 
     /** @var Heidelpay */
     private $client;
@@ -32,89 +39,149 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     /** @var EntityRepositoryInterface */
     private $salesChannelRepository;
 
-    public function __construct(ClientFactoryInterface $clientFactory, Router $router, EntityRepositoryInterface $salesChannelRepository)
-    {
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(
+        ClientFactoryInterface $clientFactory,
+        Router $router,
+        EntityRepositoryInterface $salesChannelRepository,
+        LoggerInterface $logger
+    ) {
         $this->client                 = $clientFactory->createClient();
         $this->router                 = $router;
         $this->salesChannelRepository = $salesChannelRepository;
+        $this->logger                 = $logger;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function registerWebhook(RequestDataBag $salesChannelDomains): array
     {
         $returnData = [];
 
         /** @var RequestDataBag $salesChannelDomain */
         foreach ($salesChannelDomains as $salesChannelDomain) {
-            if (!$salesChannelDomain->has('id') || !$salesChannelDomain->has('url')) {
-                $returnData['missing'] = ['message' => 'heidel-payment-settings.webhook.missing.fields'];
+            $preparationResult = $this->prepare($salesChannelDomain);
+
+            if (!empty($preparationResult)) {
+                $returnData[$preparationResult['key']] = $preparationResult['value'];
 
                 continue;
             }
 
-            $salesChannelEntity = $this->getSalesChannelDomain($salesChannelDomain->get('id', ''), $salesChannelDomain->get('url', ''));
+            try {
+                $url    = $this->router->generate('heidelpay.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_URL);
+                $result = $this->client->createWebhook($url, 'all');
 
-            if (null === $salesChannelEntity) {
-                $returnData[$salesChannelDomain->get('url', '')] = ['message' => 'heidel-payment-settings.webhook.notFound.salesChannel'];
-
-                continue;
-            }
-
-            $context = $this->getContext($salesChannelEntity);
-
-            if (!$context) {
                 $returnData[$salesChannelDomain->get('url', '')] = [
-                    'message' => 'heidel-payment-settings.webhook.register.missing.context',
+                    'success' => true,
+                    'data'    => $result ?? null,
+                    'message' => 'heidel-payment-settings.webhook.register.done',
                 ];
-
-                continue;
+                $this->logger->info('Webhhooks registered!');
+            } catch (HeidelpayApiException | Throwable $exception) {
+                $returnData[$salesChannelDomain->get('url', '')] = [
+                    'success' => false,
+                    'message' => 'heidel-payment-settings.webhook.register.error',
+                ];
+                $this->logger->error(
+                    'Webhook registration failed!',
+                    [
+                        'message' => $exception->getMessage(),
+                        'code'    => $exception->getCode(),
+                        'file'    => $exception->getFile(),
+                        'trace'   => $exception->getTraceAsString(),
+                    ]
+                );
             }
-
-            $url = $this->router->generate('heidelpay.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_URL);
-
-            $returnData[$salesChannelDomain->get('url', '')] = [
-                'data'    => $this->client->createWebhook($url, 'all'),
-                'message' => 'heidel-payment-settings.webhook.register.done',
-            ];
         }
 
         return $returnData;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function clearWebhooks(RequestDataBag $salesChannelDomains): array
     {
         $returnData = [];
 
         foreach ($salesChannelDomains as $salesChannelDomain) {
-            if (!$salesChannelDomain->has('id') || !$salesChannelDomain->has('url')) {
-                $returnData['missing'] = ['message' => 'heidel-payment-settings.webhook.missing.fields'];
+            $preparationResult = $this->prepare($salesChannelDomain);
+
+            if (!empty($preparationResult)) {
+                $returnData[$preparationResult['key']] = $preparationResult['value'];
 
                 continue;
             }
 
-            $salesChannelEntity = $this->getSalesChannelDomain($salesChannelDomain->get('id', ''), $salesChannelDomain->get('url', ''));
+            try {
+                $this->client->deleteAllWebhooks();
 
-            if (null === $salesChannelEntity) {
-                $returnData[$salesChannelDomain->get('url', '')] = ['message' => 'heidel-payment-settings.webhook.notFound.salesChannelDomain'];
-
-                continue;
+                $returnData[$salesChannelDomain->get('url', '')] = [
+                    'success' => true,
+                    'message' => 'heidel-payment-settings.webhook.clear.done',
+                ];
+                $this->logger->info('Webhhooks registered!');
+            } catch (HeidelpayApiException | Throwable $exception) {
+                $returnData[$salesChannelDomain->get('url', '')] = [
+                    'success' => false,
+                    'message' => 'heidel-payment-settings.webhook.clear.error',
+                ];
+                $this->logger->error(
+                    'Webhook registration failed!',
+                    [
+                        'message' => $exception->getMessage(),
+                        'code'    => $exception->getCode(),
+                        'file'    => $exception->getFile(),
+                        'trace'   => $exception->getTraceAsString(),
+                    ]
+                );
             }
-
-            $context = $this->getContext($salesChannelEntity);
-
-            $this->client->deleteAllWebhooks();
-            $returnData[$salesChannelDomain->get('url', '')] = 'heidel-payment-settings.webhook.clear.done';
         }
 
         return $returnData;
     }
 
-    protected function getContext(SalesChannelDomainEntity $host): ?RequestContext
+    protected function prepare(DataBag $salesChannelDomain): array
+    {
+        if (!$salesChannelDomain->has('id') || !$salesChannelDomain->has('url')) {
+            return [
+                'key'   => 'missing',
+                'value' => [
+                    'success' => false,
+                    'message' => 'heidel-payment-settings.webhook.missing.fields',
+                ],
+            ];
+        }
+
+        $salesChannelEntity = $this->getSalesChannelDomain(
+            $salesChannelDomain->get('id', ''),
+            $salesChannelDomain->get('url', '')
+        );
+
+        if (null === $salesChannelEntity) {
+            return [
+                'key'   => $salesChannelDomain->get('url', ''),
+                'value' => [
+                    'success' => false,
+                    'message' => 'heidel-payment-settings.webhook.notFound.salesChannel',
+                ],
+            ];
+        }
+
+        $this->setContext($salesChannelEntity);
+
+        if (!$this->context) {
+            return [
+                'key'   => $salesChannelDomain->get('url', ''),
+                'value' => [
+                    'success' => false,
+                    'message' => 'heidel-payment-settings.webhook.missing.context',
+                ],
+            ];
+        }
+
+        return [];
+    }
+
+    protected function setContext(SalesChannelDomainEntity $host): void
     {
         $parsedUrl = parse_url($host->getUrl());
         $context   = $this->router->getContext();
@@ -124,7 +191,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
             $context->setScheme($parsedUrl['scheme']);
         }
 
-        return $context;
+        $this->context = $context;
     }
 
     protected function getSalesChannelDomain(string $salesChannelId, string $url): ?SalesChannelDomainEntity

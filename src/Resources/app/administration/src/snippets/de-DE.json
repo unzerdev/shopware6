@@ -95,17 +95,11 @@
             "messagePrefix": "Domain: ",
             "register": {
                 "done": "Webhook registriert | Webhooks registriert",
-                "error": {
-                    "title": "Ein Fehler ist aufgetreten",
-                    "message": "Der Webhook konnte nicht registriert werden | Die Webhooks konnten nicht registriert werden"
-                }
+                "error": "Der Webhook konnte nicht registriert werden | Die Webhooks konnten nicht registriert werden"
             },
             "clear": {
                 "done": "Webhook entfernt | Webhooks entfernt",
-                "error": {
-                    "title": "Ein Fehler ist aufgetreten",
-                    "message": "Der Webhook konnte nicht entfernt werden | Die Webhooks konnten nicht entfernt werden"
-                }
+                "error": "Der Webhook konnte nicht entfernt werden | Die Webhooks konnten nicht entfernt werden"
             },
             "missing": {
                 "fields": "Nicht alle benötigten Felder sind vorhanden",
@@ -114,6 +108,10 @@
             },
             "notFound": {
                 "salesChannelDomain": "Die spezifizierte Domain wurde nicht gefunden"
+            },
+            "globalError": {
+                "title": "Ein Fehler ist aufgetreten",
+                "message": "Bitte kontaktieren sie uns für mehr Informationen"
             }
         }
     }

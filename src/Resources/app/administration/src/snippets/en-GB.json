@@ -95,17 +95,11 @@
             "messagePrefix": "Domain: ",
             "register": {
                 "done": "Webhook registered | Webhooks registered",
-                "error": {
-                    "title": "Something went wrong",
-                    "message": "Webhook could not be registered | Webhooks could not be registered"
-                }
+                "error": "Webhook could not be registered | Webhooks could not be registered"
             },
             "clear": {
                 "done": "Webhook cleared | Webhooks cleared",
-                "error": {
-                    "title": "Something went wrong",
-                    "message": "Webhook could not be cleared | Webhooks could not be cleared"
-                }
+                "error": "Webhook could not be cleared | Webhooks could not be cleared"
             },
             "missing": {
                 "fields": "Some mandatory fields are missing",
@@ -114,6 +108,10 @@
             },
             "notFound": {
                 "salesChannelDomain": "The selected domain could not be found"
+            },
+            "globalError": {
+                "title": "An error occured",
+                "message": "Please contact us for more information"
             }
         }
     }
