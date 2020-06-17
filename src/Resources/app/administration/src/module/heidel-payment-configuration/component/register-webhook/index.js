@@ -31,15 +31,6 @@ Shopware.Component.register('heidel-payment-register-webhook', {
 
         salesChannelDomainRepository() {
             return this.repositoryFactory.create('sales_channel_domain');
-        },
-
-        salesChannelDomainCriteria() {
-            const criteria = new Shopware.Data.Criteria();
-
-            criteria.addAssociation('salesChannel');
-            criteria.addFilter(Shopware.Data.Criteria.equals('salesChannel.active', 1));
-
-            return criteria;
         }
     },
 
@@ -57,7 +48,7 @@ Shopware.Component.register('heidel-payment-register-webhook', {
     },
 
     created() {
-        this.salesChannelDomainRepository.search(this.salesChannelDomainCriteria, Shopware.Context.api)
+        this.salesChannelDomainRepository.search(new Shopware.Data.Criteria(), Shopware.Context.api)
             .then((result) => {
                 this.salesChannelDomains = result;
             });
@@ -79,7 +70,7 @@ Shopware.Component.register('heidel-payment-register-webhook', {
             this.isLoading = true;
 
             this.HeidelPaymentConfigurationService.registerWebhooks({
-                selection: me.selection
+                selection: this.selection
             })
                 .then((response) => {
                     me.isRegistrationSuccessful = true;
@@ -98,7 +89,7 @@ Shopware.Component.register('heidel-payment-register-webhook', {
                         message: this.$tc('heidel-payment-settings.webhook.register.error.message', response.length)
                     });
                 })
-                .finally((response) => {
+                .finally(() => {
                     me.isLoading = false;
                     me.isRegistering = false;
                 });
@@ -111,7 +102,7 @@ Shopware.Component.register('heidel-payment-register-webhook', {
             this.isLoading = true;
 
             this.HeidelPaymentConfigurationService.clearWebhooks({
-                selection: me.selection
+                selection: this.selection
             })
                 .then((response) => {
                     me.isClearingSuccessful = true;
@@ -130,7 +121,7 @@ Shopware.Component.register('heidel-payment-register-webhook', {
                         message: this.$tc('heidel-payment-settings.webhook.clear.error.message', response.length)
                     });
                 })
-                .finally((response) => {
+                .finally(() => {
                     me.isLoading = false;
                     me.isClearing = false;
                 });
@@ -144,34 +135,17 @@ Shopware.Component.register('heidel-payment-register-webhook', {
             this.isClearingSuccessful = false;
         },
 
-        onSelectItem(id, selected) {
-            if (this.selection.length === 0) {
-                this._populateSelectionProperty();
-            }
-
-            this.selection.forEach((selection) => {
-                if (selection.id === id) {
-                    selection.selected = selected;
-                }
-            });
-        },
-
-        _populateSelectionProperty() {
-            this.salesChannelDomains.forEach((domain) => {
-                this.selection.push({
-                    id: domain.id,
-                    url: domain.url
-                });
-            });
+        onSelectItem(selectedItems) {
+            this.selection = selectedItems;
         },
 
         messageGeneration(data) {
             const domainAmount = data.length;
             for (const domain in data) {
                 if (undefined !== data[domain]) {
-                    if (undefined !== data[domain]['message']) {
+                    if (undefined !== data[domain].message) {
                         this.createNotificationSuccess({
-                            title: this.$tc(data[domain]['message'], domainAmount),
+                            title: this.$tc(data[domain].message, domainAmount),
                             message: this.$tc('heidel-payment-settings.webhook.messagePrefix', domainAmount) + domain
                         });
                     } else {

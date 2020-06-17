@@ -86,7 +86,7 @@ class HeidelpayConfigurationController extends AbstractController
         /** @var DataBag $selection */
         $selection = $dataBag->get('selection', new DataBag());
 
-        if($selection->count() < 1) {
+        if ($selection->count() < 1) {
             return new JsonResponse([], 400);
         }
 
@@ -116,7 +116,7 @@ class HeidelpayConfigurationController extends AbstractController
         /** @var DataBag $selection */
         $selection = $dataBag->get('selection', new DataBag());
 
-        if($selection->count() < 1) {
+        if ($selection->count() < 1) {
             return new JsonResponse([], 400);
         }
 
