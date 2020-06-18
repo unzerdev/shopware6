@@ -40,7 +40,6 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
     public function getTargetPaymentStatus(Payment $paymentObject): string
     {
         $bookingMode = $this->getBookingMode($paymentObject);
-        dump($bookingMode);
 
         if ($bookingMode === self::DEFAULT_MODE) {
             return $this->mapForChargeMode($paymentObject);
