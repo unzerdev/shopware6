@@ -6,19 +6,19 @@ namespace HeidelPayment6\Components\PaymentTransitionMapper;
 
 use HeidelPayment6\Components\ConfigReader\ConfigReader;
 use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
+use HeidelPayment6\Components\PaymentTransitionMapper\Traits\HasBookingMode;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\Card;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 
 class CreditCardTransitionMapper extends AbstractTransitionMapper
 {
-    private const DEFAULT_MODE = 'charge';
+    use HasBookingMode;
+
+    private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKINMODE_CARD;
+    private const DEFAULT_MODE     = 'charge';
 
     /** @var ConfigReader */
     private $configReader;
@@ -91,43 +91,5 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
         }
 
         return $this->mapPaymentStatus($paymentObject);
-    }
-
-    protected function getBookingMode(Payment $paymentObject): string
-    {
-        $order = $this->getOrderByPayment($paymentObject->getOrderId());
-
-        if (null === $order) {
-            return self::DEFAULT_MODE;
-        }
-
-        $config = $this->configReader->read($order->getSalesChannelId());
-
-        return $config->get(ConfigReader::CONFIG_KEY_BOOKINMODE_CARD, self::DEFAULT_MODE);
-    }
-
-    private function getOrderByPayment(?string $orderTransactionId): ?OrderEntity
-    {
-        if (empty($orderTransactionId)) {
-            return null;
-        }
-
-        $transaction = $this->getTransactionById($orderTransactionId);
-
-        if (null === $transaction) {
-            return null;
-        }
-
-        return $transaction->getOrder();
-    }
-
-    private function getTransactionById(string $transactionId): ?OrderTransactionEntity
-    {
-        $criteria = new Criteria([$transactionId]);
-        $criteria->addAssociation('order');
-
-        $orderSearchResult = $this->orderRepository->search($criteria, Context::createDefaultContext());
-
-        return $orderSearchResult->first();
     }
 }
