@@ -60,6 +60,10 @@ Component.register('heidel-payment-actions', {
         }
     },
 
+    created() {
+        this.transactionAmount = this.maxTransactionAmount;
+    },
+
     methods: {
         charge() {
             this.isLoading = true;
