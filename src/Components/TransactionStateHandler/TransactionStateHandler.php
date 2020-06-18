@@ -9,8 +9,10 @@ use HeidelPayment6\Components\PaymentTransitionMapper\Exception\NoTransitionMapp
 use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use heidelpayPHP\Resources\Payment;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\Exception\IllegalTransitionException;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
@@ -50,9 +52,13 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
 
         $transition = $this->getTargetTransition($payment);
 
-        if (!empty($transition)) {
-            $this->executeTransition($transactionId, $transition, $context);
+        if (empty($transition)) {
+            $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_FAIL, $context);
+
+            throw new RuntimeException('Invalid transition status');
         }
+
+        $this->executeTransition($transactionId, $transition, $context);
     }
 
     protected function getTargetTransition(Payment $payment): string

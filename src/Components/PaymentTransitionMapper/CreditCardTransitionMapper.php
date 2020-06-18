@@ -69,13 +69,6 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
 
     protected function mapForAuthorizeMode(Payment $paymentObject): string
     {
-        /** @var Card $paymentType */
-        $paymentType = $paymentObject->getPaymentType();
-
-        if ($paymentType->get3ds() && $paymentObject->isPending()) {
-            throw new TransitionMapperException(Card::getResourceName());
-        }
-
         if ($paymentObject->isCanceled()) {
             $status = $this->checkForRefund($paymentObject);
 
@@ -87,7 +80,7 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
         }
 
         if (count($paymentObject->getCharges()) > 0) {
-            return StateMachineTransitionActions::ACTION_DO_PAY;
+            return StateMachineTransitionActions::ACTION_PAID;
         }
 
         return $this->mapPaymentStatus($paymentObject);
