@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace HeidelPayment6\Components\ResourceHydrator;
 
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface ResourceHydratorInterface
 {
-    public function hydrateObject(SalesChannelContext $channelContext, ?AsyncPaymentTransactionStruct $transaction = null): AbstractHeidelpayResource;
+    /**
+     * @param null|AsyncPaymentTransactionStruct|OrderTransactionEntity $transaction
+     */
+    public function hydrateObject(SalesChannelContext $channelContext, $transaction = null): AbstractHeidelpayResource;
 }

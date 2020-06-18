@@ -48,6 +48,9 @@
         </service>
 
         <service id="HeidelPayment6\Components\PaymentTransitionMapper\PayPalTransitionMapper">
+            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="order.repository"/>
+
             <tag name="heidelpay.transition_mapper"/>
         </service>
 

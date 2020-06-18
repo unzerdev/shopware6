@@ -9,17 +9,22 @@ use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Basket;
 use heidelpayPHP\Resources\EmbeddedResources\BasketItem;
 use InvalidArgumentException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class BasketResourceHydrator implements ResourceHydratorInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public function hydrateObject(
         SalesChannelContext $channelContext,
-        ?AsyncPaymentTransactionStruct $transaction = null
+        $transaction = null
     ): AbstractHeidelpayResource {
-        if ($transaction === null) {
+        if ($transaction === null
+         || (!($transaction instanceof AsyncPaymentTransactionStruct) && !($transaction instanceof OrderTransactionEntity))) {
             throw new InvalidArgumentException('Transaction struct can not be null');
         }
 
@@ -28,13 +33,23 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
         $amountTotalVat = round($transaction->getOrder()->getAmountTotal() - $transaction->getOrder()->getAmountNet(), $currencyPrecision);
 
+        if ($transaction instanceof AsyncPaymentTransactionStruct) {
+            $transactionId = $transaction->getOrderTransaction()->getId();
+        } else {
+            $transactionId = $transaction->getId();
+        }
+
         $heidelBasket = new Basket(
-            $transaction->getOrderTransaction()->getId(),
+            $transactionId,
             round($transaction->getOrder()->getAmountTotal(), $currencyPrecision),
             $channelContext->getCurrency()->getIsoCode()
         );
 
         $heidelBasket->setAmountTotalVat($amountTotalVat);
+
+        if (null === $transaction->getOrder()->getLineItems()) {
+            return $heidelBasket;
+        }
 
         foreach ($transaction->getOrder()->getLineItems() as $lineItem) {
             if ($lineItem->getPrice() === null) {

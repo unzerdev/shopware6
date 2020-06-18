@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\EventListeners\Account;
 
+use HeidelPayment6\Components\ConfigReader\ConfigReader;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\Struct\PageExtension\Account\PaymentMethodPageExtension;
 use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
@@ -43,15 +44,23 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $registerCreditCards = $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get('registerCreditCard');
+        $registerCreditCards = $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_CARD);
+        $registerPayPal      = $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL);
         $extension           = new PaymentMethodPageExtension();
         $extension->setDeviceRemoved((bool) $event->getRequest()->get('deviceRemoved'));
 
         if ($registerCreditCards && $salesChannelContext->getCustomer() !== null) {
-            $devices     = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
+            $devices     = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD, $salesChannelContext->getContext());
             $creditCards = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD)->getElements();
 
             $extension->addPaymentDevices($creditCards);
+        }
+
+        if ($registerPayPal && $salesChannelContext->getCustomer() !== null) {
+            $devices       = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL, $salesChannelContext->getContext());
+            $payPalAccount = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL)->getElements();
+
+            $extension->addPaymentDevices($payPalAccount);
         }
 
         $event->getPage()->addExtension('heidelpay', $extension);

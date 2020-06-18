@@ -9,14 +9,13 @@ use heidelpayPHP\Resources\CustomerFactory;
 use heidelpayPHP\Resources\EmbeddedResources\Address;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class BusinessCustomerResourceHydrator implements ResourceHydratorInterface
 {
     public function hydrateObject(
         SalesChannelContext $channelContext,
-        ?AsyncPaymentTransactionStruct $transaction = null
+        $transaction = null
     ): AbstractHeidelpayResource {
         $customer = $channelContext->getCustomer();
 

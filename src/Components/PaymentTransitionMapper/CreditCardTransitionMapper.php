@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\PaymentTransitionMapper;
 
+use HeidelPayment6\Components\BookingMode;
 use HeidelPayment6\Components\ConfigReader\ConfigReader;
 use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use HeidelPayment6\Components\PaymentTransitionMapper\Traits\HasBookingMode;
@@ -18,7 +19,7 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
     use HasBookingMode;
 
     private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKINMODE_CARD;
-    private const DEFAULT_MODE     = 'charge';
+    private const DEFAULT_MODE     = BookingMode::CHARGE;
 
     /** @var ConfigReader */
     private $configReader;

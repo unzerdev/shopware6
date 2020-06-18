@@ -12,6 +12,7 @@ class HeidelpayPaymentDeviceEntity extends Entity
     use EntityIdTrait;
 
     public const DEVICE_TYPE_CREDIT_CARD = 'credit_card';
+    public const DEVICE_TYPE_PAYPAL      = 'paypal_account';
 
     /** @var string */
     protected $customerId;

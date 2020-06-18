@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\EventListeners\Checkout;
 
+use HeidelPayment6\Components\ConfigReader\ConfigReader;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\HirePurchasePageExtension;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
+use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
 use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 use HeidelPayment6\Installers\PaymentInstaller;
@@ -45,14 +47,21 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     public function onCheckoutConfirm(CheckoutConfirmPageLoadedEvent $event): void
     {
-        $salesChannelContext = $event->getSalesChannelContext();
-        $registerCreditCards = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get('registerCreditCard');
+        $salesChannelContext    = $event->getSalesChannelContext();
+        $registerCreditCards    = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_CARD);
+        $registerPayPalAccounts = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL);
 
         //Extension for credit card payments
         if ($registerCreditCards &&
             $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
         ) {
             $this->addCreditCardExtension($event);
+        }
+
+        if ($registerPayPalAccounts &&
+            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYPAL
+        ) {
+            $this->addPayPalExtension($event);
         }
 
         //Extension for hire purchase payments
@@ -83,10 +92,8 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $creditCards = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext());
-
-        $extension = new CreditCardPageExtension();
-        $extension->setDisplayCreditCardSelection(true);
+        $creditCards = $this->deviceRepository->getCollectionByCustomer($customer, HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD, $event->getContext());
+        $extension   = (new CreditCardPageExtension())->setDisplayCreditCardSelection(true);
 
         /** @var HeidelpayPaymentDeviceEntity $creditCard */
         foreach ($creditCards->getElements() as $creditCard) {
@@ -94,6 +101,25 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $event->getPage()->addExtension('heidelpayCreditCard', $extension);
+    }
+
+    private function addPayPalExtension(CheckoutConfirmPageLoadedEvent $event): void
+    {
+        $customer = $event->getSalesChannelContext()->getCustomer();
+
+        if (!$customer) {
+            return;
+        }
+
+        $payPalAccounts = $this->deviceRepository->getCollectionByCustomer($customer, HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL, $event->getContext());
+        $extension      = (new PayPalPageExtension())->setDisplaypayPalAccountselection(true);
+
+        /** @var HeidelpayPaymentDeviceEntity $payPalAccount */
+        foreach ($payPalAccounts->getElements() as $payPalAccount) {
+            $extension->addPayPalAccount($payPalAccount);
+        }
+
+        $event->getPage()->addExtension('heidelpayPayPal', $extension);
     }
 
     private function addHirePurchaseExtension(CheckoutConfirmPageLoadedEvent $event): void
