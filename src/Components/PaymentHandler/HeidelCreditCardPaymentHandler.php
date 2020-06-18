@@ -6,6 +6,7 @@ namespace HeidelPayment6\Components\PaymentHandler;
 
 use HeidelPayment6\Components\BookingMode;
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\ConfigReader\ConfigReader;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
@@ -72,8 +73,8 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Can not process payment without a valid payment resource.');
         }
 
-        $bookingMode         = $this->pluginConfig->get('bookingModeCreditCard', BookingMode::CHARGE);
-        $registerCreditCards = $this->pluginConfig->get('registerCreditCard');
+        $bookingMode         = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_CARD, BookingMode::CHARGE);
+        $registerCreditCards = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_CARD);
 
         try {
             $returnUrl = $bookingMode === BookingMode::CHARGE

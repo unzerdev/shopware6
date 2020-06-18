@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\Struct;
 
+use HeidelPayment6\Components\ConfigReader\ConfigReader;
+
 class Webhook
 {
     /** @var string */
@@ -25,7 +27,7 @@ class Webhook
         $webhookData = json_decode($jsonData, true);
 
         $this->event       = $webhookData['event'] ?? '';
-        $this->publicKey   = $webhookData['publicKey'] ?? '';
+        $this->publicKey   = $webhookData[ConfigReader::CONFIG_KEY_PUBLIC_KEY] ?? '';
         $this->retrieveUrl = $webhookData['retrieveUrl'] ?? '';
     }
 
