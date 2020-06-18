@@ -7,6 +7,7 @@
         <service id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler">
             <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
             <argument type="service" id="HeidelPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory"/>
+            <argument type="service" id="heidel_payment.logger"/>
         </service>
 
         <service id="HeidelPayment6\Components\ConfigReader\ConfigReader">

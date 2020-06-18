@@ -5,20 +5,16 @@ declare(strict_types=1);
 namespace HeidelPayment6\Components\PaymentTransitionMapper;
 
 use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
-use HeidelPayment6\Installers\PaymentInstaller;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
+use heidelpayPHP\Resources\TransactionTypes\Authorization;
+use heidelpayPHP\Resources\TransactionTypes\Charge;
 use heidelpayPHP\Resources\TransactionTypes\Shipment;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 
 abstract class AbstractTransitionMapper
 {
-    public const PAYMENT_STATUS_PENDING_ALLOWED = [
-        PaymentInstaller::PAYMENT_ID_PRE_PAYMENT,
-        PaymentInstaller::PAYMENT_ID_INVOICE,
-    ];
-
-    public const INVALID_STATUS = 'invalid';
+    public const INVALID_TRANSITION = 'invalid';
 
     abstract public function supports(BasePaymentType $paymentType): bool;
 
@@ -36,7 +32,7 @@ abstract class AbstractTransitionMapper
         } elseif ($paymentObject->isPending()) {
             $status = StateMachineTransitionActions::ACTION_REOPEN;
         } elseif ($paymentObject->isChargeBack()) {
-            $status = StateMachineTransitionActions::ACTION_CANCEL;
+            $status = StateMachineTransitionActions::ACTION_FAIL;
         } elseif ($paymentObject->isPartlyPaid()) {
             $status = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
         } elseif ($paymentObject->isPaymentReview()) {
@@ -48,7 +44,7 @@ abstract class AbstractTransitionMapper
         return $this->checkForRefund($paymentObject, $status);
     }
 
-    protected function checkForRefund(Payment $paymentObject, string $currentStatus = self::INVALID_STATUS): string
+    protected function checkForRefund(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
         $totalAmount     = $this->getAmountByFloat($paymentObject->getAmount()->getTotal());
         $cancelledAmount = $this->getAmountByFloat($paymentObject->getAmount()->getCanceled());
@@ -61,7 +57,7 @@ abstract class AbstractTransitionMapper
         return $currentStatus;
     }
 
-    protected function checkForShipment(Payment $paymentObject, string $currentStatus = self::INVALID_STATUS): string
+    protected function checkForShipment(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
         $shippedAmount   = 0;
         $totalAmount     = $this->getAmountByFloat($paymentObject->getAmount()->getTotal());
@@ -111,10 +107,10 @@ abstract class AbstractTransitionMapper
     protected function getAmountByFloat(float $amount): int
     {
         $defaultAmount = $amount;
-        $amount        = (string) $amount;
+        $stringAmount  = (string) $amount;
 
-        if (strrchr($amount, '.') !== false) {
-            return (int) ($amount * (10 ** strlen(substr(strrchr($amount, '.'), 1))));
+        if (strrchr($stringAmount, '.') !== false) {
+            return (int) round($amount * (10 ** strlen(substr(strrchr($stringAmount, '.'), 1))));
         }
 
         return (int) $defaultAmount;

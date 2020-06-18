@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace HeidelPayment6\Components\TransactionStateHandler;
 
 use HeidelPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory;
+use HeidelPayment6\Components\PaymentTransitionMapper\Exception\NoTransitionMapperFoundException;
+use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use heidelpayPHP\Resources\Payment;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\StateMachine\Exception\IllegalTransitionException;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
@@ -21,31 +23,57 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
     /** @var PaymentTransitionMapperFactory */
     private $transitionMapperFactory;
 
+    /** @var LoggerInterface */
+    private $logger;
+
     public function __construct(
         StateMachineRegistry $stateMachineRegistry,
-        PaymentTransitionMapperFactory $transitionMapperFactory
+        PaymentTransitionMapperFactory $transitionMapperFactory,
+        LoggerInterface $logger
     ) {
         $this->stateMachineRegistry    = $stateMachineRegistry;
         $this->transitionMapperFactory = $transitionMapperFactory;
+        $this->logger                  = $logger;
     }
 
     /**
      * {@inheritdoc}
      */
     public function transformTransactionState(
-        OrderTransactionEntity $transaction,
+        string $transactionId,
         Payment $payment,
         Context $context
     ): void {
-        $transitionMapper = $this->transitionMapperFactory->getTransitionMapper($payment->getPaymentType());
-
-        if (empty($transitionMapper)) {
+        if (null === $payment->getPaymentType()) {
             return;
         }
 
-        $transition    = $transitionMapper->getTargetPaymentStatus($payment);
-        $transactionId = $transaction->getId();
+        $transition = $this->getTargetTransition($payment);
 
+        if (!empty($transition)) {
+            $this->executeTransition($transactionId, $transition, $context);
+        }
+    }
+
+    protected function getTargetTransition(Payment $payment): string
+    {
+        try {
+            $transitionMapper = $this->transitionMapperFactory->getTransitionMapper($payment->getPaymentType());
+            $transition       = $transitionMapper->getTargetPaymentStatus($payment);
+        } catch (NoTransitionMapperFoundException | TransitionMapperException $exception) {
+            $this->logger->error($exception->getMessage(), [
+                'code'  => $exception->getCode(),
+                'file'  => $exception->getFile(),
+                'line'  => $exception->getLine(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+        }
+
+        return $transition ?? '';
+    }
+
+    protected function executeTransition(string $transactionId, string $transition, Context $context): void
+    {
         try {
             $this->stateMachineRegistry->transition(
                 new Transition(

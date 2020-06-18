@@ -25,7 +25,7 @@ class PayPalTransitionMapper extends AbstractTransitionMapper
         if ($paymentObject->isCanceled()) {
             $status = $this->checkForRefund($paymentObject);
 
-            if ($status !== self::INVALID_STATUS) {
+            if ($status !== self::INVALID_TRANSITION) {
                 return $status;
             }
 
