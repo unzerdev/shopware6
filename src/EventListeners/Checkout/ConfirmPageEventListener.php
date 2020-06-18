@@ -6,6 +6,7 @@ namespace HeidelPayment6\EventListeners\Checkout;
 
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
+use HeidelPayment6\Components\Struct\Configuration;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\HirePurchasePageExtension;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
@@ -19,6 +20,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
 {
+    private const HIRE_PURCHASE_EFFECTIVE_INTEREST_DEFAULT = 4.5;
+
+    /** @var Configuration */
+    protected $configData;
+
     /** @var HeidelpayPaymentDeviceRepositoryInterface */
     private $deviceRepository;
 
@@ -53,7 +59,8 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $salesChannelContext = $event->getSalesChannelContext();
-        $registerCreditCards = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get('registerCreditCard');
+        $this->configData    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $registerCreditCards = (bool) $this->configData->get('registerCreditCard');
 
         //Extension for credit card payments
         if ($registerCreditCards &&
@@ -105,11 +112,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     private function addHirePurchaseExtension(PageLoadedEvent $event): void
     {
-        $page = $event->getPage();
-
         $extension = new HirePurchasePageExtension();
         $extension->setCurrency($event->getSalesChannelContext()->getCurrency()->getIsoCode());
-        $extension->setEffectiveInterest(4.5); //TODO: Plugin config!
+        $extension->setEffectiveInterest((float) $this->configData->get('hirePurchaseEffectiveInterest', self::HIRE_PURCHASE_EFFECTIVE_INTEREST_DEFAULT));
+
         if ($event instanceof CheckoutConfirmPageLoadedEvent) {
             $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());
         } elseif ($event instanceof AccountEditOrderPageLoadedEvent) {

@@ -56,9 +56,9 @@ class InstallmentInfo extends Struct
         return $this->totalAmount;
     }
 
-    public function setTotalAmount(float $totalAmount): InstallmentInfo
+    public function setTotalAmount(string $totalAmount): InstallmentInfo
     {
-        $this->totalAmount = $totalAmount;
+        $this->totalAmount = (float) $totalAmount;
 
         return $this;
     }
@@ -68,9 +68,9 @@ class InstallmentInfo extends Struct
         return $this->totalInterest;
     }
 
-    public function setTotalInterest(float $totalInterest): InstallmentInfo
+    public function setTotalInterest(string $totalInterest): InstallmentInfo
     {
-        $this->totalInterest = $totalInterest;
+        $this->totalInterest = (float) $totalInterest;
 
         return $this;
     }
@@ -80,9 +80,9 @@ class InstallmentInfo extends Struct
         return $this->numberOfRates;
     }
 
-    public function setNumberOfRates(int $numberOfRates): InstallmentInfo
+    public function setNumberOfRates(string $numberOfRates): InstallmentInfo
     {
-        $this->numberOfRates = $numberOfRates;
+        $this->numberOfRates = (int) $numberOfRates;
 
         return $this;
     }
@@ -104,9 +104,9 @@ class InstallmentInfo extends Struct
         return $this->totalPurchaseAmount;
     }
 
-    public function setTotalPurchaseAmount(float $totalPurchaseAmount): InstallmentInfo
+    public function setTotalPurchaseAmount(string $totalPurchaseAmount): InstallmentInfo
     {
-        $this->totalPurchaseAmount = $totalPurchaseAmount;
+        $this->totalPurchaseAmount = (float) $totalPurchaseAmount;
 
         return $this;
     }
@@ -116,9 +116,9 @@ class InstallmentInfo extends Struct
         return $this->totalInterestAmount;
     }
 
-    public function setTotalInterestAmount(float $totalInterestAmount): InstallmentInfo
+    public function setTotalInterestAmount(string $totalInterestAmount): InstallmentInfo
     {
-        $this->totalInterestAmount = $totalInterestAmount;
+        $this->totalInterestAmount = (float) $totalInterestAmount;
 
         return $this;
     }
@@ -128,9 +128,9 @@ class InstallmentInfo extends Struct
         return $this->effectiveInterestRate;
     }
 
-    public function setEffectiveInterestRate(float $effectiveInterestRate): InstallmentInfo
+    public function setEffectiveInterestRate(string $effectiveInterestRate): InstallmentInfo
     {
-        $this->effectiveInterestRate = $effectiveInterestRate;
+        $this->effectiveInterestRate = (float) $effectiveInterestRate;
 
         return $this;
     }
@@ -140,9 +140,9 @@ class InstallmentInfo extends Struct
         return $this->nominalInterestRate;
     }
 
-    public function setNominalInterestRate(float $nominalInterestRate): InstallmentInfo
+    public function setNominalInterestRate(string $nominalInterestRate): InstallmentInfo
     {
-        $this->nominalInterestRate = $nominalInterestRate;
+        $this->nominalInterestRate = (float) $nominalInterestRate;
 
         return $this;
     }
@@ -152,9 +152,9 @@ class InstallmentInfo extends Struct
         return $this->feeFirstRate;
     }
 
-    public function setFeeFirstRate(float $feeFirstRate): InstallmentInfo
+    public function setFeeFirstRate(string $feeFirstRate): InstallmentInfo
     {
-        $this->feeFirstRate = $feeFirstRate;
+        $this->feeFirstRate = (float) $feeFirstRate;
 
         return $this;
     }
@@ -164,9 +164,9 @@ class InstallmentInfo extends Struct
         return $this->feePerRate;
     }
 
-    public function setFeePerRate(float $feePerRate): InstallmentInfo
+    public function setFeePerRate(string $feePerRate): InstallmentInfo
     {
-        $this->feePerRate = $feePerRate;
+        $this->feePerRate = (float) $feePerRate;
 
         return $this;
     }
@@ -176,9 +176,9 @@ class InstallmentInfo extends Struct
         return $this->monthlyRate;
     }
 
-    public function setMonthlyRate(float $monthlyRate): InstallmentInfo
+    public function setMonthlyRate(string $monthlyRate): InstallmentInfo
     {
-        $this->monthlyRate = $monthlyRate;
+        $this->monthlyRate = (float) $monthlyRate;
 
         return $this;
     }
@@ -188,9 +188,9 @@ class InstallmentInfo extends Struct
         return $this->lastRate;
     }
 
-    public function setLastRate(float $lastRate): InstallmentInfo
+    public function setLastRate(string $lastRate): InstallmentInfo
     {
-        $this->lastRate = $lastRate;
+        $this->lastRate = (float) $lastRate;
 
         return $this;
     }
