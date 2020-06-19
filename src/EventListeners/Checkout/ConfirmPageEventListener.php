@@ -117,7 +117,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension('heidelpayCreditCard', $extension);
     }
 
-    private function addPayPalExtension(CheckoutConfirmPageLoadedEvent $event): void
+    private function addPayPalExtension(PageLoadedEvent $event): void
     {
         $customer = $event->getSalesChannelContext()->getCustomer();
 

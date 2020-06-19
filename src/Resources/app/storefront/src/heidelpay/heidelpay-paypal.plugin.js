@@ -1,13 +1,11 @@
 import Plugin from 'src/plugin-system/plugin.class';
-import DomAccess from 'src/helper/dom-access.helper';
 
 export default class HeidelpayPayPalPlugin extends Plugin {
     static options = {
-        heidelpayCreatePaymentUrl: '',
-        radioButtonSelector: 'input:radio[name="savedPayPalAccount"]',
-        selectedRadioButtonSelector: 'input:radio[name="savedPayPalAccount"]:checked',
+        radioButtonSelector: 'input[name="savedPayPalAccount"]',
+        selectedRadioButtonSelector: 'input[name="savedPayPalAccount"]:checked',
         radioButtonNewSelector: '#new',
-        hasSavedAccounts: false,
+        hasSavedAccounts: false
     };
 
     /**
@@ -46,14 +44,16 @@ export default class HeidelpayPayPalPlugin extends Plugin {
         this._heidelpayPlugin.setSubmitButtonActive(false);
 
         if (this.options.hasSavedAccounts) {
-            checkedRadioButton = DomAccess.querySelector(this.el, this.options.selectedRadioButtonSelector);
+            /** @type {Element}*/
+            checkedRadioButton = document.querySelectorAll(this.options.selectedRadioButtonSelector)[0];
         }
 
-        this.submitting = true;
-        window.console.log(checkedRadioButton);
-        window.console.log(this._heidelpayPlugin);
-        window.console.log(this._heidelpayPlugin.submitForm);
+        if(null !== checkedRadioButton && 'new' !== checkedRadioButton.value) {
+            this._heidelpayPlugin.submitTypeId(checkedRadioButton.value);
 
-        this._heidelpayPlugin.submitForm.submit();
+            return;
+        }
+
+        document.getElementById(this._heidelpayPlugin.options.confirmFormId).submit();
     }
 }

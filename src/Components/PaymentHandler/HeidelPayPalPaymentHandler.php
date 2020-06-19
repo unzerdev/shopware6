@@ -18,6 +18,8 @@ use HeidelPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
+use heidelpayPHP\Resources\AbstractHeidelpayResource;
+use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\Paypal;
 use RuntimeException;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -28,6 +30,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
@@ -37,7 +40,7 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
     use CanRecur;
     use HasDeviceVault;
 
-    /** @var Paypal */
+    /** @var Paypal|BasePaymentType|AbstractHeidelpayResource|null */
     protected $paymentType;
 
     /** @var SessionInterface */
@@ -72,6 +75,7 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
         ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
+        RequestStack $requestStack,
         HeidelpayPaymentDeviceRepositoryInterface $deviceRepository,
         SessionInterface $session
     ) {
@@ -82,7 +86,8 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
             $transactionRepository,
             $configReader,
             $transactionStateHandler,
-            $clientFactory
+            $clientFactory,
+            $requestStack
         );
 
         $this->deviceRepository        = $deviceRepository;
@@ -105,26 +110,34 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
+        $this->session->remove($this->sessionIsRecurring);
+        $this->session->remove($this->sessionPaymentTypeKey);
+        $this->session->remove($this->sessionCustomerIdKey);
 
         if ($dataBag->has('savedPayPalAccount')) {
-            return $this->handleRecurringPayment($transaction, $dataBag, $salesChannelContext);
+            return $this->handleRecurringPayment($transaction, $dataBag);
         }
 
-        $bookingMode      = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
-        $registerAccounts = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
+        $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
 
         try {
-            $this->paymentType = $this->heidelpayClient->createPaymentType(new Paypal());
+            if (null === $this->paymentType) {
+                $registerAccounts  = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
+                $this->paymentType = $this->heidelpayClient->createPaymentType(new Paypal());
 
-            if ($registerAccounts) {
-                $returnUrl = $this->activateRecurring($transaction->getReturnUrl());
+                if ($registerAccounts) {
+                    $returnUrl = $this->activateRecurring($transaction->getReturnUrl());
 
-                return new RedirectResponse($returnUrl);
+                    return new RedirectResponse($returnUrl);
+                }
             }
 
             $returnUrl = $bookingMode === BookingMode::CHARGE
                 ? $this->charge($transaction->getReturnUrl())
                 : $this->authorize($transaction->getReturnUrl());
+
+            $this->session->set($this->sessionIsRecurring, true);
+            $this->session->set($this->sessionPaymentTypeKey, $this->payment->getId());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
@@ -143,7 +156,7 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
         $bookingMode      = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
         $registerAccounts = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
 
-        if (!$registerAccounts || $this->session->get('isRecurring', false)) {
+        if (!$registerAccounts) {
             parent::finalize($transaction, $request, $salesChannelContext);
         }
 
@@ -154,22 +167,25 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
         $this->recur($transaction, $salesChannelContext);
 
         try {
-            $this->paymentType = $this->fetchPaymentByTypeId($this->session->get($this->sessionPaymentTypeKey));
+            if (!$this->session->get($this->sessionIsRecurring, false)) {
+                $this->paymentType = $this->fetchPaymentByTypeId($this->session->get($this->sessionPaymentTypeKey));
 
-            if ($this->paymentType === null) {
-                throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), 'missing payment type');
-            }
+                if ($this->paymentType === null) {
+                    throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), 'missing payment type');
+                }
+                $bookingMode === BookingMode::CHARGE
+                    ? $this->charge('https://not.needed')
+                    : $this->authorize('https://not.needed');
 
-            $bookingMode === BookingMode::CHARGE
-                ? $this->charge('https://abcdefg.local/asd')
-                : $this->authorize('https://abcdefg.local/asd');
-
-            if ($registerAccounts && $salesChannelContext->getCustomer() !== null) {
-                $this->saveToDeviceVault(
-                    $salesChannelContext->getCustomer(),
-                    HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL,
-                    $salesChannelContext->getContext()
-                );
+                if ($registerAccounts && $salesChannelContext->getCustomer() !== null) {
+                    $this->saveToDeviceVault(
+                        $salesChannelContext->getCustomer(),
+                        HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL,
+                        $salesChannelContext->getContext()
+                    );
+                }
+            } else {
+                $this->payment = $this->heidelpayClient->fetchPayment($this->session->get($this->sessionPaymentTypeKey));
             }
 
             $this->transactionStateHandler->transformTransactionState(
@@ -194,11 +210,8 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
 
     protected function handleRecurringPayment(
         AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
-        SalesChannelContext $salesChannelContext
+        RequestDataBag $dataBag
     ): RedirectResponse {
-        dd($transaction, $dataBag);
-
         try {
             $this->paymentType = $this->heidelpayClient->fetchPaymentType($dataBag->get('savedPayPalAccount', ''));
             $bookingMode       = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
@@ -207,7 +220,7 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
                 ? $this->charge($transaction->getReturnUrl())
                 : $this->authorize($transaction->getReturnUrl());
 
-            $this->session->set('isReccuring', true);
+            $this->session->set($this->sessionIsRecurring, true);
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {

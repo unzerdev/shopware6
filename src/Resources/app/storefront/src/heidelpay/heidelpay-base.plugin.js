@@ -116,7 +116,6 @@ export default class HeidelpayBasePlugin extends Plugin {
      * @private
      */
     _onSubmitButtonClick(event) {
-        this.$emitter.publish('heidelpayBase_beforeOnSubmitButtonClick');
         event.preventDefault();
 
         if (!this._validateForm()) {
@@ -126,7 +125,7 @@ export default class HeidelpayBasePlugin extends Plugin {
         }
 
         this.setSubmitButtonActive(false);
-        this.$emitter.publish('heidelpayBase_afterOnSubmitButtonClick');
+
         this.$emitter.publish('heidelpayBase_createResource');
     }
 

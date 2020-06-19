@@ -1,8 +1,8 @@
 {% block heidelpay_frame_paypal_account %}
     <div class="heidelpay-paypal-account-wrapper"
-         data-heidelpay-paypal-account="true"
-         data-heidelpay-paypal-account-options='{
-            "hasSavedAccounts": "{{ page.extensions.heidelpayPayPal.payPalAccounts|length > 0 }}"
+         data-heidelpay-paypal="true"
+         data-heidelpay-paypal-options='{
+            "hasSavedAccounts": {{ page.extensions.heidelpayPayPal.payPalAccounts|length > 0 }}
          }'>
 
         {% if page.extensions.heidelpayPayPal.displayPayPalAccountSelection and page.extensions.heidelpayPayPal.payPalAccounts|length > 0 %}

@@ -93,6 +93,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
             <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
             <argument type="service" id="session" />
 

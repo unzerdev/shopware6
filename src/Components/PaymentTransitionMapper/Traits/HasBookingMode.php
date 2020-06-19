@@ -45,7 +45,7 @@ trait HasBookingMode
         $criteria = new Criteria([$transactionId]);
         $criteria->addAssociation('order');
 
-        $orderSearchResult = $this->orderRepository->search($criteria, Context::createDefaultContext());
+        $orderSearchResult = $this->orderTransactionRepository->search($criteria, Context::createDefaultContext());
 
         return $orderSearchResult->first();
     }

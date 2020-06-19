@@ -17,8 +17,9 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 trait CanRecur
 {
+    protected $sessionIsRecurring    = 'HeidelPaymentIsReccuring';
     protected $sessionPaymentTypeKey = 'HeidelPaymentTypeId';
-    protected $sessionCustomerIdKey  = 'heidelpayCustomerId';
+    protected $sessionCustomerIdKey  = 'HeidelPaymentCustomerId';
 
     /**
      * @throws HeidelpayApiException
