@@ -51,6 +51,7 @@
         "accountPayment": {
             "delete": "Löschen",
             "creditCard": "Kreditkarte",
+            "payPal": "PayPal Account",
             "deviceDeleted": "Das Zahlungsmittel wurde erfolgreich entfernt.",
             "title": "Ihre gespeicherten Zahlungsmittel"
         }

@@ -25,9 +25,14 @@ class PrepaymentTransitionMapper extends AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException(Prepayment::getResourceName());
+            throw new TransitionMapperException($this->getResourceName());
         }
 
-        return $this->mapPaymentStatus($paymentObject);
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
+    }
+
+    protected function getResourceName(): string
+    {
+        return Prepayment::getResourceName();
     }
 }

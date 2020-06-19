@@ -1,15 +1,16 @@
-const { Module } = Shopware;
-
 import './component/heidel-payment-actions';
 import './component/heidel-payment-detail';
 import './component/heidel-payment-history';
 import './component/heidel-payment-metadata';
 import './component/heidel-payment-basket';
 import './extension/sw-order';
+import './extension/sw-order-create-details-footer';
 import './page/heidel-payment-tab';
 
 import deDE from '../../snippets/de-DE.json';
 import enGB from '../../snippets/en-GB.json';
+
+const { Module } = Shopware;
 
 Module.register('heidel-payment', {
     type: 'plugin',

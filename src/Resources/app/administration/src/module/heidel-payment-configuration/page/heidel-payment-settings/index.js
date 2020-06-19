@@ -1,14 +1,14 @@
+import template from './heidel-payment-settings.html.twig';
+
 const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
-
-import template from './heidel-payment-settings.html.twig';
 
 Component.register('heidel-payment-settings', {
     template,
 
     mixins: [
         Mixin.getByName('notification'),
-        Mixin.getByName('sw-inline-snippet'),
+        Mixin.getByName('sw-inline-snippet')
     ],
 
     inject: [
@@ -23,6 +23,7 @@ Component.register('heidel-payment-settings', {
             isTestSuccessful: false,
             isSaveSuccessful: false,
             config: {},
+            showWebhookModal: false
         };
     },
 
@@ -35,7 +36,7 @@ Component.register('heidel-payment-settings', {
     computed: {
         paymentMethodRepository() {
             return this.repositoryFactory.create('payment_method');
-        },
+        }
     },
 
     methods: {
@@ -51,15 +52,15 @@ Component.register('heidel-payment-settings', {
             this.isTesting = true;
 
             const credentials = {
-                'publicKey': this.getConfigValue('publicKey'),
-                'privateKey': this.getConfigValue('privateKey'),
-                'salesChannel': this.$refs.systemConfig.currentSalesChannelId,
+                publicKey: this.getConfigValue('publicKey'),
+                privateKey: this.getConfigValue('privateKey'),
+                salesChannel: this.$refs.systemConfig.currentSalesChannelId
             };
 
             this.HeidelPaymentConfigurationService.validateCredentials(credentials).then(() => {
                 this.createNotificationSuccess({
                     title: this.$tc('heidel-payment-settings.form.message.success.title'),
-                    message:  this.$tc('heidel-payment-settings.form.message.success.message'),
+                    message: this.$tc('heidel-payment-settings.form.message.success.message')
                 });
 
                 this.isTestSuccessful = true;
@@ -67,7 +68,7 @@ Component.register('heidel-payment-settings', {
             }).catch(() => {
                 this.createNotificationError({
                     title: this.$tc('heidel-payment-settings.form.message.error.title'),
-                    message:  this.$tc('heidel-payment-settings.form.message.error.message'),
+                    message: this.$tc('heidel-payment-settings.form.message.error.message')
                 });
                 this.isTesting = false;
             });
@@ -120,5 +121,13 @@ Component.register('heidel-payment-settings', {
 
             return criteria;
         },
-    },
+
+        openWebhookModal() {
+            this.showWebhookModal = true;
+        },
+
+        closeWebhookModal() {
+            this.showWebhookModal = false;
+        }
+    }
 });

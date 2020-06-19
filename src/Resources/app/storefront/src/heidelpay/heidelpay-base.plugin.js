@@ -198,6 +198,6 @@ export default class HeidelpayBasePlugin extends Plugin {
                 city: customerInfo.activeShippingAddress.city,
                 country: customerInfo.activeShippingAddress.country.name
             }
-        }
+        };
     }
 }

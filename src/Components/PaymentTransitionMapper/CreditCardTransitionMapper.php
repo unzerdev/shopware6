@@ -49,23 +49,14 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
         return $this->mapForAuthorizeMode($paymentObject);
     }
 
+    protected function getResourceName(): string
+    {
+        return Card::getResourceName();
+    }
+
     protected function mapForChargeMode(Payment $paymentObject): string
     {
-        if ($paymentObject->isPending()) {
-            throw new TransitionMapperException(Card::getResourceName());
-        }
-
-        if ($paymentObject->isCanceled()) {
-            $status = $this->checkForRefund($paymentObject);
-
-            if ($status !== self::INVALID_TRANSITION) {
-                return $status;
-            }
-
-            throw new TransitionMapperException(Card::getResourceName());
-        }
-
-        return $this->mapPaymentStatus($paymentObject);
+        return parent::getTargetPaymentStatus($paymentObject);
     }
 
     protected function mapForAuthorizeMode(Payment $paymentObject): string
@@ -77,13 +68,13 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException(Card::getResourceName());
+            throw new TransitionMapperException($this->getResourceName());
         }
 
         if (count($paymentObject->getCharges()) > 0) {
             return StateMachineTransitionActions::ACTION_PAID;
         }
 
-        return $this->mapPaymentStatus($paymentObject);
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 }

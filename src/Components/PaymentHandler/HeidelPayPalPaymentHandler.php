@@ -171,9 +171,11 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
                 if ($this->paymentType === null) {
                     throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), 'missing payment type');
                 }
+
+                /** Return urls are needed but are not called */
                 $bookingMode === BookingMode::CHARGE
-                    ? $this->charge('')
-                    : $this->authorize('');
+                    ? $this->charge('https://not.needed')
+                    : $this->authorize('https://not.needed');
 
                 if ($registerAccounts && $salesChannelContext->getCustomer() !== null) {
                     $this->saveToDeviceVault(
@@ -200,8 +202,10 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
 
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
         } catch (HeidelpayApiException $apiException) {
+            dd($apiException);
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         } catch (RuntimeException $exception) {
+            dd($exception);
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }

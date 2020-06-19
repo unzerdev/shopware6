@@ -29,7 +29,10 @@
                 "currency": "Währung",
                 "shortId": "Short-ID",
                 "id": "Zahlungs-ID",
-                "state": "Status"
+                "state": "Status",
+                "amountRemaining": "Amount (Remaining)",
+                "amountCancelled": "Amount (Cancelled)",
+                "amountCharged": "Amount (Charged)"
             },
             "metadata": {
                 "cardTitle": "Metadaten",
@@ -78,7 +81,41 @@
                     "message": "Die angegebenen API-Zugangsdaten sind nicht korret! Bitte korrigieren Sie die Eingabe und versuchen Sie es erneut."
                 }
             },
-            "testButton": "API Zugangsdaten testen"
+            "testButton": "API Zugangsdaten testen",
+            "webhookButton": "Webhooks registrieren testen"
+        },
+        "modal": {
+            "close": "Schließen",
+            "webhook": {
+                "title": "Webhooks",
+                "submit": {
+                    "register": "Webhooks registrieren",
+                    "clear": "Webhooks entfernen"
+                }
+            }
+        },
+        "webhook": {
+            "messagePrefix": "Domain: ",
+            "register": {
+                "done": "Webhook registriert | Webhooks registriert",
+                "error": "Der Webhook konnte nicht registriert werden | Die Webhooks konnten nicht registriert werden"
+            },
+            "clear": {
+                "done": "Webhook entfernt | Webhooks entfernt",
+                "error": "Der Webhook konnte nicht entfernt werden | Die Webhooks konnten nicht entfernt werden"
+            },
+            "missing": {
+                "fields": "Nicht alle benötigten Felder sind vorhanden",
+                "context": "Der Kontext konnte nicht aktualisiert werden",
+                "selection": "Es wurden keine Domains selektiert"
+            },
+            "notFound": {
+                "salesChannelDomain": "Die spezifizierte Domain wurde nicht gefunden"
+            },
+            "globalError": {
+                "title": "Ein Fehler ist aufgetreten",
+                "message": "Bitte kontaktieren sie uns für mehr Informationen"
+            }
         }
     }
 }

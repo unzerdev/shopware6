@@ -44,11 +44,11 @@ export default class HeidelpayPayPalPlugin extends Plugin {
         this._heidelpayPlugin.setSubmitButtonActive(false);
 
         if (this.options.hasSavedAccounts) {
-            /** @type {Element}*/
+            /** @type {Element} */
             checkedRadioButton = document.querySelectorAll(this.options.selectedRadioButtonSelector)[0];
         }
 
-        if(null !== checkedRadioButton && 'new' !== checkedRadioButton.value) {
+        if (checkedRadioButton !== null && checkedRadioButton.value !== 'new') {
             this._heidelpayPlugin.submitTypeId(checkedRadioButton.value);
 
             return;

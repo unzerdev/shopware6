@@ -8,7 +8,6 @@ use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapper
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\InvoiceFactoring;
-use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
 
 class InvoiceFactoringTransitionMapper extends AbstractTransitionMapper
 {
@@ -26,15 +25,20 @@ class InvoiceFactoringTransitionMapper extends AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException(InvoiceGuaranteed::getResourceName());
+            throw new TransitionMapperException($this->getResourceName());
         }
 
-        $mappedStatus = $this->mapPaymentStatus($paymentObject);
+        $mappedStatus = $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
 
         if ($paymentObject->isPending()) {
             return $this->checkForShipment($paymentObject, $mappedStatus);
         }
 
         return $mappedStatus;
+    }
+
+    protected function getResourceName(): string
+    {
+        return InvoiceFactoring::getResourceName();
     }
 }

@@ -1,5 +1,6 @@
-const { Component } = Shopware;
 import template from './heidel-payment-basket.html.twig';
+
+const { Component } = Shopware;
 
 Component.register('heidel-payment-basket', {
     template,
@@ -8,19 +9,19 @@ Component.register('heidel-payment-basket', {
         paymentResource: {
             type: Object,
             required: true
-        },
+        }
     },
 
     computed: {
         data: function () {
-            let data = [];
+            const data = [];
 
             this.paymentResource.basket.basketItems.forEach((basketItem) => {
-                let amountGross = this.$options.filters.currency(
+                const amountGross = this.$options.filters.currency(
                     parseFloat(basketItem.amountGross),
                     this.paymentResource.currency
                 );
-                let amountNet = this.$options.filters.currency(
+                const amountNet = this.$options.filters.currency(
                     parseFloat(basketItem.amountNet),
                     this.paymentResource.currency
                 );
@@ -30,7 +31,7 @@ Component.register('heidel-payment-basket', {
                     title: basketItem.title,
                     amountGross: amountGross,
                     amountNet: amountNet
-                })
+                });
             });
 
             return data;
@@ -57,8 +58,8 @@ Component.register('heidel-payment-basket', {
                     property: 'amountNet',
                     label: this.$tc('heidel-payment.paymentDetails.basket.column.amountNet'),
                     rawData: true
-                },
+                }
             ];
         }
-    },
+    }
 });

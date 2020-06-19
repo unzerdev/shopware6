@@ -48,23 +48,14 @@ class PayPalTransitionMapper extends AbstractTransitionMapper
         return $this->mapForAuthorizeMode($paymentObject);
     }
 
+    protected function getResourceName(): string
+    {
+        return Paypal::getResourceName();
+    }
+
     protected function mapForChargeMode(Payment $paymentObject): string
     {
-        if ($paymentObject->isPending()) {
-            throw new TransitionMapperException(Paypal::getResourceName());
-        }
-
-        if ($paymentObject->isCanceled()) {
-            $status = $this->checkForRefund($paymentObject);
-
-            if ($status !== self::INVALID_TRANSITION) {
-                return $status;
-            }
-
-            throw new TransitionMapperException(Paypal::getResourceName());
-        }
-
-        return $this->mapPaymentStatus($paymentObject);
+        return parent::getTargetPaymentStatus($paymentObject);
     }
 
     protected function mapForAuthorizeMode(Payment $paymentObject): string
@@ -76,9 +67,9 @@ class PayPalTransitionMapper extends AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException(Paypal::getResourceName());
+            throw new TransitionMapperException($this->getResourceName());
         }
 
-        return $this->mapPaymentStatus($paymentObject);
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 }
