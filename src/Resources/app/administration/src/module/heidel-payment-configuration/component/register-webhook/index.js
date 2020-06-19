@@ -135,8 +135,6 @@ Shopware.Component.register('heidel-payment-register-webhook', {
             const domainAmount = data.length;
 
             Object.keys(data).forEach((domain) => {
-                window.console.warn(domain);
-                window.console.log(data[domain]);
                 if (data[domain].success) {
                     this.createNotificationSuccess({
                         title: this.$tc(data[domain].message, domainAmount),

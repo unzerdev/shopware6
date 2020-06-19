@@ -29,7 +29,10 @@
                 "currency": "Währung",
                 "shortId": "Short-ID",
                 "id": "Zahlungs-ID",
-                "state": "Status"
+                "state": "Status",
+                "amountRemaining": "Amount (Remaining)",
+                "amountCancelled": "Amount (Cancelled)",
+                "amountCharged": "Amount (Charged)"
             },
             "metadata": {
                 "cardTitle": "Metadaten",
