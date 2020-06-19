@@ -34,14 +34,14 @@ abstract class AbstractTransitionMapper
 
             throw new TransitionMapperException($this->getResourceName());
         }
+
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 
     abstract protected function getResourceName(): string;
 
     protected function mapPaymentStatus(Payment $paymentObject): string
     {
-        $status = StateMachineTransitionActions::ACTION_REOPEN;
-
         if ($paymentObject->isCanceled()) {
             return StateMachineTransitionActions::ACTION_CANCEL;
         }
@@ -62,7 +62,7 @@ abstract class AbstractTransitionMapper
             return StateMachineTransitionActions::ACTION_PAID;
         }
 
-        return $this->checkForRefund($paymentObject, $status);
+        return StateMachineTransitionActions::ACTION_REOPEN;
     }
 
     protected function checkForRefund(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string

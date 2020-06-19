@@ -69,7 +69,7 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
             throw new TransitionMapperException($this->getResourceName());
         }
 
-        return $this->mapPaymentStatus($paymentObject);
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 
     protected function mapForAuthorizeMode(Payment $paymentObject): string
@@ -88,7 +88,7 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
             return StateMachineTransitionActions::ACTION_PAID;
         }
 
-        return $this->mapPaymentStatus($paymentObject);
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 
     protected function getBookingMode(Payment $paymentObject): string

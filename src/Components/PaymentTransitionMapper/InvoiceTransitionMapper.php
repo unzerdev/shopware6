@@ -28,7 +28,7 @@ class InvoiceTransitionMapper extends AbstractTransitionMapper
             throw new TransitionMapperException($this->getResourceName());
         }
 
-        return $this->mapPaymentStatus($paymentObject);
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 
     protected function getResourceName(): string

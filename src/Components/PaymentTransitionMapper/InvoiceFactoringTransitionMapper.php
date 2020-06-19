@@ -28,7 +28,7 @@ class InvoiceFactoringTransitionMapper extends AbstractTransitionMapper
             throw new TransitionMapperException($this->getResourceName());
         }
 
-        $mappedStatus = $this->mapPaymentStatus($paymentObject);
+        $mappedStatus = $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
 
         if ($paymentObject->isPending()) {
             return $this->checkForShipment($paymentObject, $mappedStatus);
