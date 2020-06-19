@@ -202,10 +202,8 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
 
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
         } catch (HeidelpayApiException $apiException) {
-            dd($apiException);
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         } catch (RuntimeException $exception) {
-            dd($exception);
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }

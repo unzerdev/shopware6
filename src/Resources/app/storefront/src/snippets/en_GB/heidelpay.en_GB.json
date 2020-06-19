@@ -43,7 +43,7 @@
                     "birthday": "Birthday"
                 }
             },
-            "paypal": {
+            "paypalAccount": {
                 "new": "New account"
             }
         },
