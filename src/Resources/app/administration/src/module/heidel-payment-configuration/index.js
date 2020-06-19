@@ -1,4 +1,4 @@
-const { Module } = Shopware;
+import './component/register-webhook';
 
 import './extension/sw-plugin-list';
 
@@ -6,6 +6,8 @@ import './page/heidel-payment-settings';
 
 import deDE from '../../snippets/de-DE.json';
 import enGB from '../../snippets/en-GB.json';
+
+const { Module } = Shopware;
 
 Module.register('heidel-payment-configuration', {
     type: 'plugin',
@@ -17,7 +19,7 @@ Module.register('heidel-payment-configuration', {
 
     snippets: {
         'de-DE': deDE,
-        'en-GB': enGB,
+        'en-GB': enGB
     },
 
     routes: {
@@ -25,8 +27,8 @@ Module.register('heidel-payment-configuration', {
             component: 'heidel-payment-settings',
             path: 'settings',
             meta: {
-                parentPath: 'sw.settings.index',
-            },
-        },
-    },
+                parentPath: 'sw.settings.index'
+            }
+        }
+    }
 });

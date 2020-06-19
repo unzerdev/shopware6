@@ -32,5 +32,12 @@
         </service>
 
         <service id="HeidelPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
+
+        <service id="HeidelPayment6\Components\WebhookRegistrator\WebhookRegistrator">
+            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
+            <argument type="service" id="router.default"/>
+            <argument type="service" id="sales_channel_domain.repository"/>
+            <argument type="service" id="heidel_payment.logger"/>
+        </service>
     </services>
 </container>

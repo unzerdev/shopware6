@@ -1,5 +1,6 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import ElementLoadingIndicatorUtil from 'src/utility/loading-indicator/element-loading-indicator.util';
+
 export default class HeidelpayHirePurchasePlugin extends Plugin {
     static options = {
         hirePurchaseAmount: 0.0,
@@ -52,7 +53,7 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
             effectiveInterest: this.options.hirePurchaseEffectiveInterest,
             orderDate: this.options.hirePurchaseOrderDate
         }).then(() => {
-            //Hide the loading indicator
+            // Hide the loading indicator
             loadingIndicatorElement.hidden = true;
         }).catch((error) => {
             this.heidelpayPlugin.renderErrorToElement(error, loadingIndicatorElement);
