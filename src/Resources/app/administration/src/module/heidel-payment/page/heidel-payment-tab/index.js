@@ -1,5 +1,6 @@
-const { Component, StateDeprecated } = Shopware;
 import template from './heidel-payment-tab.html.twig';
+
+const { Component, StateDeprecated } = Shopware;
 
 Component.register('heidel-payment-tab', {
     template,
@@ -73,7 +74,6 @@ Component.register('heidel-payment-tab', {
         },
 
         calculateAmounts(paymentResource) {
-            window.console.log(paymentResource);
             paymentResource.calculatedAmounts = {
                 remaining: paymentResource.basket.amountTotalGross,
                 charged: 0.00,
@@ -88,8 +88,8 @@ Component.register('heidel-payment-tab', {
                     paymentResource.calculatedAmounts.remaining -= transaction.amount;
                 }
             });
-            window.console.log(paymentResource);
+
             return paymentResource;
         }
-    },
+    }
 });

@@ -1,5 +1,6 @@
-const { Component } = Shopware;
 import template from './heidel-payment-metadata.html.twig';
+
+const { Component } = Shopware;
 
 Component.register('heidel-payment-metadata', {
     template,
@@ -8,18 +9,18 @@ Component.register('heidel-payment-metadata', {
         paymentResource: {
             type: Object,
             required: true
-        },
+        }
     },
 
     computed: {
         data: function () {
-            let data = [];
+            const data = [];
 
             this.paymentResource.metadata.forEach((meta) => {
                 data.push({
                     key: meta.key,
                     value: meta.value
-                })
+                });
             });
 
             return data;
@@ -36,8 +37,8 @@ Component.register('heidel-payment-metadata', {
                     property: 'value',
                     label: this.$tc('heidel-payment.paymentDetails.metadata.column.value'),
                     rawData: true
-                },
+                }
             ];
         }
-    },
+    }
 });

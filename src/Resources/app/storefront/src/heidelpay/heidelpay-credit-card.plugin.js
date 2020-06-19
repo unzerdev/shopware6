@@ -83,7 +83,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
             const radioButtons = DomAccess.querySelectorAll(this.el, this.options.radioButtonSelector);
 
             for (let $i = 0; $i < radioButtons.length; $i++) {
-                radioButtons[$i].addEventListener('change',  (event) => this._onRadioButtonChange(event));
+                radioButtons[$i].addEventListener('change', (event) => this._onRadioButtonChange(event));
             }
         }
 
@@ -142,7 +142,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         if (event.success === false) {
             inputElement.classList.add(this.options.invalidClass);
             errorElement.hidden = false;
-        } else if(event.success === true) {
+        } else if (event.success === true) {
             inputElement.classList.remove(this.options.invalidClass);
             errorElement.hidden = true;
         }

@@ -1,5 +1,6 @@
-const { Component } = Shopware;
 import template from './heidel-payment-history.html.twig';
+
+const { Component } = Shopware;
 
 Component.register('heidel-payment-history', {
     template,
@@ -8,20 +9,20 @@ Component.register('heidel-payment-history', {
         paymentResource: {
             type: Object,
             required: true
-        },
+        }
     },
 
     computed: {
         data: function () {
-            let data = [];
+            const data = [];
 
             this.paymentResource.transactions.forEach((transaction) => {
-                let amount = this.$options.filters.currency(
+                const amount = this.$options.filters.currency(
                     parseFloat(transaction.amount),
                     this.paymentResource.currency
                 );
 
-                let date = this.$options.filters.date(
+                const date = this.$options.filters.date(
                     transaction.date,
                     {
                         hour: 'numeric',
@@ -35,7 +36,7 @@ Component.register('heidel-payment-history', {
                     amount: amount,
                     date: date,
                     resource: transaction
-                })
+                });
             });
 
             return data;
@@ -57,7 +58,7 @@ Component.register('heidel-payment-history', {
                     property: 'date',
                     label: this.$tc('heidel-payment.paymentDetails.history.column.date'),
                     rawData: true
-                },
+                }
             ];
         }
     },
@@ -78,7 +79,7 @@ Component.register('heidel-payment-history', {
             }
         },
 
-        reloadPaymentDetails: function() {
+        reloadPaymentDetails: function () {
             this.$emit('reload');
         }
     }

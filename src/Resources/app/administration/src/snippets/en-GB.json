@@ -81,7 +81,41 @@
                     "message": "API Credentials are invalid, please correct them and try again!"
                 }
             },
-            "testButton": "Test API credentials"
+            "testButton": "Test API credentials",
+            "webhookButton": "Register webhooks"
+        },
+        "modal": {
+            "close": "Close",
+            "webhook": {
+                "title": "Webhooks",
+                "submit": {
+                    "register": "Register webhooks",
+                    "clear": "Clear webhooks"
+                }
+            }
+        },
+        "webhook": {
+            "messagePrefix": "Domain: ",
+            "register": {
+                "done": "Webhook registered | Webhooks registered",
+                "error": "Webhook could not be registered | Webhooks could not be registered"
+            },
+            "clear": {
+                "done": "Webhook cleared | Webhooks cleared",
+                "error": "Webhook could not be cleared | Webhooks could not be cleared"
+            },
+            "missing": {
+                "fields": "Some mandatory fields are missing",
+                "context": "The context could not be refreshed",
+                "selection": "No domain was selected"
+            },
+            "notFound": {
+                "salesChannelDomain": "The selected domain could not be found"
+            },
+            "globalError": {
+                "title": "An error occured",
+                "message": "Please contact us for more information"
+            }
         }
     }
 }
