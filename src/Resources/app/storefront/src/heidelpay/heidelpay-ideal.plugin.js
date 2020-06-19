@@ -42,8 +42,6 @@ export default class HeidelpayIdealPlugin extends Plugin {
             scope: this
         });
 
-        window.console.log(this.ideal);
-
         if (this.ideal) {
             this.ideal.addEventListener('change', (event) => this._onFormChange(event), {
                 scope: this

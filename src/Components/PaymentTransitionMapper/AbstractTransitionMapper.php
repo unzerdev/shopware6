@@ -7,8 +7,6 @@ namespace HeidelPayment6\Components\PaymentTransitionMapper;
 use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
-use heidelpayPHP\Resources\TransactionTypes\Authorization;
-use heidelpayPHP\Resources\TransactionTypes\Charge;
 use heidelpayPHP\Resources\TransactionTypes\Shipment;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 
@@ -21,24 +19,47 @@ abstract class AbstractTransitionMapper
     /**
      * @throws TransitionMapperException
      */
-    abstract public function getTargetPaymentStatus(Payment $payment): string;
+    public function getTargetPaymentStatus(Payment $paymentObject): string
+    {
+        if ($paymentObject->isPending()) {
+            throw new TransitionMapperException($this->getResourceName());
+        }
+
+        if ($paymentObject->isCanceled()) {
+            $status = $this->checkForRefund($paymentObject);
+
+            if ($status !== self::INVALID_TRANSITION) {
+                return $status;
+            }
+
+            throw new TransitionMapperException($this->getResourceName());
+        }
+    }
+
+    abstract protected function getResourceName(): string;
 
     protected function mapPaymentStatus(Payment $paymentObject): string
     {
         $status = StateMachineTransitionActions::ACTION_REOPEN;
 
         if ($paymentObject->isCanceled()) {
-            $status = StateMachineTransitionActions::ACTION_CANCEL;
-        } elseif ($paymentObject->isPending()) {
-            $status = StateMachineTransitionActions::ACTION_REOPEN;
-        } elseif ($paymentObject->isChargeBack()) {
-            $status = StateMachineTransitionActions::ACTION_FAIL;
-        } elseif ($paymentObject->isPartlyPaid()) {
-            $status = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
-        } elseif ($paymentObject->isPaymentReview()) {
-            $status = StateMachineTransitionActions::ACTION_PAID;
-        } elseif ($paymentObject->isCompleted()) {
-            $status = StateMachineTransitionActions::ACTION_PAID;
+            return StateMachineTransitionActions::ACTION_CANCEL;
+        }
+
+        if ($paymentObject->isPending()) {
+            return StateMachineTransitionActions::ACTION_REOPEN;
+        }
+
+        if ($paymentObject->isChargeBack()) {
+            return StateMachineTransitionActions::ACTION_FAIL;
+        }
+
+        if ($paymentObject->isPartlyPaid()) {
+            return StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
+        }
+
+        if ($paymentObject->isPaymentReview() || $paymentObject->isCompleted()) {
+            return StateMachineTransitionActions::ACTION_PAID;
         }
 
         return $this->checkForRefund($paymentObject, $status);
@@ -79,29 +100,6 @@ abstract class AbstractTransitionMapper
         }
 
         return $currentStatus;
-    }
-
-    protected function getMessageFromSnippet(string $snippetName = 'paymentCancelled', string $snippetNamespace = 'frontend/heidelpay/checkout/errors'): string
-    {
-//        TODO
-        return '';
-    }
-
-    protected function getMessageFromPaymentTransaction(Payment $payment): string
-    {
-        $transaction = $payment->getAuthorization();
-
-        if ($transaction instanceof Authorization) {
-            return $transaction->getMessage()->getCustomer();
-        }
-
-        $transaction = $payment->getChargeByIndex(0);
-
-        if ($transaction instanceof Charge) {
-            return $transaction->getMessage()->getCustomer();
-        }
-
-        return $this->getMessageFromSnippet();
     }
 
     protected function getAmountByFloat(float $amount): int

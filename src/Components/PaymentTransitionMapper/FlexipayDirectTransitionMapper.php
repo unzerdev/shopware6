@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\PaymentTransitionMapper;
 
-use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
-use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\PIS;
 
@@ -16,22 +14,8 @@ class FlexipayDirectTransitionMapper extends AbstractTransitionMapper
         return $paymentType instanceof PIS;
     }
 
-    public function getTargetPaymentStatus(Payment $paymentObject): string
+    protected function getResourceName(): string
     {
-        if ($paymentObject->isPending()) {
-            throw new TransitionMapperException(PIS::getResourceName());
-        }
-
-        if ($paymentObject->isCanceled()) {
-            $status = $this->checkForRefund($paymentObject);
-
-            if ($status !== self::INVALID_TRANSITION) {
-                return $status;
-            }
-
-            throw new TransitionMapperException(PIS::getResourceName());
-        }
-
-        return $this->mapPaymentStatus($paymentObject);
+        return PIS::getResourceName();
     }
 }

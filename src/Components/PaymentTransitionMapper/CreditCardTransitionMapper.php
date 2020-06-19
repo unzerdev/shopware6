@@ -48,10 +48,15 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
         return $this->mapForAuthorizeMode($paymentObject);
     }
 
+    protected function getResourceName(): string
+    {
+        return Card::getResourceName();
+    }
+
     protected function mapForChargeMode(Payment $paymentObject): string
     {
         if ($paymentObject->isPending()) {
-            throw new TransitionMapperException(Card::getResourceName());
+            throw new TransitionMapperException($this->getResourceName());
         }
 
         if ($paymentObject->isCanceled()) {
@@ -61,7 +66,7 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException(Card::getResourceName());
+            throw new TransitionMapperException($this->getResourceName());
         }
 
         return $this->mapPaymentStatus($paymentObject);
@@ -76,7 +81,7 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException(Card::getResourceName());
+            throw new TransitionMapperException($this->getResourceName());
         }
 
         if (count($paymentObject->getCharges()) > 0) {

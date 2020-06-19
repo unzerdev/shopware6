@@ -25,7 +25,7 @@ class InvoiceGuaranteedTransitionMapper extends AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException(InvoiceGuaranteed::getResourceName());
+            throw new TransitionMapperException($this->getResourceName());
         }
 
         $mappedStatus = $this->mapPaymentStatus($paymentObject);
@@ -35,5 +35,10 @@ class InvoiceGuaranteedTransitionMapper extends AbstractTransitionMapper
         }
 
         return $mappedStatus;
+    }
+
+    protected function getResourceName(): string
+    {
+        return InvoiceGuaranteed::getResourceName();
     }
 }
