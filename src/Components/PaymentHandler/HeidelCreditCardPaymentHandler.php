@@ -23,6 +23,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
 {
@@ -41,6 +42,7 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
         ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
+        RequestStack $requestStack,
         HeidelpayPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
@@ -50,7 +52,8 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
             $transactionRepository,
             $configReader,
             $transactionStateHandler,
-            $clientFactory
+            $clientFactory,
+            $requestStack
         );
 
         $this->deviceRepository = $deviceRepository;

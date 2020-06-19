@@ -1,0 +1,28 @@
+{% sw_extends '@Storefront/storefront/page/account/order/index.html.twig' %}
+
+{% block heidelpay_checkout_confirm_frame_card %}
+    <div class="heidelpay-card"
+         id="heidelpay-card"
+         data-heidelpay-base="true"
+         data-heidelpay-base-options='{
+                     "publicKey": "{{ shopware.config.HeidelPayment6.settings.publicKey }}",
+                     "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}",
+                     "isOrderEdit": true
+                 }'>
+        <div class="card-body">
+            {% block heidelpay_checkout_confirm_frame_card_body %}
+                {% block heidelpay_checkout_confirm_frame_card_body_title %}
+                    <div class="card-title">
+                        {{ context.paymentMethod.translated.name }}
+                    </div>
+                {% endblock %}
+
+                {% block heidelpay_checkout_confirm_frame_card_body_frame %}
+                    <div class="heidelpay-frame">
+                        {% sw_include page.extensions.heidelpayPaymentFrame.paymentFrame ignore missing %}
+                    </div>
+                {% endblock %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

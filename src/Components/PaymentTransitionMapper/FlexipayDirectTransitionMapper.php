@@ -6,20 +6,20 @@ namespace HeidelPayment6\Components\PaymentTransitionMapper;
 
 use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use heidelpayPHP\Resources\Payment;
-use heidelpayPHP\Resources\PaymentTypes\Alipay;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
+use heidelpayPHP\Resources\PaymentTypes\PIS;
 
 class FlexipayDirectTransitionMapper extends AbstractTransitionMapper
 {
     public function supports(BasePaymentType $paymentType): bool
     {
-        return $paymentType instanceof Alipay;
+        return $paymentType instanceof PIS;
     }
 
     public function getTargetPaymentStatus(Payment $paymentObject): string
     {
         if ($paymentObject->isPending()) {
-            throw new TransitionMapperException(Alipay::getResourceName());
+            throw new TransitionMapperException(PIS::getResourceName());
         }
 
         if ($paymentObject->isCanceled()) {
@@ -29,7 +29,7 @@ class FlexipayDirectTransitionMapper extends AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException(Alipay::getResourceName());
+            throw new TransitionMapperException(PIS::getResourceName());
         }
 
         return $this->mapPaymentStatus($paymentObject);

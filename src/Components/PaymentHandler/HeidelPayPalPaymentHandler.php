@@ -106,8 +106,7 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-
-        if($dataBag->has('savedPayPalAccount')) {
+        if ($dataBag->has('savedPayPalAccount')) {
             return $this->handleRecurringPayment($transaction, $dataBag, $salesChannelContext);
         }
 
@@ -197,9 +196,7 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
         AsyncPaymentTransactionStruct $transaction,
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
-    ): RedirectResponse
-    {
-
+    ): RedirectResponse {
         dd($transaction, $dataBag);
 
         try {
@@ -209,7 +206,6 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
             $returnUrl = $bookingMode === BookingMode::CHARGE
                 ? $this->charge($transaction->getReturnUrl())
                 : $this->authorize($transaction->getReturnUrl());
-
 
             $this->session->set('isReccuring', true);
 

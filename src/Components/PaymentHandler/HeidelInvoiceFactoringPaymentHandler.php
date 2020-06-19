@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
 {
@@ -32,6 +33,7 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
         ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
+        RequestStack $requestStack,
         HeidelpayTransferInfoRepositoryInterface $transferInfoRepository
     ) {
         $this->transferInfoRepository = $transferInfoRepository;
@@ -43,7 +45,8 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
             $transactionRepository,
             $configReader,
             $transactionStateHandler,
-            $clientFactory
+            $clientFactory,
+            $requestStack
         );
     }
 

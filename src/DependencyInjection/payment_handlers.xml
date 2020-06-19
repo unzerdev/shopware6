@@ -11,6 +11,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
             <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
 
             <tag name="shopware.payment.method.async" />
@@ -24,6 +25,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
             <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
@@ -37,6 +39,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
             <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
@@ -50,6 +53,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
             <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
@@ -63,6 +67,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -75,6 +80,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -90,7 +96,7 @@
             <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
             <argument type="service" id="session" />
 
-            <tag name="shopware.payment.method.sync" />
+            <tag name="shopware.payment.method.async" />
         </service>
 
         <service id="HeidelPayment6\Components\PaymentHandler\HeidelFlexipayPaymentHandler">
@@ -101,6 +107,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -113,6 +120,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -125,6 +133,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -137,6 +146,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -149,6 +159,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -161,6 +172,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
             <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
@@ -174,6 +186,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -186,6 +199,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -198,6 +212,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -210,6 +225,7 @@
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
