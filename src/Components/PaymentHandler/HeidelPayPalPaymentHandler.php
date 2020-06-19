@@ -106,6 +106,11 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
+
+        if($dataBag->has('savedPayPalAccount')) {
+            return $this->handleRecurringPayment($transaction, $dataBag, $salesChannelContext);
+        }
+
         $bookingMode      = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
         $registerAccounts = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
 
@@ -139,7 +144,7 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
         $bookingMode      = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
         $registerAccounts = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
 
-        if (!$registerAccounts) {
+        if (!$registerAccounts || $this->session->get('isRecurring', false)) {
             parent::finalize($transaction, $request, $salesChannelContext);
         }
 
@@ -181,6 +186,34 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
             );
 
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
+        } catch (HeidelpayApiException $apiException) {
+            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        } catch (RuntimeException $exception) {
+            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+        }
+    }
+
+    protected function handleRecurringPayment(
+        AsyncPaymentTransactionStruct $transaction,
+        RequestDataBag $dataBag,
+        SalesChannelContext $salesChannelContext
+    ): RedirectResponse
+    {
+
+        dd($transaction, $dataBag);
+
+        try {
+            $this->paymentType = $this->heidelpayClient->fetchPaymentType($dataBag->get('savedPayPalAccount', ''));
+            $bookingMode       = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
+
+            $returnUrl = $bookingMode === BookingMode::CHARGE
+                ? $this->charge($transaction->getReturnUrl())
+                : $this->authorize($transaction->getReturnUrl());
+
+
+            $this->session->set('isReccuring', true);
+
+            return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         } catch (RuntimeException $exception) {

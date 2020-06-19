@@ -42,6 +42,9 @@
                     "iban": "IBAN",
                     "birthday": "Birthday"
                 }
+            },
+            "paypal": {
+                "new": "New account"
             }
         },
         "accountPayment": {

@@ -25,7 +25,7 @@ export default class HeidelpayPayPalPlugin extends Plugin {
     init() {
         this._heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
 
-        // this._registerEvents();
+        this._registerEvents();
     }
 
     /**
@@ -50,31 +50,10 @@ export default class HeidelpayPayPalPlugin extends Plugin {
         }
 
         this.submitting = true;
+        window.console.log(checkedRadioButton);
+        window.console.log(this._heidelpayPlugin);
+        window.console.log(this._heidelpayPlugin.submitForm);
 
-        if (checkedRadioButton === null || checkedRadioButton.id === this.options.radioButtonNewId) {
-            this.payPalAccount.createResource()
-                .then((resource) => this._submitPayment(resource))
-                .catch((error) => this._handleError(error));
-        } else {
-            this._heidelpayPlugin.submitTypeId(checkedRadioButton.value);
-        }
-    }
-
-    /**
-     * @param {Object} resource
-     *
-     * @private
-     */
-    _submitPayment(resource) {
-        this._heidelpayPlugin.submitResource(resource);
-    }
-
-    /**
-     * @param {Object} error
-     *
-     * @private
-     */
-    _handleError(error) {
-        this._heidelpayPlugin.showError(error);
+        this._heidelpayPlugin.submitForm.submit();
     }
 }
