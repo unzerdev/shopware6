@@ -4,6 +4,7 @@ import './component/heidel-payment-history';
 import './component/heidel-payment-metadata';
 import './component/heidel-payment-basket';
 import './extension/sw-order';
+import './extension/sw-order-create-details-footer';
 import './page/heidel-payment-tab';
 
 import deDE from '../../snippets/de-DE.json';
