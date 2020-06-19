@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\Validator;
 
+use HeidelPayment6\Components\ConfigReader\ConfigReader;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use Shopware\Core\Checkout\Document\DocumentCollection;
 use Shopware\Core\Checkout\Document\DocumentEntity;
@@ -26,7 +27,7 @@ class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
     public function shouldSendAutomaticShipping(OrderEntity $orderEntity, StateMachineStateEntity $deliveryState): bool
     {
         $config             = $this->configReader->read($orderEntity->getSalesChannelId());
-        $configuredStatusId = $config->get('statusForAutomaticShippingNotification');
+        $configuredStatusId = $config->get(ConfigReader::CONFIG_KEY_SHIPPING_STATUS);
 
         if (empty($configuredStatusId) || $deliveryState->getId() !== $configuredStatusId) {
             return false;

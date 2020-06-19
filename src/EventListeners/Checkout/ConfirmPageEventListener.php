@@ -13,7 +13,9 @@ use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFrame
 use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 use HeidelPayment6\Installers\PaymentInstaller;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
+use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
@@ -45,12 +47,17 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'onCheckoutConfirm',
+            CheckoutConfirmPageLoadedEvent::class  => 'onCheckoutConfirm',
+            AccountEditOrderPageLoadedEvent::class => 'onCheckoutConfirm',
         ];
     }
 
-    public function onCheckoutConfirm(CheckoutConfirmPageLoadedEvent $event): void
+    public function onCheckoutConfirm(PageLoadedEvent $event): void
     {
+        if (!($event instanceof CheckoutConfirmPageLoadedEvent) && !($event instanceof AccountEditOrderPageLoadedEvent)) {
+            return;
+        }
+
         $salesChannelContext = $event->getSalesChannelContext();
         $this->configData    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $registerCreditCards = (bool) $this->configData->get('registerCreditCard');
@@ -70,7 +77,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $this->addPaymentFrameExtension($event);
     }
 
-    private function addPaymentFrameExtension(CheckoutConfirmPageLoadedEvent $event): void
+    private function addPaymentFrameExtension(PageLoadedEvent $event): void
     {
         $paymentId           = $event->getSalesChannelContext()->getPaymentMethod()->getId();
         $mappedFrameTemplate = $this->paymentFrameFactory->getPaymentFrame($paymentId);
@@ -82,7 +89,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension('heidelpayPaymentFrame', (new PaymentFramePageExtension())->setPaymentFrame($mappedFrameTemplate));
     }
 
-    private function addCreditCardExtension(CheckoutConfirmPageLoadedEvent $event): void
+    private function addCreditCardExtension(PageLoadedEvent $event): void
     {
         $customer = $event->getSalesChannelContext()->getCustomer();
 
@@ -103,12 +110,17 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension('heidelpayCreditCard', $extension);
     }
 
-    private function addHirePurchaseExtension(CheckoutConfirmPageLoadedEvent $event): void
+    private function addHirePurchaseExtension(PageLoadedEvent $event): void
     {
         $extension = new HirePurchasePageExtension();
         $extension->setCurrency($event->getSalesChannelContext()->getCurrency()->getIsoCode());
         $extension->setEffectiveInterest((float) $this->configData->get('hirePurchaseEffectiveInterest', self::HIRE_PURCHASE_EFFECTIVE_INTEREST_DEFAULT));
-        $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());
+
+        if ($event instanceof CheckoutConfirmPageLoadedEvent) {
+            $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());
+        } elseif ($event instanceof AccountEditOrderPageLoadedEvent) {
+            $extension->setAmount($event->getPage()->getOrder()->getPrice()->getTotalPrice());
+        }
         $extension->setOrderDate(date('Y-m-d'));
 
         $event->getPage()->addExtension('heidelpayHirePurchase', $extension);

@@ -6,6 +6,7 @@ namespace HeidelPayment6\Components\PaymentHandler;
 
 use HeidelPayment6\Components\BookingMode;
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\ConfigReader\ConfigReader;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
@@ -23,6 +24,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
 {
@@ -43,6 +45,7 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
         ConfigReaderInterface $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
+        RequestStack $requestStack,
         HeidelpayPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
@@ -52,7 +55,8 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
             $transactionRepository,
             $configService,
             $transactionStateHandler,
-            $clientFactory
+            $clientFactory,
+            $requestStack
         );
 
         $this->deviceRepository = $deviceRepository;
@@ -72,8 +76,8 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Can not process payment without a valid payment resource.');
         }
 
-        $bookingMode         = $this->pluginConfig->get('bookingModeCreditCard', BookingMode::CHARGE);
-        $registerCreditCards = $this->pluginConfig->get('registerCreditCard');
+        $bookingMode         = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_CARD, BookingMode::CHARGE);
+        $registerCreditCards = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_CARD);
 
         try {
             $returnUrl = $bookingMode === BookingMode::CHARGE

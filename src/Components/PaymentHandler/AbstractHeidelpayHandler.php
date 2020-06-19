@@ -29,6 +29,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInterface
 {
@@ -80,6 +81,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var ConfigReaderInterface */
     private $configReader;
 
+    /** @var RequestStack */
+    private $requestStack;
+
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
         ResourceHydratorInterface $customerHydrator,
@@ -87,7 +91,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         EntityRepositoryInterface $transactionRepository,
         ConfigReaderInterface $configService,
         TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactoryInterface $clientFactory
+        ClientFactoryInterface $clientFactory,
+        RequestStack $requestStack
     ) {
         $this->basketHydrator          = $basketHydrator;
         $this->customerHydrator        = $customerHydrator;
@@ -96,6 +101,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $this->configReader            = $configService;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->clientFactory           = $clientFactory;
+        $this->requestStack            = $requestStack;
     }
 
     public function pay(
@@ -116,6 +122,12 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
                 $this->heidelpayCustomer = $this->heidelpayClient->fetchCustomer($this->heidelpayCustomerId);
             } else {
                 $this->heidelpayCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
+            }
+
+            if (empty($resourceId)) {
+                if (null !== $this->requestStack->getCurrentRequest()) {
+                    $resourceId = $this->requestStack->getCurrentRequest()->request->get('heidelpayResourceId', '');
+                }
             }
 
             if (!empty($resourceId)) {
@@ -142,7 +154,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             $this->payment = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
 
             $this->transactionStateHandler->transformTransactionState(
-                $transaction->getOrderTransaction(),
+                $transaction->getOrderTransaction()->getId(),
                 $this->payment,
                 $salesChannelContext->getContext()
             );

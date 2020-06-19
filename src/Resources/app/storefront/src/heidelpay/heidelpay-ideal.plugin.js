@@ -30,6 +30,8 @@ export default class HeidelpayIdealPlugin extends Plugin {
         this.ideal.create('ideal', {
             containerId: 'heidelpay-ideal-container'
         });
+
+        this.heidelpayPlugin.setSubmitButtonActive(false);
     }
 
     /**
@@ -39,6 +41,21 @@ export default class HeidelpayIdealPlugin extends Plugin {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
+
+        if (this.ideal) {
+            this.ideal.addEventListener('change', (event) => this._onFormChange(event), {
+                scope: this
+            });
+        }
+    }
+
+    /**
+     * @private
+     */
+    _onFormChange(event) {
+        if (event.value) {
+            this.heidelpayPlugin.setSubmitButtonActive(true);
+        }
     }
 
     /**

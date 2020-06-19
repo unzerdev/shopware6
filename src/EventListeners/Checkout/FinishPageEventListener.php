@@ -69,7 +69,7 @@ class FinishPageEventListener implements EventSubscriberInterface
                     'code'          => $exception->getCode(),
                     'clientMessage' => $exception->getClientMessage(),
                     'file'          => $exception->getFile(),
-                    'trace'         => json_encode($exception->getTrace()),
+                    'trace'         => $exception->getTraceAsString(),
                 ]);
             }
         }
