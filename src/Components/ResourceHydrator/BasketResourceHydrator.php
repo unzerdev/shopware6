@@ -23,8 +23,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         SalesChannelContext $channelContext,
         $transaction = null
     ): AbstractHeidelpayResource {
-        if ($transaction === null
-         || (!($transaction instanceof AsyncPaymentTransactionStruct) && !($transaction instanceof OrderTransactionEntity))) {
+        if (!($transaction instanceof AsyncPaymentTransactionStruct) && !($transaction instanceof OrderTransactionEntity)) {
             throw new InvalidArgumentException('Transaction struct can not be null');
         }
 

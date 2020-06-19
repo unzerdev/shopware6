@@ -40,7 +40,7 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
     use CanRecur;
     use HasDeviceVault;
 
-    /** @var Paypal|BasePaymentType|AbstractHeidelpayResource|null */
+    /** @var null|AbstractHeidelpayResource|BasePaymentType|Paypal */
     protected $paymentType;
 
     /** @var SessionInterface */
@@ -110,9 +110,7 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
-        $this->session->remove($this->sessionIsRecurring);
-        $this->session->remove($this->sessionPaymentTypeKey);
-        $this->session->remove($this->sessionCustomerIdKey);
+        $this->clearSpecificSessionStorage();
 
         if ($dataBag->has('savedPayPalAccount')) {
             return $this->handleRecurringPayment($transaction, $dataBag);
@@ -174,8 +172,8 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
                     throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), 'missing payment type');
                 }
                 $bookingMode === BookingMode::CHARGE
-                    ? $this->charge('https://not.needed')
-                    : $this->authorize('https://not.needed');
+                    ? $this->charge('')
+                    : $this->authorize('');
 
                 if ($registerAccounts && $salesChannelContext->getCustomer() !== null) {
                     $this->saveToDeviceVault(
@@ -228,5 +226,12 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
         } catch (RuntimeException $exception) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
+    }
+
+    protected function clearSpecificSessionStorage(): void
+    {
+        $this->session->remove($this->sessionIsRecurring);
+        $this->session->remove($this->sessionPaymentTypeKey);
+        $this->session->remove($this->sessionCustomerIdKey);
     }
 }
