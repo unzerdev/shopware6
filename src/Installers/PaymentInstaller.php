@@ -98,11 +98,11 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE_GUARANTEED,
             'handlerIdentifier' => HeidelInvoiceGuaranteedPaymentHandler::class,
-            'name'              => 'Invoice guaranteed (heidelpay)',
+            'name'              => 'FlexiPay® Invoice guaranteed (heidelpay)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Rechnung garantiert (heidelpay)',
-                    'description' => 'Rechnungskauf garantiert mit Heidelpay',
+                    'name'        => 'FlexiPay® Rechnung (heidelpay)',
+                    'description' => 'FlexiPay® Rechnungskauf mit Heidelpay',
                 ],
                 'en-GB' => [
                     'name'        => 'Invoice guaranteed (heidelpay)',
@@ -113,15 +113,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE_FACTORING,
             'handlerIdentifier' => HeidelInvoiceFactoringPaymentHandler::class,
-            'name'              => 'Invoice factoring (heidelpay)',
+            'name'              => 'FlexiPay® Invoice factoring (heidelpay)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Rechnung mit factoring (heidelpay)',
-                    'description' => 'Rechnungskauf factoring mit Heidelpay',
+                    'name'        => 'FlexiPay® Rechnung mit factoring (heidelpay)',
+                    'description' => 'FlexiPay® Rechnungskauf factoring mit Heidelpay',
                 ],
                 'en-GB' => [
-                    'name'        => 'Invoice factoring (heidelpay)',
-                    'description' => 'Invoice factoring payments with heidelpay',
+                    'name'        => 'FlexiPay®Invoice factoring (heidelpay)',
+                    'description' => 'FlexiPay® Invoice factoring payments with heidelpay',
                 ],
             ],
         ],
@@ -143,15 +143,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_FLEXIPAY,
             'handlerIdentifier' => HeidelFlexipayPaymentHandler::class,
-            'name'              => 'Flexipay (heidelpay)',
+            'name'              => 'FlexiPay® Direct(heidelpay)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Flexipay (heidelpay)',
-                    'description' => 'Flexipay Zahlungen mit Heidelpay',
+                    'name'        => 'FlexiPay® Direct(heidelpay)',
+                    'description' => 'FlexiPay® Direct Zahlungen mit Heidelpay',
                 ],
                 'en-GB' => [
-                    'name'        => 'Flexipay (heidelpay)',
-                    'description' => 'Flexipay payments with Heidelpay',
+                    'name'        => 'FlexiPay® Direct (heidelpay)',
+                    'description' => 'FlexiPay® Direct payments with Heidelpay',
                 ],
             ],
         ],
