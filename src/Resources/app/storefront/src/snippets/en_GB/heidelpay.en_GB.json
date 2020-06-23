@@ -19,7 +19,8 @@
                     "brand": "Brand",
                     "number": "Number",
                     "expiry": "Expiry date",
-                    "cvc": "CVC"
+                    "cvc": "CVC",
+                    "secret": "Secret"
                 }
             },
             "sepa": {
