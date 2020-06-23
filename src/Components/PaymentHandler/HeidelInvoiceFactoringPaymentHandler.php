@@ -30,7 +30,7 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
         ResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
-        ConfigReaderInterface $configService,
+        ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
@@ -43,7 +43,7 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
             $customerHydrator,
             $metadataHydrator,
             $transactionRepository,
-            $configService,
+            $configReader,
             $transactionStateHandler,
             $clientFactory,
             $requestStack

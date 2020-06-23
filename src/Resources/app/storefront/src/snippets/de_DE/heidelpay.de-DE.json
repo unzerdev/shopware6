@@ -21,7 +21,8 @@
                     "expiry": "Ablaufdatum",
                     "cvc": "CVC"
                 },
-                "mandate": "Wurst"
+                "mandate": "Wurst",
+                "choose": "Wählen Sie bitte eine gespeicherte Kreditkarte oder füllen Sie das Formular aus."
             },
             "sepa": {
                 "testData": {
@@ -43,11 +44,16 @@
                     "iban": "IBAN",
                     "birthday": "Geburtsdatum"
                 }
+            },
+            "paypal": {
+                "new": "Neuer Account",
+                "choose": "Wählen Sie bitte einen gespeicherten Account aus oder fügen Sie einen Account hinzu."
             }
         },
         "accountPayment": {
             "delete": "Löschen",
             "creditCard": "Kreditkarte",
+            "payPal": "PayPal Account",
             "deviceDeleted": "Das Zahlungsmittel wurde erfolgreich entfernt.",
             "title": "Ihre gespeicherten Zahlungsmittel"
         }

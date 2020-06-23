@@ -19,6 +19,7 @@ use heidelpayPHP\Resources\Customer;
 use heidelpayPHP\Resources\Metadata;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
+use heidelpayPHP\Resources\Recurring;
 use RuntimeException;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -38,6 +39,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
 
     /** @var Payment */
     protected $payment;
+
+    /** @var Recurring */
+    protected $recurring;
 
     /** @var Heidelpay */
     protected $heidelpayClient;
@@ -89,7 +93,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         ResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
-        ConfigReaderInterface $configService,
+        ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack
@@ -98,7 +102,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         $this->customerHydrator        = $customerHydrator;
         $this->metadataHydrator        = $metadataHydrator;
         $this->transactionRepository   = $transactionRepository;
-        $this->configReader            = $configService;
+        $this->configReader            = $configReader;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->clientFactory           = $clientFactory;
         $this->requestStack            = $requestStack;

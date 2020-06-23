@@ -91,7 +91,7 @@ class TransitionEventListener implements EventSubscriberInterface
             $firstTransaction = $orderTransactions->first();
         }
 
-        if (empty($orderTransaction) || empty($firstTransaction) || empty($invoiceId)) {
+        if (empty($firstTransaction) || empty($invoiceId)) {
             $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice or orderTransaction couldn\'t be found', $order->getOrderNumber()));
 
             return;
@@ -99,8 +99,8 @@ class TransitionEventListener implements EventSubscriberInterface
 
         try {
             $client = $this->clientFactory->createClient($order->getSalesChannelId());
-            $client->ship($orderTransaction->getId(), $invoiceId);
-            $this->setCustomFields($event->getContext(), $orderTransaction);
+            $client->ship($firstTransaction->getId(), $invoiceId);
+            $this->setCustomFields($event->getContext(), $firstTransaction);
 
             $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $event->getContext()));
         } catch (RuntimeException $exception) {

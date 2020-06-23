@@ -1,8 +1,8 @@
+import template from './sw-order-create-details-footer.html.twig';
+
 const { Component, Context } = Shopware;
 const { Criteria } = Shopware.Data;
 const heidelPaymentHandler = 'HeidelPayment6\\Components';
-
-import template from './sw-order-create-details-footer.html.twig';
 
 Component.override('sw-order-create-details-footer', {
     template,
@@ -19,6 +19,6 @@ Component.override('sw-order-create-details-footer', {
             );
 
             return paymentCriteria;
-        },
-    },
+        }
+    }
 });

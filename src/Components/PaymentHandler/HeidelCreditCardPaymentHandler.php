@@ -10,16 +10,15 @@ use HeidelPayment6\Components\ConfigReader\ConfigReader;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
+use HeidelPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
 use HeidelPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\PaymentTypes\Card;
-use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -30,19 +29,17 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
 {
     use CanCharge;
     use CanAuthorize;
+    use HasDeviceVault;
 
     /** @var Card */
     protected $paymentType;
-
-    /** @var HeidelpayPaymentDeviceRepositoryInterface */
-    private $deviceRepository;
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
         ResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
-        ConfigReaderInterface $configService,
+        ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
@@ -53,7 +50,7 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
             $customerHydrator,
             $metadataHydrator,
             $transactionRepository,
-            $configService,
+            $configReader,
             $transactionStateHandler,
             $clientFactory,
             $requestStack
@@ -77,7 +74,7 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
         }
 
         $bookingMode         = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_CARD, BookingMode::CHARGE);
-        $registerCreditCards = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_CARD);
+        $registerCreditCards = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
 
         try {
             $returnUrl = $bookingMode === BookingMode::CHARGE
@@ -85,27 +82,16 @@ class HeidelCreditCardPaymentHandler extends AbstractHeidelpayHandler
                 : $this->authorize($transaction->getReturnUrl());
 
             if ($registerCreditCards && $salesChannelContext->getCustomer() !== null) {
-                $this->saveCreditCard($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
+                $this->saveToDeviceVault(
+                    $salesChannelContext->getCustomer(),
+                    HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD,
+                    $salesChannelContext->getContext()
+                );
             }
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         }
-    }
-
-    private function saveCreditCard(CustomerEntity $customer, Context $context): void
-    {
-        if ($this->deviceRepository->exists($this->paymentType->getId(), $context)) {
-            return;
-        }
-
-        $this->deviceRepository->create(
-            $customer,
-            HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD,
-            $this->paymentType->getId(),
-            $this->paymentType->expose(),
-            $context
-        );
     }
 }

@@ -77,7 +77,7 @@ Component.register('heidel-payment-tab', {
             paymentResource.calculatedAmounts = {
                 remaining: paymentResource.basket.amountTotalGross,
                 charged: 0.00,
-                cancelled: 0.00,
+                cancelled: 0.00
             };
 
             paymentResource.transactions.forEach((transaction) => {

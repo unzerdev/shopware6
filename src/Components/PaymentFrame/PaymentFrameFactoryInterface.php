@@ -18,6 +18,7 @@ interface PaymentFrameFactoryInterface
         PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT            => '@Storefront/storefront/component/heidelpay/frames/sepa-direct-debit.html.twig',
         PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED => '@Storefront/storefront/component/heidelpay/frames/sepa-direct-debit-guaranteed.html.twig',
         PaymentInstaller::PAYMENT_ID_HIRE_PURCHASE           => '@Storefront/storefront/component/heidelpay/frames/hire-purchase.html.twig',
+        PaymentInstaller::PAYMENT_ID_PAYPAL                  => '@Storefront/storefront/component/heidelpay/frames/paypal.html.twig',
     ];
 
     public function getPaymentFrame(string $paymentMethodId): ?string;

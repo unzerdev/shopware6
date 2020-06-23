@@ -125,6 +125,7 @@ export default class HeidelpayBasePlugin extends Plugin {
         }
 
         this.setSubmitButtonActive(false);
+
         this.$emitter.publish('heidelpayBase_createResource');
     }
 
