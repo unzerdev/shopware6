@@ -19,6 +19,7 @@ use heidelpayPHP\Resources\Customer;
 use heidelpayPHP\Resources\Metadata;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
+use heidelpayPHP\Resources\Recurring;
 use RuntimeException;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -29,6 +30,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInterface
 {
@@ -37,6 +39,9 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
 
     /** @var Payment */
     protected $payment;
+
+    /** @var Recurring */
+    protected $recurring;
 
     /** @var Heidelpay */
     protected $heidelpayClient;
@@ -80,22 +85,27 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
     /** @var ConfigReaderInterface */
     private $configReader;
 
+    /** @var RequestStack */
+    private $requestStack;
+
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
         ResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
-        ConfigReaderInterface $configService,
+        ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactoryInterface $clientFactory
+        ClientFactoryInterface $clientFactory,
+        RequestStack $requestStack
     ) {
         $this->basketHydrator          = $basketHydrator;
         $this->customerHydrator        = $customerHydrator;
         $this->metadataHydrator        = $metadataHydrator;
         $this->transactionRepository   = $transactionRepository;
-        $this->configReader            = $configService;
+        $this->configReader            = $configReader;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->clientFactory           = $clientFactory;
+        $this->requestStack            = $requestStack;
     }
 
     public function pay(
@@ -103,12 +113,15 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
-        try {
-            $this->pluginConfig    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-            $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
+        $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
-            $resourceId                = $dataBag->get('heidelpayResourceId');
-            $this->heidelpayCustomerId = $dataBag->get('heidelpayCustomerId');
+        try {
+            $salesChannelId        = $salesChannelContext->getSalesChannel()->getId();
+            $this->pluginConfig    = $this->configReader->read($salesChannelId);
+            $this->heidelpayClient = $this->clientFactory->createClient($salesChannelId);
+
+            $resourceId                = $currentRequest->get('heidelpayResourceId', '');
+            $this->heidelpayCustomerId = $currentRequest->get('heidelpayCustomerId', '');
             $this->heidelpayBasket     = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
             $this->heidelpayMetadata   = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
 
@@ -123,8 +136,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             }
 
             return new RedirectResponse($transaction->getReturnUrl());
-        } catch (HeidelpayApiException $apiException) {
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        } catch (HeidelpayApiException $exception) {
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
         } catch (RuntimeException $exception) {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
@@ -142,7 +155,7 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             $this->payment = $this->heidelpayClient->fetchPaymentByOrderId($transaction->getOrderTransaction()->getId());
 
             $this->transactionStateHandler->transformTransactionState(
-                $transaction->getOrderTransaction(),
+                $transaction->getOrderTransaction()->getId(),
                 $this->payment,
                 $salesChannelContext->getContext()
             );
@@ -154,8 +167,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             );
 
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
-        } catch (HeidelpayApiException $apiException) {
-            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        } catch (HeidelpayApiException $exception) {
+            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
         } catch (RuntimeException $exception) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
@@ -178,5 +191,16 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         ];
 
         $this->transactionRepository->update([$update], $salesChannelContext->getContext());
+    }
+
+    protected function getCurrentRequestFromStack(string $orderTransactionId): Request
+    {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+
+        if (null === $currentRequest) {
+            throw new AsyncPaymentProcessException($orderTransactionId, 'No request found');
+        }
+
+        return $currentRequest;
     }
 }

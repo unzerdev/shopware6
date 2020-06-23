@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class HeidelInvoiceGuaranteedPaymentHandler extends AbstractHeidelpayHandler
 {
@@ -29,22 +30,24 @@ class HeidelInvoiceGuaranteedPaymentHandler extends AbstractHeidelpayHandler
         ResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
-        ConfigReaderInterface $configService,
+        ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
+        RequestStack $requestStack,
         HeidelpayTransferInfoRepositoryInterface $transferInfoRepository
     ) {
-        $this->transferInfoRepository = $transferInfoRepository;
-
         parent::__construct(
             $basketHydrator,
             $customerHydrator,
             $metadataHydrator,
             $transactionRepository,
-            $configService,
+            $configReader,
             $transactionStateHandler,
-            $clientFactory
+            $clientFactory,
+            $requestStack
         );
+
+        $this->transferInfoRepository = $transferInfoRepository;
     }
 
     /**
@@ -57,7 +60,9 @@ class HeidelInvoiceGuaranteedPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $birthday = $dataBag->get('heidelpayBirthday');
+        $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
+
+        $birthday = $currentRequest->get('heidelpayBirthday', '');
 
         try {
             if (empty($this->heidelpayCustomerId)) {

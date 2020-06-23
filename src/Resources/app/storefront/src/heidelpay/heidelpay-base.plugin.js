@@ -9,7 +9,8 @@ export default class HeidelpayBasePlugin extends Plugin {
         confirmFormId: 'confirmOrderForm',
         errorWrapperClass: 'heidelpay-error-wrapper',
         errorContentSelector: '.heidelpay-error-wrapper .alert-content',
-        errorShouldNotBeEmpty: '%field% should not be empty'
+        errorShouldNotBeEmpty: '%field% should not be empty',
+        isOrderEdit: false
     };
 
     /**
@@ -22,7 +23,11 @@ export default class HeidelpayBasePlugin extends Plugin {
     init() {
         this.heidelpayInstance = new window.heidelpay(this.options.publicKey);
 
-        this.submitButton = document.getElementById(this.options.submitButtonId);
+        if (this.options.isOrderEdit) {
+            this.submitButton = document.getElementById(this.options.confirmFormId).getElementsByTagName('button')[0];
+        } else {
+            this.submitButton = document.getElementById(this.options.submitButtonId);
+        }
         this.confirmForm = document.getElementById(this.options.confirmFormId);
 
         this._registerEvents();
@@ -120,6 +125,7 @@ export default class HeidelpayBasePlugin extends Plugin {
         }
 
         this.setSubmitButtonActive(false);
+
         this.$emitter.publish('heidelpayBase_createResource');
     }
 
@@ -192,6 +198,6 @@ export default class HeidelpayBasePlugin extends Plugin {
                 city: customerInfo.activeShippingAddress.city,
                 country: customerInfo.activeShippingAddress.country.name
             }
-        }
+        };
     }
 }

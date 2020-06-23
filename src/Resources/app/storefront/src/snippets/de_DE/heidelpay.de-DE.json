@@ -22,7 +22,8 @@
                     "cvc": "CVC",
                     "secret": "Secret"
                 },
-                "mandate": "Wurst"
+                "mandate": "Wurst",
+                "choose": "Wählen Sie bitte eine gespeicherte Kreditkarte oder füllen Sie das Formular aus."
             },
             "sepa": {
                 "testData": {
@@ -34,6 +35,10 @@
                     "content":  "Ich ermächtige %company%, Zahlungen von meinem Konto mittels SEPA Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von %company% auf mein Konto gezogenen SEPA Lastschriften einzulösen. Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrags verlangen. Es gelten dabei die mit meinem Kreditinstitut vereinbarten Bedingungen. Für den Fall der Nichteinlösung der Lastschriften oder des Widerspruchs gegen die Lastschriften weise ich meine Bank unwiderruflich an, %company% oder Dritten auf Anforderung meinen Namen, Adresse und Geburtsdatum vollständig mitzuteilen.",
                     "accept": "SEPA Lastschrift-Mandat akzeptieren",
                     "error": "Bitte akzeptieren Sie das SEPA Lastschrift-Mandat um fortzufahren."
+                },
+                "device": {
+                    "choose": "Wählen Sie bitte ein gespeichertes Konto oder füllen Sie das Formular aus.",
+                    "new": "Neues Konto registrieren"
                 }
             },
             "hirePurchase": {
@@ -44,11 +49,17 @@
                     "iban": "IBAN",
                     "birthday": "Geburtsdatum"
                 }
+            },
+            "paypal": {
+                "new": "Neuer Account",
+                "choose": "Wählen Sie bitte einen gespeicherten Account aus oder fügen Sie einen Account hinzu."
             }
         },
         "accountPayment": {
             "delete": "Löschen",
             "creditCard": "Kreditkarte",
+            "payPal": "PayPal Account",
+            "directDebit": "Sepa Konto",
             "deviceDeleted": "Das Zahlungsmittel wurde erfolgreich entfernt.",
             "title": "Ihre gespeicherten Zahlungsmittel"
         }

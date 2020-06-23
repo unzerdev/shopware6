@@ -32,14 +32,15 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
     /**
      * {@inheritdoc}
      */
-    public function getCollectionByCustomer(CustomerEntity $customer, Context $context): EntitySearchResult
+    public function getCollectionByCustomer(CustomerEntity $customer, string $deviceType, Context $context): EntitySearchResult
     {
         $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
 
         $criteria = new Criteria();
         $criteria->addFilter(
             new EqualsFilter('heidelpay_payment_device.customerId', $customer->getId()),
-            new EqualsFilter('heidelpay_payment_device.addressHash', $addressHash)
+            new EqualsFilter('heidelpay_payment_device.addressHash', $addressHash),
+            new EqualsFilter('heidelpay_payment_device.deviceType', $deviceType)
         );
 
         return $this->entityRepository->search($criteria, $context);

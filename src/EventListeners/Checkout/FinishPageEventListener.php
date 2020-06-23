@@ -56,7 +56,7 @@ class FinishPageEventListener implements EventSubscriberInterface
             }
 
             try {
-                $payment     = $heidelpayClient->fetchPaymentByOrderId($transaction->getId());
+                $payment     = $heidelpayClient->fetchPaymentByOrderId($transaction->getOrderId());
                 $paymentType = $payment->getPaymentType();
 
                 if ($paymentType instanceof InstalmentPlan) {
@@ -69,7 +69,7 @@ class FinishPageEventListener implements EventSubscriberInterface
                     'code'          => $exception->getCode(),
                     'clientMessage' => $exception->getClientMessage(),
                     'file'          => $exception->getFile(),
-                    'trace'         => json_encode($exception->getTrace()),
+                    'trace'         => $exception->getTraceAsString(),
                 ]);
             }
         }

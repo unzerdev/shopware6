@@ -72,7 +72,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
         }
 
         $this->transactionStateHandler->transformTransactionState(
-            $transaction,
+            $transaction->getId(),
             $payment,
             $context->getContext()
         );

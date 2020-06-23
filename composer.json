@@ -63,7 +63,6 @@
         "phpcs": "vendor/bin/php-cs-fixer fix",
         "phpunit": "vendor/bin/phpunit",
         "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon src --autoload-file=../../../vendor/autoload.php",
-        "phpunit-coverage": "vendor/bin/phpunit --coverage-html ./coverage",
-        "eslint": "../../../platform/src/Administration/Resources/app/administration/node_modules/.bin/eslint --ignore-path .eslintignore --config ../../../platform/src/Administration/Resources/app/administration/.eslintrc.js --ext .js,.vue --fix ."
+        "phpunit-coverage": "vendor/bin/phpunit --coverage-html ./coverage"
     }
 }

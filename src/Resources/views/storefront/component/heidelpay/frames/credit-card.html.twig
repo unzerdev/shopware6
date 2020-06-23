@@ -11,6 +11,9 @@
 
         {% if page.extensions.heidelpayCreditCard.displayCreditCardSelection and page.extensions.heidelpayCreditCard.creditCards|length > 0 %}
             <div class="heidelpay-saved-cards-wrapper">
+                <div class="heidelpay-saved-cards--message">
+                    {{ "HeidelPayment.frame.creditCard.choose"|trans }}
+                </div>
                 {% block heidelpay_frame_credit_card_saved_device %}
                     {# @var creditCard \HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity #}
                     {% for creditCard in page.extensions.heidelpayCreditCard.creditCards %}
