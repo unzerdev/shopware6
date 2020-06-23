@@ -21,7 +21,8 @@
                     "expiry": "Ablaufdatum",
                     "cvc": "CVC"
                 },
-                "mandate": "Wurst"
+                "mandate": "Wurst",
+                "choose": "Wählen Sie bitte eine gespeicherte Kreditkarte oder füllen Sie das Formular aus."
             },
             "sepa": {
                 "testData": {
@@ -45,7 +46,8 @@
                 }
             },
             "paypal": {
-                "new": "Neuer Account"
+                "new": "Neuer Account",
+                "choose": "Wählen Sie bitte einen gespeicherten Account aus oder fügen Sie einen Account hinzu."
             }
         },
         "accountPayment": {
