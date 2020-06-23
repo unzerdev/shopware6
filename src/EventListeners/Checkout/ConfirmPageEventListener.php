@@ -9,6 +9,7 @@ use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
 use HeidelPayment6\Components\Struct\Configuration;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
+use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\HirePurchasePageExtension;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
@@ -62,8 +63,9 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         $salesChannelContext    = $event->getSalesChannelContext();
         $this->configData       = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $registerCreditCards    = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_CARD);
-        $registerPayPalAccounts = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL);
+        $registerCreditCards    = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
+        $registerPayPalAccounts = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
+        $registerDirectDebit    = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
 
         //Extension for credit card payments
         if ($registerCreditCards &&
@@ -76,6 +78,12 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYPAL
         ) {
             $this->addPayPalExtension($event);
+        }
+
+        if ($registerDirectDebit &&
+            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT
+        ) {
+            $this->addDirectDebitExtension($event);
         }
 
         //Extension for hire purchase payments
@@ -134,6 +142,25 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $event->getPage()->addExtension('heidelpayPayPal', $extension);
+    }
+
+    private function addDirectDebitExtension(PageLoadedEvent $event): void
+    {
+        $customer = $event->getSalesChannelContext()->getCustomer();
+
+        if (!$customer) {
+            return;
+        }
+
+        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT, $event->getContext());
+        $extension          = (new DirectDebitPageExtension())->setDisplaydirectDebitDeviceselection(true);
+
+        /** @var HeidelpayPaymentDeviceEntity $directDebitDevice */
+        foreach ($directDebitDevices->getElements() as $directDebitDevice) {
+            $extension->addDirectDebitDevice($directDebitDevice);
+        }
+
+        $event->getPage()->addExtension('heidelpayDirectDebit', $extension);
     }
 
     private function addHirePurchaseExtension(PageLoadedEvent $event): void

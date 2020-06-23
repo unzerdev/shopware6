@@ -139,8 +139,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             }
 
             return new RedirectResponse($transaction->getReturnUrl());
-        } catch (HeidelpayApiException $apiException) {
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        } catch (HeidelpayApiException $exception) {
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
         } catch (RuntimeException $exception) {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
@@ -170,8 +170,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             );
 
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
-        } catch (HeidelpayApiException $apiException) {
-            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        } catch (HeidelpayApiException $exception) {
+            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
         } catch (RuntimeException $exception) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
