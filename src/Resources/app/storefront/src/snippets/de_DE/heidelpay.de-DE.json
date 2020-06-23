@@ -19,7 +19,8 @@
                     "brand": "Marke",
                     "number": "Nummer",
                     "expiry": "Ablaufdatum",
-                    "cvc": "CVC"
+                    "cvc": "CVC",
+                    "secret": "Secret"
                 },
                 "mandate": "Wurst",
                 "choose": "Wählen Sie bitte eine gespeicherte Kreditkarte oder füllen Sie das Formular aus."

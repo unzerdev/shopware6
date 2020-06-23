@@ -19,7 +19,8 @@
                     "brand": "Brand",
                     "number": "Number",
                     "expiry": "Expiry date",
-                    "cvc": "CVC"
+                    "cvc": "CVC",
+                    "secret": "Secret"
                 },
                 "choose": "Please choose a saved credit card or fill out the form."
             },
