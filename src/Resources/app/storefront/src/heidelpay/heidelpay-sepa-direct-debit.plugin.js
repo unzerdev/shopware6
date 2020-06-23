@@ -7,7 +7,7 @@ export default class HeidelpaySepaDirectDebitPlugin extends Plugin {
         mandateNotAcceptedError: 'Please accept the SEPA direct debit mandate in order to continue.',
         elementWrapperSelector: '.heidelpay-sepa-wrapper-elements',
         radioButtonSelector: '*[name="savedDirectDebitDevice"]',
-        radioButtonNewId: 'device-new',
+        radioButtonNewAccountId: 'device-new',
         selectedRadioButtonSelector: '*[name="savedDirectDebitDevice"]:checked',
         hasSepaDevices: false
     };
@@ -76,9 +76,9 @@ export default class HeidelpaySepaDirectDebitPlugin extends Plugin {
         const heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
 
 
-        heidelpayElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewId;
+        heidelpayElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewAccountId;
 
-        if (!targetElement || targetElement.id === this.options.radioButtonNewId) {
+        if (!targetElement || targetElement.id === this.options.radioButtonNewAccountId) {
             this.heidelpayPlugin.setSubmitButtonActive(this.sepa.validated);
         } else {
             this.heidelpayPlugin.setSubmitButtonActive(true);
@@ -96,7 +96,7 @@ export default class HeidelpaySepaDirectDebitPlugin extends Plugin {
         const mandateAcceptedCheckbox = document.getElementById(this.options.acceptMandateId);
         const selectedDevice = document.querySelector(this.options.selectedRadioButtonSelector);
 
-        if (!this.options.hasSepaDevices || !selectedDevice || selectedDevice.id === this.options.radioButtonNewId) {
+        if (!this.options.hasSepaDevices || !selectedDevice || selectedDevice.id === this.options.radioButtonNewAccountId) {
             if (!mandateAcceptedCheckbox.checked) {
                 this._handleError({
                     message: this.options.mandateNotAcceptedError

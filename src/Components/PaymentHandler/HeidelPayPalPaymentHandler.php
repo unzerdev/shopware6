@@ -110,10 +110,12 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
+        $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
+
         $this->clearSpecificSessionStorage();
 
-        if ($dataBag->has('savedPayPalAccount')) {
-            return $this->handleRecurringPayment($transaction, $dataBag);
+        if ($currentRequest->get('savedPayPalAccount', false)) {
+            return $this->handleRecurringPayment($transaction);
         }
 
         $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
@@ -209,11 +211,12 @@ class HeidelPayPalPaymentHandler extends AbstractHeidelpayHandler
     }
 
     protected function handleRecurringPayment(
-        AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag
+        AsyncPaymentTransactionStruct $transaction
     ): RedirectResponse {
+        $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
+
         try {
-            $this->paymentType = $this->heidelpayClient->fetchPaymentType($dataBag->get('savedPayPalAccount', ''));
+            $this->paymentType = $this->heidelpayClient->fetchPaymentType($currentRequest->get('savedPayPalAccount', ''));
             $bookingMode       = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
 
             $returnUrl = $bookingMode === BookingMode::CHARGE

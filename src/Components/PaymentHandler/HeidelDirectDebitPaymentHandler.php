@@ -31,9 +31,6 @@ class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
     /** @var SepaDirectDebit */
     protected $paymentType;
 
-    /** @var RequestStack */
-    protected $requestStack;
-
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
         ResourceHydratorInterface $customerHydrator,
@@ -56,7 +53,6 @@ class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
             $requestStack
         );
 
-        $this->requestStack     = $requestStack;
         $this->deviceRepository = $deviceRepository;
     }
 
@@ -70,7 +66,7 @@ class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        if (!$this->isPaymentAllowed($dataBag)) {
+        if (!$this->isPaymentAllowed($transaction->getOrderTransaction()->getId())) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 'SEPA direct debit mandate has not been accepted by the customer.'
@@ -96,23 +92,12 @@ class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
         }
     }
 
-    private function isPaymentAllowed(RequestDataBag $dataBag): bool
+    private function isPaymentAllowed(string $transactionId): bool
     {
-        $currentRequest = $this->requestStack->getCurrentRequest();
-        $isSepaAccepted = false;
-        $isNewAccount   = false;
+        $currentRequest = $this->getCurrentRequestFromStack($transactionId);
 
-        if ($dataBag->has('acceptSepaMandate')) {
-            $isSepaAccepted = ((string) $dataBag->get('acceptSepaMandate', 'off')) === 'on';
-        } elseif ($currentRequest) {
-            $isSepaAccepted = ((string) $currentRequest->get('acceptSepaMandate', 'off')) === 'on';
-        }
-
-        if ($dataBag->has('savedDirectDebitDevice')) {
-            $isNewAccount = ((string) $dataBag->get('savedDirectDebitDevice', 'new')) === 'new';
-        } elseif ($currentRequest) {
-            $isNewAccount = ((string) $currentRequest->get('savedDirectDebitDevice', 'new')) === 'new';
-        }
+        $isSepaAccepted = ((string) $currentRequest->get('acceptSepaMandate', 'off')) === 'on';
+        $isNewAccount   = ((string) $currentRequest->get('savedDirectDebitDevice', 'new')) === 'new';
 
         return ($isSepaAccepted && $isNewAccount) || !$isNewAccount;
     }
