@@ -70,8 +70,7 @@ class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        if ($dataBag->get('acceptSepaMandate') !== 'on'
-            && (string) $this->requestStack->getCurrentRequest()->get('savedDirectDebitDevice', 'new') === 'new') {
+        if (!$this->isPaymentAllowed($dataBag)) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 'SEPA direct debit mandate has not been accepted by the customer.'
@@ -95,5 +94,26 @@ class HeidelDirectDebitPaymentHandler extends AbstractHeidelpayHandler
         } catch (HeidelpayApiException $apiException) {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         }
+    }
+
+    private function isPaymentAllowed(RequestDataBag $dataBag): bool
+    {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        $isSepaAccepted = false;
+        $isNewAccount   = false;
+
+        if ($dataBag->has('acceptSepaMandate')) {
+            $isSepaAccepted = ((string) $dataBag->get('acceptSepaMandate', 'off')) === 'on';
+        } elseif ($currentRequest) {
+            $isSepaAccepted = ((string) $currentRequest->get('acceptSepaMandate', 'off')) === 'on';
+        }
+
+        if ($dataBag->has('savedDirectDebitDevice')) {
+            $isNewAccount = ((string) $dataBag->get('savedDirectDebitDevice', 'new')) === 'new';
+        } elseif ($currentRequest) {
+            $isNewAccount = ((string) $currentRequest->get('savedDirectDebitDevice', 'new')) === 'new';
+        }
+
+        return ($isSepaAccepted && $isNewAccount) || !$isNewAccount;
     }
 }

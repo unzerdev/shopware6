@@ -67,7 +67,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $registerPayPalAccounts = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
         $registerDirectDebit    = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
 
-        //Extension for credit card payments
         if ($registerCreditCards &&
             $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
         ) {
@@ -86,7 +85,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addDirectDebitExtension($event);
         }
 
-        //Extension for hire purchase payments
         if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_HIRE_PURCHASE) {
             $this->addHirePurchaseExtension($event);
         }
@@ -118,7 +116,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension   = (new CreditCardPageExtension())->setDisplayCreditCardSelection(true);
 
         /** @var HeidelpayPaymentDeviceEntity $creditCard */
-        foreach ($creditCards->getElements() as $creditCard) {
+        foreach ($creditCards as $creditCard) {
             $extension->addCreditCard($creditCard);
         }
 
@@ -137,7 +135,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension      = (new PayPalPageExtension())->setDisplaypayPalAccountselection(true);
 
         /** @var HeidelpayPaymentDeviceEntity $payPalAccount */
-        foreach ($payPalAccounts->getElements() as $payPalAccount) {
+        foreach ($payPalAccounts as $payPalAccount) {
             $extension->addPayPalAccount($payPalAccount);
         }
 
@@ -156,7 +154,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension          = (new DirectDebitPageExtension())->setDisplaydirectDebitDeviceselection(true);
 
         /** @var HeidelpayPaymentDeviceEntity $directDebitDevice */
-        foreach ($directDebitDevices->getElements() as $directDebitDevice) {
+        foreach ($directDebitDevices as $directDebitDevice) {
             $extension->addDirectDebitDevice($directDebitDevice);
         }
 
