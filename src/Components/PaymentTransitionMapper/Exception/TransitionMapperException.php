@@ -10,6 +10,6 @@ class TransitionMapperException extends AbstractHeidelPaymentException
 {
     public function __construct(string $paymentName)
     {
-        parent::__construct(sprintf('Payment status is not allowed for payment method: %s', $paymentName));
+        parent::__construct(sprintf('Payment status transition is not allowed for payment method: %s', $paymentName));
     }
 }

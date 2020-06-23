@@ -113,12 +113,15 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
-        try {
-            $this->pluginConfig    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-            $this->heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
+        $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
-            $resourceId                = $dataBag->get('heidelpayResourceId');
-            $this->heidelpayCustomerId = $dataBag->get('heidelpayCustomerId');
+        try {
+            $salesChannelId        = $salesChannelContext->getSalesChannel()->getId();
+            $this->pluginConfig    = $this->configReader->read($salesChannelId);
+            $this->heidelpayClient = $this->clientFactory->createClient($salesChannelId);
+
+            $resourceId                = $currentRequest->get('heidelpayResourceId', '');
+            $this->heidelpayCustomerId = $currentRequest->get('heidelpayCustomerId', '');
             $this->heidelpayBasket     = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
             $this->heidelpayMetadata   = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
 
@@ -128,19 +131,13 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
                 $this->heidelpayCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
             }
 
-            if (empty($resourceId)) {
-                if (null !== $this->requestStack->getCurrentRequest()) {
-                    $resourceId = $this->requestStack->getCurrentRequest()->request->get('heidelpayResourceId', '');
-                }
-            }
-
             if (!empty($resourceId)) {
                 $this->paymentType = $this->heidelpayClient->fetchPaymentType($resourceId);
             }
 
             return new RedirectResponse($transaction->getReturnUrl());
-        } catch (HeidelpayApiException $apiException) {
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        } catch (HeidelpayApiException $exception) {
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
         } catch (RuntimeException $exception) {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
@@ -170,8 +167,8 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
             );
 
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
-        } catch (HeidelpayApiException $apiException) {
-            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        } catch (HeidelpayApiException $exception) {
+            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
         } catch (RuntimeException $exception) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
@@ -194,5 +191,16 @@ abstract class AbstractHeidelpayHandler implements AsynchronousPaymentHandlerInt
         ];
 
         $this->transactionRepository->update([$update], $salesChannelContext->getContext());
+    }
+
+    protected function getCurrentRequestFromStack(string $orderTransactionId): Request
+    {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+
+        if (null === $currentRequest) {
+            throw new AsyncPaymentProcessException($orderTransactionId, 'No request found');
+        }
+
+        return $currentRequest;
     }
 }

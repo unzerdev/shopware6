@@ -1,2 +1,0 @@
-composer install
-composer phpcs

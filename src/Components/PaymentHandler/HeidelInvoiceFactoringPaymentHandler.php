@@ -36,8 +36,6 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
         RequestStack $requestStack,
         HeidelpayTransferInfoRepositoryInterface $transferInfoRepository
     ) {
-        $this->transferInfoRepository = $transferInfoRepository;
-
         parent::__construct(
             $basketHydrator,
             $customerHydrator,
@@ -48,6 +46,8 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
             $clientFactory,
             $requestStack
         );
+
+        $this->transferInfoRepository = $transferInfoRepository;
     }
 
     /**
@@ -60,7 +60,8 @@ class HeidelInvoiceFactoringPaymentHandler extends AbstractHeidelpayHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $birthday = $dataBag->get('heidelpayBirthday');
+        $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
+        $birthday       = $currentRequest->get('heidelpayBirthday', '');
 
         try {
             if (empty($this->heidelpayCustomerId)) {

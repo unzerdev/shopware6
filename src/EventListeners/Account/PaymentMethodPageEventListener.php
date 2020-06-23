@@ -44,8 +44,11 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $registerCreditCards = $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_CARD);
-        $registerPayPal      = $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL);
+        $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
+
+        $registerCreditCards = $this->configReader->read($salesChannelId)->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
+        $registerPayPal      = $this->configReader->read($salesChannelId)->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
+        $registerDirectDebit = $this->configReader->read($salesChannelId)->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
         $extension           = new PaymentMethodPageExtension();
         $extension->setDeviceRemoved((bool) $event->getRequest()->get('deviceRemoved'));
 
@@ -57,10 +60,17 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
         }
 
         if ($registerPayPal && $salesChannelContext->getCustomer() !== null) {
-            $devices       = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL, $salesChannelContext->getContext());
-            $payPalAccount = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL)->getElements();
+            $devices        = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL, $salesChannelContext->getContext());
+            $payPalAccounts = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL)->getElements();
 
-            $extension->addPaymentDevices($payPalAccount);
+            $extension->addPaymentDevices($payPalAccounts);
+        }
+
+        if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null) {
+            $devices            = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT, $salesChannelContext->getContext());
+            $directDebitDevices = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT)->getElements();
+
+            $extension->addPaymentDevices($directDebitDevices);
         }
 
         $event->getPage()->addExtension('heidelpay', $extension);

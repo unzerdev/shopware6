@@ -95,6 +95,12 @@
             <label lang="de-DE">effektive Verzinsung</label>
             <defaultValue>4.5</defaultValue>
         </input-field>
+
+        <input-field type="bool">
+            <name>registerDirectDebit</name>
+            <label>Register direct debit accounts</label>
+            <label lang="de-DE">Lastschrift-Konten registrieren</label>
+        </input-field>
     </card>
 
     <card>

@@ -27,6 +27,10 @@
             <tag name="heidelpay.transition_mapper"/>
         </service>
 
+        <service id="HeidelPayment6\Components\PaymentTransitionMapper\FlexipayRateTransitionMapper">
+            <tag name="heidelpay.transition_mapper"/>
+        </service>
+
         <service id="HeidelPayment6\Components\PaymentTransitionMapper\GiropayTransitionMapper">
             <tag name="heidelpay.transition_mapper"/>
         </service>

@@ -10,6 +10,6 @@ class NoTransitionMapperFoundException extends AbstractHeidelPaymentException
 {
     public function __construct(string $paymentName)
     {
-        parent::__construct(sprintf('No status mapper was found for payment method: %s', $paymentName));
+        parent::__construct(sprintf('No transition mapper was found for payment method: %s', $paymentName));
     }
 }

@@ -1,22 +1,16 @@
 {# @var device \HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity #}
 
-{% block page_account_payment_main_heidelpay_credit_card %}
-    <div class="heidelpay-device credit-card">
+{% block page_account_payment_main_heidelpay_direct_debit %}
+    <div class="heidelpay-device sepa-direct-debit-card">
         {% block page_account_payment_main_heidelpay_device_title %}
             <div class="card-title">
-                {{ "HeidelPayment.accountPayment.creditCard" | trans  }}
+                {{ "HeidelPayment.accountPayment.directDebit" | trans  }}
             </div>
         {% endblock %}
 
-        {% block page_account_payment_main_heidelpay_credit_card_number %}
+        {% block page_account_payment_main_heidelpay_direct_debit_number %}
             <div id="number">
-                <strong>{{ device.data.number }}</strong>
-            </div>
-        {% endblock %}
-
-        {% block page_account_payment_main_heidelpay_credit_holder %}
-            <div id="holder">
-                {{ device.data.holder }} ({{ device.data.expiryDate }})
+                <strong>{{ device.data.iban }}</strong>
             </div>
         {% endblock %}
 
