@@ -1,4 +1,10 @@
 {% block heidelpay_frame_sepa_direct_debit_guaranteed %}
+    {% block heidelpay_checkout_confirm_frame_card_body_title %}
+        <div class="card-title">
+            {{ context.paymentMethod.translated.name }}
+        </div>
+    {% endblock %}
+
     <div class="heidelpay-sepa-wrapper"
          data-heidelpay-sepa-direct-debit-guaranteed="true"
          data-heidelpay-sepa-direct-debit-guaranteed-options='{
