@@ -14,8 +14,8 @@ Module.register('heidel-payment-configuration', {
     name: 'HeidelPayment',
     title: 'heidel-payment-settings.module.title',
     description: 'heidel-payment-settings.module.description',
-    version: '1.0.0.0',
-    targetVersion: '1.0.0.0',
+    version: '0.0.1',
+    targetVersion: '0.0.1',
 
     snippets: {
         'de-DE': deDE,
