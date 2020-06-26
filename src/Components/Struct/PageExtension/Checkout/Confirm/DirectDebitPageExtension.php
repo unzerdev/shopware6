@@ -13,7 +13,7 @@ class DirectDebitPageExtension extends Struct
     protected $directDebitDevices = [];
 
     /** @var bool */
-    protected $displayDirectDebitDeviceselection;
+    protected $displayDirectDebitDeviceSelection;
 
     public function addDirectDebitDevice(HeidelpayPaymentDeviceEntity $directDebitDevice): self
     {
@@ -40,14 +40,14 @@ class DirectDebitPageExtension extends Struct
         return $this;
     }
 
-    public function getDisplaydirectDebitDeviceselection(): bool
+    public function getDisplayDirectDebitDeviceSelection(): bool
     {
-        return $this->displayDirectDebitDeviceselection;
+        return $this->displayDirectDebitDeviceSelection;
     }
 
-    public function setDisplaydirectDebitDeviceselection(bool $displayDirectDebitDeviceselection): self
+    public function setDisplayDirectDebitDeviceSelection(bool $displayDirectDebitDeviceSelection): self
     {
-        $this->displayDirectDebitDeviceselection = $displayDirectDebitDeviceselection;
+        $this->displayDirectDebitDeviceSelection = $displayDirectDebitDeviceSelection;
 
         return $this;
     }

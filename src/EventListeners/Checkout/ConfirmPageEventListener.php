@@ -158,7 +158,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT, $event->getContext());
-        $extension          = (new DirectDebitPageExtension())->setDisplaydirectDebitDeviceselection(true);
+        $extension          = (new DirectDebitPageExtension())->setDisplayDirectDebitDeviceSelection(true);
 
         /** @var HeidelpayPaymentDeviceEntity $directDebitDevice */
         foreach ($directDebitDevices as $directDebitDevice) {
@@ -177,7 +177,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED, $event->getContext());
-        $extension          = (new DirectDebitGuaranteedPageExtension())->setDisplaydirectDebitDeviceselection(true);
+        $extension          = (new DirectDebitGuaranteedPageExtension())->setDisplayDirectDebitDeviceSelection(true);
 
         /** @var HeidelpayPaymentDeviceEntity $directDebitDevice */
         foreach ($directDebitDevices as $directDebitDevice) {

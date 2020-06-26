@@ -26,7 +26,7 @@ export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
      */
     static heidelpayPlugin = null;
 
-    init() {const birthDateField = document.getElementById(this.options.birthDateFieldId);
+    init() {
         this.heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
         this.sepa = this.heidelpayPlugin.heidelpayInstance.SepaDirectDebitGuaranteed();
 
