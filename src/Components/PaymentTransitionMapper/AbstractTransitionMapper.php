@@ -12,7 +12,11 @@ use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMa
 
 abstract class AbstractTransitionMapper
 {
+    public const HEIDELPAY_MAX_DIGITS = 4;
+
     public const INVALID_TRANSITION = 'invalid';
+
+    protected $isShipmentAllowed = false;
 
     abstract public function supports(BasePaymentType $paymentType): bool;
 
@@ -42,34 +46,32 @@ abstract class AbstractTransitionMapper
 
     protected function mapPaymentStatus(Payment $paymentObject): string
     {
+        $status = StateMachineTransitionActions::ACTION_REOPEN;
+
         if ($paymentObject->isCanceled()) {
-            return StateMachineTransitionActions::ACTION_CANCEL;
+            $status = StateMachineTransitionActions::ACTION_CANCEL;
+        } elseif ($paymentObject->isPending()) {
+            $status = StateMachineTransitionActions::ACTION_REOPEN;
+        } elseif ($paymentObject->isChargeBack()) {
+            $status = StateMachineTransitionActions::ACTION_FAIL;
+        } elseif ($paymentObject->isPartlyPaid()) {
+            $status = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
+        } elseif ($paymentObject->isPaymentReview() || $paymentObject->isCompleted()) {
+            $status = StateMachineTransitionActions::ACTION_PAID;
         }
 
-        if ($paymentObject->isPending()) {
-            return StateMachineTransitionActions::ACTION_REOPEN;
+        if ($this->isShipmentAllowed) {
+            return $this->checkForShipment($paymentObject, $status);
         }
 
-        if ($paymentObject->isChargeBack()) {
-            return StateMachineTransitionActions::ACTION_FAIL;
-        }
-
-        if ($paymentObject->isPartlyPaid()) {
-            return StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
-        }
-
-        if ($paymentObject->isPaymentReview() || $paymentObject->isCompleted()) {
-            return StateMachineTransitionActions::ACTION_PAID;
-        }
-
-        return StateMachineTransitionActions::ACTION_REOPEN;
+        return $status;
     }
 
     protected function checkForRefund(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
-        $totalAmount     = $this->getAmountByFloat($paymentObject->getAmount()->getTotal());
-        $cancelledAmount = $this->getAmountByFloat($paymentObject->getAmount()->getCanceled());
-        $remainingAmount = $this->getAmountByFloat($paymentObject->getAmount()->getRemaining());
+        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+        $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** self::HEIDELPAY_MAX_DIGITS));
 
         if ($cancelledAmount === $totalAmount && $remainingAmount === 0) {
             return StateMachineTransitionActions::ACTION_REFUND;
@@ -81,13 +83,21 @@ abstract class AbstractTransitionMapper
     protected function checkForShipment(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
         $shippedAmount   = 0;
-        $totalAmount     = $this->getAmountByFloat($paymentObject->getAmount()->getTotal());
-        $cancelledAmount = $this->getAmountByFloat($paymentObject->getAmount()->getCanceled());
+        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+
+        if (empty($paymentObject->getShipments())) {
+            return $currentStatus;
+        }
 
         /** @var Shipment $shipment */
         foreach ($paymentObject->getShipments() as $shipment) {
             if (!empty($shipment->getAmount())) {
-                $shippedAmount += $this->getAmountByFloat($shipment->getAmount());
+                $shippedAmount += (int) round($shipment->getAmount() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+
+                if ($shippedAmount > ($totalAmount - $cancelledAmount)) {
+                    $shippedAmount -= (int) round($shipment->getAmount() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+                }
             }
         }
 
@@ -100,17 +110,5 @@ abstract class AbstractTransitionMapper
         }
 
         return $currentStatus;
-    }
-
-    protected function getAmountByFloat(float $amount): int
-    {
-        $defaultAmount = $amount;
-        $stringAmount  = (string) $amount;
-
-        if (strrchr($stringAmount, '.') !== false) {
-            return (int) round($amount * (10 ** strlen(substr(strrchr($stringAmount, '.'), 1))));
-        }
-
-        return (int) $defaultAmount;
     }
 }
