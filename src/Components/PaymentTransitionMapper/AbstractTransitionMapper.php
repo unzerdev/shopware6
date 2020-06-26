@@ -48,12 +48,10 @@ abstract class AbstractTransitionMapper
     {
         $status = StateMachineTransitionActions::ACTION_REOPEN;
 
-        if ($paymentObject->isCanceled()) {
+        if ($paymentObject->isCanceled() || $paymentObject->isChargeBack()) {
             $status = StateMachineTransitionActions::ACTION_CANCEL;
         } elseif ($paymentObject->isPending()) {
             $status = StateMachineTransitionActions::ACTION_REOPEN;
-        } elseif ($paymentObject->isChargeBack()) {
-            $status = StateMachineTransitionActions::ACTION_FAIL;
         } elseif ($paymentObject->isPartlyPaid()) {
             $status = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
         } elseif ($paymentObject->isPaymentReview() || $paymentObject->isCompleted()) {
@@ -73,7 +71,7 @@ abstract class AbstractTransitionMapper
         $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::HEIDELPAY_MAX_DIGITS));
         $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** self::HEIDELPAY_MAX_DIGITS));
 
-        if ($cancelledAmount === $totalAmount && $remainingAmount === 0 && $currentStatus !== StateMachineTransitionActions::ACTION_FAIL) {
+        if ($cancelledAmount === $totalAmount && $remainingAmount === 0 && $currentStatus !== StateMachineTransitionActions::ACTION_CANCEL) {
             return StateMachineTransitionActions::ACTION_REFUND;
         }
 
