@@ -73,7 +73,7 @@ abstract class AbstractTransitionMapper
         $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::HEIDELPAY_MAX_DIGITS));
         $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** self::HEIDELPAY_MAX_DIGITS));
 
-        if ($cancelledAmount === $totalAmount && $remainingAmount === 0) {
+        if ($cancelledAmount === $totalAmount && $remainingAmount === 0 && $currentStatus !== StateMachineTransitionActions::ACTION_FAIL) {
             return StateMachineTransitionActions::ACTION_REFUND;
         }
 
