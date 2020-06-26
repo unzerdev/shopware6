@@ -100,9 +100,18 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
      */
     public function read(string $id, Context $context): ?HeidelpayPaymentDeviceEntity
     {
+        $criteria = new Criteria([$id]);
+
+        $result = $this->entityRepository->search($criteria, $context);
+
+        return $result->getTotal() !== 0 ? $result->getEntities()->first() : null;
+    }
+
+    public function getByPaymentTypeId(string $paymentTypeId, Context $context): ?HeidelpayPaymentDeviceEntity
+    {
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter('id', $id)
+            new EqualsFilter('typeId', $paymentTypeId)
         );
 
         $result = $this->entityRepository->search($criteria, $context);

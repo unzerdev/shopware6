@@ -17,7 +17,7 @@ trait HasDeviceVault
     /** @var HeidelpayPaymentDeviceRepositoryInterface */
     protected $deviceRepository;
 
-    protected function saveToDeviceVault(CustomerEntity $customer, string $deviceType, Context $context): void
+    protected function saveToDeviceVault(CustomerEntity $customer, string $deviceType, Context $context, array $additionalParams = []): void
     {
         if ($this->deviceRepository->exists($this->paymentType->getId(), $context)) {
             return;
@@ -27,7 +27,7 @@ trait HasDeviceVault
             $customer,
             $deviceType,
             $this->paymentType->getId(),
-            $this->paymentType->expose(),
+            array_merge($additionalParams, $this->paymentType->expose()),
             $context
         );
     }
