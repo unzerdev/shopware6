@@ -23,7 +23,7 @@
                 <div class="heidelpay-saved-sepa--message">
                     {{ "HeidelPayment.frame.sepa.device.choose"|trans }}
                 </div>
-                {% block heidelpay_frame_credit_card_saved_device %}
+                {% block heidelpay_frame_direct_debit_saved_device %}
                     {# @var sepaDevice \HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity #}
                     {% for sepaDevice in page.extensions.heidelpayDirectDebit.directDebitDevices %}
                         <div class="custom-control custom-radio payment-control">
@@ -35,7 +35,7 @@
                     {% endfor %}
                 {% endblock %}
 
-                {% block heidelpay_frame_credit_card_saved_device_new %}
+                {% block heidelpay_frame_direct_debit_saved_device_new %}
                     <div class="custom-control custom-radio payment-control">
                         <input type="radio" value="new" name="savedDirectDebitDevice" form="confirmOrderForm" id="device-new" class="custom-control-input payment-method-input">
                         <label for="device-new" class="custom-control-label payment-method-label">

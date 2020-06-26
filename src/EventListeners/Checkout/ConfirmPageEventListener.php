@@ -9,6 +9,7 @@ use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
 use HeidelPayment6\Components\Struct\Configuration;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
+use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitGuaranteedPageExtension;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\HirePurchasePageExtension;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
@@ -85,6 +86,12 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addDirectDebitExtension($event);
         }
 
+        if ($registerDirectDebit &&
+            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED
+        ) {
+            $this->addDirectDebitGuaranteedExtension($event);
+        }
+
         if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_HIRE_PURCHASE) {
             $this->addHirePurchaseExtension($event);
         }
@@ -159,6 +166,25 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $event->getPage()->addExtension('heidelpayDirectDebit', $extension);
+    }
+
+    private function addDirectDebitGuaranteedExtension(PageLoadedEvent $event): void
+    {
+        $customer = $event->getSalesChannelContext()->getCustomer();
+
+        if (!$customer) {
+            return;
+        }
+
+        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED, $event->getContext());
+        $extension          = (new DirectDebitGuaranteedPageExtension())->setDisplaydirectDebitDeviceselection(true);
+
+        /** @var HeidelpayPaymentDeviceEntity $directDebitDevice */
+        foreach ($directDebitDevices as $directDebitDevice) {
+            $extension->addDirectDebitDevice($directDebitDevice);
+        }
+
+        $event->getPage()->addExtension('heidelpayDirectDebitGuaranteed', $extension);
     }
 
     private function addHirePurchaseExtension(PageLoadedEvent $event): void
