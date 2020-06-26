@@ -17,8 +17,8 @@ Module.register('heidel-payment', {
     name: 'HeidelPayment',
     title: 'heidel-payment.general.title',
     description: 'heidel-payment.general.descriptionTextModule',
-    version: '1.0.0',
-    targetVersion: '1.0.0',
+    version: '0.0.1',
+    targetVersion: '0.0.1',
 
     snippets: {
         'de-DE': deDE,
