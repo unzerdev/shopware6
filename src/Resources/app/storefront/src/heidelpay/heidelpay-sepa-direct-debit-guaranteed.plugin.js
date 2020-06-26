@@ -27,6 +27,7 @@ export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
     static heidelpayPlugin = null;
 
     init() {
+        const birthDate = document.getElementById(this.options.birthDateFieldId);
         this.heidelpayPlugin = window.PluginManager.getPluginInstances('HeidelpayBase')[0];
         this.sepa = this.heidelpayPlugin.heidelpayInstance.SepaDirectDebitGuaranteed();
 
@@ -37,7 +38,9 @@ export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
             const heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
 
             heidelpayElementWrapper.hidden = true;
+            birthDate.required = false;
         } else {
+            birthDate.required = true;
             this.heidelpayPlugin.setSubmitButtonActive(false);
         }
     }
@@ -73,13 +76,16 @@ export default class HeidelpaySepaDirectDebitGuaranteedPlugin extends Plugin {
     _onRadioButtonChange(event) {
         const targetElement = event.target;
         const heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+        const birthDate = document.getElementById(this.options.birthDateFieldId);
 
         heidelpayElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewAccountId;
 
         if (!targetElement || targetElement.id === this.options.radioButtonNewAccountId) {
             this.heidelpayPlugin.setSubmitButtonActive(this.sepa.validated);
+            birthDate.required = true;
         } else {
             this.heidelpayPlugin.setSubmitButtonActive(true);
+            birthDate.required = false;
         }
     }
 

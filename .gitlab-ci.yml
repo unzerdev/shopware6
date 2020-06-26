@@ -10,7 +10,7 @@ variables:
     MYSQL_USER: shopware
     MYSQL_PASSWORD: shopware
     PLUGIN_NAME: HeidelPayment6
-    SHOPWARE_VERSION: "6.2" # Tag
+    SHOPWARE_VERSION: "v6.2.0" # Tag
 
 cache:
     key: "$PLUGIN_NAME-$CI_COMMIT_REF_SLUG"
@@ -56,13 +56,29 @@ codestyle:
         key: global
         paths:
             - .php_cs.cache
+
 package:
     image: kellerkinder/shopware-package-plugin:latest
     stage: package
     only:
+        - tags
         - master
+    services:
+        - mysql:5.7
     script:
+        - mkdir /tmp/opt
+        - git clone -b ${SHOPWARE_VERSION} --depth 1 https://github.com/shopware/production /tmp/opt/shopware
+        - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
+        - cd /tmp/opt/shopware && composer install --no-interaction -o
+        - cd /tmp/opt/shopware && php bin/console system:setup --database-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE} --generate-jwt-keys -nq
+        - cd /tmp/opt/shopware && php bin/console system:install -fnq --create-database
+        - cd /tmp/opt/shopware && php bin/console plugin:refresh -nq && php bin/console plugin:install --activate -c ${CI_PROJECT_NAME} -nq
+        - cd /tmp/opt/shopware && bin/build-js.sh
+        - cd /tmp/opt/shopware && php bin/console theme:compile -nq
+        - rsync -r /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}/ ${CI_PROJECT_DIR}/
+        - cd ${CI_PROJECT_DIR} && git add -f .
         - package-plugin
     artifacts:
         paths:
-            - $PLUGIN_NAME.zip
+            - ${CI_PROJECT_NAME}.zip
+

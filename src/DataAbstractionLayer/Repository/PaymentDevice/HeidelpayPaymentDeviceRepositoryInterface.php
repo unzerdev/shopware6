@@ -21,4 +21,6 @@ interface HeidelpayPaymentDeviceRepositoryInterface
     public function exists(string $typeId, Context $context): bool;
 
     public function read(string $id, Context $context): ?HeidelpayPaymentDeviceEntity;
+
+    public function getByPaymentTypeId(string $paymentTypeId, Context $context): ?HeidelpayPaymentDeviceEntity;
 }

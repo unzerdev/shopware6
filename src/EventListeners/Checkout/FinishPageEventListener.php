@@ -57,10 +57,10 @@ class FinishPageEventListener implements EventSubscriberInterface
                 continue;
             }
 
-            $payment = $this->getPaymentByOrderId($heidelpayClient, $transaction->getOrderId());
+            $payment = $this->getPaymentByOrderId($heidelpayClient, $transaction->getId());
 
             if (!$payment) {
-                $payment = $this->getPaymentByOrderId($heidelpayClient, $transaction->getId());
+                $payment = $this->getPaymentByOrderId($heidelpayClient, $transaction->getOrderId());
 
                 if (!$payment) {
                     return;

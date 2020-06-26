@@ -77,6 +77,16 @@ class HeidelDirectDebitGuaranteedPaymentHandler extends AbstractHeidelpayHandler
         try {
             if (!empty($birthday)) {
                 $this->heidelpayCustomer->setBirthDate($birthday);
+            } else {
+                $paymentDevice = $this->deviceRepository->getByPaymentTypeId($this->paymentType->getId(), $salesChannelContext->getContext());
+
+                if ($paymentDevice && array_key_exists('birthDate', $paymentDevice->getData())) {
+                    $birthDate = $paymentDevice->getData()['birthDate'];
+
+                    if (!empty($birthDate)) {
+                        $this->heidelpayCustomer->setBirthDate($birthDate);
+                    }
+                }
             }
 
             $this->heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($this->heidelpayCustomer);
@@ -87,7 +97,10 @@ class HeidelDirectDebitGuaranteedPaymentHandler extends AbstractHeidelpayHandler
                 $this->saveToDeviceVault(
                     $salesChannelContext->getCustomer(),
                     HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED,
-                    $salesChannelContext->getContext()
+                    $salesChannelContext->getContext(),
+                    [
+                        'birthDate' => $this->heidelpayCustomer->getBirthDate(),
+                    ]
                 );
             }
 
