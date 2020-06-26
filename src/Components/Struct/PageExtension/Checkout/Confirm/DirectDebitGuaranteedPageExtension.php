@@ -7,7 +7,7 @@ namespace HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use Shopware\Core\Framework\Struct\Struct;
 
-class DirectDebitPageExtension extends Struct
+class DirectDebitGuaranteedPageExtension extends Struct
 {
     /** @var HeidelpayPaymentDeviceEntity[] */
     protected $directDebitDevices = [];

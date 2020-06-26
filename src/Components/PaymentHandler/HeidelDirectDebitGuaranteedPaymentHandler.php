@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace HeidelPayment6\Components\PaymentHandler;
 
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\ConfigReader\ConfigReader;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\PaymentHandler\Traits\CanCharge;
+use HeidelPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
 use HeidelPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
+use HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -21,6 +25,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class HeidelDirectDebitGuaranteedPaymentHandler extends AbstractHeidelpayHandler
 {
     use CanCharge;
+    use HasDeviceVault;
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
@@ -30,7 +35,8 @@ class HeidelDirectDebitGuaranteedPaymentHandler extends AbstractHeidelpayHandler
         ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        HeidelpayPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
             $basketHydrator,
@@ -42,6 +48,8 @@ class HeidelDirectDebitGuaranteedPaymentHandler extends AbstractHeidelpayHandler
             $clientFactory,
             $requestStack
         );
+
+        $this->deviceRepository = $deviceRepository;
     }
 
     /**
@@ -56,21 +64,46 @@ class HeidelDirectDebitGuaranteedPaymentHandler extends AbstractHeidelpayHandler
 
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
-        $birthday = $currentRequest->get('heidelpayBirthday', '');
-
-        if ($currentRequest->get('acceptSepaMandate', 'off') !== 'on') {
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
+        if (!$this->isPaymentAllowed($transaction->getOrderTransaction()->getId())) {
+            throw new AsyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                'SEPA direct debit mandate has not been accepted by the customer.'
+            );
         }
 
+        $registerDirectDebit = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
+        $birthday            = $currentRequest->get('heidelpayBirthday', '');
+
         try {
-            $this->heidelpayCustomer->setBirthDate($birthday);
+            if (!empty($birthday)) {
+                $this->heidelpayCustomer->setBirthDate($birthday);
+            }
+
             $this->heidelpayCustomer = $this->heidelpayClient->createOrUpdateCustomer($this->heidelpayCustomer);
 
             $returnUrl = $this->charge($transaction->getReturnUrl());
+
+            if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null) {
+                $this->saveToDeviceVault(
+                    $salesChannelContext->getCustomer(),
+                    HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED,
+                    $salesChannelContext->getContext()
+                );
+            }
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         }
+    }
+
+    private function isPaymentAllowed(string $transactionId): bool
+    {
+        $currentRequest = $this->getCurrentRequestFromStack($transactionId);
+
+        $isSepaAccepted = ((string) $currentRequest->get('acceptSepaMandate', 'off')) === 'on';
+        $isNewAccount   = ((string) $currentRequest->get('savedDirectDebitDevice', 'new')) === 'new';
+
+        return ($isSepaAccepted && $isNewAccount) || !$isNewAccount;
     }
 }

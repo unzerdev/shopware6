@@ -13,12 +13,6 @@
                  }'>
             <div class="card-body">
                 {% block heidelpay_checkout_confirm_frame_card_body %}
-                    {% block heidelpay_checkout_confirm_frame_card_body_title %}
-                        <div class="card-title">
-                            {{ context.paymentMethod.translated.name }}
-                        </div>
-                    {% endblock %}
-
                     {% block heidelpay_checkout_confirm_frame_card_body_frame %}
                         <div class="heidelpay-frame">
                             {% sw_include page.extensions.heidelpayPaymentFrame.paymentFrame ignore missing %}

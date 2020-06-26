@@ -67,10 +67,12 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
         }
 
         if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null) {
-            $devices            = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT, $salesChannelContext->getContext());
-            $directDebitDevices = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT)->getElements();
+            $devices                      = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT, $salesChannelContext->getContext());
+            $directDebitDevices           = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT)->getElements();
+            $directDebitGuaranteedDevices = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED)->getElements();
 
             $extension->addPaymentDevices($directDebitDevices);
+            $extension->addPaymentDevices($directDebitGuaranteedDevices);
         }
 
         $event->getPage()->addExtension('heidelpay', $extension);

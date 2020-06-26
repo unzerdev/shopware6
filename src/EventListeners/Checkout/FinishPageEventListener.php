@@ -9,7 +9,9 @@ use HeidelPayment6\Components\Struct\HirePurchase\InstallmentInfo;
 use HeidelPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
 use HeidelPayment6\Installers\PaymentInstaller;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
+use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Resources\InstalmentPlan;
+use heidelpayPHP\Resources\Payment;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
@@ -55,25 +57,41 @@ class FinishPageEventListener implements EventSubscriberInterface
                 continue;
             }
 
-            try {
-                $payment     = $heidelpayClient->fetchPaymentByOrderId($transaction->getOrderId());
-                $paymentType = $payment->getPaymentType();
+            $payment = $this->getPaymentByOrderId($heidelpayClient, $transaction->getOrderId());
 
-                if ($paymentType instanceof InstalmentPlan) {
-                    $installmentInfo = (new InstallmentInfo())->fromInstalmentPlan($paymentType);
-                    $extension->addInstallmentInfo($installmentInfo);
+            if (!$payment) {
+                $payment = $this->getPaymentByOrderId($heidelpayClient, $transaction->getId());
+
+                if (!$payment) {
+                    return;
                 }
-            } catch (HeidelpayApiException $exception) {
-                //catch payment not found exception so that shopware can handle its own errors
-                $this->logger->error($exception->getMessage(), [
-                    'code'          => $exception->getCode(),
-                    'clientMessage' => $exception->getClientMessage(),
-                    'file'          => $exception->getFile(),
-                    'trace'         => $exception->getTraceAsString(),
-                ]);
+            }
+
+            $paymentType = $payment->getPaymentType();
+
+            if ($paymentType instanceof InstalmentPlan) {
+                $installmentInfo = (new InstallmentInfo())->fromInstalmentPlan($paymentType);
+                $extension->addInstallmentInfo($installmentInfo);
             }
         }
 
         $event->getPage()->addExtension('heidelpay', $extension);
+    }
+
+    private function getPaymentByOrderId(Heidelpay $heidelpayClient, string $orderId): ?Payment
+    {
+        try {
+            return $heidelpayClient->fetchPaymentByOrderId($orderId);
+        } catch (HeidelpayApiException $exception) {
+            //catch payment not found exception so that shopware can handle its own errors
+            $this->logger->error($exception->getMessage(), [
+                'code'          => $exception->getCode(),
+                'clientMessage' => $exception->getClientMessage(),
+                'file'          => $exception->getFile(),
+                'trace'         => $exception->getTraceAsString(),
+            ]);
+        }
+
+        return null;
     }
 }
