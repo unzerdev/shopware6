@@ -11,6 +11,8 @@ use heidelpayPHP\Resources\PaymentTypes\InvoiceFactoring;
 
 class InvoiceFactoringTransitionMapper extends AbstractTransitionMapper
 {
+    protected $isShipmentAllowed = true;
+
     public function supports(BasePaymentType $paymentType): bool
     {
         return $paymentType instanceof InvoiceFactoring;
@@ -28,13 +30,7 @@ class InvoiceFactoringTransitionMapper extends AbstractTransitionMapper
             throw new TransitionMapperException($this->getResourceName());
         }
 
-        $mappedStatus = $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
-
-        if ($paymentObject->isPending()) {
-            return $this->checkForShipment($paymentObject, $mappedStatus);
-        }
-
-        return $mappedStatus;
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 
     protected function getResourceName(): string

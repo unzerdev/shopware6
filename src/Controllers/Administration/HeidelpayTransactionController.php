@@ -6,6 +6,7 @@ namespace HeidelPayment6\Controllers\Administration;
 
 use HeidelPayment6\Components\ArrayHydrator\PaymentArrayHydratorInterface;
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
+use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -31,14 +32,19 @@ class HeidelpayTransactionController extends AbstractController
     /** @var PaymentArrayHydratorInterface */
     private $hydrator;
 
+    /** @var TransactionStateHandlerInterface */
+    private $transactionStateHandler;
+
     public function __construct(
         ClientFactoryInterface $clientFactory,
         EntityRepositoryInterface $orderTransactionRepository,
-        PaymentArrayHydratorInterface $hydrator
+        PaymentArrayHydratorInterface $hydrator,
+        TransactionStateHandlerInterface $transactionStateHandler
     ) {
         $this->clientFactory              = $clientFactory;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->hydrator                   = $hydrator;
+        $this->transactionStateHandler    = $transactionStateHandler;
     }
 
     /**
@@ -186,6 +192,10 @@ class HeidelpayTransactionController extends AbstractController
 
         try {
             $client->ship($orderTransactionId, $invoiceId);
+
+            $payment = $client->fetchPaymentByOrderId($orderTransactionId);
+
+            $this->transactionStateHandler->transformTransactionState($orderTransactionId, $payment, $context);
         } catch (HeidelpayApiException $exception) {
             return new JsonResponse(
                 [
