@@ -119,7 +119,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $creditCards = $this->deviceRepository->getCollectionByCustomer($customer, HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD, $event->getContext());
+        $creditCards = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD);
         $extension   = (new CreditCardPageExtension())->setDisplayCreditCardSelection(true);
 
         /** @var HeidelpayPaymentDeviceEntity $creditCard */
@@ -138,7 +138,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $payPalAccounts = $this->deviceRepository->getCollectionByCustomer($customer, HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL, $event->getContext());
+        $payPalAccounts = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL);
         $extension      = (new PayPalPageExtension())->setDisplaypayPalAccountselection(true);
 
         /** @var HeidelpayPaymentDeviceEntity $payPalAccount */
@@ -157,7 +157,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT, $event->getContext());
+        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT);
         $extension          = (new DirectDebitPageExtension())->setDisplayDirectDebitDeviceSelection(true);
 
         /** @var HeidelpayPaymentDeviceEntity $directDebitDevice */
@@ -176,7 +176,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED, $event->getContext());
+        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED);
         $extension          = (new DirectDebitGuaranteedPageExtension())->setDisplayDirectDebitDeviceSelection(true);
 
         /** @var HeidelpayPaymentDeviceEntity $directDebitDevice */

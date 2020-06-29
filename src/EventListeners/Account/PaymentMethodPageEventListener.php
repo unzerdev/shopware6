@@ -50,24 +50,22 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
         $registerPayPal      = $this->configReader->read($salesChannelId)->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
         $registerDirectDebit = $this->configReader->read($salesChannelId)->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
         $extension           = new PaymentMethodPageExtension();
+        $devices             = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
         $extension->setDeviceRemoved((bool) $event->getRequest()->get('deviceRemoved'));
 
         if ($registerCreditCards && $salesChannelContext->getCustomer() !== null) {
-            $devices     = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD, $salesChannelContext->getContext());
             $creditCards = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD)->getElements();
 
             $extension->addPaymentDevices($creditCards);
         }
 
         if ($registerPayPal && $salesChannelContext->getCustomer() !== null) {
-            $devices        = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL, $salesChannelContext->getContext());
             $payPalAccounts = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL)->getElements();
 
             $extension->addPaymentDevices($payPalAccounts);
         }
 
         if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null) {
-            $devices                      = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT, $salesChannelContext->getContext());
             $directDebitDevices           = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT)->getElements();
             $directDebitGuaranteedDevices = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED)->getElements();
 
