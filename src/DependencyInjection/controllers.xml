@@ -19,6 +19,7 @@
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="HeidelPayment6\Components\ArrayHydrator\PaymentArrayHydrator" />
+            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -32,6 +33,7 @@
         <service id="HeidelPayment6\Controllers\Administration\HeidelpayConfigurationController">
             <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="heidel_payment.logger"/>
+            <argument type="service" id="HeidelPayment6\Components\WebhookRegistrator\WebhookRegistrator"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

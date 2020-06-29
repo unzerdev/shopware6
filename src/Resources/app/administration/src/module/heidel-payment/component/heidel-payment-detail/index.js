@@ -1,6 +1,6 @@
-const { Component, Mixin } = Shopware;
-
 import template from './heidel-payment-detail.html.twig';
+
+const { Component, Mixin } = Shopware;
 
 Component.register('heidel-payment-detail', {
     template,
@@ -22,7 +22,7 @@ Component.register('heidel-payment-detail', {
         paymentResource: {
             type: Object,
             required: true
-        },
+        }
     },
 
     methods: {
@@ -56,6 +56,6 @@ Component.register('heidel-payment-detail', {
 
                 this.isLoading = false;
             });
-        },
+        }
     }
 });

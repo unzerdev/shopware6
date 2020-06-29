@@ -3,7 +3,7 @@ import Plugin from 'src/plugin-system/plugin.class';
 export default class HeidelpayInvoiceGuaranteedPlugin extends Plugin {
     static options = {
         isB2BCustomer: false,
-        customerInfo: null,
+        customerInfo: null
     };
 
     /**
@@ -41,7 +41,7 @@ export default class HeidelpayInvoiceGuaranteedPlugin extends Plugin {
      */
     _registerEvents() {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
-            scope: this,
+            scope: this
         });
     }
 
@@ -55,7 +55,7 @@ export default class HeidelpayInvoiceGuaranteedPlugin extends Plugin {
         this.b2bCustomerProvider.initFormFields(this.heidelpayPlugin.getB2bCustomerObject(this.options.customerInfo));
 
         this.b2bCustomerProvider.create({
-            containerId: 'heidelpay-b2b-form',
+            containerId: 'heidelpay-b2b-form'
         });
     }
 

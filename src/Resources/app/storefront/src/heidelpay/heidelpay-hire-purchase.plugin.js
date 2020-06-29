@@ -1,5 +1,6 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import ElementLoadingIndicatorUtil from 'src/utility/loading-indicator/element-loading-indicator.util';
+
 export default class HeidelpayHirePurchasePlugin extends Plugin {
     static options = {
         hirePurchaseAmount: 0.0,
@@ -11,7 +12,7 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         formLoadingIndicatorElementId: 'element-loader',
         currencyIso: 'EUR',
         currencyFormatLocale: 'en-GB',
-        starSymbol: '*',
+        starSymbol: '*'
     };
 
     /**
@@ -50,9 +51,9 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
             amount: this.options.hirePurchaseAmount.toFixed(4),
             currency: this.options.hirePurchaseCurrency,
             effectiveInterest: this.options.hirePurchaseEffectiveInterest,
-            orderDate: this.options.hirePurchaseOrderDate,
+            orderDate: this.options.hirePurchaseOrderDate
         }).then(() => {
-            //Hide the loading indicator
+            // Hide the loading indicator
             loadingIndicatorElement.hidden = true;
         }).catch((error) => {
             this.heidelpayPlugin.renderErrorToElement(error, loadingIndicatorElement);
@@ -67,7 +68,7 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
      */
     _registerEvents() {
         this.heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
-            scope: this,
+            scope: this
         });
 
         this.hirePurchase.addEventListener('hirePurchaseEvent', (event) => this._onChangeHirePurchaseForm(event));
@@ -99,8 +100,8 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
         }
 
         if (event.currentStep === 'plan-detail') {
-            const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId),
-                installmentInterestElement = document.getElementById(this.options.installmentsInterestValueElementId);
+            const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId);
+            const installmentInterestElement = document.getElementById(this.options.installmentsInterestValueElementId);
 
             installmentAmountTotalElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalAmount) + this.options.starSymbol;
             installmentInterestElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalInterestAmount) + this.options.starSymbol;
@@ -110,7 +111,7 @@ export default class HeidelpayHirePurchasePlugin extends Plugin {
     _formatCurrency(value) {
         return value.toLocaleString(this.options.currencyFormatLocale, {
             style: 'currency',
-            currency: this.options.currencyIso,
+            currency: this.options.currencyIso
         });
     }
 }

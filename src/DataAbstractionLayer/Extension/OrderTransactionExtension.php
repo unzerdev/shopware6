@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace HeidelPayment6\DataAbstractionLayer\Extension;
 
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityExtensionInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Runtime;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ObjectField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
-class OrderTransactionExtension implements EntityExtensionInterface
+class OrderTransactionExtension extends EntityExtension
 {
     /**
      * {@inheritdoc}

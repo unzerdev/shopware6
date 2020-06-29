@@ -10,6 +10,7 @@ export default class HeidelpayBasePlugin extends Plugin {
         errorWrapperClass: 'heidelpay-error-wrapper',
         errorContentSelector: '.heidelpay-error-wrapper .alert-content',
         errorShouldNotBeEmpty: '%field% should not be empty',
+        isOrderEdit: false
     };
 
     /**
@@ -22,7 +23,11 @@ export default class HeidelpayBasePlugin extends Plugin {
     init() {
         this.heidelpayInstance = new window.heidelpay(this.options.publicKey);
 
-        this.submitButton = document.getElementById(this.options.submitButtonId);
+        if (this.options.isOrderEdit) {
+            this.submitButton = document.getElementById(this.options.confirmFormId).getElementsByTagName('button')[0];
+        } else {
+            this.submitButton = document.getElementById(this.options.submitButtonId);
+        }
         this.confirmForm = document.getElementById(this.options.confirmFormId);
 
         this._registerEvents();
@@ -68,8 +73,8 @@ export default class HeidelpayBasePlugin extends Plugin {
      * @param {Boolean} append
      */
     showError(error, append = false) {
-        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
-            errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0);
+        const errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
 
         if (!append || errorContent.innerText === '') {
             errorContent.innerText = error.message;
@@ -88,8 +93,8 @@ export default class HeidelpayBasePlugin extends Plugin {
      * @param {HTMLElement} el
      */
     renderErrorToElement(error, el) {
-        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
-            errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0);
+        const errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
 
         errorContent.innerText = error.message;
         errorWrapper.hidden = false;
@@ -120,6 +125,7 @@ export default class HeidelpayBasePlugin extends Plugin {
         }
 
         this.setSubmitButtonActive(false);
+
         this.$emitter.publish('heidelpayBase_createResource');
     }
 
@@ -144,7 +150,7 @@ export default class HeidelpayBasePlugin extends Plugin {
                     element.scrollIntoView({ block: 'end', behavior: 'smooth' });
                 } else if (element.labels.length > 0) {
                     this.showError({
-                        message: this.options.errorShouldNotBeEmpty.replace(/%field%/, element.labels[0].innerText),
+                        message: this.options.errorShouldNotBeEmpty.replace(/%field%/, element.labels[0].innerText)
                     }, true);
                 }
 
@@ -158,8 +164,8 @@ export default class HeidelpayBasePlugin extends Plugin {
     }
 
     _clearErrorMessage() {
-        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0),
-            errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0);
+        const errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
 
         errorContent.innerText = '';
         errorWrapper.hidden = true;
@@ -184,14 +190,14 @@ export default class HeidelpayBasePlugin extends Plugin {
                 street: customerInfo.activeBillingAddress.street,
                 zip: customerInfo.activeBillingAddress.zipcode,
                 city: customerInfo.activeBillingAddress.city,
-                country: customerInfo.activeBillingAddress.country.name,
+                country: customerInfo.activeBillingAddress.country.name
             },
             shippingAddress: {
                 street: customerInfo.activeShippingAddress.street,
                 zip: customerInfo.activeShippingAddress.zipcode,
                 city: customerInfo.activeShippingAddress.city,
-                country: customerInfo.activeShippingAddress.country.name,
-            },
-        }
+                country: customerInfo.activeShippingAddress.country.name
+            }
+        };
     }
 }

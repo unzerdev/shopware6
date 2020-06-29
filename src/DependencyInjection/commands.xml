@@ -5,8 +5,8 @@
 
     <services>
         <service id="HeidelPayment6\Commands\RegisterWebhookCommand" >
-            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="router.default" />
+            <argument type="service" id="HeidelPayment6\Components\WebhookRegistrator\WebhookRegistrator" />
+            <argument type="service" id="sales_channel_domain.repository" />
 
             <tag name="console.command" />
         </service>

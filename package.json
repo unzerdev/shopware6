@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "cypress:open": "./node_modules/.bin/cypress open",
+    "cypress:run": "./node_modules/.bin/cypress run --record false --config video=false",
+    "eslint:lint": "../../../vendor/shopware/platform/src/Administration/Resources/app/administration/node_modules/.bin/eslint -c ../../../vendor/shopware/platform/src/Administration/Resources/app/administration/.eslintrc.js --rulesdir . --ext .js,.vue src",
+    "eslint:fix": "../../../vendor/shopware/platform/src/Administration/Resources/app/administration/node_modules/.bin/eslint -c ../../../vendor/shopware/platform/src/Administration/Resources/app/administration/.eslintrc.js --rulesdir . --ext .js,.vue src --fix"
+  },
+  "devDependencies": {
+    "cypress": "^4.7.0",
+    "cypress-pipe": "^1.7.0"
+  }
+}

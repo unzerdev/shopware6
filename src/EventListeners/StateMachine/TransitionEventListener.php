@@ -81,13 +81,26 @@ class TransitionEventListener implements EventSubscriberInterface
             return;
         }
 
-        $orderTransaction = $order->getTransactions()->first();
-        $invoiceId        = $this->getInvoiceDocumentId($order->getDocuments());
+        $orderTransactions = $order->getTransactions();
+
+        if ($order->getDocuments() !== null) {
+            $invoiceId = $this->getInvoiceDocumentId($order->getDocuments());
+        }
+
+        if ($orderTransactions !== null) {
+            $firstTransaction = $orderTransactions->first();
+        }
+
+        if (empty($firstTransaction) || empty($invoiceId)) {
+            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice or orderTransaction couldn\'t be found', $order->getOrderNumber()));
+
+            return;
+        }
 
         try {
             $client = $this->clientFactory->createClient($order->getSalesChannelId());
-            $client->ship($orderTransaction->getId(), $invoiceId);
-            $this->setCustomFields($event->getContext(), $orderTransaction);
+            $client->ship($firstTransaction->getId(), $invoiceId);
+            $this->setCustomFields($event->getContext(), $firstTransaction);
 
             $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $event->getContext()));
         } catch (RuntimeException $exception) {
@@ -147,12 +160,18 @@ class TransitionEventListener implements EventSubscriberInterface
 
     private function getInvoiceDocumentId(DocumentCollection $documents): string
     {
-        return $documents->filter(static function (DocumentEntity $entity) {
-            if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
+        $firstDocument = $documents->filter(static function (DocumentEntity $entity) {
+            if ($entity->getDocumentType() !== null && $entity->getDocumentType()->getTechnicalName() === 'invoice') {
                 return $entity;
             }
 
             return null;
-        })->first()->getConfig()['documentNumber'];
+        })->first();
+
+        if (!empty($firstDocument)) {
+            return $firstDocument->getConfig()['documentNumber'];
+        }
+
+        return '';
     }
 }

@@ -1,23 +1,24 @@
-const { Module } = Shopware;
-
 import './component/heidel-payment-actions';
 import './component/heidel-payment-detail';
 import './component/heidel-payment-history';
 import './component/heidel-payment-metadata';
 import './component/heidel-payment-basket';
 import './extension/sw-order';
+import './extension/sw-order-create-details-footer';
 import './page/heidel-payment-tab';
 
 import deDE from '../../snippets/de-DE.json';
 import enGB from '../../snippets/en-GB.json';
+
+const { Module } = Shopware;
 
 Module.register('heidel-payment', {
     type: 'plugin',
     name: 'HeidelPayment',
     title: 'heidel-payment.general.title',
     description: 'heidel-payment.general.descriptionTextModule',
-    version: '1.0.0',
-    targetVersion: '1.0.0',
+    version: '0.0.1',
+    targetVersion: '0.0.1',
 
     snippets: {
         'de-DE': deDE,

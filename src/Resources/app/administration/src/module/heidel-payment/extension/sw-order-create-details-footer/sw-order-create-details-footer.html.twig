@@ -1,0 +1,12 @@
+{% block sw_order_create_details_footer_payment_method %}
+    <sw-entity-single-select
+            size="small"
+            entity="payment_method"
+            v-model="context.paymentMethodId"
+            class="sw-order-create-details-footer__item"
+            :disabled="!isCustomerActive"
+            :criteria="paymentMethodCriteria"
+            :label="$tc('sw-order.createBase.detailsFooter.labelPaymentMethod')"
+            :placeholder="$tc('sw-order.createBase.detailsFooter.placeholderPaymentMethod')">
+    </sw-entity-single-select>
+{% endblock %}

@@ -12,7 +12,35 @@ class HeidelPaymentConfigurationService extends ApiService {
                 `_action/${this.getApiBasePath()}/validate-credentials`,
                 credentials,
                 {
-                    headers: this.getBasicHeaders(),
+                    headers: this.getBasicHeaders()
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    registerWebhooks(data) {
+        return this.httpClient
+            .post(
+                `_action/${this.getApiBasePath()}/register-webhooks`,
+                data,
+                {
+                    headers: this.getBasicHeaders()
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    clearWebhooks(data) {
+        return this.httpClient
+            .post(
+                `_action/${this.getApiBasePath()}/clear-webhooks`,
+                data,
+                {
+                    headers: this.getBasicHeaders()
                 }
             )
             .then((response) => {

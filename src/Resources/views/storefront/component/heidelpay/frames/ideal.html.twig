@@ -1,4 +1,10 @@
 {% block heidelpay_frame_ideal %}
+    {% block heidelpay_checkout_confirm_frame_card_body_title %}
+        <div class="card-title">
+            {{ context.paymentMethod.translated.name }}
+        </div>
+    {% endblock %}
+
     <div class="heidelpay-ideal-wrapper"
          data-heidelpay-ideal="true">
 

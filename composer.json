@@ -1,7 +1,7 @@
 {
     "name": "heidel/payment6",
     "description": "Heidelpay payment integration for Shopware 6",
-    "version": "v1.0.0",
+    "version": "v0.0.1",
     "type": "shopware-platform-plugin",
     "license": "Commercial",
     "minimum-stability": "dev",
@@ -58,5 +58,11 @@
     "conflict": {
         "shopware/storefront": "<6,>=7",
         "shopware/administration": "<6,>=7"
+    },
+    "scripts": {
+        "phpcs": "vendor/bin/php-cs-fixer fix",
+        "phpunit": "vendor/bin/phpunit",
+        "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon src --autoload-file=../../../vendor/autoload.php",
+        "phpunit-coverage": "vendor/bin/phpunit --coverage-html ./coverage"
     }
 }

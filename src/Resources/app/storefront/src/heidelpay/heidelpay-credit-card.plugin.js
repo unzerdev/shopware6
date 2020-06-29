@@ -14,7 +14,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         radioButtonNewId: 'card-new',
         selectedRadioButtonSelector: '*[name="savedCreditCard"]:checked',
         hasSavedCards: false,
-        placeholderBrandImageUrl: 'https://static.heidelpay.com/assets/images/common/group-5.svg',
+        placeholderBrandImageUrl: 'https://static.heidelpay.com/assets/images/common/group-5.svg'
     };
 
     /**
@@ -59,17 +59,17 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
 
         this.creditCard.create('number', {
             containerId: this.options.numberFieldInputId,
-            onlyIframe: true,
+            onlyIframe: true
         });
 
         this.creditCard.create('expiry', {
             containerId: this.options.expiryFieldId,
-            onlyIframe: true,
+            onlyIframe: true
         });
 
         this.creditCard.create('cvc', {
             containerId: this.options.cvcFieldId,
-            onlyIframe: true,
+            onlyIframe: true
         });
 
         this.creditCard.addEventListener('change', this._onChangeForm.bind(this));
@@ -83,12 +83,12 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
             const radioButtons = DomAccess.querySelectorAll(this.el, this.options.radioButtonSelector);
 
             for (let $i = 0; $i < radioButtons.length; $i++) {
-                radioButtons[$i].addEventListener('change',  (event) => this._onRadioButtonChange(event));
+                radioButtons[$i].addEventListener('change', (event) => this._onRadioButtonChange(event));
             }
         }
 
         this._heidelpayPlugin.$emitter.subscribe('heidelpayBase_createResource', () => this._onCreateResource(), {
-            scope: this,
+            scope: this
         });
     }
 
@@ -98,8 +98,8 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
      * @private
      */
     _onRadioButtonChange(event) {
-        const targetElement = event.target,
-            heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+        const targetElement = event.target;
+        const heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
 
         heidelpayElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewId;
 
@@ -142,7 +142,7 @@ export default class HeidelpayCreditCardPlugin extends Plugin {
         if (event.success === false) {
             inputElement.classList.add(this.options.invalidClass);
             errorElement.hidden = false;
-        } else if(event.success === true) {
+        } else if (event.success === true) {
             inputElement.classList.remove(this.options.invalidClass);
             errorElement.hidden = true;
         }

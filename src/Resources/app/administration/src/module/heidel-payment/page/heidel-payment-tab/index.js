@@ -1,5 +1,6 @@
-const { Component, StateDeprecated } = Shopware;
 import template from './heidel-payment-tab.html.twig';
+
+const { Component, StateDeprecated } = Shopware;
 
 Component.register('heidel-payment-tab', {
     template,
@@ -62,7 +63,7 @@ Component.register('heidel-payment-tab', {
                         this.HeidelPaymentService.fetchPaymentDetails(orderTransaction.id)
                             .then((response) => {
                                 this.isLoading = false;
-                                this.paymentResources.push(response);
+                                this.paymentResources.push(this.calculateAmounts(response));
                             })
                             .catch(() => {
                                 this.isLoading = false;
@@ -71,5 +72,24 @@ Component.register('heidel-payment-tab', {
                 });
             });
         },
-    },
+
+        calculateAmounts(paymentResource) {
+            paymentResource.calculatedAmounts = {
+                remaining: paymentResource.basket.amountTotalGross,
+                charged: 0.00,
+                cancelled: 0.00
+            };
+
+            paymentResource.transactions.forEach((transaction) => {
+                if (transaction.type === 'cancellation') {
+                    paymentResource.calculatedAmounts.cancelled += transaction.amount;
+                } else if (transaction.type === 'charge') {
+                    paymentResource.calculatedAmounts.charged += transaction.amount;
+                    paymentResource.calculatedAmounts.remaining -= transaction.amount;
+                }
+            });
+
+            return paymentResource;
+        }
+    }
 });

@@ -20,7 +20,7 @@
             :disabled="isLoading || isTesting"
             variant="primary"
             @click="onSave">
-            {{ $tc('sw-plugin-config.buttonSave') }}
+            {{ $tc('global.default.save') }}
         </sw-button-process>
         {% endblock %}
 
@@ -33,6 +33,10 @@
             @click="onValidateCredentials">
             {{ $tc('heidel-payment-settings.form.testButton') }}
         </sw-button-process>
+        {% endblock %}
+
+        {% block heidel_payment_settings_actions_register_webhooks %}
+        <heidel-payment-register-webhook></heidel-payment-register-webhook>
         {% endblock %}
 
     </template>
