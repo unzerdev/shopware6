@@ -72,7 +72,7 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
         }
 
         if (count($paymentObject->getCharges()) > 0) {
-            return StateMachineTransitionActions::ACTION_PAID;
+            return StateMachineTransitionActions::ACTION_DO_PAY;
         }
 
         return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
