@@ -55,7 +55,7 @@ abstract class AbstractTransitionMapper
         } elseif ($paymentObject->isPartlyPaid()) {
             $status = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
         } elseif ($paymentObject->isPaymentReview() || $paymentObject->isCompleted()) {
-            $status = StateMachineTransitionActions::ACTION_PAID;
+            $status = StateMachineTransitionActions::ACTION_DO_PAY;
         }
 
         if ($this->isShipmentAllowed) {
@@ -100,7 +100,7 @@ abstract class AbstractTransitionMapper
         }
 
         if ($shippedAmount === ($totalAmount - $cancelledAmount)) {
-            return StateMachineTransitionActions::ACTION_PAID;
+            return StateMachineTransitionActions::ACTION_DO_PAY;
         }
 
         if ($shippedAmount < ($totalAmount - $cancelledAmount)) {
