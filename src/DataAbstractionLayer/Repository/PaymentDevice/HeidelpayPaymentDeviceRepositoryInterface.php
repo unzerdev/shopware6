@@ -12,7 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 
 interface HeidelpayPaymentDeviceRepositoryInterface
 {
-    public function getCollectionByCustomer(CustomerEntity $customer, string $deviceType, Context $context): EntitySearchResult;
+    public function getCollectionByCustomer(CustomerEntity $customer, Context $context, string $deviceType = null): EntitySearchResult;
 
     public function create(CustomerEntity $customer, string $deviceType, string $typeId, array $data, Context $context): EntityWrittenContainerEvent;
 
