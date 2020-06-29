@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\ArrayHydrator;
+namespace HeidelPayment6\Components\ArrayHydrator;
 
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
@@ -57,6 +57,10 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
                 'date'   => $charge->getDate(),
                 'id'     => $charge->getId(),
             ];
+
+            if (!array_key_exists('shortId', $data) && $charge->getShortId() !== null) {
+                $data['shortId'] = $charge->getShortId();
+            }
         }
 
         /** @var Shipment $metaShipment */

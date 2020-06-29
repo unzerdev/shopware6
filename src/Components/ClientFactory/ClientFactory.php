@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\ClientFactory;
+namespace HeidelPayment6\Components\ClientFactory;
 
-use HeidelPayment\Components\ConfigReader\ConfigReaderInterface;
+use HeidelPayment6\Components\ConfigReader\ConfigReader;
+use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Interfaces\DebugHandlerInterface;
 
@@ -26,8 +27,19 @@ class ClientFactory implements ClientFactoryInterface
     {
         $config = $this->configReader->read($salesChannelId);
 
-        $client = new Heidelpay($config->get('privateKey'), $locale);
-        $client->setDebugMode((bool) $config->get('extendedLogging'));
+        $client = new Heidelpay($config->get(ConfigReader::CONFIG_KEY_PRIVATE_KEY), $locale);
+        $client->setDebugMode((bool) $config->get(ConfigReader::CONFIG_KEY_EXTENDED_LOGGING));
+        $client->setDebugHandler($this->debugHandler);
+
+        return $client;
+    }
+
+    public function createClientFromPrivateKey(string $privateKey, string $locale = self::DEFAULT_LOCALE): Heidelpay
+    {
+        $config = $this->configReader->read();
+
+        $client = new Heidelpay($privateKey, $locale);
+        $client->setDebugMode((bool) $config->get(ConfigReader::CONFIG_KEY_EXTENDED_LOGGING));
         $client->setDebugHandler($this->debugHandler);
 
         return $client;

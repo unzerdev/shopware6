@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice;
+namespace HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -19,9 +19,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class HeidelpayPaymentDeviceDefinition extends EntityDefinition
 {
+    public const ENTITY_NAME = 'heidelpay_payment_device';
+
     public function getEntityName(): string
     {
-        return 'heidelpay_payment_device';
+        return self::ENTITY_NAME;
     }
 
     public function getCollectionClass(): string

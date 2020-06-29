@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\DataAbstractionLayer\Repository\PaymentDevice;
+namespace HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice;
 
-use HeidelPayment\Components\AddressHashGenerator\AddressHashGeneratorInterface;
-use HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
+use HeidelPayment6\Components\AddressHashGenerator\AddressHashGeneratorInterface;
+use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -32,14 +32,15 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
     /**
      * {@inheritdoc}
      */
-    public function getCollectionByCustomer(CustomerEntity $customer, Context $context): EntitySearchResult
+    public function getCollectionByCustomer(CustomerEntity $customer, string $deviceType, Context $context): EntitySearchResult
     {
         $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
 
         $criteria = new Criteria();
         $criteria->addFilter(
             new EqualsFilter('heidelpay_payment_device.customerId', $customer->getId()),
-            new EqualsFilter('heidelpay_payment_device.addressHash', $addressHash)
+            new EqualsFilter('heidelpay_payment_device.addressHash', $addressHash),
+            new EqualsFilter('heidelpay_payment_device.deviceType', $deviceType)
         );
 
         return $this->entityRepository->search($criteria, $context);
@@ -97,11 +98,20 @@ class HeidelpayPaymentDeviceRepository implements HeidelpayPaymentDeviceReposito
     /**
      * {@inheritdoc}
      */
-    public function get(string $id, Context $context): ?HeidelpayPaymentDeviceEntity
+    public function read(string $id, Context $context): ?HeidelpayPaymentDeviceEntity
+    {
+        $criteria = new Criteria([$id]);
+
+        $result = $this->entityRepository->search($criteria, $context);
+
+        return $result->getTotal() !== 0 ? $result->getEntities()->first() : null;
+    }
+
+    public function getByPaymentTypeId(string $paymentTypeId, Context $context): ?HeidelpayPaymentDeviceEntity
     {
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter('id', $id)
+            new EqualsFilter('typeId', $paymentTypeId)
         );
 
         $result = $this->entityRepository->search($criteria, $context);

@@ -2,21 +2,20 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\ResourceHydrator;
+namespace HeidelPayment6\Components\ResourceHydrator;
 
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Customer;
 use heidelpayPHP\Resources\EmbeddedResources\Address;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class CustomerResourceHydrator implements ResourceHydratorInterface
 {
     public function hydrateObject(
         SalesChannelContext $channelContext,
-        ?AsyncPaymentTransactionStruct $transaction = null
+        $transaction = null
     ): AbstractHeidelpayResource {
         $customer = $channelContext->getCustomer();
 

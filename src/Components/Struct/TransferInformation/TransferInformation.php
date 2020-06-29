@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\Struct\TransferInformation;
+namespace HeidelPayment6\Components\Struct\TransferInformation;
 
 use heidelpayPHP\Resources\TransactionTypes\Charge;
 use Shopware\Core\Framework\Struct\Struct;

@@ -1,0 +1,78 @@
+{% block heidelpay_frame_sepa_direct_debit_guaranteed %}
+    {% block heidelpay_checkout_confirm_frame_card_body_title %}
+        <div class="card-title">
+            {{ context.paymentMethod.translated.name }}
+        </div>
+    {% endblock %}
+
+    <div class="heidelpay-sepa-wrapper"
+         data-heidelpay-sepa-direct-debit-guaranteed="true"
+         data-heidelpay-sepa-direct-debit-guaranteed-options='{
+            "mandateNotAcceptedError": "{{ "HeidelPayment.frame.sepa.mandate.error" | trans }}",
+            "hasSepaDevices": {% if page.extensions.heidelpayDirectDebitGuaranteed.directDebitDevices|length > 0 %}true{% else %}false{% endif %}
+         }'>
+
+        {% block heidelpay_frame_sepa_direct_debit_guaranteed_test_data %}
+            {% if shopware.config.HeidelPayment6.settings.testMode %}
+                {% sw_include '@Storefront/storefront/component/heidelpay/frames/testdata/sepa.html.twig' %}
+            {% endif %}
+        {% endblock %}
+
+        {% if page.extensions.heidelpayDirectDebitGuaranteed.displayDirectDebitDeviceSelection and page.extensions.heidelpayDirectDebitGuaranteed.directDebitDevices|length > 0 %}
+            <div class="heidelpay-saved-sepa-wrapper">
+                <div class="heidelpay-saved-sepa--message">
+                    {{ "HeidelPayment.frame.sepa.device.choose"|trans }}
+                </div>
+                {% block heidelpay_frame_direct_debit_guaranteed_device_saved %}
+                    {# @var sepaDevice \HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity #}
+                    {% for sepaDevice in page.extensions.heidelpayDirectDebitGuaranteed.directDebitDevices %}
+                        <div class="custom-control custom-radio payment-control">
+                            <input type="radio" value="{{ sepaDevice.typeId }}" name="savedDirectDebitDevice"
+                                   form="confirmOrderForm" id="device-{{ sepaDevice.id }}"
+                                   class="custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
+                            <label for="device-{{ sepaDevice.id }}" class="custom-control-label payment-method-label">
+                                <strong>{{ sepaDevice.data['iban'] }}</strong>
+                            </label>
+                        </div>
+                    {% endfor %}
+                {% endblock %}
+
+                {% block heidelpay_frame_direct_debit_guaranteed_device_new %}
+                    <div class="custom-control custom-radio payment-control">
+                        <input type="radio" value="new" name="savedDirectDebitDevice" form="confirmOrderForm"
+                               id="device-new" class="custom-control-input payment-method-input">
+                        <label for="device-new" class="custom-control-label payment-method-label">
+                            {{ "HeidelPayment.frame.sepa.device.new"|trans }}
+                        </label>
+                    </div>
+                {% endblock %}
+            </div>
+        {% endif %}
+
+        <div class="heidelpay-sepa-wrapper-elements">
+            {% block heidelpay_frame_sepa_direct_debit_guaranteed_iban %}
+                <div id="heidelpay-sepa-container"></div>
+            {% endblock %}
+
+            {% block heidelpay_frame_sepa_direct_debit_guaranteed_mandate %}
+                {% sw_include '@Storefront/storefront/component/heidelpay/frames/sepa/mandate.html.twig' %}
+            {% endblock %}
+
+            {% block heidelpay_frame_sepa_direct_debit_guaranteed_birthday %}
+                <div class="heidelpay-frame-row">
+                    <label for="heidelpayBirthday">
+                        {{ "account.personalBirthdayLabel"|trans }}
+                    </label>
+
+                    <input type="date"
+                           id="heidelpayBirthday"
+                           name="heidelpayBirthday"
+                           class="form-control heidelpay-date-input"
+                           form="confirmOrderForm"
+                           {% if page.extensions.heidelpayDirectDebitGuaranteed.directDebitDevices|length > 0 %}required="required"{% endif %}
+                            {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

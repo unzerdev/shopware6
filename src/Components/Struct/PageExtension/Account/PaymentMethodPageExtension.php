@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\Struct\PageExtension\Account;
+namespace HeidelPayment6\Components\Struct\PageExtension\Account;
 
-use HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
+use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use Shopware\Core\Framework\Struct\Struct;
 
 class PaymentMethodPageExtension extends Struct

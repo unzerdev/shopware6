@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>API Settings</title>
+        <title lang="de-DE">API Konfiguration</title>
+        <input-field>
+            <name>publicKey</name>
+            <label>Public key</label>
+            <label lang="de-DE">Public key</label>
+            <required>true</required>
+        </input-field>
+        <input-field>
+            <name>privateKey</name>
+            <label>Private key</label>
+            <label lang="de-DE">Private key</label>
+            <required>true</required>
+        </input-field>
+        <input-field type="bool">
+            <name>testMode</name>
+            <label>Test mode</label>
+            <label lang="de-DE">Testmodus</label>
+            <helpText lang="de-DE">Aktivieren, um Testdaten zu Zahlungsmitteln in der Storefront auszugeben.</helpText>
+            <helpText>Activate to display test data for means of payments in the storefront.</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>extendedLogging</name>
+            <label>Extended logging</label>
+            <label lang="de-DE">Erweitertes logging</label>
+            <helpText lang="de-DE">Aktivieren, um alle API-Aufrufe in eine Logdatei (plugin_heidel_payment.XXX.log) zu schreiben. Unabhängig von dieser Option werden auftretene Fehler entsprechend von Shopware geloggt.</helpText>
+            <helpText>Activate to write any API requests to a logfile (plugin_heidel_payment.XXX.log). Irrespective of this option, errors will be logged by Shopware accordingly.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Payment Settings</title>
+        <title lang="de-DE">Zahlungsarten Einstellungen</title>
+        <input-field type="single-select">
+            <name>bookingModeCreditCard</name>
+            <label>Booking mode credit card</label>
+            <label lang="de-DE">Buchungsmodus für Kreditkarte</label>
+            <helpText>If you select the charge option, the amount is debited immediately; if you select the Authorization option, the amount must be collected manually later.</helpText>
+            <helpText lang="de-DE">Bei der Option Direkt wird der Betrag sofort abgebucht, wählen Sie hingegen die Option Authorisierung muss der Betrag später manuell eingezogen werden.</helpText>
+            <options>
+                <option>
+                    <id>charge</id>
+                    <name>charge</name>
+                    <name lang="de-DE">Direkt</name>
+                </option>
+                <option>
+                    <id>authorize</id>
+                    <name>authorize</name>
+                    <name lang="de-DE">Authorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>registerCreditCard</name>
+            <label>Register credit cards</label>
+            <label lang="de-DE">Kreditkarten registrieren</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>bookingModePayPal</name>
+            <label>Booking mode PayPal</label>
+            <label lang="de-DE">Buchungsmodus für PayPal</label>
+            <helpText>If you select the charge option, the amount is debited immediately; if you select the Authorization option, the amount must be collected manually later.</helpText>
+            <helpText lang="de-DE">Bei der Option Direkt wird der Betrag sofort abgebucht, wählen Sie hingegen die Option Authorisierung muss der Betrag später manuell eingezogen werden.</helpText>
+            <options>
+                <option>
+                    <id>charge</id>
+                    <name>charge</name>
+                    <name lang="de-DE">Direkt</name>
+                </option>
+                <option>
+                    <id>authorize</id>
+                    <name>authorize</name>
+                    <name lang="de-DE">Authorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>registerPayPal</name>
+            <label>Register PayPal accounts</label>
+            <label lang="de-DE">PayPal Accounts registrieren</label>
+        </input-field>
+
+        <input-field type="float">
+            <name>hirePurchaseEffectiveInterest</name>
+            <label>Hire purchase effective interest</label>
+            <label lang="de-DE">effektive Verzinsung</label>
+            <defaultValue>4.5</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>registerDirectDebit</name>
+            <label>Register direct debit accounts</label>
+            <label lang="de-DE">Lastschrift-Konten registrieren</label>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Advanced settings</title>
+        <title lang="de-DE">Erweiterte Einstellungen</title>
+
+        <input-field type="single-select">
+            <name>statusForAutomaticShippingNotification</name>
+            <label>Delivery status for shipping notification</label>
+            <label lang="de-DE">Versandstatus für die Versandbenachrichtigung</label>
+            <helpText>Automatic shipping notifications (if active) will be sent if an order enters the selected status. Leave empty to disable automatic shipping notifications.</helpText>
+            <helpText lang="de-DE">Die automatische Versandbenachrichtigung wird, wenn aktiv, ausgelöst sobald eine Bestellung den hier ausgewählten Status erhält. Lassen Sie dieses Feld leer, um keine automatischen Versandbenachrichtigungen anzustoßen.</helpText>
+        </input-field>
+    </card>
+</config>

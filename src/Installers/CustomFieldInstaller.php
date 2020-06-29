@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Installers;
+namespace HeidelPayment6\Installers;
 
-use Shopware\Core\Framework\CustomField\CustomFieldTypes;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\System\CustomField\CustomFieldTypes;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    public const HEIDELPAY_FRAME          = 'heidelpay_frame';
     public const HEIDELPAY_IS_TRANSACTION = 'heidelpay_is_transaction';
+    public const HEIDELPAY_IS_SHIPPED     = 'heidelpay_is_shipped';
 
     public const CUSTOM_FIELDS = [
         [
@@ -29,17 +29,6 @@ class CustomFieldInstaller implements InstallerInterface
             ],
             'customFields' => [
                 [
-                    'name'   => self::HEIDELPAY_FRAME,
-                    'type'   => CustomFieldTypes::TEXT,
-                    'id'     => 'ef604f17f5be45ccbe3fe9315aac8a84',
-                    'config' => [
-                        'label' => [
-                            'en-GB' => 'Checkout template',
-                            'de-DE' => 'Kassen-Template',
-                        ],
-                    ],
-                ],
-                [
                     'name'   => self::HEIDELPAY_IS_TRANSACTION,
                     'type'   => CustomFieldTypes::BOOL,
                     'id'     => '6bb838751d65478992a5c0a1e80cb5fd',
@@ -47,6 +36,17 @@ class CustomFieldInstaller implements InstallerInterface
                         'label' => [
                             'en-GB' => 'Heidelpay transaction',
                             'de-DE' => 'Heidelpay Transaktion',
+                        ],
+                    ],
+                ],
+                [
+                    'name'   => self::HEIDELPAY_IS_SHIPPED,
+                    'type'   => CustomFieldTypes::BOOL,
+                    'id'     => '4962176184c25acbd46f60a15c24b334',
+                    'config' => [
+                        'label' => [
+                            'en-GB' => 'Shipping notification executed',
+                            'de-DE' => 'Versandbenachrichtung erfolgt',
                         ],
                     ],
                 ],

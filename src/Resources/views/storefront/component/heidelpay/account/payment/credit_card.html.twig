@@ -1,4 +1,4 @@
-{# @var device \HeidelPayment\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity #}
+{# @var device \HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity #}
 
 {% block page_account_payment_main_heidelpay_credit_card %}
     <div class="heidelpay-device credit-card">
@@ -10,13 +10,13 @@
 
         {% block page_account_payment_main_heidelpay_credit_card_number %}
             <div id="number">
-                <strong>{{ device.data['number'] }}</strong>
+                <strong>{{ device.data.number }}</strong>
             </div>
         {% endblock %}
 
         {% block page_account_payment_main_heidelpay_credit_holder %}
             <div id="holder">
-                {{ device.data['holder'] }} ({{ device.data['expiryDate'] }})
+                {{ device.data.holder }} ({{ device.data.expiryDate }})
             </div>
         {% endblock %}
 

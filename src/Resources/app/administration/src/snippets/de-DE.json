@@ -1,0 +1,121 @@
+{
+    "heidel-payment": {
+        "tabTitle": "Heidelpay",
+        "paymentDetails": {
+            "history": {
+                "cardTitle": "Zahlungsverlauf",
+                "column": {
+                    "type": "Typ",
+                    "amount": "Betrag",
+                    "date": "Datum"
+                },
+                "type": {
+                    "authorization": "Reservierung",
+                    "charge": "Einzug",
+                    "shipment": "Versandtmitteilung",
+                    "cancellation": "Rückerstattung",
+                    "default": ""
+                }
+            },
+            "actions": {
+                "chargeButton": "Einziehen",
+                "shipButton": "Versandmitteilung",
+                "refundButton": "Rückerstatten"
+            },
+            "detail": {
+                "cardTitle": "Zahlungsdetails",
+                "amountTotal": "Betrag (brutto)",
+                "amountTotalVat": "Betrag (netto)",
+                "currency": "Währung",
+                "shortId": "Short-ID",
+                "id": "Zahlungs-ID",
+                "state": "Status",
+                "amountRemaining": "Amount (Remaining)",
+                "amountCancelled": "Amount (Cancelled)",
+                "amountCharged": "Amount (Charged)"
+            },
+            "metadata": {
+                "cardTitle": "Metadaten",
+                "column": {
+                    "key": "Schlüssel",
+                    "value": "Wert"
+                }
+            },
+            "basket": {
+                "cardTitle": "Warenkorb",
+                "column":{
+                    "quantity": "Anzahl",
+                    "title": "Titel",
+                    "amountGross": "Betrag (brutto)",
+                    "amountNet": "Betrag (netto)"
+                }
+            },
+            "notifications": {
+                "genericErrorMessage": "Es ist ein Fehler aufgetreten!",
+                "refundSuccessTitle": "Rückerstatten",
+                "refundSuccessMessage": "Die Rückerstattung wurde erfolgreich durchgeführt.",
+                "refundErrorTitle": "Rückerstatten",
+                "chargeSuccessTitle": "Einziehen",
+                "chargeSuccessMessage": "Das Einziehen der Zahlung wurde erfolgreich durchgeführt.",
+                "chargeErrorTitle": "Einziehen",
+                "shipSuccessTitle": "Versandmitteilung",
+                "shipSuccessMessage": "Die Versandmitteilung wurde erfolgreich gesendet.",
+                "shipErrorTitle": "Versandmitteilung",
+                "invoiceNotFoundMessage": "Zu dieser Bestellung wurde keine Rechnung gefunden"
+            }
+        }
+    },
+    "heidel-payment-settings": {
+        "module": {
+            "title": "Heidelpay",
+            "description": "Heidelpay"
+        },
+        "form": {
+            "message": {
+                "success": {
+                    "title": "Test erfolgreich",
+                    "message": "Die angegebenen API-Zugangsdaten sind korrekt!"
+                },
+                "error": {
+                    "title": "Test fehlgeschlagen",
+                    "message": "Die angegebenen API-Zugangsdaten sind nicht korret! Bitte korrigieren Sie die Eingabe und versuchen Sie es erneut."
+                }
+            },
+            "testButton": "API Zugangsdaten testen",
+            "webhookButton": "Webhooks registrieren testen"
+        },
+        "modal": {
+            "close": "Schließen",
+            "webhook": {
+                "title": "Webhooks",
+                "submit": {
+                    "register": "Webhooks registrieren",
+                    "clear": "Webhooks entfernen"
+                }
+            }
+        },
+        "webhook": {
+            "messagePrefix": "Domain: ",
+            "register": {
+                "done": "Webhook registriert | Webhooks registriert",
+                "error": "Der Webhook konnte nicht registriert werden | Die Webhooks konnten nicht registriert werden"
+            },
+            "clear": {
+                "done": "Webhook entfernt | Webhooks entfernt",
+                "error": "Der Webhook konnte nicht entfernt werden | Die Webhooks konnten nicht entfernt werden"
+            },
+            "missing": {
+                "fields": "Nicht alle benötigten Felder sind vorhanden",
+                "context": "Der Kontext konnte nicht aktualisiert werden",
+                "selection": "Es wurden keine Domains selektiert"
+            },
+            "notFound": {
+                "salesChannelDomain": "Die spezifizierte Domain wurde nicht gefunden"
+            },
+            "globalError": {
+                "title": "Ein Fehler ist aufgetreten",
+                "message": "Bitte kontaktieren sie uns für mehr Informationen"
+            }
+        }
+    }
+}

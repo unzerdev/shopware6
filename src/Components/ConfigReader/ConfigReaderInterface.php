@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment\Components\ConfigReader;
+namespace HeidelPayment6\Components\ConfigReader;
 
-use HeidelPayment\Components\Struct\Configuration;
+use HeidelPayment6\Components\Struct\Configuration;
 
 interface ConfigReaderInterface
 {
