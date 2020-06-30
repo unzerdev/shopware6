@@ -63,6 +63,7 @@ package:
     only:
         - tags
         - master
+        - integration*
     services:
         - mysql:5.7
     script:
