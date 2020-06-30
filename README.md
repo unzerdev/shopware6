@@ -36,7 +36,7 @@ This will automatically generate all files required for the plugin to work corre
 After the actual plugin installation it is necessary to add the new payment methods to the desired sales channel. 
 Currently the only sales channel that is supported is the Storefront.
 
-Further informations and configuration you can find in the manual at https://dev.heidelpay.de/handbuch-shopware-ab-6-2-version-0-0-1/
+Further information and configuration you can find in the manual at https://dev.heidelpay.de/handbuch-shopware-ab-6-2-version-0-0-1/
 
 ## Troubleshooting
 
