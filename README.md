@@ -1,12 +1,21 @@
 # HeidelPayment
 
-Heidelpay payment integration for Shopware 6 including the following payment methods:
+Heidelpay payment integration for Shopware 6.2 including the following payment methods:
 * Credit Card
+* SEPA direct debit
+* Flexipay direct debit (secured)
+* Prepayment
 * Invoice
+* FlexiPay® Invoice B2C / B2B (secured, factoring)
+* FlexiPay® Direct
 * SOFORT
+* giropay
 * EPS
+* iDEAL
 * PayPal
-* Flexipay
+* Alipay
+* WeChat Pay
+
 
 ## Installation
 ### For production
@@ -27,7 +36,12 @@ This will automatically generate all files required for the plugin to work corre
 After the actual plugin installation it is necessary to add the new payment methods to the desired sales channel. 
 Currently the only sales channel that is supported is the Storefront.
 
+Further information and configuration you can find in the manual at https://dev.heidelpay.de/handbuch-shopware-ab-6-2-version-0-0-1/
+
 ## Troubleshooting
+
+#### Known Issues
+> This plugin is a beta-release. For all known issues please have a look at  https://dev.heidelpay.de/handbuch-shopware-ab-6-2-version-0-0-1/#Known_issues
 
 #### JavaScript does not load correctly in the storefront
 
