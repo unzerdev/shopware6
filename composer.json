@@ -3,7 +3,7 @@
     "description": "Heidelpay payment integration for Shopware 6",
     "version": "v0.0.1",
     "type": "shopware-platform-plugin",
-    "license": "Commercial",
+    "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [
