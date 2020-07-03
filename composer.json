@@ -1,5 +1,5 @@
 {
-    "name": "heidel/payment6",
+    "name": "heidelpay/shopware-6",
     "description": "Heidelpay payment integration for Shopware 6",
     "version": "v0.0.1",
     "type": "shopware-platform-plugin",
