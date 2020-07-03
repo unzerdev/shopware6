@@ -19,7 +19,9 @@ Heidelpay payment integration for Shopware 6.2 including the following payment m
 
 ## Installation
 ### For production
-1. Install the plugin using the Shopware plugin manager and configure it as you need.
+1. Upload the plugin files into the `custom/plugins` folder in your shopware installation.
+2. Inside the plugin directory `custom/plugins/HeidelPayment6` run `composer install --no-dev`
+3. Switch to admin and install the plugin using the Shopware plugin manager and configure it as you need.
 
 ### For development
 1. Clone the plugin repository into the `custom/plugins` folder in your shopware installation.
@@ -36,12 +38,12 @@ This will automatically generate all files required for the plugin to work corre
 After the actual plugin installation it is necessary to add the new payment methods to the desired sales channel. 
 Currently the only sales channel that is supported is the Storefront.
 
-Further information and configuration you can find in the manual at https://dev.heidelpay.de/handbuch-shopware-ab-6-2-version-0-0-1/
+Further information and configuration you can find within the <a href="https://dev.heidelpay.de/handbuch-shopware-ab-6-2-version-0-0-1/" target="_blank">manual</a>
 
 ## Troubleshooting
 
 #### Known Issues
-> This plugin is a beta-release. For all known issues please have a look at  https://dev.heidelpay.de/handbuch-shopware-ab-6-2-version-0-0-1/#Known_issues
+> This plugin is a beta-release. For all known issues please have a look at the <a href="https://dev.heidelpay.de/handbuch-shopware-ab-6-2-version-0-0-1/#Known_issues" target="_blank">documentation</a>
 
 #### JavaScript does not load correctly in the storefront
 
@@ -53,3 +55,6 @@ Further information and configuration you can find in the manual at https://dev.
 
 #### I do not see the plugin inside the plugin list
 >In this case it's required to run the command `./bin/console plugin:refresh` manually in the shopware directory
+
+#### Support
+If you need support please feel free to contact us via e-mail <a href="mailto:support@heidelpay.com">support@heidelpay.com</a>
