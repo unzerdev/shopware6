@@ -64,6 +64,7 @@ package:
         - tags
         - master
         - integration*
+        - bugfix/HEIDELPAYSUPPORT*
     services:
         - mysql:5.7
     script:
