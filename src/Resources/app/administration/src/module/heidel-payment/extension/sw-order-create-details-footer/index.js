@@ -10,15 +10,19 @@ Component.override('sw-order-create-details-footer', {
     computed: {
         paymentMethodCriteria() {
             /** @var {Criteria} paymentCriteria */
-            const paymentCriteria = this.salesChannelCriteria;
+            const criteria = new Criteria();
 
-            paymentCriteria.addFilter(
+            if (this.salesChannelId) {
+                criteria.addFilter(Criteria.equals('salesChannels.id', this.salesChannelId));
+            }
+
+            criteria.addFilter(
                 Criteria.not('AND', [
                     Criteria.contains('handlerIdentifier', heidelPaymentHandler)
                 ])
             );
 
-            return paymentCriteria;
+            return criteria;
         }
     }
 });
