@@ -1,4 +1,5 @@
 {% block heidelpay_frame_paypal_account %}
+    {# PayPal with stored account #}
     {% if page.extensions.heidelpayPayPal.displayPayPalAccountSelection and page.extensions.heidelpayPayPal.payPalAccounts|length > 0 %}
         {% block heidelpay_checkout_confirm_frame_card_body_title %}
             <div class="card-title">
@@ -9,7 +10,7 @@
         <div class="heidelpay-paypal-account-wrapper"
              data-heidelpay-paypal="true"
              data-heidelpay-paypal-options='{
-                "hasSavedAccounts": {% if page.extensions.heidelpayPayPal.payPalAccounts|length > 0 %}true{% else %}false{% endif %}
+                "hasSavedAccounts": true
              }'>
             <div class="heidelpay-saved-accounts-wrapper">
                 <div class="heidelpay-saved-accounts--message">
@@ -41,6 +42,14 @@
                     </div>
                 {% endblock %}
             </div>
+        </div>
+    {% else %}
+        {# PayPal without stored accounts #}
+        <div class="heidelpay-paypal-account-wrapper"
+             data-heidelpay-paypal="true"
+             data-heidelpay-paypal-options='{
+                "hasSavedAccounts": false
+             }'>
         </div>
     {% endif %}
 {% endblock %}

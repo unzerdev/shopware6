@@ -1,7 +1,7 @@
 {
     "name": "heidelpay/shopware-6",
     "description": "Heidelpay payment integration for Shopware 6",
-    "version": "v0.0.1",
+    "version": "0.0.1.1",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "minimum-stability": "dev",
@@ -18,7 +18,7 @@
     },
     "require": {
         "php": "^7.2",
-        "heidelpay/heidelpay-php": "~1.2.0",
+        "heidelpay/heidelpay-php": "~1.2.8.0",
         "shopware/core": "*",
         "shopware/administration": "*",
         "shopware/storefront": "*"
