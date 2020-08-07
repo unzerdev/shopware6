@@ -23,13 +23,13 @@
                     <sw-container>
                         <sw-description-list>
                             <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountRemaining') }}</dt>
-                            <dd>{{ paymentResource.calculatedAmounts.remaining | currency(paymentResource.currency) }}</dd>
+                            <dd>{{ paymentResource.amount.remaining | currency(paymentResource.currency) }}</dd>
 
                             <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountCancelled') }}</dt>
-                            <dd>{{ paymentResource.calculatedAmounts.cancelled | currency(paymentResource.currency) }}</dd>
+                            <dd>{{ paymentResource.amount.canceled | currency(paymentResource.currency) }}</dd>
 
                             <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountCharged') }}</dt>
-                            <dd>{{ paymentResource.calculatedAmounts.charged | currency(paymentResource.currency) }}</dd>
+                            <dd>{{ paymentResource.amount.charged | currency(paymentResource.currency) }}</dd>
 
                             {% block heidel_payment_detail_container_center_inner %}{% endblock %}
                         </sw-description-list>
