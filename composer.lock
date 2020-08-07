@@ -8,7 +8,7 @@
     "packages": [
         {
             "name": "heidelpay/heidelpay-php",
-            "version": "1.2.5.1",
+            "version": "1.2.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/heidelpay/heidelpayPHP.git",
