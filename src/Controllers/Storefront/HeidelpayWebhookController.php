@@ -56,7 +56,7 @@ class HeidelpayWebhookController extends StorefrontController
 
             try {
                 $handler->execute($webhook, $salesChannelContext);
-            } catch(Throwable $exception) {
+            } catch (Throwable $exception) {
                 $this->logger->info(
                     'Catched an exception while handling a webhook but this may not be a failure.',
                     [
