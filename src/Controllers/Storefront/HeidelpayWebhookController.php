@@ -7,6 +7,7 @@ namespace HeidelPayment6\Controllers\Storefront;
 use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use HeidelPayment6\Components\Struct\Webhook;
 use HeidelPayment6\Components\WebhookHandler\WebhookHandlerInterface;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Throwable;
 
 class HeidelpayWebhookController extends StorefrontController
 {
@@ -23,10 +25,14 @@ class HeidelpayWebhookController extends StorefrontController
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    public function __construct(iterable $handlers, ConfigReaderInterface $configReader)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(iterable $handlers, ConfigReaderInterface $configReader, LoggerInterface $logger)
     {
         $this->handlers     = $handlers;
         $this->configReader = $configReader;
+        $this->logger       = $logger;
     }
 
     /**
@@ -48,7 +54,20 @@ class HeidelpayWebhookController extends StorefrontController
                 continue;
             }
 
-            $handler->execute($webhook, $salesChannelContext);
+            try {
+                $handler->execute($webhook, $salesChannelContext);
+            } catch(Throwable $exception) {
+                $this->logger->info(
+                    'Catched an exception while handling a webhook but this may not be a failure.',
+                    [
+                        'message' => $exception->getMessage(),
+                        'code'    => $exception->getCode(),
+                        'file'    => $exception->getFile(),
+                        'line'    => $exception->getLine(),
+                        'trace'   => $exception->getTraceAsString(),
+                    ]
+                );
+            }
         }
 
         return new Response();
