@@ -9,6 +9,7 @@ use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Basket;
 use heidelpayPHP\Resources\EmbeddedResources\BasketItem;
 use InvalidArgumentException;
+use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
@@ -89,6 +90,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $heidelBasket->addBasketItem($basketItem);
         }
 
+        $this->hydrateShippingCosts($transaction, $heidelBasket, $currencyPrecision, $channelContext);
+
         return $heidelBasket;
     }
 
@@ -108,5 +111,47 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         }
 
         return BasketItemTypes::GOODS;
+    }
+
+    /**
+     * @param AsyncPaymentTransactionStruct|OrderTransactionEntity $transaction
+     */
+    private function hydrateShippingCosts($transaction, Basket $basket, int $currencyPrecision, SalesChannelContext $channelContext): void
+    {
+        $shippingCosts = $transaction->getOrder()->getShippingCosts();
+
+        if ($transaction->getOrder()->getTaxStatus() === CartPrice::TAX_STATE_FREE) {
+            $dispatchBasketItem = new BasketItem();
+            $dispatchBasketItem->setType(BasketItemTypes::SHIPMENT);
+            $dispatchBasketItem->setTitle($channelContext->getShippingMethod()->getName());
+            $dispatchBasketItem->setAmountGross(round($shippingCosts->getTotalPrice(), $currencyPrecision));
+            $dispatchBasketItem->setAmountPerUnit(round($shippingCosts->getUnitPrice(), $currencyPrecision));
+            $dispatchBasketItem->setAmountNet(round($shippingCosts->getTotalPrice(), $currencyPrecision));
+            $dispatchBasketItem->setQuantity($shippingCosts->getQuantity());
+
+            $basket->addBasketItem($dispatchBasketItem);
+        }
+
+        foreach ($shippingCosts->getCalculatedTaxes() as $tax) {
+            $totalAmount = $tax->getPrice();
+            $unitPrice   = $tax->getPrice();
+
+            if ($transaction->getOrder()->getTaxStatus() === CartPrice::TAX_STATE_NET) {
+                $totalAmount += $tax->getTax();
+                $unitPrice += $tax->getTax();
+            }
+
+            $dispatchBasketItem = new BasketItem();
+            $dispatchBasketItem->setType(BasketItemTypes::SHIPMENT);
+            $dispatchBasketItem->setTitle($channelContext->getShippingMethod()->getName());
+            $dispatchBasketItem->setAmountGross(round($totalAmount, $currencyPrecision));
+            $dispatchBasketItem->setAmountPerUnit(round($unitPrice, $currencyPrecision));
+            $dispatchBasketItem->setAmountNet(round($totalAmount - $tax->getTax(), $currencyPrecision));
+            $dispatchBasketItem->setAmountVat(round($tax->getTax(), $currencyPrecision));
+            $dispatchBasketItem->setQuantity($shippingCosts->getQuantity());
+            $dispatchBasketItem->setVat($tax->getTaxRate());
+
+            $basket->addBasketItem($dispatchBasketItem);
+        }
     }
 }
