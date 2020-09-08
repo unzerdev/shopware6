@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HeidelPayment6\Components\ArrayHydrator;
 
+use heidelpayPHP\Resources\EmbeddedResources\Amount;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
 use heidelpayPHP\Resources\TransactionTypes\Authorization;
@@ -29,7 +30,7 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
             'metadata'      => [],
             'isGuaranteed'  => $resource->getPaymentType() instanceof InvoiceGuaranteed,
             'type'          => $resource->getPaymentType() ? $resource->getPaymentType()->expose() : null,
-            'amount'        => $resource->getAmount()->expose(),
+            'amount'        => $this->hydrateAmount($resource->getAmount()),
             'charges'       => [],
             'shipments'     => [],
             'cancellations' => [],
@@ -99,5 +100,15 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
         }
 
         return $data;
+    }
+
+    private function hydrateAmount(Amount $amount): array
+    {
+        return [
+            'total'     => $amount->getTotal(),
+            'canceled'  => $amount->getCanceled(),
+            'charged'   => $amount->getCharged(),
+            'remaining' => $amount->getRemaining(),
+        ];
     }
 }

@@ -30,9 +30,9 @@
                 "shortId": "Short-ID",
                 "id": "Zahlungs-ID",
                 "state": "Status",
-                "amountRemaining": "Amount (Remaining)",
-                "amountCancelled": "Amount (Cancelled)",
-                "amountCharged": "Amount (Charged)"
+                "amountRemaining": "Betrag (Rest)",
+                "amountCancelled": "Betrag (Rückerstattet)",
+                "amountCharged": "Betrag (Eingezogen)"
             },
             "metadata": {
                 "cardTitle": "Metadaten",
