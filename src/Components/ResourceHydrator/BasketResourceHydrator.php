@@ -90,7 +90,12 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $heidelBasket->addBasketItem($basketItem);
         }
 
-        $this->hydrateShippingCosts($transaction, $heidelBasket, $currencyPrecision, $channelContext);
+        $this->hydrateShippingCosts(
+            $transaction,
+            $heidelBasket,
+            $currencyPrecision,
+            $channelContext->getShippingMethod()->getName()
+        );
 
         return $heidelBasket;
     }
@@ -116,37 +121,37 @@ class BasketResourceHydrator implements ResourceHydratorInterface
     /**
      * @param AsyncPaymentTransactionStruct|OrderTransactionEntity $transaction
      */
-    private function hydrateShippingCosts($transaction, Basket $basket, int $currencyPrecision, SalesChannelContext $channelContext): void
+    private function hydrateShippingCosts($transaction, Basket $basket, int $currencyPrecision, string $shippingMethodName): void
     {
         $shippingCosts = $transaction->getOrder()->getShippingCosts();
 
         if ($transaction->getOrder()->getTaxStatus() === CartPrice::TAX_STATE_FREE) {
             $dispatchBasketItem = new BasketItem();
             $dispatchBasketItem->setType(BasketItemTypes::SHIPMENT);
-            $dispatchBasketItem->setTitle($channelContext->getShippingMethod()->getName());
+            $dispatchBasketItem->setTitle($shippingMethodName);
             $dispatchBasketItem->setAmountGross(round($shippingCosts->getTotalPrice(), $currencyPrecision));
             $dispatchBasketItem->setAmountPerUnit(round($shippingCosts->getUnitPrice(), $currencyPrecision));
             $dispatchBasketItem->setAmountNet(round($shippingCosts->getTotalPrice(), $currencyPrecision));
             $dispatchBasketItem->setQuantity($shippingCosts->getQuantity());
 
             $basket->addBasketItem($dispatchBasketItem);
+
+            return;
         }
 
         foreach ($shippingCosts->getCalculatedTaxes() as $tax) {
-            $totalAmount = $tax->getPrice();
-            $unitPrice   = $tax->getPrice();
+            $price = $tax->getPrice();
 
             if ($transaction->getOrder()->getTaxStatus() === CartPrice::TAX_STATE_NET) {
-                $totalAmount += $tax->getTax();
-                $unitPrice += $tax->getTax();
+                $price += $tax->getTax();
             }
 
             $dispatchBasketItem = new BasketItem();
             $dispatchBasketItem->setType(BasketItemTypes::SHIPMENT);
-            $dispatchBasketItem->setTitle($channelContext->getShippingMethod()->getName());
-            $dispatchBasketItem->setAmountGross(round($totalAmount, $currencyPrecision));
-            $dispatchBasketItem->setAmountPerUnit(round($unitPrice, $currencyPrecision));
-            $dispatchBasketItem->setAmountNet(round($totalAmount - $tax->getTax(), $currencyPrecision));
+            $dispatchBasketItem->setTitle($shippingMethodName);
+            $dispatchBasketItem->setAmountGross(round($price, $currencyPrecision));
+            $dispatchBasketItem->setAmountPerUnit(round($price, $currencyPrecision));
+            $dispatchBasketItem->setAmountNet(round($price - $tax->getTax(), $currencyPrecision));
             $dispatchBasketItem->setAmountVat(round($tax->getTax(), $currencyPrecision));
             $dispatchBasketItem->setQuantity($shippingCosts->getQuantity());
             $dispatchBasketItem->setVat($tax->getTaxRate());
