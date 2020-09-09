@@ -9,6 +9,7 @@
         <service id="HeidelPayment6\Controllers\Storefront\HeidelpayWebhookController">
             <argument type="tagged" tag="heidelpay.webhook_handler" />
             <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="heidel_payment.logger" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
