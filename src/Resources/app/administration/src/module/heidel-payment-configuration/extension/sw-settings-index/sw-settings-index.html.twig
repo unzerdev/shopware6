@@ -1,0 +1,11 @@
+{% block sw_settings_content_card_slot_plugins %}
+    {% parent %}
+
+    <sw-settings-item :label="$tc('heidel-payment-settings.module.title')"
+                      :to="{ name: 'heidel.payment.configuration.settings' }"
+                      :backgroundEnabled="false">
+        <template #icon>
+            <img class="heidel-payment-icon" :src="'heidelpayment6/plugin.png' | asset">
+        </template>
+    </sw-settings-item>
+{% endblock %}

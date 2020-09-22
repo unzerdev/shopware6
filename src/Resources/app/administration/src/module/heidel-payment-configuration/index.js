@@ -1,6 +1,6 @@
 import './component/register-webhook';
 
-import './extension/sw-plugin-list';
+import './extension/sw-settings-index';
 
 import './page/heidel-payment-settings';
 
