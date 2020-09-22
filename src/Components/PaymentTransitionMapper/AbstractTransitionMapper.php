@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentTransitionMapper;
+namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
-use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\TransactionTypes\Shipment;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
+use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 
 abstract class AbstractTransitionMapper
 {
-    public const HEIDELPAY_MAX_DIGITS = 4;
+    public const UNZER_MAX_DIGITS = 4;
 
     public const INVALID_TRANSITION = 'invalid';
 
@@ -67,9 +67,9 @@ abstract class AbstractTransitionMapper
 
     protected function checkForRefund(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
-        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::HEIDELPAY_MAX_DIGITS));
-        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::HEIDELPAY_MAX_DIGITS));
-        $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::UNZER_MAX_DIGITS));
+        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::UNZER_MAX_DIGITS));
+        $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** self::UNZER_MAX_DIGITS));
 
         if ($cancelledAmount === $totalAmount && $remainingAmount === 0 && $currentStatus !== StateMachineTransitionActions::ACTION_CANCEL) {
             return StateMachineTransitionActions::ACTION_REFUND;
@@ -81,8 +81,8 @@ abstract class AbstractTransitionMapper
     protected function checkForShipment(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
         $shippedAmount   = 0;
-        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::HEIDELPAY_MAX_DIGITS));
-        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::UNZER_MAX_DIGITS));
+        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::UNZER_MAX_DIGITS));
 
         if (empty($paymentObject->getShipments())) {
             return $currentStatus;
@@ -91,10 +91,10 @@ abstract class AbstractTransitionMapper
         /** @var Shipment $shipment */
         foreach ($paymentObject->getShipments() as $shipment) {
             if (!empty($shipment->getAmount())) {
-                $shippedAmount += (int) round($shipment->getAmount() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+                $shippedAmount += (int) round($shipment->getAmount() * (10 ** self::UNZER_MAX_DIGITS));
 
                 if ($shippedAmount > ($totalAmount - $cancelledAmount)) {
-                    $shippedAmount -= (int) round($shipment->getAmount() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+                    $shippedAmount -= (int) round($shipment->getAmount() * (10 ** self::UNZER_MAX_DIGITS));
                 }
             }
         }

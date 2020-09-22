@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\ConfigReader;
+namespace UnzerPayment6\Components\ConfigReader;
 
-use HeidelPayment6\Components\Struct\Configuration;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use UnzerPayment6\Components\Struct\Configuration;
 
 class ConfigReader implements ConfigReaderInterface
 {
     /** @var string */
-    public const SYSTEM_CONFIG_DOMAIN = 'HeidelPayment6.settings.';
+    public const SYSTEM_CONFIG_DOMAIN = 'UnzerPayment6.settings.';
 
     public const CONFIG_KEY_PUBLIC_KEY            = 'publicKey';
     public const CONFIG_KEY_PRIVATE_KEY           = 'privateKey';

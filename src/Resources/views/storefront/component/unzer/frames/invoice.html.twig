@@ -1,0 +1,11 @@
+{% block unzer_paymentframe_invoice %}
+    {% block unzer_paymentcheckout_confirm_frame_card_body_title %}
+        <div class="card-title">
+            {{ context.paymentMethod.translated.name }}
+        </div>
+    {% endblock %}
+
+    <div class="unzer-paymentinvoice-wrapper"
+         data-unzer-invoice="true">
+    </div>
+{% endblock %}

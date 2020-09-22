@@ -1,0 +1,35 @@
+{% block heidel_payment_actions %}
+    <sw-container columns="1fr 1fr" gap="0 10px" v-on:click.native.stop>
+        {% block heidel_payment_actions_amount_field %}
+            <div class="unzer-payment-actions--input">
+                <sw-number-field
+                        :min="0.01"
+                        :max="maxTransactionAmount"
+                    v-model="transactionAmount">
+                </sw-number-field>
+            </div>
+        {% endblock %}
+
+        <div class="unzer-payment-actions--button">
+            {% block heidel_payment_actions_charge_button %}
+                <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" v-if="isChargePossible" @click="charge">
+                    {{ $tc('unzer-payment.paymentDetails.actions.chargeButton') }}
+                </sw-button-process>
+            {% endblock %}
+
+            {% block heidel_payment_actions_refund_button %}
+                <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" v-if="isRefundPossible" @click="refund">
+                    {{ $tc('unzer-payment.paymentDetails.actions.refundButton') }}
+                </sw-button-process>
+            {% endblock %}
+
+            {% block heidel_payment_actions_default_button %}
+                <sw-button :disabled="true" v-if="!isChargePossible && !isRefundPossible">
+                    {{ $tc('unzer-payment.paymentDetails.actions.chargeButton') }}
+                </sw-button>
+            {% endblock %}
+
+            {% block heidel_payment_actions_button_container_inner %}{% endblock %}
+        </div>
+    </sw-container>
+{% endblock %}

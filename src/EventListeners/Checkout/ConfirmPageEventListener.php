@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\EventListeners\Checkout;
+namespace UnzerPayment6\EventListeners\Checkout;
 
-use HeidelPayment6\Components\ConfigReader\ConfigReader;
-use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
-use HeidelPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
-use HeidelPayment6\Components\Struct\Configuration;
-use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
-use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitGuaranteedPageExtension;
-use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
-use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\HirePurchasePageExtension;
-use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
-use HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
-use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
-use HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
-use HeidelPayment6\Installers\PaymentInstaller;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
+use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
+use UnzerPayment6\Components\Struct\Configuration;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitGuaranteedPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\HirePurchasePageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
+use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
+use UnzerPayment6\Installers\PaymentInstaller;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
 {
@@ -29,7 +29,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var Configuration */
     protected $configData;
 
-    /** @var HeidelpayPaymentDeviceRepositoryInterface */
+    /** @var UnzerPaymentDeviceRepositoryInterface */
     private $deviceRepository;
 
     /** @var ConfigReaderInterface */
@@ -38,7 +38,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var PaymentFrameFactoryInterface */
     private $paymentFrameFactory;
 
-    public function __construct(HeidelpayPaymentDeviceRepositoryInterface $deviceRepository, ConfigReaderInterface $configReader, PaymentFrameFactoryInterface $paymentFrameFactory)
+    public function __construct(UnzerPaymentDeviceRepositoryInterface $deviceRepository, ConfigReaderInterface $configReader, PaymentFrameFactoryInterface $paymentFrameFactory)
     {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
@@ -108,7 +108,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $event->getPage()->addExtension('heidelpayPaymentFrame', (new PaymentFramePageExtension())->setPaymentFrame($mappedFrameTemplate));
+        $event->getPage()->addExtension('unzerPaymentFrame', (new PaymentFramePageExtension())->setPaymentFrame($mappedFrameTemplate));
     }
 
     private function addCreditCardExtension(PageLoadedEvent $event): void
@@ -119,15 +119,15 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $creditCards = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD);
+        $creditCards = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD);
         $extension   = (new CreditCardPageExtension())->setDisplayCreditCardSelection(true);
 
-        /** @var HeidelpayPaymentDeviceEntity $creditCard */
+        /** @var UnzerPaymentDeviceEntity $creditCard */
         foreach ($creditCards as $creditCard) {
             $extension->addCreditCard($creditCard);
         }
 
-        $event->getPage()->addExtension('heidelpayCreditCard', $extension);
+        $event->getPage()->addExtension('unzerCreditCard', $extension);
     }
 
     private function addPayPalExtension(PageLoadedEvent $event): void
@@ -138,15 +138,15 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $payPalAccounts = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL);
+        $payPalAccounts = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL);
         $extension      = (new PayPalPageExtension())->setDisplaypayPalAccountselection(true);
 
-        /** @var HeidelpayPaymentDeviceEntity $payPalAccount */
+        /** @var UnzerPaymentDeviceEntity $payPalAccount */
         foreach ($payPalAccounts as $payPalAccount) {
             $extension->addPayPalAccount($payPalAccount);
         }
 
-        $event->getPage()->addExtension('heidelpayPayPal', $extension);
+        $event->getPage()->addExtension('unzerPayPal', $extension);
     }
 
     private function addDirectDebitExtension(PageLoadedEvent $event): void
@@ -157,15 +157,15 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT);
+        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT);
         $extension          = (new DirectDebitPageExtension())->setDisplayDirectDebitDeviceSelection(true);
 
-        /** @var HeidelpayPaymentDeviceEntity $directDebitDevice */
+        /** @var UnzerPaymentDeviceEntity $directDebitDevice */
         foreach ($directDebitDevices as $directDebitDevice) {
             $extension->addDirectDebitDevice($directDebitDevice);
         }
 
-        $event->getPage()->addExtension('heidelpayDirectDebit', $extension);
+        $event->getPage()->addExtension('unzerDirectDebit', $extension);
     }
 
     private function addDirectDebitGuaranteedExtension(PageLoadedEvent $event): void
@@ -176,15 +176,15 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED);
+        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED);
         $extension          = (new DirectDebitGuaranteedPageExtension())->setDisplayDirectDebitDeviceSelection(true);
 
-        /** @var HeidelpayPaymentDeviceEntity $directDebitDevice */
+        /** @var UnzerPaymentDeviceEntity $directDebitDevice */
         foreach ($directDebitDevices as $directDebitDevice) {
             $extension->addDirectDebitDevice($directDebitDevice);
         }
 
-        $event->getPage()->addExtension('heidelpayDirectDebitGuaranteed', $extension);
+        $event->getPage()->addExtension('unzerDirectDebitGuaranteed', $extension);
     }
 
     private function addHirePurchaseExtension(PageLoadedEvent $event): void
@@ -200,6 +200,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
         $extension->setOrderDate(date('Y-m-d'));
 
-        $event->getPage()->addExtension('heidelpayHirePurchase', $extension);
+        $event->getPage()->addExtension('unzerHirePurchase', $extension);
     }
 }

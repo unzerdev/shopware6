@@ -1,5 +1,5 @@
 {
-    "HeidelPayment": {
+    "UnzerPayment": {
         "transferInformation": {
             "message": "Bitte überweisen Sie den Betrag %amount% auf das nachfolgende Bankkonto:",
             "title": "Überweisungsinformationen",

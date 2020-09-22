@@ -1,0 +1,46 @@
+{% block unzer_paymentframe_hire_purchase %}
+    {% block unzer_paymentcheckout_confirm_frame_card_body_title %}
+        <div class="card-title">
+            {{ context.paymentMethod.translated.name }}
+        </div>
+    {% endblock %}
+
+    <div class="unzer-paymenthire-purchase-wrapper"
+         data-unzer-hire-purchase="true"
+         data-unzer-hire-purchase-options='{
+            "hirePurchaseCurrency": "{{ page.extensions.unzerHirePurchase.currency }}",
+            "hirePurchaseAmount": {{ page.extensions.unzerHirePurchase.amount }},
+            "hirePurchaseEffectiveInterest": {{ page.extensions.unzerHirePurchase.effectiveInterest }},
+            "hirePurchaseOrderDate": "{{ page.extensions.unzerHirePurchase.orderDate }}",
+            "currencyIso": "{{ context.currency.isoCode }}",
+            "currencyFormatLocale": "{{ app.request.locale }}",
+            "starSymbol": "{{ "general.star"|trans }}"
+         }'>
+
+        <div id="element-loader" class="unzer-paymentloader">
+            {# Placeholder for the loader element. #}
+        </div>
+
+        {% if shopware.config.UnzerPayment6.settings.testMode %}
+            {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/hire-purchase.html.twig' %}
+        {% endif %}
+
+        {% block unzer_paymentframe_hire_purchase_container %}
+            <div id="unzer-paymenthire-purchase-container"></div>
+        {% endblock %}
+
+        {% block unzer_paymentframe_hire_purchase_birthday %}
+            <label for="unzerBirthday" class="unzer-paymentlabel">
+                {{ "account.personalBirthdayLabel"|trans }}
+            </label>
+
+            <input type="date"
+                   id="unzerBirthday"
+                   name="unzerBirthday"
+                   class="form-control unzer-paymentdate-input"
+                   form="confirmOrderForm"
+                   required="required"
+                   {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+        {% endblock %}
+    </div>
+{% endblock %}

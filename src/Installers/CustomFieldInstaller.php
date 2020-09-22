@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Installers;
+namespace UnzerPayment6\Installers;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -14,17 +14,17 @@ use Shopware\Core\System\CustomField\CustomFieldTypes;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    public const HEIDELPAY_IS_TRANSACTION = 'heidelpay_is_transaction';
-    public const HEIDELPAY_IS_SHIPPED     = 'heidelpay_is_shipped';
+    public const HEIDELPAY_IS_TRANSACTION = 'unzer_payment_is_transaction';
+    public const HEIDELPAY_IS_SHIPPED     = 'unzer_payment_is_shipped';
 
     public const CUSTOM_FIELDS = [
         [
             'id'     => '051351c0e4e64229a9a29b9893344d23',
-            'name'   => 'custom_Heidelpay',
+            'name'   => 'custom_unzer_payment',
             'config' => [
                 'label' => [
-                    'en-GB' => 'Heidelpay',
-                    'de-DE' => 'Heidelpay',
+                    'en-GB' => 'Unzer Payment',
+                    'de-DE' => 'Unzer Payment',
                 ],
             ],
             'customFields' => [
@@ -34,8 +34,8 @@ class CustomFieldInstaller implements InstallerInterface
                     'id'     => '6bb838751d65478992a5c0a1e80cb5fd',
                     'config' => [
                         'label' => [
-                            'en-GB' => 'Heidelpay transaction',
-                            'de-DE' => 'Heidelpay Transaktion',
+                            'en-GB' => 'Unzer Payment transaction',
+                            'de-DE' => 'Unzer Payment Transaktion',
                         ],
                     ],
                 ],

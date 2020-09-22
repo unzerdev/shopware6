@@ -1,6 +1,6 @@
 {
-    "heidel-payment": {
-        "tabTitle": "Heidelpay",
+    "unzer-payment": {
+        "tabTitle": "Unzer Payment",
         "paymentDetails": {
             "history": {
                 "cardTitle": "Zahlungsverlauf",
@@ -65,10 +65,10 @@
             }
         }
     },
-    "heidel-payment-settings": {
+    "unzer-payment-settings": {
         "module": {
-            "title": "Heidelpay",
-            "description": "Heidelpay"
+            "title": "Unzer Payment",
+            "description": "Unzer Payment"
         },
         "form": {
             "message": {

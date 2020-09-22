@@ -4,24 +4,24 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceDefinition">
-            <tag name="shopware.entity.definition" entity="heidelpay_payment_device"/>
+        <service id="UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceDefinition">
+            <tag name="shopware.entity.definition" entity="unzer_payment_device"/>
         </service>
 
-        <service id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository">
-           <argument type="service" id="heidelpay_payment_device.repository"/>
-           <argument type="service" id="HeidelPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
+        <service id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository">
+           <argument type="service" id="unzer_payment_device.repository"/>
+           <argument type="service" id="UnzerPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
         </service>
 
-        <service id="HeidelPayment6\DataAbstractionLayer\Entity\TransferInfo\HeidelpayTransferInfoEntityDefinition">
-            <tag name="shopware.entity.definition" entity="heidelpay_transfer_info"/>
+        <service id="UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo\HeidelpayTransferInfoEntityDefinition">
+            <tag name="shopware.entity.definition" entity="unzer_transfer_info"/>
         </service>
 
-        <service id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository">
-            <argument type="service" id="heidelpay_transfer_info.repository"/>
+        <service id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository">
+            <argument type="service" id="unzer_transfer_info.repository"/>
         </service>
 
-        <service id="HeidelPayment6\DataAbstractionLayer\Extension\OrderTransactionExtension">
+        <service id="UnzerPayment6\DataAbstractionLayer\Extension\OrderTransactionExtension">
             <tag name="shopware.entity.extension"/>
         </service>
     </services>

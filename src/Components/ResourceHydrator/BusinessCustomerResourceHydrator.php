@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\ResourceHydrator;
+namespace UnzerPayment6\Components\ResourceHydrator;
 
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\CustomerFactory;
@@ -34,13 +34,13 @@ class BusinessCustomerResourceHydrator implements ResourceHydratorInterface
             $customer->getFirstName(),
             $customer->getLastName(),
             $birthday,
-            $this->getHeidelpayAddress($billingAddress),
+            $this->getUnzerPaymentAddress($billingAddress),
             $customer->getEmail(),
             $customer->getCompany() ?? $billingAddress->getCompany()
         );
     }
 
-    private function getHeidelpayAddress(CustomerAddressEntity $shopwareAddress): Address
+    private function getUnzerPaymentAddress(CustomerAddressEntity $shopwareAddress): Address
     {
         $address = new Address();
         $address->setCountry($shopwareAddress->getCountry() !== null ? $shopwareAddress->getCountry()->getIso() : null);

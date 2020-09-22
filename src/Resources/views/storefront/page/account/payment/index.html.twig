@@ -1,28 +1,28 @@
 {% sw_extends '@Storefront/storefront/page/account/payment/index.html.twig' %}
 
 {% block page_account_payment_main %}
-    {% if page.extensions.heidelpay.deviceRemoved %}
+    {% if page.extensions.unzer.deviceRemoved %}
         {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
             type: "success",
-            content:  "HeidelPayment.accountPayment.deviceDeleted"|trans
+            content:  "UnzerPayment.accountPayment.deviceDeleted"|trans
         } %}
     {% endif %}
 
     {{ parent() }}
 
-    {% if page.extensions.heidelpay.savedDevices|length > 0 %}
-        {% block page_account_payment_main_heidelpay_wrapper %}
-            <div class="heidelpay-card has-margin-top">
-                {% block page_account_payment_main_heidelpay_wrapper_title %}
+    {% if page.extensions.unzer.savedDevices|length > 0 %}
+        {% block page_account_payment_main_unzer_paymentwrapper %}
+            <div class="unzer-paymentcard has-margin-top">
+                {% block page_account_payment_main_unzer_paymentwrapper_title %}
                     <div class="card-title">
-                        {{ "HeidelPayment.accountPayment.title"|trans }}
+                        {{ "UnzerPayment.accountPayment.title"|trans }}
                     </div>
                 {% endblock %}
 
-                {% block page_account_payment_main_heidelpay_wrapper_body %}
-                    <div class="heidelpay-card-body">
-                        {% for paymentDevice in page.extensions.heidelpay.savedDevices %}
-                            {% sw_include '@Storefront/storefront/component/heidelpay/account/payment/' ~ paymentDevice.deviceType  ~ '.html.twig' ignore missing with {
+                {% block page_account_payment_main_unzer_paymentwrapper_body %}
+                    <div class="unzer-paymentcard-body">
+                        {% for paymentDevice in page.extensions.unzer.savedDevices %}
+                            {% sw_include '@Storefront/storefront/component/unzer/account/payment/' ~ paymentDevice.deviceType  ~ '.html.twig' ignore missing with {
                                 'device': paymentDevice
                             }  %}
                         {% endfor %}

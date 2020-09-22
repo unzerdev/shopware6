@@ -2,17 +2,17 @@
 
 {# Extension for the cart summary should only apply to HirePurchase since it modifies the prices accordingly to the selected rate! #}
 {% block page_checkout_summary_total %}
-    {% if context.paymentMethod.id is constant("HeidelPayment6\\Installers\\PaymentInstaller::PAYMENT_ID_HIRE_PURCHASE") %}
-        {% block page_checkout_summary_heidelpay_installment_interest_label %}
+    {% if context.paymentMethod.id is constant("UnzerPayment6\\Installers\\PaymentInstaller::PAYMENT_ID_HIRE_PURCHASE") %}
+        {% block page_checkout_summary_unzer_paymentinstallment_interest_label %}
             <dt class="col-7 checkout-aside-summary-label">
-                {{ "HeidelPayment.frame.hirePurchase.totalInterest"|trans|sw_sanitize }}
+                {{ "UnzerPayment.frame.hirePurchase.totalInterest"|trans|sw_sanitize }}
             </dt>
         {% endblock %}
 
-        {% block page_checkout_summary_heidelpay_installment_interest_value %}
-            <dd class="col-5 checkout-aside-summary-value" id="heidelpay-installments-interest">
-                {% if page.extensions.heidelpay and (page.extensions.heidelpay.installmentInformation|length > 0) %}
-                    {{ page.extensions.heidelpay.installmentInformation[0].totalInterestAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
+        {% block page_checkout_summary_unzer_paymentinstallment_interest_value %}
+            <dd class="col-5 checkout-aside-summary-value" id="unzer-paymentinstallments-interest">
+                {% if page.extensions.unzer and (page.extensions.unzer.installmentInformation|length > 0) %}
+                    {{ page.extensions.unzer.installmentInformation[0].totalInterestAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% else %}
                     {{ 0|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% endif %}
@@ -31,16 +31,16 @@
             </dd>
         {% endblock %}
 
-        {% block page_checkout_summary_heidelpay_installment_total_label %}
+        {% block page_checkout_summary_unzer_paymentinstallment_total_label %}
             <dt class="col-7 checkout-aside-summary-label checkout-aside-summary-total">
-                {{ "HeidelPayment.frame.hirePurchase.totalAmount"|trans }}
+                {{ "UnzerPayment.frame.hirePurchase.totalAmount"|trans }}
             </dt>
         {% endblock %}
 
-        {% block page_checkout_summary_heidelpay_installment_total_value %}
-            <dd class="col-5 checkout-aside-summary-value checkout-aside-summary-total" id="heidelpay-installments-total">
-                {% if page.extensions.heidelpay and (page.extensions.heidelpay.installmentInformation|length > 0) %}
-                    {{ page.extensions.heidelpay.installmentInformation[0].totalAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
+        {% block page_checkout_summary_unzer_paymentinstallment_total_value %}
+            <dd class="col-5 checkout-aside-summary-value checkout-aside-summary-total" id="unzer-paymentinstallments-total">
+                {% if page.extensions.unzer and (page.extensions.unzer.installmentInformation|length > 0) %}
+                    {{ page.extensions.unzer.installmentInformation[0].totalAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% else %}
                     {{ summary.price.totalPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% endif %}

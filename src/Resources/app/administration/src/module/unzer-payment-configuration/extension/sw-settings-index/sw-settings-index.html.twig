@@ -1,0 +1,11 @@
+{% block sw_settings_content_card_slot_plugins %}
+    {% parent %}
+
+    <sw-settings-item :label="$tc('unzer-payment-settings.module.title')"
+                      :to="{ name: 'unzer.payment.configuration.settings' }"
+                      :backgroundEnabled="false">
+        <template #icon>
+            <img class="unzer-payment-icon" :src="'unzerPayment6/plugin.png' | asset">
+        </template>
+    </sw-settings-item>
+{% endblock %}

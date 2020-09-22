@@ -1,0 +1,27 @@
+{# @var device \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
+
+{% block page_account_payment_main_unzer_paymentdirect_debit %}
+    <div class="unzer-paymentdevice sepa-direct-debit-card">
+        {% block page_account_payment_main_unzer_paymentdevice_title %}
+            <div class="card-title">
+                {{ "UnzerPayment.accountPayment.directDebit" | trans  }}
+            </div>
+        {% endblock %}
+
+        {% block page_account_payment_main_unzer_paymentdirect_debit_number %}
+            <div id="number">
+                <strong>{{ device.data.iban }}</strong>
+            </div>
+        {% endblock %}
+
+        {% block page_account_payment_main_unzer_paymentdevice_actions %}
+            <div class="unzer-paymentdevice-actions">
+                <a class="btn btn-light btn-sm" href="{{ path('unzer.device.delete', {
+                    'id': device.id
+                }) }}">
+                    {{ "UnzerPayment.accountPayment.delete" | trans  }}
+                </a>
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

@@ -2,12 +2,8 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\EventListeners\Checkout;
+namespace UnzerPayment6\EventListeners\Checkout;
 
-use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment6\Components\Struct\HirePurchase\InstallmentInfo;
-use HeidelPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
-use HeidelPayment6\Installers\PaymentInstaller;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Resources\InstalmentPlan;
@@ -16,6 +12,10 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\Struct\HirePurchase\InstallmentInfo;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
+use UnzerPayment6\Installers\PaymentInstaller;
 
 class FinishPageEventListener implements EventSubscriberInterface
 {
@@ -48,8 +48,8 @@ class FinishPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $heidelpayClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
-        $extension       = new FinishPageExtension();
+        $unzerClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
+        $extension   = new FinishPageExtension();
 
         /** @var OrderTransactionEntity $transaction */
         foreach ($orderTransactions as $transaction) {
@@ -57,10 +57,10 @@ class FinishPageEventListener implements EventSubscriberInterface
                 continue;
             }
 
-            $payment = $this->getPaymentByOrderId($heidelpayClient, $transaction->getId());
+            $payment = $this->getPaymentByOrderId($unzerClient, $transaction->getId());
 
             if (!$payment) {
-                $payment = $this->getPaymentByOrderId($heidelpayClient, $transaction->getOrderId());
+                $payment = $this->getPaymentByOrderId($unzerClient, $transaction->getOrderId());
 
                 if (!$payment) {
                     return;
@@ -75,13 +75,13 @@ class FinishPageEventListener implements EventSubscriberInterface
             }
         }
 
-        $event->getPage()->addExtension('heidelpay', $extension);
+        $event->getPage()->addExtension('unzer', $extension);
     }
 
-    private function getPaymentByOrderId(Heidelpay $heidelpayClient, string $orderId): ?Payment
+    private function getPaymentByOrderId(Heidelpay $unzerClient, string $orderId): ?Payment
     {
         try {
-            return $heidelpayClient->fetchPaymentByOrderId($orderId);
+            return $unzerClient->fetchPaymentByOrderId($orderId);
         } catch (HeidelpayApiException $exception) {
             //catch payment not found exception so that shopware can handle its own errors
             $this->logger->error($exception->getMessage(), [

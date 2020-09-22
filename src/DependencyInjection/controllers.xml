@@ -6,9 +6,9 @@
     <services>
         <defaults public="true"/>
 
-        <service id="HeidelPayment6\Controllers\Storefront\HeidelpayWebhookController">
-            <argument type="tagged" tag="heidelpay.webhook_handler" />
-            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader" />
+        <service id="UnzerPayment6\Controllers\Storefront\HeidelpayWebhookController">
+            <argument type="tagged" tag="unzer.webhook_handler" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="heidel_payment.logger" />
 
             <call method="setContainer">
@@ -16,25 +16,25 @@
             </call>
         </service>
 
-        <service id="HeidelPayment6\Controllers\Administration\HeidelpayTransactionController">
-            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+        <service id="UnzerPayment6\Controllers\Administration\HeidelpayTransactionController">
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment6\Components\ArrayHydrator\PaymentArrayHydrator" />
-            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler" />
+            <argument type="service" id="UnzerPayment6\Components\ArrayHydrator\PaymentArrayHydrator" />
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="HeidelPayment6\Controllers\Storefront\HeidelpayPaymentDeviceController">
-            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+        <service id="UnzerPayment6\Controllers\Storefront\HeidelpayPaymentDeviceController">
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
         </service>
 
-        <service id="HeidelPayment6\Controllers\Administration\HeidelpayConfigurationController">
-            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
+        <service id="UnzerPayment6\Controllers\Administration\HeidelpayConfigurationController">
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="heidel_payment.logger"/>
-            <argument type="service" id="HeidelPayment6\Components\WebhookRegistrator\WebhookRegistrator"/>
+            <argument type="service" id="UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

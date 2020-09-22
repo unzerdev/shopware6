@@ -4,13 +4,13 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment6\Components\WebhookHandler\PaymentStatusWebhookHandler">
-            <argument type="service" id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler" />
-            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory" />
+        <service id="UnzerPayment6\Components\WebhookHandler\PaymentStatusWebhookHandler">
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler" />
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="heidel_payment.logger" />
 
-            <tag name="heidelpay.webhook_handler" />
+            <tag name="unzer.webhook_handler" />
         </service>
     </services>
 </container>

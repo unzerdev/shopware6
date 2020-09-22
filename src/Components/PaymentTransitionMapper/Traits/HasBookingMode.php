@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentTransitionMapper\Traits;
+namespace UnzerPayment6\Components\PaymentTransitionMapper\Traits;
 
 use heidelpayPHP\Resources\Payment;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;

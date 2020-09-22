@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\ClientFactory;
+namespace UnzerPayment6\Components\ClientFactory;
 
-use HeidelPayment6\Components\ConfigReader\ConfigReader;
-use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Interfaces\DebugHandlerInterface;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
+use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 
 class ClientFactory implements ClientFactoryInterface
 {

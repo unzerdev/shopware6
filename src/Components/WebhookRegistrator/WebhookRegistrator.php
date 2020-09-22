@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\WebhookRegistrator;
+namespace UnzerPayment6\Components\WebhookRegistrator;
 
-use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Heidelpay;
 use Psr\Log\LoggerInterface;
@@ -19,6 +18,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
 use Throwable;
+use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 
 class WebhookRegistrator implements WebhookRegistratorInterface
 {
@@ -69,19 +69,19 @@ class WebhookRegistrator implements WebhookRegistratorInterface
             }
 
             try {
-                $url    = $this->router->generate('heidelpay.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_URL);
+                $url    = $this->router->generate('unzer.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_URL);
                 $result = $this->client->createWebhook($url, 'all');
 
                 $returnData[$salesChannelDomain->get('url', '')] = [
                     'success' => true,
                     'data'    => $result ?? null,
-                    'message' => 'heidel-payment-settings.webhook.register.done',
+                    'message' => 'unzer-payment-settings.webhook.register.done',
                 ];
                 $this->logger->info('Webhhooks registered!');
             } catch (HeidelpayApiException | Throwable $exception) {
                 $returnData[$salesChannelDomain->get('url', '')] = [
                     'success' => false,
-                    'message' => 'heidel-payment-settings.webhook.register.error',
+                    'message' => 'unzer-payment-settings.webhook.register.error',
                 ];
                 $this->logger->error(
                     'Webhook registration failed!',
@@ -116,13 +116,13 @@ class WebhookRegistrator implements WebhookRegistratorInterface
 
                 $returnData[$salesChannelDomain->get('url', '')] = [
                     'success' => true,
-                    'message' => 'heidel-payment-settings.webhook.clear.done',
+                    'message' => 'unzer-payment-settings.webhook.clear.done',
                 ];
                 $this->logger->info('Webhhooks registered!');
             } catch (HeidelpayApiException | Throwable $exception) {
                 $returnData[$salesChannelDomain->get('url', '')] = [
                     'success' => false,
-                    'message' => 'heidel-payment-settings.webhook.clear.error',
+                    'message' => 'unzer-payment-settings.webhook.clear.error',
                 ];
                 $this->logger->error(
                     'Webhook registration failed!',
@@ -146,7 +146,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                 'key'   => 'missing',
                 'value' => [
                     'success' => false,
-                    'message' => 'heidel-payment-settings.webhook.missing.fields',
+                    'message' => 'unzer-payment-settings.webhook.missing.fields',
                 ],
             ];
         }
@@ -161,7 +161,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                 'key'   => $salesChannelDomain->get('url', ''),
                 'value' => [
                     'success' => false,
-                    'message' => 'heidel-payment-settings.webhook.notFound.salesChannel',
+                    'message' => 'unzer-payment-settings.webhook.notFound.salesChannel',
                 ],
             ];
         }
@@ -173,7 +173,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                 'key'   => $salesChannelDomain->get('url', ''),
                 'value' => [
                     'success' => false,
-                    'message' => 'heidel-payment-settings.webhook.missing.context',
+                    'message' => 'unzer-payment-settings.webhook.missing.context',
                 ],
             ];
         }

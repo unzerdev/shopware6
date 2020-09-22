@@ -1,0 +1,13 @@
+{% block unzer_paymentframe_eps %}
+    {% block unzer_paymentcheckout_confirm_frame_card_body_title %}
+        <div class="card-title">
+            {{ context.paymentMethod.translated.name }}
+        </div>
+    {% endblock %}
+
+    <div class="unzer-paymenteps-wrapper"
+         data-unzer-eps="true">
+
+        <div id="unzer-paymenteps-container"></div>
+    </div>
+{% endblock %}

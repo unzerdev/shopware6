@@ -2,25 +2,8 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Installers;
+namespace UnzerPayment6\Installers;
 
-use HeidelPayment6\Components\PaymentHandler\HeidelAlipayPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelCreditCardPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelDirectDebitGuaranteedPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelDirectDebitPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelEpsPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelFlexipayPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelGiropayPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelHirePurchasePaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelIdealPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelInvoicePaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelPayPalPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelPrePaymentPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelPrzelewyHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelSofortPaymentHandler;
-use HeidelPayment6\Components\PaymentHandler\HeidelWeChatPaymentHandler;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -28,6 +11,23 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerCreditCardPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitGuaranteedPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerEpsPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerFlexipayPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerGiropayPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerHirePurchasePaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceFactoringPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceGuaranteedPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerSofortPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerWeChatPaymentHandler;
 
 class PaymentInstaller implements InstallerInterface
 {
@@ -52,256 +52,256 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_METHODS = [
         [
             'id'                => self::PAYMENT_ID_CREDIT_CARD,
-            'handlerIdentifier' => HeidelCreditCardPaymentHandler::class,
-            'name'              => 'Credit card (heidelpay)',
+            'handlerIdentifier' => UnzerCreditCardPaymentHandler::class,
+            'name'              => 'Credit card (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Kreditkarte (heidelpay)',
-                    'description' => 'Kreditkartenzahlungen mit Heidelpay',
+                    'name'        => 'Kreditkarte (Unzer payments)',
+                    'description' => 'Kreditkartenzahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Credit card (heidelpay)',
-                    'description' => 'Credit card payments with heidelpay',
+                    'name'        => 'Credit card (Unzer payments)',
+                    'description' => 'Credit card payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_INVOICE,
-            'handlerIdentifier' => HeidelInvoicePaymentHandler::class,
-            'name'              => 'Invoice (heidelpay)',
+            'handlerIdentifier' => UnzerInvoicePaymentHandler::class,
+            'name'              => 'Invoice (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Rechnung (heidelpay)',
-                    'description' => 'Rechnungskauf mit Heidelpay',
+                    'name'        => 'Unzer invoice',
+                    'description' => 'Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Invoice (heidelpay)',
-                    'description' => 'Invoice payments with heidelpay',
+                    'name'        => 'Unzer invoice',
+                    'description' => 'Invoice payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_SOFORT,
-            'handlerIdentifier' => HeidelSofortPaymentHandler::class,
-            'name'              => 'Sofort (heidelpay)',
+            'handlerIdentifier' => UnzerSofortPaymentHandler::class,
+            'name'              => 'Sofort (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Sofort (heidelpay)',
-                    'description' => 'Sofort mit Heidelpay',
+                    'name'        => 'Sofort (Unzer payments)',
+                    'description' => 'Sofort mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Sofort (heidelpay)',
-                    'description' => 'Sofort with heidelpay',
+                    'name'        => 'Sofort (Unzer payments)',
+                    'description' => 'Sofort with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_INVOICE_GUARANTEED,
-            'handlerIdentifier' => HeidelInvoiceGuaranteedPaymentHandler::class,
-            'name'              => 'FlexiPay® Invoice guaranteed (heidelpay)',
+            'handlerIdentifier' => UnzerInvoiceGuaranteedPaymentHandler::class,
+            'name'              => 'Unzer invoice guaranteed',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'FlexiPay® Rechnung (heidelpay)',
-                    'description' => 'FlexiPay® Rechnungskauf mit Heidelpay',
+                    'name'        => 'Unzer invoice guaranteed',
+                    'description' => 'Gesicherter Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Invoice guaranteed (heidelpay)',
-                    'description' => 'Invoice guaranteed payments with heidelpay',
+                    'name'        => 'Unzer invoice guaranteed ',
+                    'description' => 'Invoice guaranteed payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_INVOICE_FACTORING,
-            'handlerIdentifier' => HeidelInvoiceFactoringPaymentHandler::class,
-            'name'              => 'FlexiPay® Invoice factoring (heidelpay)',
+            'handlerIdentifier' => UnzerInvoiceFactoringPaymentHandler::class,
+            'name'              => 'Unzer invoice factoring',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'FlexiPay® Rechnung mit factoring (heidelpay)',
-                    'description' => 'FlexiPay® Rechnungskauf factoring mit Heidelpay',
+                    'name'        => 'Unzer invoice factoring',
+                    'description' => 'Finanzierungs Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'FlexiPay®Invoice factoring (heidelpay)',
-                    'description' => 'FlexiPay® Invoice factoring payments with heidelpay',
+                    'name'        => 'Unzer invoice factoring',
+                    'description' => 'Invoice factoring payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_EPS,
-            'handlerIdentifier' => HeidelEpsPaymentHandler::class,
-            'name'              => 'EPS (heidelpay)',
+            'handlerIdentifier' => UnzerEpsPaymentHandler::class,
+            'name'              => 'EPS (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'EPS (heidelpay)',
-                    'description' => 'EPS Zahlungen mit Heidelpay',
+                    'name'        => 'EPS (Unzer payments)',
+                    'description' => 'EPS Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'EPS (heidelpay)',
-                    'description' => 'EPS payments with Heidelpay',
+                    'name'        => 'EPS (Unzer payments)',
+                    'description' => 'EPS payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_FLEXIPAY,
-            'handlerIdentifier' => HeidelFlexipayPaymentHandler::class,
-            'name'              => 'FlexiPay® Direct(heidelpay)',
+            'handlerIdentifier' => UnzerFlexipayPaymentHandler::class,
+            'name'              => 'Unzer bank transfer (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'FlexiPay® Direct(heidelpay)',
-                    'description' => 'FlexiPay® Direct Zahlungen mit Heidelpay',
+                    'name'        => 'Unzer bank transfer (Unzer payments)',
+                    'description' => 'Unzer bank transfer Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'FlexiPay® Direct (heidelpay)',
-                    'description' => 'FlexiPay® Direct payments with Heidelpay',
+                    'name'        => 'Unzer bank transfer (Unzer payments)',
+                    'description' => 'Unzer bank transfer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_PAYPAL,
-            'handlerIdentifier' => HeidelPayPalPaymentHandler::class,
-            'name'              => 'PayPal (heidelpay)',
+            'handlerIdentifier' => UnzerPayPalPaymentHandler::class,
+            'name'              => 'PayPal (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'PayPal (heidelpay)',
-                    'description' => 'PayPal Zahlungen mit Heidelpay',
+                    'name'        => 'PayPal (Unzer payments)',
+                    'description' => 'PayPal Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'PayPal (heidelpay)',
-                    'description' => 'PayPal payments with heidelpay',
+                    'name'        => 'PayPal (Unzer payments)',
+                    'description' => 'PayPal payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_IDEAL,
-            'handlerIdentifier' => HeidelIdealPaymentHandler::class,
-            'name'              => 'iDEAL (heidelpay)',
+            'handlerIdentifier' => UnzerIdealPaymentHandler::class,
+            'name'              => 'iDEAL (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'iDEAL (heidelpay)',
-                    'description' => 'iDEAL Zahlungen mit Heidelpay',
+                    'name'        => 'iDEAL (Unzer payments)',
+                    'description' => 'iDEAL Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'iDEAL (heidelpay)',
-                    'description' => 'iDEAL payments with heidelpay',
+                    'name'        => 'iDEAL (Unzer payments)',
+                    'description' => 'iDEAL payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
-            'handlerIdentifier' => HeidelDirectDebitPaymentHandler::class,
-            'name'              => 'SEPA direct debit (heidelpay)',
+            'handlerIdentifier' => UnzerDirectDebitPaymentHandler::class,
+            'name'              => 'Unzer direct debit',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA Lastschrift (heidelpay)',
-                    'description' => 'SEPA Lastschrift Zahlungen mit Heidelpay',
+                    'name'        => 'Unzer direct debit',
+                    'description' => 'SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'SEPA direct debit (heidelpay)',
-                    'description' => 'SEPA direct debit payments with Heidelpay',
+                    'name'        => 'Unzer direct debit',
+                    'description' => 'SEPA direct debit payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED,
-            'handlerIdentifier' => HeidelDirectDebitGuaranteedPaymentHandler::class,
-            'name'              => 'SEPA direct debit guaranteed (heidelpay)',
+            'handlerIdentifier' => UnzerDirectDebitGuaranteedPaymentHandler::class,
+            'name'              => 'SEPA direct debit guaranteed (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA Lastschrift gesichert (heidelpay)',
-                    'description' => 'Gesicherte SEPA Lastschrift Zahlungen mit Heidelpay',
+                    'name'        => 'SEPA Lastschrift gesichert (Unzer payments)',
+                    'description' => 'Gesicherte SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'SEPA direct debit guaranteed (heidelpay)',
-                    'description' => 'Guaranteed SEPA direct debit payments with Heidelpay',
+                    'name'        => 'SEPA direct debit guaranteed (Unzer payments)',
+                    'description' => 'Guaranteed SEPA direct debit payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_GIROPAY,
-            'handlerIdentifier' => HeidelGiropayPaymentHandler::class,
-            'name'              => 'Giropay (heidelpay)',
+            'handlerIdentifier' => UnzerGiropayPaymentHandler::class,
+            'name'              => 'Giropay (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Giropay (heidelpay)',
-                    'description' => 'Giropay Zahlungen mit Heidelpay',
+                    'name'        => 'Giropay (Unzer payments)',
+                    'description' => 'Giropay Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Giropay (heidelpay)',
-                    'description' => 'Giropay payments with heidelpay',
+                    'name'        => 'Giropay (Unzer payments)',
+                    'description' => 'Giropay payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_PRE_PAYMENT,
-            'handlerIdentifier' => HeidelPrePaymentPaymentHandler::class,
-            'name'              => 'Prepayment (heidelpay)',
+            'handlerIdentifier' => UnzerPrePaymentPaymentHandler::class,
+            'name'              => 'Prepayment (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Vorkasse (heidelpay)',
-                    'description' => 'Zahlung auf Vorkasse mit Heidelpay',
+                    'name'        => 'Vorkasse (Unzer payments)',
+                    'description' => 'Zahlung auf Vorkasse mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Prepayment (heidelpay)',
-                    'description' => 'Prepayment with heidelpay',
+                    'name'        => 'Prepayment (Unzer payments)',
+                    'description' => 'Prepayment with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_PRZELEWY24,
-            'handlerIdentifier' => HeidelPrzelewyHandler::class,
-            'name'              => 'Przelewy24 (heidelpay)',
+            'handlerIdentifier' => UnzerPrzelewyHandler::class,
+            'name'              => 'Przelewy24 (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Przelewy24 (heidelpay)',
-                    'description' => 'Przelewy24 Zahlungen mit Heidelpay',
+                    'name'        => 'Przelewy24 (Unzer payments)',
+                    'description' => 'Przelewy24 Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Przelewy24 (heidelpay)',
-                    'description' => 'Przelewy24 payments with heidelpay',
+                    'name'        => 'Przelewy24 (Unzer payments)',
+                    'description' => 'Przelewy24 payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_WE_CHAT,
-            'handlerIdentifier' => HeidelWeChatPaymentHandler::class,
-            'name'              => 'WeChat (heidelpay)',
+            'handlerIdentifier' => UnzerWeChatPaymentHandler::class,
+            'name'              => 'WeChat (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'WeChat (heidelpay)',
-                    'description' => 'WeChat Zahlungen mit Heidelpay',
+                    'name'        => 'WeChat (Unzer payments)',
+                    'description' => 'WeChat Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'WeChat (heidelpay)',
-                    'description' => 'WeChat payments with heidelpay',
+                    'name'        => 'WeChat (Unzer payments)',
+                    'description' => 'WeChat payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_ALIPAY,
-            'handlerIdentifier' => HeidelAlipayPaymentHandler::class,
-            'name'              => 'Alipay (heidelpay)',
+            'handlerIdentifier' => UnzerAlipayPaymentHandler::class,
+            'name'              => 'Alipay (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Alipay (heidelpay)',
-                    'description' => 'Alipay Zahlungen mit Heidelpay',
+                    'name'        => 'Alipay (Unzer payments)',
+                    'description' => 'Alipay Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Alipay (heidelpay)',
-                    'description' => 'Alipay payments with heidelpay',
+                    'name'        => 'Alipay (Unzer payments)',
+                    'description' => 'Alipay payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_HIRE_PURCHASE,
-            'handlerIdentifier' => HeidelHirePurchasePaymentHandler::class,
-            'name'              => 'FlexiPay® Rate (heidelpay)',
+            'handlerIdentifier' => UnzerHirePurchasePaymentHandler::class,
+            'name'              => 'FlexiPay® Rate (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'FlexiPay® Rate (heidelpay)',
-                    'description' => 'FlexiPay® Ratenzahlungen mit heidelpay',
+                    'name'        => 'Unzer instalment',
+                    'description' => 'Unzer instalment',
                 ],
                 'en-GB' => [
-                    'name'        => 'FlexiPay® Instalment (heidelpay)',
-                    'description' => 'FlexiPay® Instalment payments with heidelpay',
+                    'name'        => 'Unzer instalment',
+                    'description' => 'Unzer instalment payment',
                 ],
             ],
         ],

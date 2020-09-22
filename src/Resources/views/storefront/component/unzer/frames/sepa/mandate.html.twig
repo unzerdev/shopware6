@@ -1,0 +1,17 @@
+{% block unzer_paymentframe_sepa_mandate %}
+    <div class="unzer-paymentsepa-mandate-container">
+        <div class="card-title">
+            {{ "UnzerPayment.frame.sepa.mandate.title" | trans  }}
+        </div>
+
+        <div class="unzer-paymentsepa-mandate-content">
+            {# TODO: Maybe replace the %company% parameter to the actual company as soon as it's available in the core config #}
+            {{ "UnzerPayment.frame.sepa.mandate.content" | trans({'%company%': shopware.config.core.basicInformation.shopName})  }}
+        </div>
+
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" required="required" class="custom-control-input" form="confirmOrderForm" name="acceptSepaMandate" id="acceptSepaMandate"/>
+            <label for="acceptSepaMandate" class="custom-control-label">{{ "UnzerPayment.frame.sepa.mandate.accept" | trans  }}</label>
+        </div>
+    </div>
+{% endblock %}

@@ -9,7 +9,7 @@ variables:
     MYSQL_DATABASE: shopware
     MYSQL_USER: shopware
     MYSQL_PASSWORD: shopware
-    PLUGIN_NAME: HeidelPayment6
+    PLUGIN_NAME: UnzerPayment6
     SHOPWARE_VERSION: "v6.2.0" # Tag
 
 cache:

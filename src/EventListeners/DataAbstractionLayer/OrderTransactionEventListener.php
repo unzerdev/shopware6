@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\EventListeners\DataAbstractionLayer;
+namespace UnzerPayment6\EventListeners\DataAbstractionLayer;
 
-use HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepositoryInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEvents;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityLoadedEvent;
@@ -12,10 +11,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class OrderTransactionEventListener implements EventSubscriberInterface
 {
-    /** @var HeidelpayTransferInfoRepositoryInterface */
+    /** @var UnzerPaymentTransferInfoRepositoryInterface */
     private $transferInfoRepository;
 
-    public function __construct(HeidelpayTransferInfoRepositoryInterface $transferInfoRepository)
+    public function __construct(UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository)
     {
         $this->transferInfoRepository = $transferInfoRepository;
     }
@@ -36,7 +35,7 @@ class OrderTransactionEventListener implements EventSubscriberInterface
         foreach ($event->getEntities() as $transaction) {
             $transferInfo = $this->transferInfoRepository->read($transaction->getId(), $event->getContext());
 
-            $transaction->addExtension('heidelpayTransferInfo', $transferInfo);
+            $transaction->addExtension('unzerTransferInfo', $transferInfo);
         }
     }
 }

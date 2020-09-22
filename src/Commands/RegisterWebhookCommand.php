@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Commands;
+namespace UnzerPayment6\Commands;
 
-use HeidelPayment6\Components\WebhookRegistrator\WebhookRegistrator;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -18,6 +17,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
+use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator;
 
 class RegisterWebhookCommand extends Command
 {
@@ -40,8 +40,8 @@ class RegisterWebhookCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('heidelpay:register-webhooks');
-        $this->setDescription('Registers the heidelpay webhook');
+        $this->setName('unzer:register-webhooks');
+        $this->setDescription('Register the unzer webhook');
         $this->addArgument('host', InputArgument::REQUIRED, 'Main Host of the shop. Example: http://www.domain.de');
     }
 

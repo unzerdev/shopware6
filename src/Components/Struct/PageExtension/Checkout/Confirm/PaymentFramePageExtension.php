@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm;
+namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
 use Shopware\Core\Framework\Struct\Struct;
 

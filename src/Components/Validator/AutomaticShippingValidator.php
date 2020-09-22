@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Validator;
+namespace UnzerPayment6\Components\Validator;
 
-use HeidelPayment6\Components\ConfigReader\ConfigReader;
-use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
 use Shopware\Core\Checkout\Document\DocumentCollection;
 use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
+use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 
 class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
 {

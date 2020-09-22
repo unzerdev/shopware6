@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm;
+namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
-use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use Shopware\Core\Framework\Struct\Struct;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 
 class CreditCardPageExtension extends Struct
 {

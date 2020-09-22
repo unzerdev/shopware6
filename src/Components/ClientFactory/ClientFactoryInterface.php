@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\ClientFactory;
+namespace UnzerPayment6\Components\ClientFactory;
 
 use heidelpayPHP\Heidelpay;
 

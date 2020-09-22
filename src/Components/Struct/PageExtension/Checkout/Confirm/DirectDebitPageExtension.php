@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm;
+namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
-use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use Shopware\Core\Framework\Struct\Struct;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 
 class DirectDebitPageExtension extends Struct
 {
-    /** @var HeidelpayPaymentDeviceEntity[] */
+    /** @var UnzerPaymentDeviceEntity[] */
     protected $directDebitDevices = [];
 
     /** @var bool */
     protected $displayDirectDebitDeviceSelection;
 
-    public function addDirectDebitDevice(HeidelpayPaymentDeviceEntity $directDebitDevice): self
+    public function addDirectDebitDevice(UnzerPaymentDeviceEntity $directDebitDevice): self
     {
         $this->directDebitDevices[] = $directDebitDevice;
 
@@ -23,7 +23,7 @@ class DirectDebitPageExtension extends Struct
     }
 
     /**
-     * @return HeidelpayPaymentDeviceEntity[]
+     * @return UnzerPaymentDeviceEntity[]
      */
     public function getDirectDebitDevices(): array
     {
@@ -31,7 +31,7 @@ class DirectDebitPageExtension extends Struct
     }
 
     /**
-     * @param HeidelpayPaymentDeviceEntity[] $directDebitDevices
+     * @param UnzerPaymentDeviceEntity[] $directDebitDevices
      */
     public function setDirectDebitDevices(array $directDebitDevices): self
     {

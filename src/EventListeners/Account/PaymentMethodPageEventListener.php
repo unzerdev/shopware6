@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\EventListeners\Account;
+namespace UnzerPayment6\EventListeners\Account;
 
-use HeidelPayment6\Components\ConfigReader\ConfigReader;
-use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
-use HeidelPayment6\Components\Struct\PageExtension\Account\PaymentMethodPageExtension;
-use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
-use HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
+use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\Struct\PageExtension\Account\PaymentMethodPageExtension;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
+use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 
 class PaymentMethodPageEventListener implements EventSubscriberInterface
 {
@@ -73,6 +73,6 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
             $extension->addPaymentDevices($directDebitGuaranteedDevices);
         }
 
-        $event->getPage()->addExtension('heidelpay', $extension);
+        $event->getPage()->addExtension('unzer', $extension);
     }
 }

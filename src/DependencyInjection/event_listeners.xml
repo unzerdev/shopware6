@@ -4,42 +4,42 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="HeidelPayment6\EventListeners\Checkout\FinishPageEventListener">
-            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
+        <service id="UnzerPayment6\EventListeners\Checkout\FinishPageEventListener">
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="heidel_payment.logger"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="HeidelPayment6\EventListeners\Checkout\ConfirmPageEventListener">
-            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
-            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
+        <service id="UnzerPayment6\EventListeners\Checkout\ConfirmPageEventListener">
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepository"/>
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="HeidelPayment6\EventListeners\Account\PaymentMethodPageEventListener">
-            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+        <service id="UnzerPayment6\EventListeners\Account\PaymentMethodPageEventListener">
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="HeidelPayment6\EventListeners\StateMachine\TransitionEventListener">
+        <service id="UnzerPayment6\EventListeners\StateMachine\TransitionEventListener">
             <argument type="service" id="order.repository" />
             <argument type="service" id="order_delivery.repository" />
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="HeidelPayment6\Components\Validator\AutomaticShippingValidator"/>
-            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
+            <argument type="service" id="UnzerPayment6\Components\Validator\AutomaticShippingValidator"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="heidel_payment.logger"/>
             <argument type="service" id="event_dispatcher"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="HeidelPayment6\EventListeners\DataAbstractionLayer\OrderTransactionEventListener">
-            <argument type="service" id="HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
+        <service id="UnzerPayment6\EventListeners\DataAbstractionLayer\OrderTransactionEventListener">
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

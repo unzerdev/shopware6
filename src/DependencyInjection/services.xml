@@ -3,24 +3,24 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandler">
+        <service id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler">
             <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
-            <argument type="service" id="HeidelPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory"/>
+            <argument type="service" id="UnzerPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory"/>
             <argument type="service" id="heidel_payment.logger"/>
         </service>
 
-        <service id="HeidelPayment6\Components\ConfigReader\ConfigReader">
+        <service id="UnzerPayment6\Components\ConfigReader\ConfigReader">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
         </service>
 
-        <service id="HeidelPayment6\Components\ClientFactory\ClientFactory">
-            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader" />
-            <argument type="service" id="HeidelPayment6\Components\HeidelpayDebugHandler"/>
+        <service id="UnzerPayment6\Components\ClientFactory\ClientFactory">
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="UnzerPayment6\Components\UnzerPaymentDebugHandler"/>
         </service>
 
-        <service id="HeidelPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
+        <service id="UnzerPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
 
-        <service id="HeidelPayment6\Components\HeidelpayDebugHandler">
+        <service id="UnzerPayment6\Components\UnzerPaymentDebugHandler">
             <argument type="service" id="heidel_payment.logger"/>
         </service>
 
@@ -29,14 +29,14 @@
             <argument type="string">plugin_heidel_payment</argument>
         </service>
 
-        <service id="HeidelPayment6\Components\Validator\AutomaticShippingValidator">
-            <argument type="service" id="HeidelPayment6\Components\ConfigReader\ConfigReader"/>
+        <service id="UnzerPayment6\Components\Validator\AutomaticShippingValidator">
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
         </service>
 
-        <service id="HeidelPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
+        <service id="UnzerPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
 
-        <service id="HeidelPayment6\Components\WebhookRegistrator\WebhookRegistrator">
-            <argument type="service" id="HeidelPayment6\Components\ClientFactory\ClientFactory"/>
+        <service id="UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator">
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="router.default"/>
             <argument type="service" id="sales_channel_domain.repository"/>
             <argument type="service" id="heidel_payment.logger"/>

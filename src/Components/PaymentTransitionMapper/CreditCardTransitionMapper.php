@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentTransitionMapper;
+namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
-use HeidelPayment6\Components\BookingMode;
-use HeidelPayment6\Components\ConfigReader\ConfigReader;
-use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
-use HeidelPayment6\Components\PaymentTransitionMapper\Traits\HasBookingMode;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\Card;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
+use UnzerPayment6\Components\BookingMode;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
+use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
+use UnzerPayment6\Components\PaymentTransitionMapper\Traits\HasBookingMode;
 
 class CreditCardTransitionMapper extends AbstractTransitionMapper
 {

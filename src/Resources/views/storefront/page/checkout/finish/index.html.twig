@@ -3,11 +3,11 @@
 {% block page_checkout_finish_details %}
     {{ parent() }}
 
-    {% block page_checkout_finish_details_heidelpay_transfer_information %}
+    {% block page_checkout_finish_details_unzer_paymenttransfer_information %}
         {% for transaction in page.order.transactions %}
-            {% if transaction.extensions.heidelpayTransferInfo %}
-                {% sw_include '@Storefront/storefront/component/heidelpay/finish/transfer-information.html.twig' with {
-                    'transferInformation': transaction.extensions.heidelpayTransferInfo
+            {% if transaction.extensions.unzerTransferInfo %}
+                {% sw_include '@Storefront/storefront/component/unzer/finish/transfer-information.html.twig' with {
+                    'transferInformation': transaction.extensions.unzerTransferInfo
                 } %}
             {% endif %}
         {% endfor %}

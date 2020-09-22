@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentHandler\Traits;
+namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use HeidelPayment6\Components\PaymentHandler\AbstractHeidelpayHandler;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Heidelpay;
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
@@ -14,19 +13,20 @@ use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler;
 
 trait CanRecur
 {
-    protected $sessionIsRecurring    = 'HeidelPaymentIsReccuring';
-    protected $sessionPaymentTypeKey = 'HeidelPaymentTypeId';
-    protected $sessionCustomerIdKey  = 'HeidelPaymentCustomerId';
+    protected $sessionIsRecurring    = 'UnzerPaymentIsReccuring';
+    protected $sessionPaymentTypeKey = 'UnzerPaymentTypeId';
+    protected $sessionCustomerIdKey  = 'UnzerPaymentCustomerId';
 
     /**
      * @throws HeidelpayApiException
      */
     public function activateRecurring(string $returnUrl): string
     {
-        if (!$this instanceof AbstractHeidelpayHandler) {
+        if (!$this instanceof AbstractUnzerPaymentHandler) {
             throw new RuntimeException('Trait can only be used in a payment handler context which extends the AbstractHeidelpayHandler class');
         }
 
@@ -42,7 +42,7 @@ trait CanRecur
 
         if ($this->recurring !== null && !empty($this->recurring->getRedirectUrl())) {
             $this->session->set($this->sessionPaymentTypeKey, $this->recurring->getPaymentTypeId());
-            $this->session->set($this->sessionCustomerIdKey, $this->heidelpayCustomerId);
+            $this->session->set($this->sessionCustomerIdKey, $this->unzerCustomerId);
 
             return $this->recurring->getRedirectUrl();
         }
@@ -55,11 +55,11 @@ trait CanRecur
      */
     public function fetchPaymentByTypeId(string $paymentTypeId): ?AbstractHeidelpayResource
     {
-        if (null === $this->heidelpayClient || !($this->heidelpayClient instanceof Heidelpay)) {
+        if (null === $this->unzerClient || !($this->unzerClient instanceof Heidelpay)) {
             return null;
         }
 
-        return $this->heidelpayClient->fetchPaymentType($paymentTypeId);
+        return $this->unzerClient->fetchPaymentType($paymentTypeId);
     }
 
     protected function recur(
@@ -68,13 +68,13 @@ trait CanRecur
     ): void {
         $orderTransaction = $this->fetchTransactionById($transaction->getOrderTransaction()->getId(), $salesChannelContext->getContext());
 
-        $this->heidelpayBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
-        $this->heidelpayMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
+        $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
+        $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
 
         if ($this->session->has($this->sessionCustomerIdKey) && !empty($this->session->get($this->sessionCustomerIdKey))) {
-            $this->heidelpayCustomer = $this->heidelpayClient->fetchCustomer($this->session->get($this->sessionCustomerIdKey));
+            $this->unzerCustomer = $this->unzerClient->fetchCustomer($this->session->get($this->sessionCustomerIdKey));
         } else {
-            $this->heidelpayCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->unzerCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
         }
     }
 

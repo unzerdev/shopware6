@@ -1,6 +1,6 @@
 {
     "name": "heidelpay/shopware-6",
-    "description": "Heidelpay payment integration for Shopware 6",
+    "description": "Unzer payment integration for Shopware 6",
     "version": "0.0.1.2",
     "type": "shopware-platform-plugin",
     "license": "MIT",
@@ -8,9 +8,9 @@
     "prefer-stable": true,
     "authors": [
         {
-            "name": "heidelpay GmbH, Kellerkinder Pluginwerk GmbH",
-            "email": "info@heidelpay.com",
-            "homepage": "https://www.heidelpay.com"
+            "name": "Unzer GmbH, Kellerkinder Pluginwerk GmbH",
+            "email": "info@unzer.com",
+            "homepage": "https://www.unzer.com"
         }
     ],
     "config": {
@@ -30,24 +30,24 @@
         "k10r/codestyle": "^1.0"
     },
     "extra": {
-        "shopware-plugin-class": "HeidelPayment6\\HeidelPayment6",
+        "shopware-plugin-class": "UnzerPayment6\\UnzerPayment6",
         "plugin-icon": "src/Resources/public/plugin.png",
-        "copyright": "(c) heidelpay GmbH",
+        "copyright": "(c) Unzer GmbH",
         "label": {
-            "de-DE": "Heidelpay",
-            "en-GB": "Heidelpay"
+            "de-DE": "Unzer Payment",
+            "en-GB": "Unzer Payment"
         },
         "description": {
-            "de-DE": "Heidelpay Zahlungsarten für Shopware 6",
-            "en-GB": "Heidelpay payment integration for Shopware 6 "
+            "de-DE": "Unzer Zahlungsarten für Shopware 6",
+            "en-GB": "Unzer payment integration for Shopware 6 "
         },
         "manufacturerLink": {
-            "de-DE": "https://www.heidelpay.com/de/",
-            "en-GB": "https://www.heidelpay.com/en/"
+            "de-DE": "https://www.unzer.com/de/",
+            "en-GB": "https://www.unzer.com/en/"
         },
         "supportLink": {
-            "de-DE": "https://www.heidelpay.com/de/",
-            "en-GB": "https://www.heidelpay.com/en/"
+            "de-DE": "https://www.unzer.com/de/",
+            "en-GB": "https://www.unzer.com/en/"
         }
     },
     "autoload": {

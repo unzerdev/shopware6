@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentHandler\Traits;
+namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use HeidelPayment6\Components\Struct\TransferInformation\TransferInformation;
-use HeidelPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepositoryInterface;
 use heidelpayPHP\Resources\TransactionTypes\Charge;
 use RuntimeException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
+use UnzerPayment6\Components\Struct\TransferInformation\TransferInformation;
+use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepositoryInterface;
 
 trait HasTransferInfoTrait
 {
-    /** @var HeidelpayTransferInfoRepositoryInterface */
+    /** @var UnzerPaymentTransferInfoRepositoryInterface */
     protected $transferInfoRepository;
 
     private function saveTransferInfo(string $transactionId, Context $context): EntityWrittenContainerEvent

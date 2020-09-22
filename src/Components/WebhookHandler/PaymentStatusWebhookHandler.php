@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\WebhookHandler;
+namespace UnzerPayment6\Components\WebhookHandler;
 
-use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment6\Components\Struct\Webhook;
-use HeidelPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use heidelpayPHP\Resources\Payment;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -15,6 +12,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Exception\InvalidUuidException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\Struct\Webhook;
+use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 
 /**
  * @property Payment $resource

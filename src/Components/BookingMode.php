@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components;
+namespace UnzerPayment6\Components;
 
 class BookingMode
 {
