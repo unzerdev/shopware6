@@ -6,7 +6,7 @@
     <services>
         <service id="UnzerPayment6\EventListeners\Checkout\FinishPageEventListener">
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
-            <argument type="service" id="heidel_payment.logger"/>
+            <argument type="service" id="unzer_payment.logger"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -21,7 +21,7 @@
 
         <service id="UnzerPayment6\EventListeners\Account\PaymentMethodPageEventListener">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepository"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -32,14 +32,14 @@
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\Validator\AutomaticShippingValidator"/>
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
-            <argument type="service" id="heidel_payment.logger"/>
+            <argument type="service" id="unzer_payment.logger"/>
             <argument type="service" id="event_dispatcher"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
 
         <service id="UnzerPayment6\EventListeners\DataAbstractionLayer\OrderTransactionEventListener">
-            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepository"/>
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepository"/>
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

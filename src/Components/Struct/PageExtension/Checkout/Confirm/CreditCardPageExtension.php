@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
 use Shopware\Core\Framework\Struct\Struct;
-use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 
 class CreditCardPageExtension extends Struct
 {
-    /** @var HeidelpayPaymentDeviceEntity[] */
+    /** @var UnzerPaymentDeviceEntity[] */
     protected $creditCards = [];
 
     /** @var bool */
     protected $displayCreditCardSelection;
 
-    public function addCreditCard(HeidelpayPaymentDeviceEntity $creditCard): self
+    public function addCreditCard(UnzerPaymentDeviceEntity $creditCard): self
     {
         $this->creditCards[] = $creditCard;
 
@@ -23,7 +23,7 @@ class CreditCardPageExtension extends Struct
     }
 
     /**
-     * @return HeidelpayPaymentDeviceEntity[]
+     * @return UnzerPaymentDeviceEntity[]
      */
     public function getCreditCards(): array
     {
@@ -31,7 +31,7 @@ class CreditCardPageExtension extends Struct
     }
 
     /**
-     * @param HeidelpayPaymentDeviceEntity[] $creditCards
+     * @param UnzerPaymentDeviceEntity[] $creditCards
      *
      * @return CreditCardPageExtension
      */

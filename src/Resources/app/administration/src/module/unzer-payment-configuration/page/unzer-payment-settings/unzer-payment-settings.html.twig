@@ -1,6 +1,6 @@
-{% block heidel_payment_settings %}
+{% block unzer_payment_settings %}
 <sw-page class="unzer-payment-settings">
-    {% block heidel_payment_settings_header %}
+    {% block unzer_payment_settings_header %}
     <template slot="smart-bar-header">
         <h2>
             {{ $tc('sw-settings.index.title') }}
@@ -10,9 +10,9 @@
     </template>
     {% endblock %}
 
-    {% block heidel_payment_settings_actions %}
+    {% block unzer_payment_settings_actions %}
     <template slot="smart-bar-actions">
-        {% block heidel_payment_settings_actions_save %}
+        {% block unzer_payment_settings_actions_save %}
         <sw-button-process
             class="sw-settings-login-registration__save-action"
             :isLoading="isLoading"
@@ -24,7 +24,7 @@
         </sw-button-process>
         {% endblock %}
 
-        {% block heidel_payment_settings_actions_test %}
+        {% block unzer_payment_settings_actions_test %}
         <sw-button-process
             :isLoading="isTesting"
             :processSuccess="isTestSuccessful"
@@ -35,14 +35,14 @@
         </sw-button-process>
         {% endblock %}
 
-        {% block heidel_payment_settings_actions_register_webhooks %}
+        {% block unzer_payment_settings_actions_register_webhooks %}
         <unzer-payment-register-webhook></unzer-payment-register-webhook>
         {% endblock %}
 
     </template>
     {% endblock %}
 
-    {% block heidel_payment_settings_content %}
+    {% block unzer_payment_settings_content %}
     <template slot="content">
         <sw-card-view>
             <sw-system-config

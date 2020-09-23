@@ -1,7 +1,7 @@
 {% block sw_order_detail_content_tabs_general %}
     {% parent %}
 
-    {% block heidel_payment_payment_tab %}
+    {% block unzer_payment_payment_tab %}
         <sw-tabs-item v-if="isUnzerPayment"
                       :route="{ name: 'unzer-payment.payment.detail', params: { id: $route.params.id } }"
                       :title="$tc('unzer-payment.tabTitle')">

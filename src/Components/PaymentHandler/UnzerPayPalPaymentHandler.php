@@ -30,8 +30,8 @@ use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
-use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
-use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
+use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 
 class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 {
@@ -76,7 +76,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
-        HeidelpayPaymentDeviceRepositoryInterface $deviceRepository,
+        UnzerPaymentDeviceRepositoryInterface $deviceRepository,
         SessionInterface $session
     ) {
         parent::__construct(
@@ -182,7 +182,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 if ($registerAccounts && $salesChannelContext->getCustomer() !== null) {
                     $this->saveToDeviceVault(
                         $salesChannelContext->getCustomer(),
-                        HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL,
+                        UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL,
                         $salesChannelContext->getContext()
                     );
                 }

@@ -10,12 +10,12 @@ class SnippetFile_en_GB implements SnippetFileInterface
 {
     public function getName(): string
     {
-        return 'unzer.en-GB';
+        return 'unzer-payment.en-GB';
     }
 
     public function getPath(): string
     {
-        return __DIR__ . '/unzer.en_GB.json';
+        return __DIR__ . '/unzer-payment.en_GB.json';
     }
 
     public function getIso(): string

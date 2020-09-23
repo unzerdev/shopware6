@@ -2,21 +2,20 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-
     <services>
         <defaults public="true"/>
 
-        <service id="UnzerPayment6\Controllers\Storefront\HeidelpayWebhookController">
+        <service id="UnzerPayment6\Controllers\Storefront\UnzerPaymentWebhookController">
             <argument type="tagged" tag="unzer.webhook_handler" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader" />
-            <argument type="service" id="heidel_payment.logger" />
+            <argument type="service" id="unzer_payment.logger" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="UnzerPayment6\Controllers\Administration\HeidelpayTransactionController">
+        <service id="UnzerPayment6\Controllers\Administration\UnzerPaymentTransactionController">
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ArrayHydrator\PaymentArrayHydrator" />
@@ -27,14 +26,19 @@
             </call>
         </service>
 
-        <service id="UnzerPayment6\Controllers\Storefront\HeidelpayPaymentDeviceController">
-            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepository"/>
+        <service id="UnzerPayment6\Controllers\Storefront\UnzerPaymentDeviceController">
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepository"/>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
-        <service id="UnzerPayment6\Controllers\Administration\HeidelpayConfigurationController">
+        <service id="UnzerPayment6\Controllers\Administration\UnzerPaymentConfigurationController">
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
-            <argument type="service" id="heidel_payment.logger"/>
+            <argument type="service" id="unzer_payment.logger"/>
             <argument type="service" id="UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator"/>
+
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

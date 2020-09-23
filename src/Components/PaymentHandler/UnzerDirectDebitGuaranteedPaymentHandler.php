@@ -19,8 +19,8 @@ use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
-use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
+use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 
 class UnzerDirectDebitGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
 {
@@ -36,7 +36,7 @@ class UnzerDirectDebitGuaranteedPaymentHandler extends AbstractUnzerPaymentHandl
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
-        HeidelpayPaymentDeviceRepositoryInterface $deviceRepository
+        UnzerPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
             $basketHydrator,
@@ -96,7 +96,7 @@ class UnzerDirectDebitGuaranteedPaymentHandler extends AbstractUnzerPaymentHandl
             if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null) {
                 $this->saveToDeviceVault(
                     $salesChannelContext->getCustomer(),
-                    HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED,
+                    UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED,
                     $salesChannelContext->getContext(),
                     [
                         'birthDate' => $this->unzerCustomer->getBirthDate(),

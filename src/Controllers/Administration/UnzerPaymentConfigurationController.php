@@ -19,7 +19,7 @@ use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator;
 /**
  * @RouteScope(scopes={"api"})
  */
-class HeidelpayConfigurationController extends AbstractController
+class UnzerPaymentConfigurationController extends AbstractController
 {
     /** @var ClientFactoryInterface */
     private $clientFactory;
@@ -41,7 +41,7 @@ class HeidelpayConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidel_payment/validate-credentials", name="api.action.unzer.validate.credentials", methods={"POST"})
+     * @Route("/api/v{version}/_action/unzer_payment/validate-credentials", name="api.action.unzer.validate.credentials", methods={"POST"})
      */
     public function validateCredentials(RequestDataBag $dataBag)
     {
@@ -76,7 +76,7 @@ class HeidelpayConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidel_payment/register-webhooks", name="api.action.unzer.webhooks.register", methods={"POST"})
+     * @Route("/api/v{version}/_action/unzer_payment/register-webhooks", name="api.action.unzer.webhooks.register", methods={"POST"})
      */
     public function registerWebhooks(RequestDataBag $dataBag): JsonResponse
     {
@@ -99,7 +99,7 @@ class HeidelpayConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/heidel_payment/clear-webhooks", name="api.action.unzer.webhooks.clear", methods={"POST"})
+     * @Route("/api/v{version}/_action/unzer_payment/clear-webhooks", name="api.action.unzer.webhooks.clear", methods={"POST"})
      */
     public function clearWebhooks(RequestDataBag $dataBag): JsonResponse
     {

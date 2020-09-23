@@ -9,7 +9,7 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 
 class PaymentMethodPageExtension extends Struct
 {
-    /** @var HeidelpayPaymentDeviceEntity[] */
+    /** @var UnzerPaymentDeviceEntity[] */
     protected $savedDevices = [];
 
     /** @var bool */
@@ -23,7 +23,7 @@ class PaymentMethodPageExtension extends Struct
     }
 
     /**
-     * @return HeidelpayPaymentDeviceEntity[]
+     * @return UnzerPaymentDeviceEntity[]
      */
     public function getSavedDevices(): array
     {
@@ -31,7 +31,7 @@ class PaymentMethodPageExtension extends Struct
     }
 
     /**
-     * @param HeidelpayPaymentDeviceEntity[] $savedDevices
+     * @param UnzerPaymentDeviceEntity[] $savedDevices
      *
      * @return PaymentMethodPageExtension
      */

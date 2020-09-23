@@ -22,8 +22,8 @@ use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
-use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
+use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 
 class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
 {
@@ -43,7 +43,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
-        HeidelpayPaymentDeviceRepositoryInterface $deviceRepository
+        UnzerPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
             $basketHydrator,
@@ -84,7 +84,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             if ($registerCreditCards && $salesChannelContext->getCustomer() !== null) {
                 $this->saveToDeviceVault(
                     $salesChannelContext->getCustomer(),
-                    HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD,
+                    UnzerPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD,
                     $salesChannelContext->getContext()
                 );
             }

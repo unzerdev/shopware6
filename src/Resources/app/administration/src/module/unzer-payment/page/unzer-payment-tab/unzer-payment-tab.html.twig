@@ -1,37 +1,37 @@
-{% block heidel_payment_payment_details %}
+{% block unzer_payment_payment_details %}
     <div class="unzer-payment-detail">
         <div v-if="!isLoading">
-            {% block heidel_payment_payment_details_content %}
+            {% block unzer_payment_payment_details_content %}
                 <template v-for="paymentResource in paymentResources">
-                    {% block heidel_payment_payment_details_content_payment_detail %}
+                    {% block unzer_payment_payment_details_content_payment_detail %}
                         <unzer-payment-detail
                             :paymentResource="paymentResource"
                             @reload="reloadPaymentDetails">
                         </unzer-payment-detail>
                     {% endblock %}
 
-                    {% block heidel_payment_payment_details_content_payment_history %}
+                    {% block unzer_payment_payment_details_content_payment_history %}
                         <unzer-payment-history
                             :paymentResource="paymentResource"
                             @reload="reloadPaymentDetails">
                         </unzer-payment-history>
                     {% endblock %}
 
-                    {% block heidel_payment_payment_details_content_payment_basket %}
+                    {% block unzer_payment_payment_details_content_payment_basket %}
                         <unzer-payment-basket
                             :paymentResource="paymentResource"
                             @reload="reloadPaymentDetails">
                         </unzer-payment-basket>
                     {% endblock %}
 
-                    {% block heidel_payment_payment_details_content_payment_metadata %}
+                    {% block unzer_payment_payment_details_content_payment_metadata %}
                         <unzer-payment-metadata
                             :paymentResource="paymentResource"
                             @reload="reloadPaymentDetails">
                         </unzer-payment-metadata>
                     {% endblock %}
 
-                    {% block heidel_payment_payment_details_content_inner %}{% endblock %}
+                    {% block unzer_payment_payment_details_content_inner %}{% endblock %}
                 </template>
             {% endblock %}
         </div>

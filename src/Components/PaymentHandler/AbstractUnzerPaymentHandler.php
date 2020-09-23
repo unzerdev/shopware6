@@ -181,8 +181,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     ): void {
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
         $customFields = array_merge($customFields, [
-            CustomFieldInstaller::HEIDELPAY_IS_TRANSACTION => true,
-            CustomFieldInstaller::HEIDELPAY_IS_SHIPPED     => $shipmentExcecuted,
+            CustomFieldInstaller::UNZER_PAYMENT_IS_TRANSACTION => true,
+            CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED     => $shipmentExcecuted,
         ]);
 
         $update = [

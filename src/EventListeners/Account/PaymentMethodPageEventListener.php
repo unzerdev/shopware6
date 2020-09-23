@@ -9,18 +9,18 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Struct\PageExtension\Account\PaymentMethodPageExtension;
-use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
-use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
+use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 
 class PaymentMethodPageEventListener implements EventSubscriberInterface
 {
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    /** @var HeidelpayPaymentDeviceRepositoryInterface */
+    /** @var UnzerPaymentDeviceRepositoryInterface */
     private $deviceRepository;
 
-    public function __construct(ConfigReaderInterface $configReader, HeidelpayPaymentDeviceRepositoryInterface $deviceRepository)
+    public function __construct(ConfigReaderInterface $configReader, UnzerPaymentDeviceRepositoryInterface $deviceRepository)
     {
         $this->configReader     = $configReader;
         $this->deviceRepository = $deviceRepository;
@@ -54,20 +54,20 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
         $extension->setDeviceRemoved((bool) $event->getRequest()->get('deviceRemoved'));
 
         if ($registerCreditCards && $salesChannelContext->getCustomer() !== null) {
-            $creditCards = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD)->getElements();
+            $creditCards = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD)->getElements();
 
             $extension->addPaymentDevices($creditCards);
         }
 
         if ($registerPayPal && $salesChannelContext->getCustomer() !== null) {
-            $payPalAccounts = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_PAYPAL)->getElements();
+            $payPalAccounts = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL)->getElements();
 
             $extension->addPaymentDevices($payPalAccounts);
         }
 
         if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null) {
-            $directDebitDevices           = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT)->getElements();
-            $directDebitGuaranteedDevices = $devices->filterByProperty('deviceType', HeidelpayPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED)->getElements();
+            $directDebitDevices           = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT)->getElements();
+            $directDebitGuaranteedDevices = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED)->getElements();
 
             $extension->addPaymentDevices($directDebitDevices);
             $extension->addPaymentDevices($directDebitGuaranteedDevices);

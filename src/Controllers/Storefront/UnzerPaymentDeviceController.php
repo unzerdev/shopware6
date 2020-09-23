@@ -10,14 +10,14 @@ use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
+use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 
-class HeidelpayPaymentDeviceController extends StorefrontController
+class UnzerPaymentDeviceController extends StorefrontController
 {
-    /** @var HeidelpayPaymentDeviceRepositoryInterface */
+    /** @var UnzerPaymentDeviceRepositoryInterface */
     private $deviceRepository;
 
-    public function __construct(HeidelpayPaymentDeviceRepositoryInterface $deviceRepository)
+    public function __construct(UnzerPaymentDeviceRepositoryInterface $deviceRepository)
     {
         $this->deviceRepository = $deviceRepository;
     }

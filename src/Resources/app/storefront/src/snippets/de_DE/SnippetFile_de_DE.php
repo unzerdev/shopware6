@@ -10,12 +10,12 @@ class SnippetFile_de_DE implements SnippetFileInterface
 {
     public function getName(): string
     {
-        return 'unzer.de-DE';
+        return 'unzer-payment.de-DE';
     }
 
     public function getPath(): string
     {
-        return __DIR__ . '/unzer.de-DE.json';
+        return __DIR__ . '/unzer-payment.de-DE.json';
     }
 
     public function getIso(): string

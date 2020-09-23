@@ -8,14 +8,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
  * @method void add(UnzerPaymentTransferInfoEntity $entity)
- * @method void set(string $key, HeidelpayTransferInfoEntity $entity)
- * @method HeidelpayTransferInfoEntity[]    getIterator()
- * @method HeidelpayTransferInfoEntity[]    getElements()
- * @method null|HeidelpayTransferInfoEntity get(string $key)
- * @method null|HeidelpayTransferInfoEntity first()
- * @method null|HeidelpayTransferInfoEntity last()
+ * @method void set(string $key, UnzerPaymentTransferInfoEntity $entity)
+ * @method UnzerPaymentTransferInfoEntity[]    getIterator()
+ * @method UnzerPaymentTransferInfoEntity[]    getElements()
+ * @method null|UnzerPaymentTransferInfoEntity get(string $key)
+ * @method null|UnzerPaymentTransferInfoEntity first()
+ * @method null|UnzerPaymentTransferInfoEntity last()
  */
-class HeidelpayTransferInfoEntityCollection extends EntityCollection
+class UnzerPaymentTransferInfoEntityCollection extends EntityCollection
 {
     protected function getExpectedClass(): string
     {

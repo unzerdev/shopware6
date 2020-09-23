@@ -14,8 +14,8 @@ use Shopware\Core\System\CustomField\CustomFieldTypes;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    public const HEIDELPAY_IS_TRANSACTION = 'unzer_payment_is_transaction';
-    public const HEIDELPAY_IS_SHIPPED     = 'unzer_payment_is_shipped';
+    public const UNZER_PAYMENT_IS_TRANSACTION = 'unzer_payment_is_transaction';
+    public const UNZER_PAYMENT_IS_SHIPPED     = 'unzer_payment_is_shipped';
 
     public const CUSTOM_FIELDS = [
         [
@@ -29,7 +29,7 @@ class CustomFieldInstaller implements InstallerInterface
             ],
             'customFields' => [
                 [
-                    'name'   => self::HEIDELPAY_IS_TRANSACTION,
+                    'name'   => self::UNZER_PAYMENT_IS_TRANSACTION,
                     'type'   => CustomFieldTypes::BOOL,
                     'id'     => '6bb838751d65478992a5c0a1e80cb5fd',
                     'config' => [
@@ -40,7 +40,7 @@ class CustomFieldInstaller implements InstallerInterface
                     ],
                 ],
                 [
-                    'name'   => self::HEIDELPAY_IS_SHIPPED,
+                    'name'   => self::UNZER_PAYMENT_IS_SHIPPED,
                     'type'   => CustomFieldTypes::BOOL,
                     'id'     => '4962176184c25acbd46f60a15c24b334',
                     'config' => [

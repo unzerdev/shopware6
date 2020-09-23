@@ -29,8 +29,8 @@
             <name>extendedLogging</name>
             <label>Extended logging</label>
             <label lang="de-DE">Erweitertes logging</label>
-            <helpText lang="de-DE">Aktivieren, um alle API-Aufrufe in eine Logdatei (plugin_heidel_payment.XXX.log) zu schreiben. Unabhängig von dieser Option werden auftretene Fehler entsprechend von Shopware geloggt.</helpText>
-            <helpText>Activate to write any API requests to a logfile (plugin_heidel_payment.XXX.log). Irrespective of this option, errors will be logged by Shopware accordingly.</helpText>
+            <helpText lang="de-DE">Aktivieren, um alle API-Aufrufe in eine Logdatei (plugin_unzer_payment.XXX.log) zu schreiben. Unabhängig von dieser Option werden auftretene Fehler entsprechend von Shopware geloggt.</helpText>
+            <helpText>Activate to write any API requests to a logfile (plugin_unzer_payment.XXX.log). Irrespective of this option, errors will be logged by Shopware accordingly.</helpText>
         </input-field>
     </card>
 

@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
 use Shopware\Core\Framework\Struct\Struct;
-use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 
 class PayPalPageExtension extends Struct
 {
-    /** @var HeidelpayPaymentDeviceEntity[] */
+    /** @var UnzerPaymentDeviceEntity[] */
     protected $payPalAccounts = [];
 
     /** @var bool */
     protected $displayPayPalAccountselection;
 
-    public function addPayPalAccount(HeidelpayPaymentDeviceEntity $paypalAccount): self
+    public function addPayPalAccount(UnzerPaymentDeviceEntity $paypalAccount): self
     {
         $this->payPalAccounts[] = $paypalAccount;
 
@@ -23,7 +23,7 @@ class PayPalPageExtension extends Struct
     }
 
     /**
-     * @return HeidelpayPaymentDeviceEntity[]
+     * @return UnzerPaymentDeviceEntity[]
      */
     public function getPayPalAccounts(): array
     {
@@ -31,7 +31,7 @@ class PayPalPageExtension extends Struct
     }
 
     /**
-     * @param HeidelpayPaymentDeviceEntity[] $payPalAccounts
+     * @param UnzerPaymentDeviceEntity[] $payPalAccounts
      *
      * @return PayPalPageExtension
      */

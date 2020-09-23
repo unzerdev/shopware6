@@ -143,7 +143,7 @@ class SendShippingNotificationCommand extends Command
     ): void {
         $customFields = $transaction->getCustomFields() ?? [];
         $customFields = array_merge($customFields, [
-            CustomFieldInstaller::HEIDELPAY_IS_SHIPPED => true,
+            CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED => true,
         ]);
 
         $update = [
@@ -158,7 +158,7 @@ class SendShippingNotificationCommand extends Command
     {
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter(sprintf('customFields.%s', CustomFieldInstaller::HEIDELPAY_IS_SHIPPED), false),
+            new EqualsFilter(sprintf('customFields.%s', CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED), false),
             new EqualsAnyFilter('paymentMethodId', AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS),
             new EqualsFilter('order.deliveries.stateId', $stateId),
             new EqualsFilter('order.documents.documentType.technicalName', 'invoice')

@@ -3,7 +3,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelCreditCardPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerCreditCardPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -17,7 +17,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelInvoicePaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -31,7 +31,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelInvoiceGuaranteedPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerInvoiceGuaranteedPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -45,7 +45,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelInvoiceFactoringPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerInvoiceFactoringPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -59,7 +59,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelSofortPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerSofortPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -72,7 +72,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelEpsPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerEpsPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -85,7 +85,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelPayPalPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -100,7 +100,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelFlexipayPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerFlexipayPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -113,21 +113,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelDirectDebitPaymentHandler">
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
-            <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
-            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
-            <argument type="service" id="request_stack" />
-            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepository" />
-
-            <tag name="shopware.payment.method.async" />
-        </service>
-
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelDirectDebitGuaranteedPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -141,7 +127,21 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelIdealPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitGuaranteedPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepository" />
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -154,7 +154,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelGiropayPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerGiropayPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -167,7 +167,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelPrePaymentPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -181,7 +181,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelPrzelewyHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -194,7 +194,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelAlipayPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -207,7 +207,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelWeChatPaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerWeChatPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
@@ -220,7 +220,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\HeidelHirePurchasePaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerHirePurchasePaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>

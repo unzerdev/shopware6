@@ -11,9 +11,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use UnzerPayment6\Components\Struct\TransferInformation\TransferInformation;
-use UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo\HeidelpayTransferInfoEntity;
+use UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo\UnzerPaymentTransferInfoEntity;
 
-class HeidelpayTransferInfoRepository implements HeidelpayTransferInfoRepositoryInterface
+class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransferInfoRepositoryInterface
 {
     /** @var EntityRepositoryInterface */
     private $entityRepository;
@@ -72,7 +72,7 @@ class HeidelpayTransferInfoRepository implements HeidelpayTransferInfoRepository
     /**
      * {@inheritdoc}
      */
-    public function read(string $transactionId, Context $context): ?HeidelpayTransferInfoEntity
+    public function read(string $transactionId, Context $context): ?UnzerPaymentTransferInfoEntity
     {
         $criteria = new Criteria();
         $criteria->addFilter(

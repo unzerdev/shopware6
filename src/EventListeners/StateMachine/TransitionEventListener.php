@@ -116,7 +116,7 @@ class TransitionEventListener implements EventSubscriberInterface
     ): void {
         $customFields = $transaction->getCustomFields() ?? [];
         $customFields = array_merge($customFields, [
-            CustomFieldInstaller::HEIDELPAY_IS_SHIPPED => true,
+            CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED => true,
         ]);
 
         $update = [

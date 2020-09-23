@@ -18,7 +18,7 @@ export default class UnzerInvoiceGuaranteedPlugin extends Plugin {
      *
      * @private
      */
-    static heidelpayPlugin = null;
+    static unzerPaymentPlugin = null;
 
     /**
      * @type {Object}

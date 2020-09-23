@@ -18,7 +18,7 @@ use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\HeidelpayTransferInfoRepositoryInterface;
+use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepositoryInterface;
 
 class UnzerInvoicePaymentHandler extends AbstractUnzerPaymentHandler
 {
@@ -34,7 +34,7 @@ class UnzerInvoicePaymentHandler extends AbstractUnzerPaymentHandler
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
-        HeidelpayTransferInfoRepositoryInterface $transferInfoRepository
+        UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository
     ) {
         $this->transferInfoRepository = $transferInfoRepository;
 

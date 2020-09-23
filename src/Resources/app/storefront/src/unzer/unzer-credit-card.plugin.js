@@ -43,11 +43,11 @@ export default class UnzerCreditCardPlugin extends Plugin {
         this._registerEvents();
 
         if (this.options.hasSavedCards) {
-            const heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+            const unzerPaymentElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
 
-            heidelpayElementWrapper.hidden = true;
+            unzerPaymentElementWrapper.hidden = true;
         } else {
-            this._heidelpayPlugin.setSubmitButtonActive(false);
+            this._unzerPaymentPlugin.setSubmitButtonActive(false);
         }
     }
 
@@ -55,7 +55,7 @@ export default class UnzerCreditCardPlugin extends Plugin {
      * @private
      */
     _createForm() {
-        this.creditCard = this._heidelpayPlugin.unzerInstance.Card();
+        this.creditCard = this._unzerPaymentPlugin.unzerInstance.Card();
 
         this.creditCard.create('number', {
             containerId: this.options.numberFieldInputId,
@@ -87,7 +87,7 @@ export default class UnzerCreditCardPlugin extends Plugin {
             }
         }
 
-        this._heidelpayPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
+        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
     }
@@ -99,18 +99,18 @@ export default class UnzerCreditCardPlugin extends Plugin {
      */
     _onRadioButtonChange(event) {
         const targetElement = event.target;
-        const heidelpayElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+        const unzerPaymentElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
 
-        heidelpayElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewId;
+        unzerPaymentElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewId;
 
         if (targetElement.id === this.options.radioButtonNewId) {
-            this._heidelpayPlugin.setSubmitButtonActive(
+            this._unzerPaymentPlugin.setSubmitButtonActive(
                 this.cvcValid === true &&
                 this.numberValid === true &&
                 this.expiryValid === true
             );
         } else {
-            this._heidelpayPlugin.setSubmitButtonActive(true);
+            this._unzerPaymentPlugin.setSubmitButtonActive(true);
         }
     }
 
@@ -160,7 +160,7 @@ export default class UnzerCreditCardPlugin extends Plugin {
             this.expiryValid = event.success;
         }
 
-        this._heidelpayPlugin.setSubmitButtonActive(
+        this._unzerPaymentPlugin.setSubmitButtonActive(
             this.cvcValid === true &&
             this.numberValid === true &&
             this.expiryValid === true
@@ -178,14 +178,14 @@ export default class UnzerCreditCardPlugin extends Plugin {
         }
 
         this.submitting = true;
-        this._heidelpayPlugin.setSubmitButtonActive(false);
+        this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
         if (checkedRadioButton === null || checkedRadioButton.id === this.options.radioButtonNewId) {
             this.creditCard.createResource()
                 .then((resource) => this._submitPayment(resource))
                 .catch((error) => this._handleError(error));
         } else {
-            this._heidelpayPlugin.submitTypeId(checkedRadioButton.value);
+            this._unzerPaymentPlugin.submitTypeId(checkedRadioButton.value);
         }
     }
 
@@ -219,7 +219,7 @@ export default class UnzerCreditCardPlugin extends Plugin {
      * @private
      */
     _submitPayment(resource) {
-        this._heidelpayPlugin.submitResource(resource);
+        this._unzerPaymentPlugin.submitResource(resource);
     }
 
     /**
@@ -228,7 +228,7 @@ export default class UnzerCreditCardPlugin extends Plugin {
      * @private
      */
     _handleError(error) {
-        this._heidelpayPlugin.showError(error);
+        this._unzerPaymentPlugin.showError(error);
     }
 
     /**

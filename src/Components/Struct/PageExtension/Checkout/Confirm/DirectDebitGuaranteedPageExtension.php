@@ -15,7 +15,7 @@ class DirectDebitGuaranteedPageExtension extends Struct
     /** @var bool */
     protected $displayDirectDebitDeviceSelection;
 
-    public function addDirectDebitDevice(HeidelpayPaymentDeviceEntity $directDebitDevice): self
+    public function addDirectDebitDevice(UnzerPaymentDeviceEntity $directDebitDevice): self
     {
         $this->directDebitDevices[] = $directDebitDevice;
 
@@ -23,7 +23,7 @@ class DirectDebitGuaranteedPageExtension extends Struct
     }
 
     /**
-     * @return HeidelpayPaymentDeviceEntity[]
+     * @return UnzerPaymentDeviceEntity[]
      */
     public function getDirectDebitDevices(): array
     {
@@ -31,7 +31,7 @@ class DirectDebitGuaranteedPageExtension extends Struct
     }
 
     /**
-     * @param HeidelpayPaymentDeviceEntity[] $directDebitDevices
+     * @param UnzerPaymentDeviceEntity[] $directDebitDevices
      */
     public function setDirectDebitDevices(array $directDebitDevices): self
     {
