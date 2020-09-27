@@ -1,7 +1,7 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import ElementLoadingIndicatorUtil from 'src/utility/loading-indicator/element-loading-indicator.util';
 
-export default class UnzerHirePurchasePlugin extends Plugin {
+export default class UnzerPaymentHirePurchasePlugin extends Plugin {
     static options = {
         hirePurchaseAmount: 0.0,
         hirePurchaseCurrency: '',

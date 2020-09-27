@@ -1,22 +1,22 @@
-{% block unzer_paymentframe_paypal_account %}
+{% block unzer_payment_frame_paypal_account %}
     {# PayPal with stored account #}
     {% if page.extensions.unzerPayPal.displayPayPalAccountSelection and page.extensions.unzerPayPal.payPalAccounts|length > 0 %}
-        {% block unzer_paymentcheckout_confirm_frame_card_body_title %}
+        {% block unzer_payment_checkout_confirm_frame_card_body_title %}
             <div class="card-title">
                 {{ context.paymentMethod.translated.name }}
             </div>
         {% endblock %}
 
-        <div class="unzer-paymentpaypal-account-wrapper"
-             data-unzer-paypal="true"
-             data-unzer-paypal-options='{
+        <div class="unzer-payment-paypal-account-wrapper"
+             data-unzer-payment-paypal="true"
+             data-unzer-payment-paypal-options='{
                 "hasSavedAccounts": true
              }'>
-            <div class="unzer-paymentsaved-accounts-wrapper">
-                <div class="unzer-paymentsaved-accounts--message">
+            <div class="unzer-payment-saved-accounts-wrapper">
+                <div class="unzer-payment-saved-accounts--message">
                     {{ "UnzerPayment.frame.paypal.choose"|trans }}
                 </div>
-                {% block unzer_paymentframe_paypal_account_saved_device %}
+                {% block unzer_payment_frame_paypal_account_saved_device %}
                     {# @var payPalAccount \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
                     {% for payPalAccount in page.extensions.unzerPayPal.payPalAccounts %}
                         <div class="custom-control custom-radio payment-control">
@@ -31,7 +31,7 @@
                     {% endfor %}
                 {% endblock %}
 
-                {% block unzer_paymentframe_paypal_account_saved_device_new %}
+                {% block unzer_payment_frame_paypal_account_saved_device_new %}
                     <div class="custom-control custom-radio payment-control">
                         <input type="radio" value="new" name="savedPayPalAccount" id="account-new"
                                class="custom-control-input payment-method-input"
@@ -45,7 +45,7 @@
         </div>
     {% else %}
         {# PayPal without stored accounts #}
-        <div class="unzer-paymentpaypal-account-wrapper"
+        <div class="unzer-payment-paypal-account-wrapper"
              data-unzer-paypal="true"
              data-unzer-paypal-options='{
                 "hasSavedAccounts": false

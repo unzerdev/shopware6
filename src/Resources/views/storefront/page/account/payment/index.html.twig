@@ -12,7 +12,7 @@
 
     {% if page.extensions.unzer.savedDevices|length > 0 %}
         {% block page_account_payment_main_unzer_paymentwrapper %}
-            <div class="unzer-paymentcard has-margin-top">
+            <div class="unzer-payment-card has-margin-top">
                 {% block page_account_payment_main_unzer_paymentwrapper_title %}
                     <div class="card-title">
                         {{ "UnzerPayment.accountPayment.title"|trans }}
@@ -20,7 +20,7 @@
                 {% endblock %}
 
                 {% block page_account_payment_main_unzer_paymentwrapper_body %}
-                    <div class="unzer-paymentcard-body">
+                    <div class="unzer-payment-card-body">
                         {% for paymentDevice in page.extensions.unzer.savedDevices %}
                             {% sw_include '@Storefront/storefront/component/unzer/account/payment/' ~ paymentDevice.deviceType  ~ '.html.twig' ignore missing with {
                                 'device': paymentDevice

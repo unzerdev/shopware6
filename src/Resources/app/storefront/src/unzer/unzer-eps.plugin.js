@@ -1,6 +1,6 @@
 import Plugin from 'src/plugin-system/plugin.class';
 
-export default class UnzerEpsPlugin extends Plugin {
+export default class UnzerPaymentEpsPlugin extends Plugin {
     /**
      * @type {Object}
      *

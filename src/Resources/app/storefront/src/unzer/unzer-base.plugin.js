@@ -7,8 +7,8 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         disabledClass: 'disabled',
         resourceIdElementId: 'unzerResourceId',
         confirmFormId: 'confirmOrderForm',
-        errorWrapperClass: 'unzer-error-wrapper',
-        errorContentSelector: '.unzer-error-wrapper .alert-content',
+        errorWrapperClass: 'unzer-payment--error-wrapper',
+        errorContentSelector: '.unzer-payment--error-wrapper .alert-content',
         errorShouldNotBeEmpty: '%field% should not be empty',
         isOrderEdit: false
     };
@@ -21,7 +21,7 @@ export default class UnzerPaymentBasePlugin extends Plugin {
     static unzerInstance = null;
 
     init() {
-        this.unzerInstance = new window.unzer(this.options.publicKey);
+        this.unzerInstance = new window.heidelpay(this.options.publicKey);
 
         if (this.options.isOrderEdit) {
             this.submitButton = document.getElementById(this.options.confirmFormId).getElementsByTagName('button')[0];
@@ -96,8 +96,8 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0);
         const errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
 
-        errorContent.innerText = error.message;
         errorWrapper.hidden = false;
+        errorContent.innerText = error.message;
 
         el.appendChild(errorWrapper);
     }
@@ -167,8 +167,11 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0);
         const errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
 
-        errorContent.innerText = '';
+        window.console.log(errorWrapper);
+        window.console.log(document.getElementsByClassName(this.options.errorWrapperClass));
+
         errorWrapper.hidden = true;
+        errorContent.innerText = '';
     }
 
     /**

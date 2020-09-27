@@ -56,7 +56,7 @@ class UnzerHirePurchasePaymentHandler extends AbstractUnzerPaymentHandler
 
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
-        $birthday = $currentRequest->get('unzerBirthday', '');
+        $birthday = $currentRequest->get('unzerPaymentBirthday', '');
         $this->unzerCustomer->setBirthDate($birthday);
 
         try {

@@ -1,6 +1,6 @@
 import Plugin from 'src/plugin-system/plugin.class';
 
-export default class UnzerPaypalPlugin extends Plugin {
+export default class UnzerPaymentPayPalPlugin extends Plugin {
     static options = {
         radioButtonSelector: 'input[name="savedPayPalAccount"]',
         selectedRadioButtonSelector: 'input[name="savedPayPalAccount"]:checked',

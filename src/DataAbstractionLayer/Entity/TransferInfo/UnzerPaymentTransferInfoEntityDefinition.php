@@ -19,7 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class UnzerPaymentTransferInfoEntityDefinition extends EntityDefinition
 {
-    public const ENTITY_NAME = 'unzer_transfer_info';
+    public const ENTITY_NAME = 'unzer_payment_transfer_info';
 
     public function getEntityName(): string
     {

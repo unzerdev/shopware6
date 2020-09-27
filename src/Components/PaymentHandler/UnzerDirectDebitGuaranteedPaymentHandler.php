@@ -72,7 +72,7 @@ class UnzerDirectDebitGuaranteedPaymentHandler extends AbstractUnzerPaymentHandl
         }
 
         $registerDirectDebit = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
-        $birthday            = $currentRequest->get('unzerBirthday', '');
+        $birthday            = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {
             if (!empty($birthday)) {

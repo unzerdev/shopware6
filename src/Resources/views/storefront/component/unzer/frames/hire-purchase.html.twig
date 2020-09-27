@@ -1,13 +1,13 @@
-{% block unzer_paymentframe_hire_purchase %}
-    {% block unzer_paymentcheckout_confirm_frame_card_body_title %}
+{% block unzer_payment_frame_hire_purchase %}
+    {% block unzer_payment_checkout_confirm_frame_card_body_title %}
         <div class="card-title">
             {{ context.paymentMethod.translated.name }}
         </div>
     {% endblock %}
 
-    <div class="unzer-paymenthire-purchase-wrapper"
-         data-unzer-hire-purchase="true"
-         data-unzer-hire-purchase-options='{
+    <div class="unzer-payment-hire-purchase-wrapper"
+         data-unzer-payment-hire-purchase="true"
+         data-unzer-payment-hire-purchase-options='{
             "hirePurchaseCurrency": "{{ page.extensions.unzerHirePurchase.currency }}",
             "hirePurchaseAmount": {{ page.extensions.unzerHirePurchase.amount }},
             "hirePurchaseEffectiveInterest": {{ page.extensions.unzerHirePurchase.effectiveInterest }},
@@ -17,7 +17,7 @@
             "starSymbol": "{{ "general.star"|trans }}"
          }'>
 
-        <div id="element-loader" class="unzer-paymentloader">
+        <div id="element-loader" class="unzer-payment-loader">
             {# Placeholder for the loader element. #}
         </div>
 
@@ -25,18 +25,18 @@
             {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/hire-purchase.html.twig' %}
         {% endif %}
 
-        {% block unzer_paymentframe_hire_purchase_container %}
+        {% block unzer_payment_frame_hire_purchase_container %}
             <div id="unzer-paymenthire-purchase-container"></div>
         {% endblock %}
 
-        {% block unzer_paymentframe_hire_purchase_birthday %}
-            <label for="unzerBirthday" class="unzer-paymentlabel">
+        {% block unzer_payment_frame_hire_purchase_birthday %}
+            <label for="unzerPaymentBirthday" class="unzer-payment-label">
                 {{ "account.personalBirthdayLabel"|trans }}
             </label>
 
             <input type="date"
-                   id="unzerBirthday"
-                   name="unzerBirthday"
+                   id="unzerPaymentBirthday"
+                   name="unzerPaymentBirthday"
                    class="form-control unzer-paymentdate-input"
                    form="confirmOrderForm"
                    required="required"

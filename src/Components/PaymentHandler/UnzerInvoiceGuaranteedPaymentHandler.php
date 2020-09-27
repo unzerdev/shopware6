@@ -61,8 +61,7 @@ class UnzerInvoiceGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
-
-        $birthday = $currentRequest->get('unzerBirthday', '');
+        $birthday       = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {
             if (empty($this->unzerCustomerId)) {
@@ -75,6 +74,7 @@ class UnzerInvoiceGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
+            dd($apiException);
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         }
     }

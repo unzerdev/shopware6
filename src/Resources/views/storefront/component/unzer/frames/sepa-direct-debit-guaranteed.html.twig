@@ -1,29 +1,29 @@
-{% block unzer_paymentframe_sepa_direct_debit_guaranteed %}
-    {% block unzer_paymentcheckout_confirm_frame_card_body_title %}
+{% block unzer_payment_frame_sepa_direct_debit_guaranteed %}
+    {% block unzer_payment_checkout_confirm_frame_card_body_title %}
         <div class="card-title">
             {{ context.paymentMethod.translated.name }}
         </div>
     {% endblock %}
 
-    <div class="unzer-paymentsepa-wrapper"
-         data-unzer-sepa-direct-debit-guaranteed="true"
-         data-unzer-sepa-direct-debit-guaranteed-options='{
+    <div class="unzer-payment-sepa-wrapper"
+         data-unzer-payment-sepa-direct-debit-guaranteed="true"
+         data-unzer-payment-sepa-direct-debit-guaranteed-options='{
             "mandateNotAcceptedError": "{{ "UnzerPayment.frame.sepa.mandate.error" | trans }}",
             "hasSepaDevices": {% if page.extensions.unzerDirectDebitGuaranteed.directDebitDevices|length > 0 %}true{% else %}false{% endif %}
          }'>
 
-        {% block unzer_paymentframe_sepa_direct_debit_guaranteed_test_data %}
+        {% block unzer_payment_frame_sepa_direct_debit_guaranteed_test_data %}
             {% if shopware.config.UnzerPayment6.settings.testMode %}
                 {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/sepa.html.twig' %}
             {% endif %}
         {% endblock %}
 
         {% if page.extensions.unzerDirectDebitGuaranteed.displayDirectDebitDeviceSelection and page.extensions.unzerDirectDebitGuaranteed.directDebitDevices|length > 0 %}
-            <div class="unzer-paymentsaved-sepa-wrapper">
-                <div class="unzer-paymentsaved-sepa--message">
+            <div class="unzer-payment-saved-sepa-wrapper">
+                <div class="unzer-payment-saved-sepa--message">
                     {{ "UnzerPayment.frame.sepa.device.choose"|trans }}
                 </div>
-                {% block unzer_paymentframe_direct_debit_guaranteed_device_saved %}
+                {% block unzer_payment_frame_direct_debit_guaranteed_device_saved %}
                     {# @var sepaDevice \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
                     {% for sepaDevice in page.extensions.unzerDirectDebitGuaranteed.directDebitDevices %}
                         <div class="custom-control custom-radio payment-control">
@@ -37,7 +37,7 @@
                     {% endfor %}
                 {% endblock %}
 
-                {% block unzer_paymentframe_direct_debit_guaranteed_device_new %}
+                {% block unzer_payment_frame_direct_debit_guaranteed_device_new %}
                     <div class="custom-control custom-radio payment-control">
                         <input type="radio" value="new" name="savedDirectDebitDevice" form="confirmOrderForm"
                                id="device-new" class="custom-control-input payment-method-input">
@@ -49,17 +49,17 @@
             </div>
         {% endif %}
 
-        <div class="unzer-paymentsepa-wrapper-elements">
-            {% block unzer_paymentframe_sepa_direct_debit_guaranteed_iban %}
+        <div class="unzer-payment-sepa-wrapper-elements">
+            {% block unzer_payment_frame_sepa_direct_debit_guaranteed_iban %}
                 <div id="unzer-paymentsepa-container"></div>
             {% endblock %}
 
-            {% block unzer_paymentframe_sepa_direct_debit_guaranteed_mandate %}
+            {% block unzer_payment_frame_sepa_direct_debit_guaranteed_mandate %}
                 {% sw_include '@Storefront/storefront/component/unzer/frames/sepa/mandate.html.twig' %}
             {% endblock %}
 
-            {% block unzer_paymentframe_sepa_direct_debit_guaranteed_birthday %}
-                <div class="unzer-paymentframe-row">
+            {% block unzer_payment_frame_sepa_direct_debit_guaranteed_birthday %}
+                <div class="unzer-payment-frame-row">
                     <label for="unzerPaymentBirthday">
                         {{ "account.personalBirthdayLabel"|trans }}
                     </label>

@@ -6,7 +6,7 @@ namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use RuntimeException;
-use UnzerPayment6\Components\PaymentHandler\AbstractHeidelpayHandler;
+use UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler;
 
 trait CanAuthorize
 {
@@ -15,7 +15,7 @@ trait CanAuthorize
      */
     public function authorize(string $returnUrl): string
     {
-        if (!$this instanceof AbstractHeidelpayHandler) {
+        if (!$this instanceof AbstractUnzerPaymentHandler) {
             throw new RuntimeException('Trait can only be used in a payment handler context which extends the AbstractHeidelpayHandler class');
         }
 

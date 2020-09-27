@@ -61,7 +61,7 @@ class UnzerInvoiceFactoringPaymentHandler extends AbstractUnzerPaymentHandler
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
-        $birthday       = $currentRequest->get('unzerBirthday', '');
+        $birthday       = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {
             if (empty($this->unzerCustomerId)) {

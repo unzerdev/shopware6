@@ -1,7 +1,7 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import DomAccess from 'src/helper/dom-access.helper';
 
-export default class UnzerSepaDirectDebitPlugin extends Plugin {
+export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
     static options = {
         acceptMandateId: 'acceptSepaMandate',
         mandateNotAcceptedError: 'Please accept the SEPA direct debit mandate in order to continue.',

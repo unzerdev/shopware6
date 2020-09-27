@@ -1,6 +1,6 @@
 import Plugin from 'src/plugin-system/plugin.class';
 
-export default class UnzerInvoicePlugin extends Plugin {
+export default class UnzerPaymentInvoicePlugin extends Plugin {
     static options = {
         unzerPaymentCardId: 'unzer-card'
     };
@@ -20,15 +20,8 @@ export default class UnzerInvoicePlugin extends Plugin {
     static unzerPaymentPlugin = null;
 
     init() {
-        /*
-            Hiding the unzerPayment card is special for invoice payments.
-            The unzerPayment JS SDK needs to create an own resource (payment-type) but does not need any further input,
-            therefore we can simply hide the unzerPayment card on the confirm page.
-         */
-        this._hideUnzerPaymentCard();
-
-        this.unzerPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.invoice = this.unzerPlugin.unzerInstance.Invoice();
+        this.unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.invoice = this.unzerPaymentPlugin.unzerInstance.Invoice();
 
         this._registerEvents();
     }
@@ -37,7 +30,7 @@ export default class UnzerInvoicePlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this.unzerPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
+        this.unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
     }
@@ -46,13 +39,12 @@ export default class UnzerInvoicePlugin extends Plugin {
      * @private
      */
     _onCreateResource() {
-        this.unzerPlugin.setSubmitButtonActive(false);
+        this.unzerPaymentPlugin.setSubmitButtonActive(false);
 
         this.invoice.createResource()
             .then((resource) => this._submitPayment(resource))
             .catch((error) => this._handleError(error));
     }
-
 
     /**
      * @param {Object} resource
@@ -60,7 +52,7 @@ export default class UnzerInvoicePlugin extends Plugin {
      * @private
      */
     _submitPayment(resource) {
-        this.unzerPlugin.submitResource(resource);
+        this.unzerPaymentPlugin.submitResource(resource);
     }
 
     /**
@@ -69,15 +61,6 @@ export default class UnzerInvoicePlugin extends Plugin {
      * @private
      */
     _handleError(error) {
-        this.unzerPlugin.showError(error);
-    }
-
-    /**
-     * @private
-     */
-    _hideUnzerPaymentCard() {
-        const unzerPaymentCard = document.getElementById(this.options.unzerCardId);
-
-        unzerPaymentCard.hidden = true;
+        this.unzerPaymentPlugin.showError(error);
     }
 }

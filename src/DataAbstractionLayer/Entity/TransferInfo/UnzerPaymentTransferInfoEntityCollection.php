@@ -19,6 +19,6 @@ class UnzerPaymentTransferInfoEntityCollection extends EntityCollection
 {
     protected function getExpectedClass(): string
     {
-        return HeidelpayTransferInfoEntity::class;
+        return UnzerPaymentTransferInfoEntity::class;
     }
 }

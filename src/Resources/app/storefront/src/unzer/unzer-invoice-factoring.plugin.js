@@ -1,6 +1,6 @@
 import Plugin from 'src/plugin-system/plugin.class';
 
-export default class UnzerInvoiceFactoringPlugin extends Plugin {
+export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
     static options = {
         isB2BCustomer: false,
         customerInfo: null

@@ -1,7 +1,7 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import DomAccess from 'src/helper/dom-access.helper';
 
-export default class UnzerCreditCardPlugin extends Plugin {
+export default class UnzerPaymentCreditCardPlugin extends Plugin {
     static options = {
         numberFieldId: 'unzer-credit-card-number',
         numberFieldInputId: 'unzer-credit-card-number-input',

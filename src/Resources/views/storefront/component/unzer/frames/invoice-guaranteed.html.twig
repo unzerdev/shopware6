@@ -1,34 +1,33 @@
-{% block unzer_paymentframe_invoice_guaranteed %}
-    {% block unzer_paymentcheckout_confirm_frame_card_body_title %}
+{% block unzer_payment_frame_invoice_guaranteed %}
+    {% block unzer_payment_checkout_confirm_frame_card_body_title %}
         <div class="card-title">
             {{ context.paymentMethod.translated.name }}
         </div>
     {% endblock %}
 
-    <div class="unzer-paymentinvoice-guaranteed-wrapper"
-         data-unzer-invoice-guaranteed="true"
-         data-unzer-invoice-guaranteed-options='{
+    <div class="unzer-payment-invoice-guaranteed-wrapper"
+         data-unzer-payment-invoice-guaranteed="true"
+         data-unzer-payment-invoice-guaranteed-options='{
             "isB2BCustomer": "{{ context.customer.activeBillingAddress.company is not empty }}",
             "customerInfo": {{ context.customer|json_encode }}
          }'>
 
-        <div class="unzer-paymentframe-row">
+        <div class="unzer-payment-frame-row">
             {% if context.customer.activeBillingAddress.company is not empty %}
-                {% block unzer_paymentframe_invoice_guaranteed_b2b_form %}
-                    <div id="unzer-paymentb2b-form" class="field">
-                    </div>
+                {% block unzer_payment_frame_invoice_guaranteed_b2b_form %}
+                    <div id="unzer-paymentb2b-form" class="field"></div>
 
                     <input type="hidden" id="unzerCustomerId" name="unzerCustomerId" form="confirmOrderForm">
                 {% endblock %}
             {% else %}
-                {% block unzer_paymentframe_invoice_guaranteed_birthday %}
+                {% block unzer_payment_frame_invoice_guaranteed_birthday %}
                     <div id="unzer-paymentb2c-form">
-                        <label for="unzerBirthday" class="unzer-paymentlabel">
+                        <label for="unzerPaymentBirthday" class="unzer-payment-label">
                             {{ "account.personalBirthdayLabel"|trans }}
                         </label>
                         <input type="date"
-                               id="unzerBirthday"
-                               name="unzerBirthday"
+                               id="unzerPaymentBirthday"
+                               name="unzerPaymentBirthday"
                                class="form-control unzer-paymentdate-input"
                                form="confirmOrderForm"
                                required="required"

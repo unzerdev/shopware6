@@ -55,10 +55,6 @@
             "UnzerPayment6\\": "src/"
         }
     },
-    "conflict": {
-        "shopware/storefront": "<6,>=7",
-        "shopware/administration": "<6,>=7"
-    },
     "scripts": {
         "phpcs": "vendor/bin/php-cs-fixer fix",
         "phpunit": "vendor/bin/phpunit",

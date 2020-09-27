@@ -1,12 +1,12 @@
-{% block unzer_paymentframe_ideal %}
-    {% block unzer_paymentcheckout_confirm_frame_card_body_title %}
+{% block unzer_payment_frame_ideal %}
+    {% block unzer_payment_checkout_confirm_frame_card_body_title %}
         <div class="card-title">
             {{ context.paymentMethod.translated.name }}
         </div>
     {% endblock %}
 
-    <div class="unzer-paymentideal-wrapper"
-         data-unzer-ideal="true">
+    <div class="unzer-payment-ideal-wrapper"
+         data-unzer-payment-ideal="true">
 
         <div id="unzer-paymentideal-container"></div>
     </div>
