@@ -38,7 +38,7 @@ class RegisterWebhookCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('heidelpay:register-webhooks');
         $this->setDescription('Registers the heidelpay webhook');

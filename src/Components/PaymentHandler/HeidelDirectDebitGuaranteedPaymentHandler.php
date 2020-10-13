@@ -65,10 +65,7 @@ class HeidelDirectDebitGuaranteedPaymentHandler extends AbstractHeidelpayHandler
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
         if (!$this->isPaymentAllowed($transaction->getOrderTransaction()->getId())) {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                'SEPA direct debit mandate has not been accepted by the customer.'
-            );
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
         }
 
         $registerDirectDebit = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
