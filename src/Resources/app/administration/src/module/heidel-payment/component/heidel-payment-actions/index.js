@@ -40,20 +40,12 @@ Component.register('heidel-payment-actions', {
             return this.transactionResource.type === 'charge';
         },
 
-        refundAmount: function () {
-            return this.paymentResource.calculatedAmounts.charged - this.paymentResource.calculatedAmounts.cancelled;
-        },
-
-        chargeAmount: function () {
-            return this.paymentResource.calculatedAmounts.remaining;
-        },
-
         maxTransactionAmount() {
             let transactionVal = 0;
             if (this.isRefundPossible) {
-                transactionVal = this.refundAmount;
+                transactionVal = this.paymentResource.amount.charged - this.paymentResource.amount.canceled;
             } else if (this.isChargePossible) {
-                transactionVal = this.chargeAmount;
+                transactionVal = this.paymentResource.amount.remaining;
             }
 
             return transactionVal;
