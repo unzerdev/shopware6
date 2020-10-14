@@ -63,6 +63,9 @@
                 "shipErrorTitle": "Versandmitteilung",
                 "invoiceNotFoundMessage": "Zu dieser Bestellung wurde keine Rechnung gefunden"
             }
+        },
+        "order-list": {
+            "transactionId": "Heidelpay Transaktions ID"
         }
     },
     "heidel-payment-settings": {

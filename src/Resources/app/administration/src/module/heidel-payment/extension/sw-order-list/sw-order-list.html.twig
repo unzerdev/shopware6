@@ -1,0 +1,11 @@
+{% block sw_order_list_grid_columns %}
+    {% parent %}
+
+    {% block heidelpay_column_transaction %}
+        <template #column-heidelTransactionId="{ item }">
+            <b v-if="item.transactions.last().customFields && item.transactions.last().customFields.heidelpay_is_transaction">
+                {{ item.transactions.last().id }}
+            </b>
+        </template>
+    {% endblock %}
+{% endblock %}
