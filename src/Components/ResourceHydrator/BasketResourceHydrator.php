@@ -10,7 +10,7 @@ use heidelpayPHP\Resources\Basket;
 use heidelpayPHP\Resources\EmbeddedResources\BasketItem;
 use InvalidArgumentException;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
@@ -32,21 +32,15 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         $currencyPrecision = $transaction->getOrder()->getCurrency() !== null ? $transaction->getOrder()->getCurrency()->getDecimalPrecision() : 4;
         $currencyPrecision = min($currencyPrecision, 4);
 
-        $amountTotalVat = round(
-            $transaction->getOrder()->getAmountTotal() - $transaction->getOrder()->getAmountNet(),
-            $currencyPrecision
-        );
-
-        $amountTotalDiscount = round(
-            $this->calculateAmountTotalDiscount($transaction->getOrder()->getLineItems()),
-            $currencyPrecision
-        );
-
         if ($transaction instanceof AsyncPaymentTransactionStruct) {
             $transactionId = $transaction->getOrderTransaction()->getId();
         } else {
             $transactionId = $transaction->getId();
         }
+
+        $amountTotalDiscount = 0;
+        $amountTotalGross    = 0;
+        $amountTotalVat      = 0;
 
         $heidelBasket = new Basket(
             $transactionId,
@@ -61,7 +55,11 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             return $heidelBasket;
         }
 
+        /** @var OrderLineItemEntity $lineItem */
         foreach ($transaction->getOrder()->getLineItems() as $lineItem) {
+            $amountDiscount = 0;
+            $amountGross    = 0;
+
             $type = $lineItem->getType();
 
             if ($lineItem->getPrice() === null) {
@@ -86,13 +84,24 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 $unitPrice      = 0;
                 $amountGross    = 0;
                 $amountNet      = 0;
+                $amountTax      = 0;
                 $amountDiscount = round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision);
             } else {
-                $unitPrice      = round($this->getAmountByItemType($type, $lineItem->getUnitPrice()), $currencyPrecision);
-                $amountGross    = round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision);
-                $amountNet      = round($amountGross - $amountTax, $currencyPrecision);
-                $amountDiscount = 0;
+                $unitPrice   = round($this->getAmountByItemType($type, $lineItem->getUnitPrice()), $currencyPrecision);
+                $amountGross = round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision);
+                $amountNet   = round($amountGross - $amountTax, $currencyPrecision);
+
+                if (null !== $lineItem->getProduct()) {
+                    $product = $lineItem->getProduct();
+                    $amountDiscount = round(($product->getPrice() - $lineItem->getTotalPrice()) * -1, $currencyPrecision);
+                } else {
+                    $amountDiscount = 0;
+                }
             }
+
+            $amountTotalDiscount += $amountDiscount;
+            $amountTotalGross += $amountGross;
+            $amountTotalVat += $amountTax;
 
             $basketItem = new BasketItem(
                 $lineItem->getLabel(),
@@ -117,6 +126,20 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $currencyPrecision,
             $channelContext->getShippingMethod()->getName()
         );
+
+        $heidelBasketItems = $heidelBasket->getBasketItems();
+        /** @var BasketItem $shippingItem */
+        $shippingItem = end($heidelBasketItems);
+
+        if ($shippingItem !== false && $shippingItem->getType() === BasketItemTypes::SHIPMENT) {
+            $amountTotalDiscount += $shippingItem->getAmountDiscount();
+            $amountTotalGross += $shippingItem->getAmountGross();
+            $amountTotalVat += $shippingItem->getAmountVat();
+        }
+
+        $heidelBasket->setAmountTotalDiscount($amountTotalDiscount);
+        $heidelBasket->setAmountTotalGross($amountTotalGross);
+        $heidelBasket->setAmountTotalVat($amountTotalVat);
 
         return $heidelBasket;
     }
@@ -184,17 +207,5 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
             $basket->addBasketItem($dispatchBasketItem);
         }
-    }
-
-    private function calculateAmountTotalDiscount(OrderLineItemCollection $lineItems): float
-    {
-        $lineItems = array_map(
-            function ($lineItem) {
-                return $this->isPromotionLineItemType($lineItem->getType()) ? $lineItem->getTotalPrice() * -1 : 0.0;
-            },
-            $lineItems->getElements()
-        );
-
-        return array_sum($lineItems);
     }
 }
