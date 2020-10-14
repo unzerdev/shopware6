@@ -92,7 +92,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 $amountNet   = round($amountGross - $amountTax, $currencyPrecision);
 
                 if (null !== $lineItem->getProduct()) {
-                    $product = $lineItem->getProduct();
+                    $product        = $lineItem->getProduct();
                     $amountDiscount = round(($product->getPrice() - $lineItem->getTotalPrice()) * -1, $currencyPrecision);
                 } else {
                     $amountDiscount = 0;
