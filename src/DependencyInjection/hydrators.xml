@@ -2,17 +2,17 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-
     <services>
         <service id="HeidelPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+
+        <service id="HeidelPayment6\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
 
         <service id="HeidelPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
 
         <service id="HeidelPayment6\Components\ResourceHydrator\MetadataResourceHydrator">
             <argument>%kernel.shopware_version%</argument>
+            <argument type="service" id="plugin.repository" />
         </service>
-
-        <service id="HeidelPayment6\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
 
         <service id="HeidelPayment6\Components\ArrayHydrator\PaymentArrayHydrator" />
     </services>
