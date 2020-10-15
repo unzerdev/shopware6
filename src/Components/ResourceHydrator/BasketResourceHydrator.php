@@ -10,6 +10,7 @@ use heidelpayPHP\Resources\Basket;
 use heidelpayPHP\Resources\EmbeddedResources\BasketItem;
 use InvalidArgumentException;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
@@ -31,7 +32,15 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         $currencyPrecision = $transaction->getOrder()->getCurrency() !== null ? $transaction->getOrder()->getCurrency()->getDecimalPrecision() : 4;
         $currencyPrecision = min($currencyPrecision, 4);
 
-        $amountTotalVat = round($transaction->getOrder()->getAmountTotal() - $transaction->getOrder()->getAmountNet(), $currencyPrecision);
+        $amountTotalVat = round(
+            $transaction->getOrder()->getAmountTotal() - $transaction->getOrder()->getAmountNet(),
+            $currencyPrecision
+        );
+
+        $amountTotalDiscount = round(
+            $this->calculateAmountTotalDiscount($transaction->getOrder()->getLineItems()),
+            $currencyPrecision
+        );
 
         if ($transaction instanceof AsyncPaymentTransactionStruct) {
             $transactionId = $transaction->getOrderTransaction()->getId();
@@ -46,17 +55,20 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         );
 
         $heidelBasket->setAmountTotalVat($amountTotalVat);
+        $heidelBasket->setAmountTotalDiscount($amountTotalDiscount);
 
         if (null === $transaction->getOrder()->getLineItems()) {
             return $heidelBasket;
         }
 
         foreach ($transaction->getOrder()->getLineItems() as $lineItem) {
+            $type = $lineItem->getType();
+
             if ($lineItem->getPrice() === null) {
                 $heidelBasket->addBasketItem(new BasketItem(
                     $lineItem->getLabel(),
-                    round($this->getAmountByItemType($lineItem->getType(), $lineItem->getTotalPrice()), $currencyPrecision),
-                    round($this->getAmountByItemType($lineItem->getType(), $lineItem->getUnitPrice()), $currencyPrecision),
+                    round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision),
+                    round($this->getAmountByItemType($type, $lineItem->getUnitPrice()), $currencyPrecision),
                     $lineItem->getQuantity())
                 );
 
@@ -66,13 +78,21 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $amountTax = 0;
             $taxRate   = 0.0;
             foreach ($lineItem->getPrice()->getCalculatedTaxes() as $tax) {
-                $amountTax += round($this->getAmountByItemType($lineItem->getType(), $tax->getTax()), $currencyPrecision);
+                $amountTax += round($this->getAmountByItemType($type, $tax->getTax()), $currencyPrecision);
                 $taxRate += $tax->getTaxRate();
             }
 
-            $unitPrice   = round($this->getAmountByItemType($lineItem->getType(), $lineItem->getUnitPrice()), $currencyPrecision);
-            $amountGross = round($this->getAmountByItemType($lineItem->getType(), $lineItem->getTotalPrice()), $currencyPrecision);
-            $amountNet   = round($amountGross - $amountTax, $currencyPrecision);
+            if ($this->isPromotionLineItemType($type)) {
+                $unitPrice      = 0;
+                $amountGross    = 0;
+                $amountNet      = 0;
+                $amountDiscount = round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision);
+            } else {
+                $unitPrice      = round($this->getAmountByItemType($type, $lineItem->getUnitPrice()), $currencyPrecision);
+                $amountGross    = round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision);
+                $amountNet      = round($amountGross - $amountTax, $currencyPrecision);
+                $amountDiscount = 0;
+            }
 
             $basketItem = new BasketItem(
                 $lineItem->getLabel(),
@@ -82,9 +102,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             );
 
             $basketItem->setVat($taxRate);
-            $basketItem->setType($this->getMappedLineItemType($lineItem->getType()));
+            $basketItem->setType($this->getMappedLineItemType($type));
             $basketItem->setAmountVat($amountTax);
             $basketItem->setAmountGross($amountGross);
+            $basketItem->setAmountDiscount($amountDiscount);
             $basketItem->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
 
             $heidelBasket->addBasketItem($basketItem);
@@ -102,7 +123,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function getAmountByItemType(string $type, float $price): float
     {
-        if ($type === PromotionProcessor::LINE_ITEM_TYPE) {
+        if ($this->isPromotionLineItemType($type)) {
             return $price * -1;
         }
 
@@ -111,11 +132,16 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function getMappedLineItemType(string $type): string
     {
-        if ($type === PromotionProcessor::LINE_ITEM_TYPE) {
+        if ($this->isPromotionLineItemType($type)) {
             return BasketItemTypes::VOUCHER;
         }
 
         return BasketItemTypes::GOODS;
+    }
+
+    private function isPromotionLineItemType(string $type): bool
+    {
+        return $type === PromotionProcessor::LINE_ITEM_TYPE;
     }
 
     /**
@@ -158,5 +184,17 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
             $basket->addBasketItem($dispatchBasketItem);
         }
+    }
+
+    private function calculateAmountTotalDiscount(OrderLineItemCollection $lineItems): float
+    {
+        $lineItems = array_map(
+            function ($lineItem) {
+                return $this->isPromotionLineItemType($lineItem->getType()) ? $lineItem->getTotalPrice() * -1 : 0.0;
+            },
+            $lineItems->getElements()
+        );
+
+        return array_sum($lineItems);
     }
 }
