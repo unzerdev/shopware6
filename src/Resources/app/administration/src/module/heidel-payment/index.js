@@ -3,7 +3,8 @@ import './component/heidel-payment-detail';
 import './component/heidel-payment-history';
 import './component/heidel-payment-metadata';
 import './component/heidel-payment-basket';
-import './extension/sw-order';
+import './extension/sw-order-detail';
+import './extension/sw-order-list';
 import './extension/sw-order-create-details-footer';
 import './page/heidel-payment-tab';
 

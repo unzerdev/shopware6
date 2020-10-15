@@ -63,6 +63,9 @@
                 "shipErrorTitle": "Shipping notice",
                 "invoiceNotFoundMessage": "No invoice was found for this order."
             }
+        },
+        "order-list": {
+            "transactionId": "Heidelpay transaction ID"
         }
     },
     "heidel-payment-settings": {
