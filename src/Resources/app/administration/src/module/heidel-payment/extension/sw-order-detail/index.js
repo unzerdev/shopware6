@@ -1,4 +1,4 @@
-import template from './sw-order.html.twig';
+import template from './sw-order-detail.html.twig';
 
 const { Component, Context } = Shopware;
 const { Criteria } = Shopware.Data;
