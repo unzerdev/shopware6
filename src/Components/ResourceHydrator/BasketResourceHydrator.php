@@ -85,6 +85,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 $amountGross    = 0;
                 $amountNet      = 0;
                 $amountTax      = 0;
+                $taxRate        = 0;
                 $amountDiscount = round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision);
             } else {
                 $unitPrice   = round($this->getAmountByItemType($type, $lineItem->getUnitPrice()), $currencyPrecision);
