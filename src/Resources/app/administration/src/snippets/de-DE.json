@@ -24,9 +24,6 @@
             },
             "detail": {
                 "cardTitle": "Zahlungsdetails",
-                "amountTotal": "Betrag (brutto)",
-                "amountTotalVat": "Betrag (netto)",
-                "currency": "Währung",
                 "shortId": "Short-ID",
                 "id": "Zahlungs-ID",
                 "state": "Status",
