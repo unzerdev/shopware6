@@ -100,6 +100,10 @@ abstract class AbstractTransitionMapper
             return $currentStatus;
         }
 
+        if ($this->stateMachineTransitionExists('ACTION_CHARGEBACK') && $currentStatus === StateMachineTransitionActions::ACTION_CHARGEBACK) {
+            return $currentStatus;
+        }
+
         /** @var Shipment $shipment */
         foreach ($paymentObject->getShipments() as $shipment) {
             if (!empty($shipment->getAmount())) {

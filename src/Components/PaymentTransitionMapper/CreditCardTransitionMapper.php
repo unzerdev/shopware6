@@ -71,15 +71,12 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
             throw new TransitionMapperException($this->getResourceName());
         }
 
-        if (count($paymentObject->getCharges()) > 0) {
+        if (count($paymentObject->getCharges()) > 0 && !$paymentObject->isChargeBack()) {
             return StateMachineTransitionActions::ACTION_DO_PAY;
         }
 
         if ($this->stateMachineTransitionExists('ACTION_AUTHORIZE')) {
-            /** @var Card $paymentType */
-            $paymentType = $paymentObject->getPaymentType();
-
-            if ($paymentType !== null && $paymentObject->isPending() && !empty($paymentObject->getAuthorization())) {
+            if ($paymentObject->isPending() && !empty($paymentObject->getAuthorization())) {
                 return StateMachineTransitionActions::ACTION_AUTHORIZE;
             }
         }
