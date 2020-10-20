@@ -51,7 +51,7 @@ k10r-phpstan:
         - job: shopware_redeem
           artifacts: true
     script:
-        - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan.neon tests src
+        - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan.neon tests src --autoload-file=sw_dir/vendor/autoload.php
 
 sw-phpstan:
     stage: test
@@ -60,38 +60,9 @@ sw-phpstan:
         - job: shopware_redeem
           artifacts: true
     script:
-        - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git && store-plugin-codereview && ${COMPOSER_COMMAND}
+        - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git && ${COMPOSER_COMMAND}
         - cp -r /tmp/store-plugin-codereview/configs/phpstan/phpstan.neon.sw6 ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon
         - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan_sw.neon -a vendor/autoload.php -a ../../../vendor/autoload.php tests src
-
-phpunit:
-    image: "edbizarro/gitlab-ci-pipeline-php:7.2"
-    stage: test
-    services:
-        - mysql:5.7
-    needs:
-        - job: shopware_redeem
-          artifacts: true
-    script:
-        - sudo apt-get update && sudo apt-get install default-mysql-client -y
-        - 'printf "const:\n  APP_ENV: \"dev\"\n  APP_URL: \"http://localhost\"\n  DB_HOST: \"mysql\"\n  DB_PORT: \"3306\"\n  DB_NAME: \"${MYSQL_DATABASE}\"\n  DB_USER: \"root\"\n  DB_PASSWORD: \"${MYSQL_ROOT_PASSWORD}\"" > "${CI_PROJECT_DIR}/sw_dir/.psh.yaml.override"'
-        - cd ${CI_PROJECT_DIR}/sw_dir && php ${CI_PROJECT_DIR}/sw_dir/psh.phar init
-        - php ${CI_PROJECT_DIR}/sw_dir/bin/console plugin:install --activate ${CI_PROJECT_NAME}
-        - cd ${CI_PROJECT_DIR}/sw_dir && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
-        - cd ${CI_PROJECT_DIR}/sw_dir && php -d pcov.enabled=1 -d pcov.directory=${CI_PROJECT_DIR}
-            vendor/bin/phpunit
-            --configuration custom/plugins/${CI_PROJECT_NAME}/phpunit.xml.dist
-            --log-junit build/artifacts/phpunit.junit.xml
-            --colors=never
-            --coverage-clover build/artifacts/phpunit.clover.xml
-            --coverage-html build/artifacts/phpunit-coverage-html
-            --coverage-text
-    coverage: '/^\s*Lines:\s*(\d+(?:\.\d+)?%)/'
-    artifacts:
-        paths:
-            - sw_dir/build/artifacts/phpunit.clover.xml
-        reports:
-            junit: sw_dir/build/artifacts/phpunit.junit.xml
 
 package:
     image: kellerkinder/shopware-package-plugin:latest
