@@ -27,12 +27,12 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
      *
      * @private
      */
-    static heidelpayPlugin = null;
+    static _unzerPaymentPlugin = null;
 
     init() {
-        this.unzerPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.hirePurchase = this.heidelpayPlugin.heidelpayInstance.HirePurchase();
-        this.heidelpayPlugin.setSubmitButtonActive(false);
+        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.hirePurchase = this._unzerPaymentPlugin.unzerInstance.HirePurchase();
+        this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
         this._createForm();
         this._registerEvents();
@@ -56,8 +56,8 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
             // Hide the loading indicator
             loadingIndicatorElement.hidden = true;
         }).catch((error) => {
-            this.heidelpayPlugin.renderErrorToElement(error, loadingIndicatorElement);
-            this.heidelpayPlugin.setSubmitButtonActive(false);
+            this._unzerPaymentPlugin.renderErrorToElement(error, loadingIndicatorElement);
+            this._unzerPaymentPlugin.setSubmitButtonActive(false);
         }).finally(() => {
             ElementLoadingIndicatorUtil.remove(loadingIndicatorElement);
         });
@@ -67,7 +67,7 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this.heidelpayPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
+        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
 
@@ -78,11 +78,11 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
      * @private
      */
     _onCreateResource() {
-        this.heidelpayPlugin.setSubmitButtonActive(false);
+        this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
         this.hirePurchase.createResource()
-            .then((resource) => this.heidelpayPlugin.submitResource(resource))
-            .catch((error) => this.heidelpayPlugin.showError(error));
+            .then((resource) => this._unzerPaymentPlugin.submitResource(resource))
+            .catch((error) => this._unzerPaymentPlugin.showError(error));
     }
 
     /**
@@ -93,9 +93,9 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
     _onChangeHirePurchaseForm(event) {
         if (event.action === 'validate') {
             if (event.success) {
-                this.heidelpayPlugin.setSubmitButtonActive(true);
+                this._unzerPaymentPlugin.setSubmitButtonActive(true);
             } else {
-                this.heidelpayPlugin.setSubmitButtonActive(false);
+                this._unzerPaymentPlugin.setSubmitButtonActive(false);
             }
         }
 

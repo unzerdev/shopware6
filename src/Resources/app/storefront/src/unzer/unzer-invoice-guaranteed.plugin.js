@@ -11,7 +11,7 @@ export default class UnzerPaymentInvoiceGuaranteedPlugin extends Plugin {
      *
      * @private
      */
-    static unzerPaymentPlugin = null;
+    static _unzerPaymentPlugin = null;
 
     /**
      * @type {null|InvoiceGuaranteed}
@@ -26,8 +26,8 @@ export default class UnzerPaymentInvoiceGuaranteedPlugin extends Plugin {
     static b2bCustomerProvider = null;
 
     init() {
-        this.unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.invoiceGuaranteed = this.unzerPaymentPlugin.unzerInstance.InvoiceGuaranteed();
+        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.invoiceGuaranteed = this._unzerPaymentPlugin.unzerInstance.InvoiceGuaranteed();
 
         if (this.options.isB2BCustomer) {
             this._createB2bForm();
@@ -40,7 +40,7 @@ export default class UnzerPaymentInvoiceGuaranteedPlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this.unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
+        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
     }
@@ -49,10 +49,10 @@ export default class UnzerPaymentInvoiceGuaranteedPlugin extends Plugin {
      * @private
      */
     _createB2bForm() {
-        this.b2bCustomerProvider = this.unzerPaymentPlugin.unzerInstance.B2BCustomer();
+        this.b2bCustomerProvider = this._unzerPaymentPlugin.unzerInstance.B2BCustomer();
 
         this.b2bCustomerProvider.b2bCustomerEventHandler = (event) => this._onValidateB2bForm(event);
-        this.b2bCustomerProvider.initFormFields(this.unzerPaymentPlugin.getB2bCustomerObject(this.options.customerInfo));
+        this.b2bCustomerProvider.initFormFields(this._unzerPaymentPlugin.getB2bCustomerObject(this.options.customerInfo));
 
         this.b2bCustomerProvider.create({
             containerId: 'unzer-b2b-form'
@@ -65,14 +65,14 @@ export default class UnzerPaymentInvoiceGuaranteedPlugin extends Plugin {
      * @private
      */
     _onValidateB2bForm(event) {
-        this.unzerPaymentPlugin.setSubmitButtonActive(event.success);
+        this._unzerPaymentPlugin.setSubmitButtonActive(event.success);
     }
 
     /**
      * @private
      */
     _onCreateResource() {
-        this.unzerPaymentPlugin.setSubmitButtonActive(false);
+        this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
         if (this.options.isB2BCustomer) {
             this.b2bCustomerProvider.createCustomer()
@@ -105,7 +105,7 @@ export default class UnzerPaymentInvoiceGuaranteedPlugin extends Plugin {
      * @private
      */
     _submitPayment(resource) {
-        this.unzerPaymentPlugin.submitResource(resource);
+        this._unzerPaymentPlugin.submitResource(resource);
     }
 
     /**
@@ -114,6 +114,6 @@ export default class UnzerPaymentInvoiceGuaranteedPlugin extends Plugin {
      * @private
      */
     _handleError(error) {
-        this.unzerPaymentPlugin.showError(error);
+        this._unzerPaymentPlugin.showError(error);
     }
 }

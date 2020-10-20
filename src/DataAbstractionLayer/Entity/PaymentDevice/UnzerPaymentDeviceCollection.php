@@ -7,8 +7,8 @@ namespace UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void add(UnzerPaymentDeviceEntity $entity)
- * @method void set(string $key, UnzerPaymentDeviceEntity $entity)
+ * @method void                          add(UnzerPaymentDeviceEntity $entity)
+ * @method void                          set(string $key, UnzerPaymentDeviceEntity $entity)
  * @method UnzerPaymentDeviceEntity[]    getIterator()
  * @method UnzerPaymentDeviceEntity[]    getElements()
  * @method null|UnzerPaymentDeviceEntity get(string $key)

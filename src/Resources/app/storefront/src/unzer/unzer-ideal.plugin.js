@@ -13,11 +13,11 @@ export default class UnzerPaymentIdealPlugin extends Plugin {
      *
      * @private
      */
-    static heidelpayPlugin = null;
+    static _unzerPaymentPlugin = null;
 
     init() {
-        this.unzerPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.ideal = this.unzerPlugin.unzerInstance.Ideal();
+        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.ideal = this._unzerPaymentPlugin.unzerInstance.Ideal();
 
         this._createForm();
         this._registerEvents();
@@ -31,14 +31,14 @@ export default class UnzerPaymentIdealPlugin extends Plugin {
             containerId: 'unzer-ideal-container'
         });
 
-        this.unzerPlugin.setSubmitButtonActive(false);
+        this._unzerPaymentPlugin.setSubmitButtonActive(false);
     }
 
     /**
      * @private
      */
     _registerEvents() {
-        this.unzerPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
+        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
 
@@ -54,7 +54,7 @@ export default class UnzerPaymentIdealPlugin extends Plugin {
      */
     _onFormChange(event) {
         if (event.value) {
-            this.unzerPlugin.setSubmitButtonActive(true);
+            this._unzerPaymentPlugin.setSubmitButtonActive(true);
         }
     }
 
@@ -62,10 +62,10 @@ export default class UnzerPaymentIdealPlugin extends Plugin {
      * @private
      */
     _onCreateResource() {
-        this.unzerPlugin.setSubmitButtonActive(false);
+        this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
         this.ideal.createResource()
-            .then((resource) => this.unzerPlugin.submitResource(resource))
-            .catch((error) => this.unzerPlugin.showError(error));
+            .then((resource) => this._unzerPaymentPlugin.submitResource(resource))
+            .catch((error) => this._unzerPaymentPlugin.showError(error));
     }
 }

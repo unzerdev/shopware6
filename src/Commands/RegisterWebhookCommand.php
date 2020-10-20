@@ -38,7 +38,7 @@ class RegisterWebhookCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('unzer:register-webhooks');
         $this->setDescription('Register the unzer webhook');

@@ -22,10 +22,10 @@ class MetadataResourceHydrator implements ResourceHydratorInterface
         SalesChannelContext $channelContext,
         $transaction = null
     ): AbstractHeidelpayResource {
-        $heidelMetadata = new Metadata();
-        $heidelMetadata->setShopType('Shopware 6');
-        $heidelMetadata->setShopVersion($this->shopwareVersion);
+        $unzerMetadata = new Metadata();
+        $unzerMetadata->setShopType('Shopware 6');
+        $unzerMetadata->setShopVersion($this->shopwareVersion);
 
-        return $heidelMetadata;
+        return $unzerMetadata;
     }
 }

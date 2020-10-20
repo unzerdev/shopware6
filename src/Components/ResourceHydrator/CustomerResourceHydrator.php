@@ -26,28 +26,28 @@ class CustomerResourceHydrator implements ResourceHydratorInterface
         $billingAddress  = $customer->getActiveBillingAddress();
         $shippingAddress = $customer->getActiveShippingAddress();
 
-        $heidelCustomer = new Customer(
+        $unzerCustomer = new Customer(
             $customer->getFirstName(),
             $customer->getLastName()
         );
 
-        $heidelCustomer->setSalutation($customer->getSalutation() !== null ? $customer->getSalutation()->getSalutationKey() : null);
-        $heidelCustomer->setEmail($customer->getEmail());
-        $heidelCustomer->setCompany($customer->getCompany());
-        $heidelCustomer->setBirthDate($customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null);
+        $unzerCustomer->setSalutation($customer->getSalutation() !== null ? $customer->getSalutation()->getSalutationKey() : null);
+        $unzerCustomer->setEmail($customer->getEmail());
+        $unzerCustomer->setCompany($customer->getCompany());
+        $unzerCustomer->setBirthDate($customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null);
 
         if ($shippingAddress) {
-            $heidelCustomer->setShippingAddress($this->getHeidelpayAddress($shippingAddress));
+            $unzerCustomer->setShippingAddress($this->getUnzerAddress($shippingAddress));
         }
 
         if ($billingAddress) {
-            $heidelCustomer->setBillingAddress($this->getHeidelpayAddress($billingAddress));
+            $unzerCustomer->setBillingAddress($this->getUnzerAddress($billingAddress));
         }
 
-        return $heidelCustomer;
+        return $unzerCustomer;
     }
 
-    private function getHeidelpayAddress(CustomerAddressEntity $shopwareAddress): Address
+    private function getUnzerAddress(CustomerAddressEntity $shopwareAddress): Address
     {
         $address = new Address();
         $address->setCountry($shopwareAddress->getCountry() !== null ? $shopwareAddress->getCountry()->getIso() : null);

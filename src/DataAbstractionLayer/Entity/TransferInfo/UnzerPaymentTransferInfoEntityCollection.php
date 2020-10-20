@@ -7,8 +7,8 @@ namespace UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void add(UnzerPaymentTransferInfoEntity $entity)
- * @method void set(string $key, UnzerPaymentTransferInfoEntity $entity)
+ * @method void                                add(UnzerPaymentTransferInfoEntity $entity)
+ * @method void                                set(string $key, UnzerPaymentTransferInfoEntity $entity)
  * @method UnzerPaymentTransferInfoEntity[]    getIterator()
  * @method UnzerPaymentTransferInfoEntity[]    getElements()
  * @method null|UnzerPaymentTransferInfoEntity get(string $key)

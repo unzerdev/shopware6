@@ -31,10 +31,7 @@ class UnzerIdealPaymentHandler extends AbstractUnzerPaymentHandler
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $apiException->getClientMessage()
-            );
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         }
     }
 }

@@ -117,7 +117,7 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
                 .then((resource) => this._submitPayment(resource))
                 .catch((error) => this._handleError(error));
         } else {
-            this.unzerPaymentPlugin.setSubmitButtonActive(false);
+            this._unzerPaymentPlugin.setSubmitButtonActive(false);
             this._submitDevicePayment(selectedDevice.value);
         }
     }
@@ -128,7 +128,7 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
      * @private
      */
     _submitPayment(resource) {
-        this.unzerPaymentPlugin.submitResource(resource);
+        this._unzerPaymentPlugin.submitResource(resource);
     }
 
     /**
@@ -137,7 +137,7 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
      * @private
      */
     _submitDevicePayment(device) {
-        this.unzerPaymentPlugin.submitTypeId(device);
+        this._unzerPaymentPlugin.submitTypeId(device);
     }
 
     /**
@@ -146,6 +146,6 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
      * @private
      */
     _handleError(error) {
-        this.unzerPaymentPlugin.showError(error);
+        this._unzerPaymentPlugin.showError(error);
     }
 }

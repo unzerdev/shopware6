@@ -7,3 +7,6 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
         - '#Property(.*)does not accept object(.*)#'
+        - '#does not accept heidelpayPHP\\Resources\\AbstractHeidelpayResource#'
+        - '#StateMachineTransitionActions::ACTION_AUTHORIZE#'
+        - '#StateMachineTransitionActions::ACTION_CHARGEBACK#'

@@ -47,7 +47,7 @@ class UnzerPaymentWebhookController extends StorefrontController
 
         foreach ($this->handlers as $handler) {
             if ($webhook->getPublicKey() !== $config->get('publicKey')) {
-                throw new UnauthorizedHttpException('Heidelpay Webhooks');
+                throw new UnauthorizedHttpException('Unzer Webhooks');
             }
 
             if (!$handler->supports($webhook, $salesChannelContext)) {

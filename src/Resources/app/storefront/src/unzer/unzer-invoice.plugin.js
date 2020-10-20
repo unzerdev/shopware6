@@ -17,11 +17,11 @@ export default class UnzerPaymentInvoicePlugin extends Plugin {
      *
      * @private
      */
-    static unzerPaymentPlugin = null;
+    static _unzerPaymentPlugin = null;
 
     init() {
-        this.unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.invoice = this.unzerPaymentPlugin.unzerInstance.Invoice();
+        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.invoice = this._unzerPaymentPlugin.unzerInstance.Invoice();
 
         this._registerEvents();
     }
@@ -30,7 +30,7 @@ export default class UnzerPaymentInvoicePlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this.unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
+        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
     }
@@ -39,7 +39,7 @@ export default class UnzerPaymentInvoicePlugin extends Plugin {
      * @private
      */
     _onCreateResource() {
-        this.unzerPaymentPlugin.setSubmitButtonActive(false);
+        this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
         this.invoice.createResource()
             .then((resource) => this._submitPayment(resource))
@@ -52,7 +52,7 @@ export default class UnzerPaymentInvoicePlugin extends Plugin {
      * @private
      */
     _submitPayment(resource) {
-        this.unzerPaymentPlugin.submitResource(resource);
+        this._unzerPaymentPlugin.submitResource(resource);
     }
 
     /**
@@ -61,6 +61,6 @@ export default class UnzerPaymentInvoicePlugin extends Plugin {
      * @private
      */
     _handleError(error) {
-        this.unzerPaymentPlugin.showError(error);
+        this._unzerPaymentPlugin.showError(error);
     }
 }

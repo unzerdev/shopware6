@@ -27,8 +27,8 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
     static unzerPlugin = null;
 
     init() {
-        this.unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.sepa = this.unzerPaymentPlugin.unzerPaymentInstance.SepaDirectDebit();
+        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.sepa = this._unzerPaymentPlugin.unzerPaymentInstance.SepaDirectDebit();
 
         this._createForm();
         this._registerEvents();
@@ -39,7 +39,7 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
 
             unzerElementWrapper.hidden = true;
         } else {
-            this.unzerPaymentPlugin.setSubmitButtonActive(false);
+            this._unzerPaymentPlugin.setSubmitButtonActive(false);
         }
     }
 
@@ -66,7 +66,7 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
 
         this.sepa.addEventListener('change', (event) => this._onFormChange(event));
 
-        this.unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
+        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
     }
@@ -79,14 +79,14 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
         unzerElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewAccountId;
 
         if (!targetElement || targetElement.id === this.options.radioButtonNewAccountId) {
-            this.unzerPaymentPlugin.setSubmitButtonActive(this.sepa.validated);
+            this._unzerPaymentPlugin.setSubmitButtonActive(this.sepa.validated);
         } else {
-            this.unzerPaymentPlugin.setSubmitButtonActive(true);
+            this._unzerPaymentPlugin.setSubmitButtonActive(true);
         }
     }
 
     _onFormChange(event) {
-        this.unzerPaymentPlugin.setSubmitButtonActive(event.success);
+        this._unzerPaymentPlugin.setSubmitButtonActive(event.success);
     }
 
     /**
@@ -107,13 +107,13 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
                 return;
             }
 
-            this.unzerPaymentPlugin.setSubmitButtonActive(false);
+            this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
             this.sepa.createResource()
                 .then((resource) => this._submitPayment(resource))
                 .catch((error) => this._handleError(error));
         } else {
-            this.unzerPaymentPlugin.setSubmitButtonActive(false);
+            this._unzerPaymentPlugin.setSubmitButtonActive(false);
             this._submitDevicePayment(selectedDevice.value);
         }
     }
@@ -124,7 +124,7 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
      * @private
      */
     _submitPayment(resource) {
-        this.unzerPaymentPlugin.submitResource(resource);
+        this._unzerPaymentPlugin.submitResource(resource);
     }
 
     /**
@@ -133,7 +133,7 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
      * @private
      */
     _submitDevicePayment(device) {
-        this.unzerPaymentPlugin.submitTypeId(device);
+        this._unzerPaymentPlugin.submitTypeId(device);
     }
 
     /**
@@ -142,6 +142,6 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
      * @private
      */
     _handleError(error) {
-        this.unzerPaymentPlugin.showError(error);
+        this._unzerPaymentPlugin.showError(error);
     }
 }

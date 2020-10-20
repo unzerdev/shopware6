@@ -59,6 +59,8 @@
         "phpcs": "vendor/bin/php-cs-fixer fix",
         "phpunit": "vendor/bin/phpunit",
         "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon src --autoload-file=../../../vendor/autoload.php",
-        "phpunit-coverage": "vendor/bin/phpunit --coverage-html ./coverage"
+        "phpunit-coverage": "vendor/bin/phpunit --coverage-html ./coverage",
+        "eslint": "npm run eslint:fix",
+        "cypress": "npm run cypress:open"
     }
 }

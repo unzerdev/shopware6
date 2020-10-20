@@ -39,21 +39,21 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $transactionId = $transaction->getId();
         }
 
-        $heidelBasket = new Basket(
+        $unzerBasket = new Basket(
             $transactionId,
             round($transaction->getOrder()->getAmountTotal(), $currencyPrecision),
             $channelContext->getCurrency()->getIsoCode()
         );
 
-        $heidelBasket->setAmountTotalVat($amountTotalVat);
+        $unzerBasket->setAmountTotalVat($amountTotalVat);
 
         if (null === $transaction->getOrder()->getLineItems()) {
-            return $heidelBasket;
+            return $unzerBasket;
         }
 
         foreach ($transaction->getOrder()->getLineItems() as $lineItem) {
             if ($lineItem->getPrice() === null) {
-                $heidelBasket->addBasketItem(new BasketItem(
+                $unzerBasket->addBasketItem(new BasketItem(
                     $lineItem->getLabel(),
                     round($this->getAmountByItemType($lineItem->getType(), $lineItem->getTotalPrice()), $currencyPrecision),
                     round($this->getAmountByItemType($lineItem->getType(), $lineItem->getUnitPrice()), $currencyPrecision),
@@ -87,17 +87,17 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $basketItem->setAmountGross($amountGross);
             $basketItem->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
 
-            $heidelBasket->addBasketItem($basketItem);
+            $unzerBasket->addBasketItem($basketItem);
         }
 
         $this->hydrateShippingCosts(
             $transaction,
-            $heidelBasket,
+            $unzerBasket,
             $currencyPrecision,
             $channelContext->getShippingMethod()->getName()
         );
 
-        return $heidelBasket;
+        return $unzerBasket;
     }
 
     protected function getAmountByItemType(string $type, float $price): float

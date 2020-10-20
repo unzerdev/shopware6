@@ -18,7 +18,7 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
      *
      * @private
      */
-    static unzerPaymentPlugin = null;
+    static _unzerPaymentPlugin = null;
 
     /**
      * @type {Object}
