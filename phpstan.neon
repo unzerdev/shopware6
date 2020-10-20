@@ -7,3 +7,5 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
         - '#Property(.*)does not accept object(.*)#'
+        - '#StateMachineTransitionActions::ACTION_AUTHORIZE#'
+        - '#StateMachineTransitionActions::ACTION_CHARGEBACK#'

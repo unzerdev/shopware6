@@ -7,8 +7,8 @@ namespace HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void add(HeidelpayPaymentDeviceEntity $entity)
- * @method void set(string $key, HeidelpayPaymentDeviceEntity $entity)
+ * @method void                              add(HeidelpayPaymentDeviceEntity $entity)
+ * @method void                              set(string $key, HeidelpayPaymentDeviceEntity $entity)
  * @method HeidelpayPaymentDeviceEntity[]    getIterator()
  * @method HeidelpayPaymentDeviceEntity[]    getElements()
  * @method null|HeidelpayPaymentDeviceEntity get(string $key)

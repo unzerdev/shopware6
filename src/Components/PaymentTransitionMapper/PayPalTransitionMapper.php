@@ -12,6 +12,7 @@ use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\Paypal;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 
 class PayPalTransitionMapper extends AbstractTransitionMapper
 {
@@ -68,6 +69,12 @@ class PayPalTransitionMapper extends AbstractTransitionMapper
             }
 
             throw new TransitionMapperException($this->getResourceName());
+        }
+
+        if ($this->stateMachineTransitionExists('ACTION_AUTHORIZE')) {
+            if ($paymentObject->isPending() && !empty($paymentObject->getAuthorization())) {
+                return StateMachineTransitionActions::ACTION_AUTHORIZE;
+            }
         }
 
         return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
