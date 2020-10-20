@@ -75,6 +75,15 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
             return StateMachineTransitionActions::ACTION_DO_PAY;
         }
 
+        if ($this->stateMachineTransitionExists('ACTION_AUTHORIZE')) {
+            /** @var Card $paymentType */
+            $paymentType = $paymentObject->getPaymentType();
+
+            if ($paymentType !== null && $paymentObject->isPending() && !empty($paymentObject->getAuthorization())) {
+                return StateMachineTransitionActions::ACTION_AUTHORIZE;
+            }
+        }
+
         return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 }

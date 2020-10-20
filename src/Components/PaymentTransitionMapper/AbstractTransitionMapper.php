@@ -48,8 +48,14 @@ abstract class AbstractTransitionMapper
     {
         $status = StateMachineTransitionActions::ACTION_REOPEN;
 
-        if ($paymentObject->isCanceled() || $paymentObject->isChargeBack()) {
+        if ($paymentObject->isCanceled()) {
             $status = StateMachineTransitionActions::ACTION_CANCEL;
+        } elseif ($paymentObject->isChargeBack()) {
+            $status = StateMachineTransitionActions::ACTION_CANCEL;
+
+            if ($this->stateMachineTransitionExists('ACTION_CHARGEBACK')) {
+                $status = StateMachineTransitionActions::ACTION_CHARGEBACK;
+            }
         } elseif ($paymentObject->isPending()) {
             $status = StateMachineTransitionActions::ACTION_REOPEN;
         } elseif ($paymentObject->isPartlyPaid()) {
@@ -71,7 +77,13 @@ abstract class AbstractTransitionMapper
         $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::HEIDELPAY_MAX_DIGITS));
         $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** self::HEIDELPAY_MAX_DIGITS));
 
-        if ($cancelledAmount === $totalAmount && $remainingAmount === 0 && $currentStatus !== StateMachineTransitionActions::ACTION_CANCEL) {
+        if ($cancelledAmount === $totalAmount && $remainingAmount === 0
+            && $currentStatus !== StateMachineTransitionActions::ACTION_CANCEL
+            && !(
+                $this->stateMachineTransitionExists('ACTION_CHARGEBACK')
+                && $currentStatus === StateMachineTransitionActions::ACTION_CHARGEBACK
+            )
+        ) {
             return StateMachineTransitionActions::ACTION_REFUND;
         }
 
@@ -108,5 +120,13 @@ abstract class AbstractTransitionMapper
         }
 
         return $currentStatus;
+    }
+
+    /**
+     * Check if the provided constant name is defined in the StateMachineTransitionActions
+     */
+    protected function stateMachineTransitionExists(string $stateMachineActionConstantName): bool
+    {
+        return defined(sprintf('%s::%s', StateMachineTransitionActions::class, $stateMachineActionConstantName));
     }
 }
