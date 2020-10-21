@@ -121,7 +121,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
 
         try {
-            if (null === $this->paymentType) {
+            if ($this->paymentType === null) {
                 $registerAccounts  = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
                 $this->paymentType = $this->unzerClient->createPaymentType(new Paypal());
 

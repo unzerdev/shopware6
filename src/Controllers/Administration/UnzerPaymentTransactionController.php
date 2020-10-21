@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Controllers\Administration;
 
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -168,7 +167,6 @@ class UnzerPaymentTransactionController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        /** @var DocumentEntity[] $documents */
         $documents = $transaction->getOrder()->getDocuments()->getElements();
         $invoiceId = null;
 

@@ -156,7 +156,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
             $salesChannelDomain->get('url', '')
         );
 
-        if (null === $salesChannelEntity) {
+        if ($salesChannelEntity === null) {
             return [
                 'key'   => $salesChannelDomain->get('url', ''),
                 'value' => [

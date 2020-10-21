@@ -47,7 +47,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
         $unzerBasket->setAmountTotalVat($amountTotalVat);
 
-        if (null === $transaction->getOrder()->getLineItems()) {
+        if ($transaction->getOrder()->getLineItems() === null) {
             return $unzerBasket;
         }
 

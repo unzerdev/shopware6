@@ -17,7 +17,7 @@ use UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler;
 
 trait CanRecur
 {
-    protected $sessionIsRecurring    = 'UnzerPaymentIsReccuring';
+    protected $sessionIsRecurring    = 'UnzerPaymentIsRecurring';
     protected $sessionPaymentTypeKey = 'UnzerPaymentTypeId';
     protected $sessionCustomerIdKey  = 'UnzerPaymentCustomerId';
 
@@ -55,7 +55,7 @@ trait CanRecur
      */
     public function fetchPaymentByTypeId(string $paymentTypeId): ?AbstractHeidelpayResource
     {
-        if (null === $this->unzerClient || !($this->unzerClient instanceof Heidelpay)) {
+        if ($this->unzerClient === null || !($this->unzerClient instanceof Heidelpay)) {
             return null;
         }
 

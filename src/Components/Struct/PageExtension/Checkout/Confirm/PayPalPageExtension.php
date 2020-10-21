@@ -47,8 +47,10 @@ class PayPalPageExtension extends Struct
         return $this->displayPayPalAccountSelection;
     }
 
-    public function setDisplayPayPalAccountSelection(bool $displayPayPalAccountSelection): void
+    public function setDisplayPayPalAccountSelection(bool $displayPayPalAccountSelection): self
     {
         $this->displayPayPalAccountSelection = $displayPayPalAccountSelection;
+
+        return $this;
     }
 }

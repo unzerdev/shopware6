@@ -53,7 +53,7 @@ class RegisterWebhookCommand extends Command
         $style  = new SymfonyStyle($input, $output);
         $domain = $this->handleDomain($input->getArgument('host') ?? '', $style);
 
-        if (null === $domain) {
+        if ($domain === null) {
             return WebhookRegistrator::EXIT_CODE_INVALID_HOST;
         }
 
@@ -92,8 +92,7 @@ class RegisterWebhookCommand extends Command
     {
         $parsedHost = parse_url($providedHost);
 
-        if (!is_array($parsedHost) ||
-            (is_array($parsedHost) && (empty($parsedHost['host']) || empty($parsedHost['scheme'])))) {
+        if (!is_array($parsedHost) || empty($parsedHost['host']) || empty($parsedHost['scheme'])) {
             $style->warning('The provided host is invalid.');
 
             return null;
@@ -101,7 +100,7 @@ class RegisterWebhookCommand extends Command
 
         $salesChannelDomain = $this->getSalesChannelByHost($providedHost);
 
-        if (null === $salesChannelDomain) {
+        if ($salesChannelDomain === null) {
             $style->warning('The provided host does not exist in any saleschannel.');
 
             $possibleDomains = [];

@@ -16,7 +16,7 @@ trait HasBookingMode
     {
         $order = $this->getOrderByPayment($paymentObject->getOrderId());
 
-        if (null === $order) {
+        if ($order === null) {
             return self::DEFAULT_MODE;
         }
 
@@ -33,7 +33,7 @@ trait HasBookingMode
 
         $transaction = $this->getTransactionById($orderTransactionId);
 
-        if (null === $transaction) {
+        if ($transaction === null) {
             return null;
         }
 

@@ -197,7 +197,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
 
-        if (null === $currentRequest) {
+        if ($currentRequest === null) {
             throw new AsyncPaymentProcessException($orderTransactionId, 'No request found');
         }
 

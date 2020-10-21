@@ -46,7 +46,7 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         Payment $payment,
         Context $context
     ): void {
-        if (null === $payment->getPaymentType()) {
+        if ($payment->getPaymentType() === null) {
             return;
         }
 
