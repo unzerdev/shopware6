@@ -51,7 +51,7 @@ k10r-phpstan:
         - job: shopware_redeem
           artifacts: true
     script:
-        - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan.neon tests src --autoload-file=sw_dir/vendor/autoload.php
+        - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan.neon src tests -a vendor/autoload.php -a ../../../vendor/autoload.php
 
 sw-phpstan:
     stage: test
@@ -59,10 +59,11 @@ sw-phpstan:
     needs:
         - job: shopware_redeem
           artifacts: true
-    script:
-        - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git && ${COMPOSER_COMMAND}
+    before_script:
+        - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git
         - cp -r /tmp/store-plugin-codereview/configs/phpstan/phpstan.neon.sw6 ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon
-        - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan_sw.neon -a vendor/autoload.php -a ../../../vendor/autoload.php tests src
+    script:
+        - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan_sw.neon -a vendor/autoload.php -a ../../../vendor/autoload.php src tests
 
 package:
     image: kellerkinder/shopware-package-plugin:latest
@@ -70,7 +71,7 @@ package:
     only:
         - tags
         - master
-        - integration*
+        - /^integration.*$/
         - /^fix.*$/
     services:
         - mysql:5.7
