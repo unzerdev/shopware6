@@ -13,7 +13,7 @@ class PayPalPageExtension extends Struct
     protected $payPalAccounts = [];
 
     /** @var bool */
-    protected $displayPayPalAccountselection;
+    protected $displayPayPalAccountSelection;
 
     public function addPayPalAccount(UnzerPaymentDeviceEntity $paypalAccount): self
     {
@@ -42,15 +42,13 @@ class PayPalPageExtension extends Struct
         return $this;
     }
 
-    public function getDisplaypayPalAccountselection(): bool
+    public function isDisplayPayPalAccountSelection(): bool
     {
-        return $this->displayPayPalAccountselection;
+        return $this->displayPayPalAccountSelection;
     }
 
-    public function setDisplaypayPalAccountselection(bool $displayPayPalAccountselection): self
+    public function setDisplayPayPalAccountSelection(bool $displayPayPalAccountSelection): void
     {
-        $this->displayPayPalAccountselection = $displayPayPalAccountselection;
-
-        return $this;
+        $this->displayPayPalAccountSelection = $displayPayPalAccountSelection;
     }
 }

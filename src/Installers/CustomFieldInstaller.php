@@ -46,7 +46,7 @@ class CustomFieldInstaller implements InstallerInterface
                     'config' => [
                         'label' => [
                             'en-GB' => 'Shipping notification executed',
-                            'de-DE' => 'Versandbenachrichtung erfolgt',
+                            'de-DE' => 'Versand-Benachrichtigung erfolgt',
                         ],
                     ],
                 ],

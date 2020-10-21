@@ -58,7 +58,7 @@ class UnzerPaymentWebhookController extends StorefrontController
                 $handler->execute($webhook, $salesChannelContext);
             } catch (Throwable $exception) {
                 $this->logger->info(
-                    'Catched an exception while handling a webhook but this may not be a failure.',
+                    'An exception was caught when handling a webhook, but this may not be a failure.',
                     [
                         'message' => $exception->getMessage(),
                         'code'    => $exception->getCode(),

@@ -73,7 +73,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Can not process payment without a valid payment resource.');
         }
 
-        $bookingMode         = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_CARD, BookingMode::CHARGE);
+        $bookingMode         = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_CARD, BookingMode::CHARGE);
         $registerCreditCards = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
 
         try {

@@ -1,7 +1,7 @@
 {
-    "name": "heidelpay/shopware-6",
+    "name": "unzer/shopware-6",
     "description": "Unzer payment integration for Shopware 6",
-    "version": "0.0.1.2",
+    "version": "1.0.0.0",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "minimum-stability": "dev",

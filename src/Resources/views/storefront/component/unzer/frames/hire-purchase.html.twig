@@ -26,7 +26,7 @@
         {% endif %}
 
         {% block unzer_payment_frame_hire_purchase_container %}
-            <div id="unzer-paymenthire-purchase-container"></div>
+            <div id="unzer-payment-hire-purchase-container"></div>
         {% endblock %}
 
         {% block unzer_payment_frame_hire_purchase_birthday %}
@@ -37,7 +37,7 @@
             <input type="date"
                    id="unzerPaymentBirthday"
                    name="unzerPaymentBirthday"
-                   class="form-control unzer-paymentdate-input"
+                   class="form-control unzer-payment-date-input"
                    form="confirmOrderForm"
                    required="required"
                    {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>

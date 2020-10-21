@@ -51,7 +51,7 @@
 
         <div class="unzer-payment-sepa-wrapper-elements">
             {% block unzer_payment_frame_sepa_direct_debit_guaranteed_iban %}
-                <div id="unzer-paymentsepa-container"></div>
+                <div id="unzer-payment-sepa-container"></div>
             {% endblock %}
 
             {% block unzer_payment_frame_sepa_direct_debit_guaranteed_mandate %}
@@ -67,7 +67,7 @@
                     <input type="date"
                            id="unzerPaymentBirthday"
                            name="unzerPaymentBirthday"
-                           class="form-control unzer-paymentdate-input"
+                           class="form-control unzer-payment-date-input"
                            form="confirmOrderForm"
                            {% if page.extensions.unzerDirectDebitGuaranteed.directDebitDevices|length > 0 %}required="required"{% endif %}
                             {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>

@@ -118,7 +118,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             return $this->handleRecurringPayment($transaction);
         }
 
-        $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
+        $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
 
         try {
             if (null === $this->paymentType) {
@@ -153,7 +153,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         $this->pluginConfig = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $this->unzerClient  = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
 
-        $bookingMode      = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
+        $bookingMode      = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
         $registerAccounts = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
 
         if (!$registerAccounts) {
@@ -217,7 +217,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
         try {
             $this->paymentType = $this->unzerClient->fetchPaymentType($currentRequest->get('savedPayPalAccount', ''));
-            $bookingMode       = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL, BookingMode::CHARGE);
+            $bookingMode       = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
 
             $returnUrl = $bookingMode === BookingMode::CHARGE
                 ? $this->charge($transaction->getReturnUrl())

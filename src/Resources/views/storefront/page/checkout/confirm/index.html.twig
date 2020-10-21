@@ -24,7 +24,7 @@
                 {% if 'paypal' in page.extensions.unzerPaymentFrame.paymentFrame and page.extensions.unzerPayPal.displayPayPalAccountSelection
                     or 'paypal' not in page.extensions.unzerPaymentFrame.paymentFrame %}
                     <div class="unzer-payment-card"
-                         id="unzer-paymentcard"
+                         id="unzer-payment-card"
                          data-unzer-payment-base="true"
                          data-unzer-payment-base-options='{
                          "publicKey": "{{ shopware.config.UnzerPayment6.settings.publicKey }}",

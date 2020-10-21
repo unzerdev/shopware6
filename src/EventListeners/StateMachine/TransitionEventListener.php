@@ -92,7 +92,7 @@ class TransitionEventListener implements EventSubscriberInterface
         }
 
         if (empty($firstTransaction) || empty($invoiceId)) {
-            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice or orderTransaction couldn\'t be found', $order->getOrderNumber()));
+            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice or orderTransaction could not be found', $order->getOrderNumber()));
 
             return;
         }

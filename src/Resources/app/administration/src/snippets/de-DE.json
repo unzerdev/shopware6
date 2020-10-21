@@ -12,7 +12,7 @@
                 "type": {
                     "authorization": "Reservierung",
                     "charge": "Einzug",
-                    "shipment": "Versandtmitteilung",
+                    "shipment": "Versandmitteilung",
                     "cancellation": "Rückerstattung",
                     "default": ""
                 }
@@ -78,7 +78,7 @@
                 },
                 "error": {
                     "title": "Test fehlgeschlagen",
-                    "message": "Die angegebenen API-Zugangsdaten sind nicht korret! Bitte korrigieren Sie die Eingabe und versuchen Sie es erneut."
+                    "message": "Die angegebenen API-Zugangsdaten sind nicht korrekt! Bitte korrigieren Sie die Eingabe und versuchen Sie es erneut."
                 }
             },
             "testButton": "API Zugangsdaten testen",

@@ -51,7 +51,7 @@
                 }
             },
             "notifications": {
-                "genericErrorMessage": "An error has occoured!",
+                "genericErrorMessage": "An error has occurred!",
                 "refundSuccessTitle": "Refund",
                 "refundSuccessMessage": "The reimbursement was successfully completed.",
                 "refundErrorTitle": "Refund",
@@ -113,7 +113,7 @@
                 "salesChannelDomain": "The selected domain could not be found"
             },
             "globalError": {
-                "title": "An error occured",
+                "title": "An error has occurred!",
                 "message": "Please contact us for more information"
             }
         }

@@ -18,7 +18,7 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
 {
     use HasBookingMode;
 
-    private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKINMODE_CARD;
+    private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKING_MODE_CARD;
     private const DEFAULT_MODE     = BookingMode::CHARGE;
 
     /** @var ConfigReader */

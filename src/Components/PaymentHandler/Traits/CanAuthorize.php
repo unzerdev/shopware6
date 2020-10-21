@@ -16,7 +16,7 @@ trait CanAuthorize
     public function authorize(string $returnUrl): string
     {
         if (!$this instanceof AbstractUnzerPaymentHandler) {
-            throw new RuntimeException('Trait can only be used in a payment handler context which extends the AbstractHeidelpayHandler class');
+            throw new RuntimeException('Trait can only be used in a payment handler context which extends the AbstractUnzerPaymentHandler class');
         }
 
         if ($this->paymentType === null) {

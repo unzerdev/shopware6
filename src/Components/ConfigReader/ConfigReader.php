@@ -16,9 +16,9 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_PRIVATE_KEY           = 'privateKey';
     public const CONFIG_KEY_TEST_MODE             = 'testMode';
     public const CONFIG_KEY_EXTENDED_LOGGING      = 'extendedLogging';
-    public const CONFIG_KEY_BOOKINMODE_CARD       = 'bookingModeCreditCard';
+    public const CONFIG_KEY_BOOKING_MODE_CARD       = 'bookingModeCreditCard';
     public const CONFIG_KEY_REGISTER_CARD         = 'registerCreditCard';
-    public const CONFIG_KEY_BOOKINMODE_PAYPAL     = 'bookingModePayPal';
+    public const CONFIG_KEY_BOOKING_MODE_PAYPAL     = 'bookingModePayPal';
     public const CONFIG_KEY_REGISTER_PAYPAL       = 'registerPayPal';
     public const CONFIG_KEY_REGISTER_DIRECT_DEBIT = 'registerDirectDebit';
     public const CONFIG_KEY_SHIPPING_STATUS       = 'statusForAutomaticShippingNotification';

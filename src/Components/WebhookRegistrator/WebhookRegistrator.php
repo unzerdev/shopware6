@@ -77,7 +77,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                     'data'    => $result ?? null,
                     'message' => 'unzer-payment-settings.webhook.register.done',
                 ];
-                $this->logger->info('Webhhooks registered!');
+                $this->logger->info('Webhooks registered!');
             } catch (HeidelpayApiException | Throwable $exception) {
                 $returnData[$salesChannelDomain->get('url', '')] = [
                     'success' => false,
@@ -118,7 +118,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                     'success' => true,
                     'message' => 'unzer-payment-settings.webhook.clear.done',
                 ];
-                $this->logger->info('Webhhooks registered!');
+                $this->logger->info('Webhooks registered!');
             } catch (HeidelpayApiException | Throwable $exception) {
                 $returnData[$salesChannelDomain->get('url', '')] = [
                     'success' => false,

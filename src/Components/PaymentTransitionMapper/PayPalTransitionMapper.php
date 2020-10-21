@@ -18,7 +18,7 @@ class PayPalTransitionMapper extends AbstractTransitionMapper
 {
     use HasBookingMode;
 
-    private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKINMODE_PAYPAL;
+    private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL;
     private const DEFAULT_MODE     = BookingMode::CHARGE;
 
     /** @var ConfigReader */
