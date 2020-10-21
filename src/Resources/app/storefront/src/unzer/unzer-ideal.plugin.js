@@ -28,7 +28,7 @@ export default class UnzerPaymentIdealPlugin extends Plugin {
      */
     _createForm() {
         this.ideal.create('ideal', {
-            containerId: 'unzer-ideal-container'
+            containerId: 'unzer-payment-ideal-container'
         });
 
         this._unzerPaymentPlugin.setSubmitButtonActive(false);

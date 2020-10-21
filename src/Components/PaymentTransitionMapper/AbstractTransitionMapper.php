@@ -12,10 +12,13 @@ use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperE
 
 abstract class AbstractTransitionMapper
 {
+    /** @var int */
     public const UNZER_MAX_DIGITS = 4;
 
+    /** @var string */
     public const INVALID_TRANSITION = 'invalid';
 
+    /** @var bool */
     protected $isShipmentAllowed = false;
 
     abstract public function supports(BasePaymentType $paymentType): bool;

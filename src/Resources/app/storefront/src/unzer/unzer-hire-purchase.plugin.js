@@ -7,8 +7,8 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
         hirePurchaseCurrency: '',
         hirePurchaseEffectiveInterest: 0.0,
         hirePurchaseOrderDate: '',
-        installmentsTotalValueElementId: 'unzer-installments-total',
-        installmentsInterestValueElementId: 'unzer-installments-interest',
+        installmentsTotalValueElementId: 'unzer-payment-installments-total',
+        installmentsInterestValueElementId: 'unzer-payment-installments-interest',
         formLoadingIndicatorElementId: 'element-loader',
         currencyIso: 'EUR',
         currencyFormatLocale: 'en-GB',
@@ -47,7 +47,7 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
         ElementLoadingIndicatorUtil.create(loadingIndicatorElement);
 
         this.hirePurchase.create({
-            containerId: 'unzer-hire-purchase-container',
+            containerId: 'unzer-payment-hire-purchase-container',
             amount: this.options.hirePurchaseAmount.toFixed(4),
             currency: this.options.hirePurchaseCurrency,
             effectiveInterest: this.options.hirePurchaseEffectiveInterest,

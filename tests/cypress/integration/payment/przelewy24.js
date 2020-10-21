@@ -1,9 +1,9 @@
-describe('Przelewy24', function () {
-    it('Buy with Przelewy24', function () {
-        cy.buyDemoArticle()
-        cy.register()
-        cy.selectPaymentMethod('Przelewy24 (heidelpay)')
+describe('Przelewy24', () => {
+    it('Buy with Przelewy24', () => {
+        cy.buyDemoArticle();
+        cy.register();
+        cy.selectPaymentMethod('Przelewy24 (Unzer payment)');
 
-        cy.finishCheckout()
-    })
-})
+        cy.finishCheckout();
+    });
+});

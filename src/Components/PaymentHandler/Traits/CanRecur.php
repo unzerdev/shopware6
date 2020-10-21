@@ -17,9 +17,14 @@ use UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler;
 
 trait CanRecur
 {
-    protected $sessionIsRecurring    = 'UnzerPaymentIsRecurring';
+    /** @var string */
+    protected $sessionIsRecurring = 'UnzerPaymentIsRecurring';
+
+    /** @var string */
     protected $sessionPaymentTypeKey = 'UnzerPaymentTypeId';
-    protected $sessionCustomerIdKey  = 'UnzerPaymentCustomerId';
+
+    /** @var string */
+    protected $sessionCustomerIdKey = 'UnzerPaymentCustomerId';
 
     /**
      * @throws HeidelpayApiException

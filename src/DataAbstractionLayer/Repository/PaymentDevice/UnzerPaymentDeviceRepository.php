@@ -38,12 +38,12 @@ class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceRepositoryInterf
 
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter('unzer_payment_device.customerId', $customer->getId()),
-            new EqualsFilter('unzer_payment_device.addressHash', $addressHash)
+            new EqualsFilter('customerId', $customer->getId()),
+            new EqualsFilter('addressHash', $addressHash)
         );
 
         if ($deviceType) {
-            $criteria->addFilter(new EqualsFilter('unzer_payment_device.deviceType', $deviceType));
+            $criteria->addFilter(new EqualsFilter('deviceType', $deviceType));
         }
 
         return $this->entityRepository->search($criteria, $context);

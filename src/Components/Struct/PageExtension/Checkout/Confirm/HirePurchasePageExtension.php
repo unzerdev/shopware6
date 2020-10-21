@@ -17,6 +17,7 @@ class HirePurchasePageExtension extends Struct
     /** @var float */
     private $effectiveInterest = 4.5;
 
+    /** @var string */
     private $orderDate = '';
 
     public function getAmount(): float

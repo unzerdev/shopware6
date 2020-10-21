@@ -104,7 +104,7 @@ class RegisterWebhookCommand extends Command
             $style->warning('The provided host does not exist in any saleschannel.');
 
             $possibleDomains = [];
-            /** @var SalesChannelDomainEntity $salesChannelDomain */
+            /** @var SalesChannelDomainEntity $domainResult */
             foreach ($this->domainRepository->search(new Criteria(), Context::createDefaultContext()) as $domainResult) {
                 $possibleDomains[] = [$domainResult->getUrl()];
             }
@@ -120,7 +120,7 @@ class RegisterWebhookCommand extends Command
         $domainCriteria = new Criteria();
         $domainCriteria->addFilter(new EqualsFilter('url', $url));
         $salesChannelResult = $this->domainRepository->search($domainCriteria, Context::createDefaultContext());
-        /** @var null|SalesChannelDomainEntity $firstResult */
+
         return $salesChannelResult->first();
     }
 }

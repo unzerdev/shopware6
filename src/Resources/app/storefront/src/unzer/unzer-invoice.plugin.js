@@ -2,7 +2,7 @@ import Plugin from 'src/plugin-system/plugin.class';
 
 export default class UnzerPaymentInvoicePlugin extends Plugin {
     static options = {
-        unzerPaymentCardId: 'unzer-card'
+        unzerPaymentCardId: 'unzer-payment-card'
     };
 
     /**

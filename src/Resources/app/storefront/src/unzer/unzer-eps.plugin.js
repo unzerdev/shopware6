@@ -28,7 +28,7 @@ export default class UnzerPaymentEpsPlugin extends Plugin {
      */
     _createForm() {
         this.eps.create('eps', {
-            containerId: 'unzer-eps-container'
+            containerId: 'unzer-payment-eps-container'
         });
     }
 

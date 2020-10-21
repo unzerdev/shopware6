@@ -1,12 +1,11 @@
-includes:
-    - vendor/phpstan/phpstan-phpunit/extension.neon
-
 parameters:
-    level: 5
+    level: 6
     reportUnmatchedIgnoredErrors: false
+    checkMissingIterableValueType: false
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
         - '#Property(.*)does not accept object(.*)#'
         - '#does not accept heidelpayPHP\\Resources\\AbstractHeidelpayResource#'
         - '#StateMachineTransitionActions::ACTION_AUTHORIZE#'
         - '#StateMachineTransitionActions::ACTION_CHARGEBACK#'
+        - '#UnzerPayment6\\Components\\Struct\\Configuration::get\(\)#'

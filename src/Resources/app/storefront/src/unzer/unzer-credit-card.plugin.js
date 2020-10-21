@@ -3,13 +3,13 @@ import DomAccess from 'src/helper/dom-access.helper';
 
 export default class UnzerPaymentCreditCardPlugin extends Plugin {
     static options = {
-        numberFieldId: 'unzer-credit-card-number',
-        numberFieldInputId: 'unzer-credit-card-number-input',
-        expiryFieldId: 'unzer-credit-card-expiry',
-        cvcFieldId: 'unzer-credit-card-cvc',
-        iconFieldId: 'unzer-credit-card-icon',
+        numberFieldId: 'unzer-payment-credit-card-number',
+        numberFieldInputId: 'unzer-payment-credit-card-number-input',
+        expiryFieldId: 'unzer-payment-credit-card-expiry',
+        cvcFieldId: 'unzer-payment-credit-card-cvc',
+        iconFieldId: 'unzer-payment-credit-card-icon',
         invalidClass: 'is-invalid',
-        elementWrapperSelector: '.unzer-credit-card-wrapper-elements',
+        elementWrapperSelector: '.unzer-payment-credit-card-wrapper-elements',
         radioButtonSelector: '*[name="savedCreditCard"]',
         radioButtonNewId: 'card-new',
         selectedRadioButtonSelector: '*[name="savedCreditCard"]:checked',
@@ -196,7 +196,7 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
      * @private
      */
     _getInputElementByEvent(event) {
-        const selector = `#unzer-credit-card-${event.type}`;
+        const selector = `#unzer-payment-credit-card-${event.type}`;
 
         return DomAccess.querySelector(this.el, selector);
     }
@@ -208,7 +208,7 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
      * @private
      */
     _getErrorElementByEvent(event) {
-        const selector = `#unzer-credit-card-${event.type}-error`;
+        const selector = `#unzer-payment-credit-card-${event.type}-error`;
 
         return DomAccess.querySelector(this.el, selector);
     }

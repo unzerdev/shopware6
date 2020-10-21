@@ -167,9 +167,6 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0);
         const errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
 
-        window.console.log(errorWrapper);
-        window.console.log(document.getElementsByClassName(this.options.errorWrapperClass));
-
         errorWrapper.hidden = true;
         errorContent.innerText = '';
     }

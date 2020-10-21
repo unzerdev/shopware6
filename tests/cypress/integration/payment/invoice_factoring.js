@@ -1,11 +1,11 @@
-describe('Invoice factoring Test', function () {
-    it('Buy with Invoice factoring', function () {
-        cy.buyDemoArticle()
-        cy.register()
-        cy.selectPaymentMethod('Invoice factoring (heidelpay)')
+describe('Invoice factoring Test', () => {
+    it('Buy with Invoice factoring', () => {
+        cy.buyDemoArticle();
+        cy.register();
+        cy.selectPaymentMethod('Unzer invoice factoring');
 
         cy.get('#heidelpayBirthday').type('1990-01-01');
 
-        cy.finishCheckout()
-    })
-})
+        cy.finishCheckout();
+    });
+});

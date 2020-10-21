@@ -1,49 +1,49 @@
-.unzer-card {
+.unzer-payment-card {
     &.has-margin-top {
         margin-top: 32px;
     }
     margin-bottom: 32px;
 }
 
-.unzer-frame-row {
+.unzer-payment-frame-row {
     margin-bottom: 16px;
 }
 
-.unzer-error {
+.unzer-payment-error {
     color: #f27f7f;
 }
 
-.unzer-text-input {
+.unzer-payment-text-input {
     height: 34px;
 }
 
-.unzer-saved-cards-wrapper {
+.unzer-payment-saved-cards-wrapper {
     margin-bottom: 24px;
 }
 
-.unzer-date-input {
+.unzer-payment-date-input {
     width: 33%;
 }
 
-#unzer-credit-card-icon {
+#unzer-payment-credit-card-icon {
     float: left;
 }
 
-#unzer-credit-card-number-input {
+#unzer-payment-credit-card-number-input {
     width: 90%;
     display: inline-block;
     margin-left: 8px;
 }
 
-.unzer-loader {
+.unzer-payment-loader {
     height: 64px;
+}
+
+.unzer-payment-sepa-wrapper-elements {
+    margin-top: 20px;
+    padding: 10px;
 }
 
 .heidelpayUI.left.icon.input {
     height: unset;
-}
-
-.unzer-sepa-wrapper-elements {
-    margin-top: 20px;
-    padding: 10px;
 }

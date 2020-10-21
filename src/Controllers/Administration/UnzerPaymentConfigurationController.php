@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator;
@@ -41,16 +42,16 @@ class UnzerPaymentConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer_payment/validate-credentials", name="api.action.unzer.validate.credentials", methods={"POST"})
+     * @Route("/api/v{version}/_action/unzer-payment/validate-credentials", name="api.action.unzer.validate.credentials", methods={"POST"})
      */
-    public function validateCredentials(RequestDataBag $dataBag)
+    public function validateCredentials(RequestDataBag $dataBag): JsonResponse
     {
         $privateKey   = $dataBag->get('privateKey');
         $publicKey    = $dataBag->get('publicKey');
-        $responseCode = 200;
+        $responseCode = Response::HTTP_OK;
 
         if (empty($privateKey) || empty($publicKey)) {
-            return false;
+            return new JsonResponse([], Response::HTTP_PRECONDITION_FAILED);
         }
 
         try {
@@ -58,12 +59,12 @@ class UnzerPaymentConfigurationController extends AbstractController
             $remoteKeypair = $client->fetchKeypair();
 
             if ($remoteKeypair->getPublicKey() !== $publicKey) {
-                $responseCode = 400;
+                $responseCode = Response::HTTP_BAD_REQUEST;
             }
         } catch (HeidelpayApiException $apiException) {
-            $responseCode = 400;
+            $responseCode = Response::HTTP_BAD_REQUEST;
         } catch (RuntimeException $ex) {
-            $responseCode = 400;
+            $responseCode = Response::HTTP_BAD_REQUEST;
         }
 
         if ($responseCode === 200) {
@@ -76,7 +77,7 @@ class UnzerPaymentConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer_payment/register-webhooks", name="api.action.unzer.webhooks.register", methods={"POST"})
+     * @Route("/api/v{version}/_action/unzer-payment/register-webhooks", name="api.action.unzer.webhooks.register", methods={"POST"})
      */
     public function registerWebhooks(RequestDataBag $dataBag): JsonResponse
     {
@@ -99,7 +100,7 @@ class UnzerPaymentConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer_payment/clear-webhooks", name="api.action.unzer.webhooks.clear", methods={"POST"})
+     * @Route("/api/v{version}/_action/unzer-payment/clear-webhooks", name="api.action.unzer.webhooks.clear", methods={"POST"})
      */
     public function clearWebhooks(RequestDataBag $dataBag): JsonResponse
     {

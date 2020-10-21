@@ -19,14 +19,12 @@
     "require": {
         "php": "^7.2",
         "heidelpay/heidelpay-php": "~1.2.8.0",
-        "shopware/core": ">=6.2",
-        "shopware/administration": ">=6.2",
-        "shopware/storefront": ">=6.2"
+        "shopware/core": "^6.2 || ^6.3.0",
+        "shopware/administration": "^6.2 || ^6.3.0",
+        "shopware/storefront": "^6.2 || ^6.3.0"
     },
     "require-dev": {
-        "phpstan/phpstan": "^0.11",
-        "phpstan/phpstan-phpunit": "^0.11",
-        "phpunit/phpunit": "^8.1",
+        "phpstan/phpstan": "^0.12",
         "k10r/codestyle": "^1.0"
     },
     "extra": {

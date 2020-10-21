@@ -11,6 +11,7 @@ use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperE
 
 class InvoiceGuaranteedTransitionMapper extends AbstractTransitionMapper
 {
+    /** @var bool */
     protected $isShipmentAllowed = true;
 
     public function supports(BasePaymentType $paymentType): bool

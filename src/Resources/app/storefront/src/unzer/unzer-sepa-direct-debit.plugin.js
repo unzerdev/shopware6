@@ -5,7 +5,7 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
     static options = {
         acceptMandateId: 'acceptSepaMandate',
         mandateNotAcceptedError: 'Please accept the SEPA direct debit mandate in order to continue.',
-        elementWrapperSelector: '.unzer-sepa-wrapper-elements',
+        elementWrapperSelector: '.unzer-payment-sepa-wrapper-elements',
         radioButtonSelector: '*[name="savedDirectDebitDevice"]',
         radioButtonNewAccountId: 'device-new',
         selectedRadioButtonSelector: '*[name="savedDirectDebitDevice"]:checked',
@@ -48,7 +48,7 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
      */
     _createForm() {
         this.sepa.create('sepa-direct-debit', {
-            containerId: 'unzer-sepa-container'
+            containerId: 'unzer-payment-sepa-container'
         });
     }
 
