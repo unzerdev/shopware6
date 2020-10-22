@@ -16,6 +16,12 @@ class Migration1564149494AddPaymentDeviceVault extends MigrationStep
 
     public function update(Connection $connection): void
     {
+        $result = $connection->fetchColumn('SHOW TABLES LIKE \'unzer_payment_payment_device\';');
+
+        if ($result) {
+            return;
+        }
+
         $sql = <<<SQL
             CREATE TABLE IF NOT EXISTS `heidelpay_payment_device` (
                 `id` binary(16) NOT NULL,
