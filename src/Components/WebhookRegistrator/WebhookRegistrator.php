@@ -6,7 +6,6 @@ namespace HeidelPayment6\Components\WebhookRegistrator;
 
 use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Heidelpay;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -30,8 +29,8 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     /** @var null|RequestContext */
     protected $context;
 
-    /** @var Heidelpay */
-    private $client;
+    /** @var ClientFactoryInterface */
+    private $clientFactory;
 
     /** @var Router */
     private $router;
@@ -48,7 +47,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         EntityRepositoryInterface $salesChannelRepository,
         LoggerInterface $logger
     ) {
-        $this->client                 = $clientFactory->createClient();
+        $this->clientFactory          = $clientFactory;
         $this->router                 = $router;
         $this->salesChannelRepository = $salesChannelRepository;
         $this->logger                 = $logger;
@@ -70,7 +69,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
 
             try {
                 $url    = $this->router->generate('heidelpay.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_URL);
-                $result = $this->client->createWebhook($url, 'all');
+                $result = $this->clientFactory->createClient()->createWebhook($url, 'all');
 
                 $returnData[$salesChannelDomain->get('url', '')] = [
                     'success' => true,
@@ -112,7 +111,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
             }
 
             try {
-                $this->client->deleteAllWebhooks();
+                $this->clientFactory->createClient()->deleteAllWebhooks();
 
                 $returnData[$salesChannelDomain->get('url', '')] = [
                     'success' => true,
