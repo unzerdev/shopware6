@@ -24,9 +24,6 @@
             },
             "detail": {
                 "cardTitle": "Payment Details",
-                "amountTotal": "Amount (gross)",
-                "amountTotalVat": "Amount (net)",
-                "currency": "Currency",
                 "shortId": "Short-ID",
                 "id": "Payment-ID",
                 "state": "State",

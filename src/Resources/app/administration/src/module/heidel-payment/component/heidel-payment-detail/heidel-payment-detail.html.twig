@@ -1,25 +1,8 @@
 {% block heidel_payment_detail %}
     <sw-card class="heidel-payment-detail" :title="$tc('heidel-payment.paymentDetails.detail.cardTitle')">
         {% block heidel_payment_detail_container %}
-            <sw-container columns="1fr 1fr 1fr" gap="0 20px">
+            <sw-container columns="1fr 1fr" gap="0 20px">
                 {% block heidel_payment_detail_container_left %}
-                    <sw-container>
-                        <sw-description-list>
-                            <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountTotal') }}</dt>
-                            <dd>{{ paymentResource.basket.amountTotalGross | currency(paymentResource.currency) }}</dd>
-
-                            <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountTotalVat') }}</dt>
-                            <dd>{{ paymentResource.basket.amountTotalVat | currency(paymentResource.currency) }}</dd>
-
-                            <dt>{{ $tc('heidel-payment.paymentDetails.detail.currency') }}</dt>
-                            <dd>{{ paymentResource.currency }}</dd>
-
-                            {% block heidel_payment_detail_container_left_inner %}{% endblock %}
-                        </sw-description-list>
-                    </sw-container>
-                {% endblock %}
-
-                {% block heidel_payment_detail_container_center %}
                     <sw-container>
                         <sw-description-list>
                             <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountRemaining') }}</dt>
@@ -31,7 +14,7 @@
                             <dt>{{ $tc('heidel-payment.paymentDetails.detail.amountCharged') }}</dt>
                             <dd>{{ paymentResource.amount.charged | currency(paymentResource.currency) }}</dd>
 
-                            {% block heidel_payment_detail_container_center_inner %}{% endblock %}
+                            {% block heidel_payment_detail_container_left_inner %}{% endblock %}
                         </sw-description-list>
                     </sw-container>
                 {% endblock %}
