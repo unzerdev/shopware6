@@ -40,11 +40,11 @@ class UnzerPayment6 extends Plugin
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
-        /** @var EntityRepository $customFieldRepository */
-        $customFieldRepository = $this->container->get('custom_field_set.repository');
+        /** @var EntityRepository $customFieldSetRepository */
+        $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
         (new PaymentInstaller($paymentRepository))->install($installContext);
-        (new CustomFieldInstaller($customFieldRepository))->install($installContext);
+        (new CustomFieldInstaller($customFieldSetRepository))->install($installContext);
     }
 
     /**
@@ -55,11 +55,11 @@ class UnzerPayment6 extends Plugin
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
-        /** @var EntityRepository $customFieldRepository */
-        $customFieldRepository = $this->container->get('custom_field_set.repository');
+        /** @var EntityRepository $customFieldSetRepository */
+        $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
         (new PaymentInstaller($paymentRepository))->update($updateContext);
-        (new CustomFieldInstaller($customFieldRepository))->update($updateContext);
+        (new CustomFieldInstaller($customFieldSetRepository))->update($updateContext);
     }
 
     /**
@@ -70,11 +70,11 @@ class UnzerPayment6 extends Plugin
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
-        /** @var EntityRepository $customFieldRepository */
-        $customFieldRepository = $this->container->get('custom_field_set.repository');
+        /** @var EntityRepository $customFieldSetRepository */
+        $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
         (new PaymentInstaller($paymentRepository))->activate($activateContext);
-        (new CustomFieldInstaller($customFieldRepository))->activate($activateContext);
+        (new CustomFieldInstaller($customFieldSetRepository))->activate($activateContext);
     }
 
     /**
@@ -85,11 +85,11 @@ class UnzerPayment6 extends Plugin
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
-        /** @var EntityRepository $customFieldRepository */
-        $customFieldRepository = $this->container->get('custom_field_set.repository');
+        /** @var EntityRepository $customFieldSetRepository */
+        $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
         (new PaymentInstaller($paymentRepository))->deactivate($deactivateContext);
-        (new CustomFieldInstaller($customFieldRepository))->deactivate($deactivateContext);
+        (new CustomFieldInstaller($customFieldSetRepository))->deactivate($deactivateContext);
     }
 
     /**
@@ -100,10 +100,13 @@ class UnzerPayment6 extends Plugin
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
-        /** @var EntityRepository $customFieldRepository */
-        $customFieldRepository = $this->container->get('custom_field_set.repository');
+        /** @var EntityRepository $customFieldSetRepository */
+        $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
         (new PaymentInstaller($paymentRepository))->uninstall($uninstallContext);
-        (new CustomFieldInstaller($customFieldRepository))->uninstall($uninstallContext);
+
+        if (!$uninstallContext->keepUserData()) {
+            (new CustomFieldInstaller($customFieldSetRepository))->uninstall($uninstallContext);
+        }
     }
 }

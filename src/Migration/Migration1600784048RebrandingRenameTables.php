@@ -16,12 +16,17 @@ class Migration1600784048RebrandingRenameTables extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $sql = <<<SQL
-            RENAME TABLE heidelpay_transfer_info TO unzer_payment_transfer_info;
-            RENAME TABLE heidelpay_payment_device TO unzer_payment_payment_device;
-SQL;
+        $transferResult = $connection->fetchColumn('SHOW TABLES LIKE \'unzer_payment_transfer_info\';');
 
-        $connection->exec($sql);
+        if (!$transferResult) {
+            $connection->exec('RENAME TABLE heidelpay_transfer_info TO unzer_payment_transfer_info;');
+        }
+
+        $deviceResult = $connection->fetchColumn('SHOW TABLES LIKE \'unzer_payment_payment_device\';');
+
+        if (!$deviceResult) {
+            $connection->exec('RENAME TABLE heidelpay_payment_device TO unzer_payment_payment_device;');
+        }
     }
 
     public function updateDestructive(Connection $connection): void
