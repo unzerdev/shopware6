@@ -24,12 +24,12 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
      *
      * @private
      */
-    static unzerPlugin = null;
+    static _unzerPaymentPlugin = null;
 
     init() {
         const birthDate = document.getElementById(this.options.birthDateFieldId);
-        this.unzerPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.sepa = this.unzerPlugin.unzerInstance.SepaDirectDebitGuaranteed();
+        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.sepa = this._unzerPaymentPlugin.unzerInstance.SepaDirectDebitGuaranteed();
 
         this._createForm();
         this._registerEvents();
@@ -41,7 +41,7 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
             birthDate.required = false;
         } else {
             birthDate.required = true;
-            this.unzerPlugin.setSubmitButtonActive(false);
+            this._unzerPaymentPlugin.setSubmitButtonActive(false);
         }
     }
 
@@ -68,7 +68,7 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
 
         this.sepa.addEventListener('change', (event) => this._onFormChange(event));
 
-        this.unzerPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
+        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
     }
@@ -81,16 +81,16 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
         unzerElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewAccountId;
 
         if (!targetElement || targetElement.id === this.options.radioButtonNewAccountId) {
-            this.unzerPlugin.setSubmitButtonActive(this.sepa.validated);
+            this._unzerPaymentPlugin.setSubmitButtonActive(this.sepa.validated);
             birthDate.required = true;
         } else {
-            this.unzerPlugin.setSubmitButtonActive(true);
+            this._unzerPaymentPlugin.setSubmitButtonActive(true);
             birthDate.required = false;
         }
     }
 
     _onFormChange(event) {
-        this.unzerPlugin.setSubmitButtonActive(event.success);
+        this._unzerPaymentPlugin.setSubmitButtonActive(event.success);
     }
 
     /**
@@ -111,7 +111,7 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
                 return;
             }
 
-            this.unzerPlugin.setSubmitButtonActive(false);
+            this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
             this.sepa.createResource()
                 .then((resource) => this._submitPayment(resource))

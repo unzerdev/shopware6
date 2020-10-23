@@ -18,10 +18,10 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
      *
      * @private
      */
-    static _unzerPlugin = null;
+    static __unzerPaymentPlugin = null;
 
     init() {
-        this._unzerPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.__unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
 
         this._registerEvents();
     }
@@ -30,7 +30,7 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this._unzerPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
+        this.__unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
     }
@@ -41,7 +41,7 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
     _onCreateResource() {
         let checkedRadioButton = null;
 
-        this._unzerPlugin.setSubmitButtonActive(false);
+        this.__unzerPaymentPlugin.setSubmitButtonActive(false);
 
         if (this.options.hasSavedAccounts) {
             /** @type {Element} */
@@ -49,11 +49,11 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
         }
 
         if (checkedRadioButton !== null && checkedRadioButton.value !== 'new') {
-            this._unzerPlugin.submitTypeId(checkedRadioButton.value);
+            this.__unzerPaymentPlugin.submitTypeId(checkedRadioButton.value);
 
             return;
         }
 
-        document.getElementById(this._unzerPlugin.options.confirmFormId).submit();
+        document.getElementById(this.__unzerPaymentPlugin.options.confirmFormId).submit();
     }
 }

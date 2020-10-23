@@ -24,7 +24,7 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
      *
      * @private
      */
-    static unzerPlugin = null;
+    static _unzerPaymentPlugin = null;
 
     init() {
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];

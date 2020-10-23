@@ -26,8 +26,8 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
     static b2bCustomerProvider = null;
 
     init() {
-        this.unzerPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.invoiceFactoring = this.unzerPlugin.unzerInstance.InvoiceFactoring();
+        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.invoiceFactoring = this._unzerPaymentPlugin.unzerInstance.InvoiceFactoring();
 
         if (this.options.isB2BCustomer) {
             this._createB2bForm();
@@ -40,7 +40,7 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this.unzerPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
+        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
     }
@@ -49,9 +49,9 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
      * @private
      */
     _createB2bForm() {
-        this.b2bCustomerProvider = this.unzerPlugin.unzerInstance.B2BCustomer();
+        this.b2bCustomerProvider = this._unzerPaymentPlugin.unzerInstance.B2BCustomer();
         this.b2bCustomerProvider.b2bCustomerEventHandler = (event) => this._onValidateB2bForm(event);
-        this.b2bCustomerProvider.initFormFields(this.unzerPlugin.getB2bCustomerObject(this.options.customerInfo));
+        this.b2bCustomerProvider.initFormFields(this._unzerPaymentPlugin.getB2bCustomerObject(this.options.customerInfo));
 
         this.b2bCustomerProvider.create({
             containerId: 'unzer-payment-b2b-form'
@@ -62,7 +62,7 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
      * @private
      */
     _onCreateResource() {
-        this.unzerPlugin.setSubmitButtonActive(false);
+        this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
         if (this.options.isB2BCustomer) {
             this.b2bCustomerProvider.createCustomer()
@@ -95,7 +95,7 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
      * @private
      */
     _onValidateB2bForm(event) {
-        this.unzerPlugin.setSubmitButtonActive(event.success);
+        this._unzerPaymentPlugin.setSubmitButtonActive(event.success);
     }
 
     /**
@@ -104,7 +104,7 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
      * @private
      */
     _submitPayment(resource) {
-        this.unzerPlugin.submitResource(resource);
+        this._unzerPaymentPlugin.submitResource(resource);
     }
 
     /**
@@ -113,6 +113,6 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
      * @private
      */
     _handleError(error) {
-        this.unzerPlugin.showError(error);
+        this._unzerPaymentPlugin.showError(error);
     }
 }
