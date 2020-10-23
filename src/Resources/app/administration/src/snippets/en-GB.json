@@ -24,9 +24,6 @@
             },
             "detail": {
                 "cardTitle": "Payment Details",
-                "amountTotal": "Amount (gross)",
-                "amountTotalVat": "Amount (net)",
-                "currency": "Currency",
                 "shortId": "Short-ID",
                 "id": "Payment-ID",
                 "state": "State",
@@ -63,6 +60,9 @@
                 "shipErrorTitle": "Shipping notice",
                 "invoiceNotFoundMessage": "No invoice was found for this order."
             }
+        },
+        "order-list": {
+            "transactionId": "Unzer transaction ID"
         }
     },
     "unzer-payment-settings": {

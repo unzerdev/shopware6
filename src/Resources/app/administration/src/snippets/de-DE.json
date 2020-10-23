@@ -24,9 +24,6 @@
             },
             "detail": {
                 "cardTitle": "Zahlungsdetails",
-                "amountTotal": "Betrag (brutto)",
-                "amountTotalVat": "Betrag (netto)",
-                "currency": "Währung",
                 "shortId": "Short-ID",
                 "id": "Zahlungs-ID",
                 "state": "Status",
@@ -63,6 +60,9 @@
                 "shipErrorTitle": "Versandmitteilung",
                 "invoiceNotFoundMessage": "Zu dieser Bestellung wurde keine Rechnung gefunden"
             }
+        },
+        "order-list": {
+            "transactionId": "Unzer Transaktions ID"
         }
     },
     "unzer-payment-settings": {
