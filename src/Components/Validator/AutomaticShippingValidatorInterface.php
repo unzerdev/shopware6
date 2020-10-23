@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Validator;
+namespace UnzerPayment6\Components\Validator;
 
-use HeidelPayment6\Installers\PaymentInstaller;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use UnzerPayment6\Installers\PaymentInstaller;
 
 interface AutomaticShippingValidatorInterface
 {
@@ -16,7 +16,7 @@ interface AutomaticShippingValidatorInterface
     ];
 
     /**
-     * Returns a boolean indicating if the provided order is able to send a shipping call to heidelpay.
+     * Returns a boolean indicating if the provided order is able to send a shipping call to unzer.
      */
     public function shouldSendAutomaticShipping(OrderEntity $orderEntity, StateMachineStateEntity $deliveryState): bool;
 }

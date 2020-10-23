@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\TransactionStateHandler;
+namespace UnzerPayment6\Components\TransactionStateHandler;
 
-use HeidelPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory;
-use HeidelPayment6\Components\PaymentTransitionMapper\Exception\NoTransitionMapperFoundException;
-use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use heidelpayPHP\Resources\Payment;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -16,6 +13,9 @@ use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMa
 use Shopware\Core\System\StateMachine\Exception\IllegalTransitionException;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
+use UnzerPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory;
+use UnzerPayment6\Components\PaymentTransitionMapper\Exception\NoTransitionMapperFoundException;
+use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 
 class TransactionStateHandler implements TransactionStateHandlerInterface
 {
@@ -46,7 +46,7 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         Payment $payment,
         Context $context
     ): void {
-        if (null === $payment->getPaymentType()) {
+        if ($payment->getPaymentType() === null) {
             return;
         }
 

@@ -1,8 +1,8 @@
-describe('Giropay', function () {
-    it('Buy with Giropay', function () {
+describe('Giropay', () => {
+    it('Buy with Giropay', () => {
         cy.buyDemoArticle();
         cy.register();
-        cy.selectPaymentMethod('Giropay (heidelpay)');
+        cy.selectPaymentMethod('Giropay (Unzer payment)');
 
 
         cy.url().should('include', 'customer-integration.giropay');

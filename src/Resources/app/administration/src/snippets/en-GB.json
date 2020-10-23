@@ -1,6 +1,6 @@
 {
-    "heidel-payment": {
-        "tabTitle": "Heidelpay",
+    "unzer-payment": {
+        "tabTitle": "Unzer Payment",
         "paymentDetails": {
             "history": {
                 "cardTitle": "Payment History",
@@ -48,7 +48,7 @@
                 }
             },
             "notifications": {
-                "genericErrorMessage": "An error has occoured!",
+                "genericErrorMessage": "An error has occurred!",
                 "refundSuccessTitle": "Refund",
                 "refundSuccessMessage": "The reimbursement was successfully completed.",
                 "refundErrorTitle": "Refund",
@@ -62,13 +62,13 @@
             }
         },
         "order-list": {
-            "transactionId": "Heidelpay transaction ID"
+            "transactionId": "Unzer transaction ID"
         }
     },
-    "heidel-payment-settings": {
+    "unzer-payment-settings": {
         "module": {
-            "title": "Heidelpay",
-            "description": "Heidelpay"
+            "title": "Unzer Payment",
+            "description": "Unzer Payment"
         },
         "form": {
             "message": {
@@ -113,7 +113,7 @@
                 "salesChannelDomain": "The selected domain could not be found"
             },
             "globalError": {
-                "title": "An error occured",
+                "title": "An error has occurred!",
                 "message": "Please contact us for more information"
             }
         }

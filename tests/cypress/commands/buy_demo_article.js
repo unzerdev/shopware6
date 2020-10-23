@@ -16,4 +16,4 @@ Cypress.Commands.add('buyDemoArticle', () => {
     cy.get('.cart-item-quantity-container > .custom-select').select('3').should('have.value', '3');
     cy.wait('@ajaxCart');
     cy.contains('Proceed to checkout').click();
-})
+});

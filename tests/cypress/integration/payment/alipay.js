@@ -1,9 +1,9 @@
-describe('Alipay', function () {
-    it('Buy with Alipay', function () {
-        cy.buyDemoArticle()
-        cy.register()
-        cy.selectPaymentMethod('Alipay (heidelpay)')
+describe('Alipay', () => {
+    it('Buy with Alipay', () => {
+        cy.buyDemoArticle();
+        cy.register();
+        cy.selectPaymentMethod('Alipay (Unzer payment)');
 
-        cy.finishCheckout()
-    })
-})
+        cy.finishCheckout();
+    });
+});

@@ -1,0 +1,43 @@
+{# @var transferInformation \UnzerPayment6\Components\Struct\TransferInformation\TransferInformation #}
+{% block page_checkout_finish_details_unzer_paymenttransfer_information_item %}
+    <div class="unzer-payment-card">
+        <div class="card-body">
+            {% block page_checkout_finish_details_unzer_paymenttransfer_information_item_title %}
+                <div class="card-title">
+                    {{ "UnzerPayment.transferInformation.title" | trans  }}
+                </div>
+            {% endblock %}
+
+            {% block page_checkout_finish_details_unzer_paymenttransfer_information_item_message %}
+                <h6>
+                    {{ "UnzerPayment.transferInformation.message"|trans({'%amount%': (transferInformation.amount|currency)})  }}
+                </h6>
+            {% endblock %}
+
+            {% block page_checkout_finish_details_unzer_paymenttransfer_information_item_table%}
+                <table class="table table-sm table-bordered">
+                    <tr>
+                        <td class="font-weight-bold">{{ "UnzerPayment.transferInformation.iban" | trans  }}</td>
+                        <td>{{ transferInformation.iban }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold">{{ "UnzerPayment.transferInformation.bic" | trans  }}</td>
+                        <td>{{ transferInformation.bic }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold">{{ "UnzerPayment.transferInformation.holder" | trans  }}</td>
+                        <td>{{ transferInformation.holder }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold">{{ "UnzerPayment.transferInformation.descriptor" | trans  }}</td>
+                        <td>{{ transferInformation.descriptor }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold">{{ "UnzerPayment.transferInformation.amount" | trans  }}</td>
+                        <td>{{ transferInformation.amount|currency }}</td>
+                    </tr>
+                </table>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

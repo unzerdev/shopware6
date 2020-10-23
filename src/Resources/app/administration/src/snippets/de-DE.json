@@ -1,6 +1,6 @@
 {
-    "heidel-payment": {
-        "tabTitle": "Heidelpay",
+    "unzer-payment": {
+        "tabTitle": "Unzer Payment",
         "paymentDetails": {
             "history": {
                 "cardTitle": "Zahlungsverlauf",
@@ -12,7 +12,7 @@
                 "type": {
                     "authorization": "Reservierung",
                     "charge": "Einzug",
-                    "shipment": "Versandtmitteilung",
+                    "shipment": "Versandmitteilung",
                     "cancellation": "Rückerstattung",
                     "default": ""
                 }
@@ -62,13 +62,13 @@
             }
         },
         "order-list": {
-            "transactionId": "Heidelpay Transaktions ID"
+            "transactionId": "Unzer Transaktions ID"
         }
     },
-    "heidel-payment-settings": {
+    "unzer-payment-settings": {
         "module": {
-            "title": "Heidelpay",
-            "description": "Heidelpay"
+            "title": "Unzer Payment",
+            "description": "Unzer Payment"
         },
         "form": {
             "message": {
@@ -78,7 +78,7 @@
                 },
                 "error": {
                     "title": "Test fehlgeschlagen",
-                    "message": "Die angegebenen API-Zugangsdaten sind nicht korret! Bitte korrigieren Sie die Eingabe und versuchen Sie es erneut."
+                    "message": "Die angegebenen API-Zugangsdaten sind nicht korrekt! Bitte korrigieren Sie die Eingabe und versuchen Sie es erneut."
                 }
             },
             "testButton": "API Zugangsdaten testen",

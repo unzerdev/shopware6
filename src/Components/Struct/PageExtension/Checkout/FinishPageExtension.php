@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Struct\PageExtension\Checkout;
+namespace UnzerPayment6\Components\Struct\PageExtension\Checkout;
 
-use HeidelPayment6\Components\Struct\HirePurchase\InstallmentInfo;
 use Shopware\Core\Framework\Struct\Struct;
+use UnzerPayment6\Components\Struct\HirePurchase\InstallmentInfo;
 
 class FinishPageExtension extends Struct
 {

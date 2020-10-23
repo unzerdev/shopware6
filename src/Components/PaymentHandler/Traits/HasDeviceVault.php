@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentHandler\Traits;
+namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use HeidelPayment6\DataAbstractionLayer\Repository\PaymentDevice\HeidelpayPaymentDeviceRepositoryInterface;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
+use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 
 /**
  * @property BasePaymentType $paymentType
  */
 trait HasDeviceVault
 {
-    /** @var HeidelpayPaymentDeviceRepositoryInterface */
+    /** @var UnzerPaymentDeviceRepositoryInterface */
     protected $deviceRepository;
 
     protected function saveToDeviceVault(CustomerEntity $customer, string $deviceType, Context $context, array $additionalParams = []): void

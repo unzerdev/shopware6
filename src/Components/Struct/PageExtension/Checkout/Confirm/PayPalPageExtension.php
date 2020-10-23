@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm;
+namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
-use HeidelPayment6\DataAbstractionLayer\Entity\PaymentDevice\HeidelpayPaymentDeviceEntity;
 use Shopware\Core\Framework\Struct\Struct;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 
 class PayPalPageExtension extends Struct
 {
-    /** @var HeidelpayPaymentDeviceEntity[] */
+    /** @var UnzerPaymentDeviceEntity[] */
     protected $payPalAccounts = [];
 
     /** @var bool */
-    protected $displayPayPalAccountselection;
+    protected $displayPayPalAccountSelection;
 
-    public function addPayPalAccount(HeidelpayPaymentDeviceEntity $paypalAccount): self
+    public function addPayPalAccount(UnzerPaymentDeviceEntity $paypalAccount): self
     {
         $this->payPalAccounts[] = $paypalAccount;
 
@@ -23,7 +23,7 @@ class PayPalPageExtension extends Struct
     }
 
     /**
-     * @return HeidelpayPaymentDeviceEntity[]
+     * @return UnzerPaymentDeviceEntity[]
      */
     public function getPayPalAccounts(): array
     {
@@ -31,7 +31,7 @@ class PayPalPageExtension extends Struct
     }
 
     /**
-     * @param HeidelpayPaymentDeviceEntity[] $payPalAccounts
+     * @param UnzerPaymentDeviceEntity[] $payPalAccounts
      *
      * @return PayPalPageExtension
      */
@@ -42,14 +42,14 @@ class PayPalPageExtension extends Struct
         return $this;
     }
 
-    public function getDisplaypayPalAccountselection(): bool
+    public function isDisplayPayPalAccountSelection(): bool
     {
-        return $this->displayPayPalAccountselection;
+        return $this->displayPayPalAccountSelection;
     }
 
-    public function setDisplaypayPalAccountselection(bool $displayPayPalAccountselection): self
+    public function setDisplayPayPalAccountSelection(bool $displayPayPalAccountSelection): self
     {
-        $this->displayPayPalAccountselection = $displayPayPalAccountselection;
+        $this->displayPayPalAccountSelection = $displayPayPalAccountSelection;
 
         return $this;
     }

@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Struct;
+namespace UnzerPayment6\Components\Struct;
 
 class Configuration
 {
+    /** @var array */
     private $configuration;
 
     public function __construct(array $configuration)

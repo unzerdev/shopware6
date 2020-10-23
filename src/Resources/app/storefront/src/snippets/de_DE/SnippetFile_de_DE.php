@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Resources\app\storefront\src\snippets\de_DE;
+namespace UnzerPayment6\Resources\app\storefront\src\snippets\de_DE;
 
 use Shopware\Core\System\Snippet\Files\SnippetFileInterface;
 
@@ -10,12 +10,12 @@ class SnippetFile_de_DE implements SnippetFileInterface
 {
     public function getName(): string
     {
-        return 'heidelpay.de-DE';
+        return 'unzer-payment.de-DE';
     }
 
     public function getPath(): string
     {
-        return __DIR__ . '/heidelpay.de-DE.json';
+        return __DIR__ . '/unzer-payment.de-DE.json';
     }
 
     public function getIso(): string
@@ -25,7 +25,7 @@ class SnippetFile_de_DE implements SnippetFileInterface
 
     public function getAuthor(): string
     {
-        return 'heidelpay GmbH';
+        return 'Unzer Payment GmbH';
     }
 
     public function isBase(): bool

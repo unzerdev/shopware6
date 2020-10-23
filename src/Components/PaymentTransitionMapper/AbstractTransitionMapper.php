@@ -2,20 +2,26 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentTransitionMapper;
+namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
-use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\TransactionTypes\Shipment;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
+use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 
 abstract class AbstractTransitionMapper
 {
-    public const HEIDELPAY_MAX_DIGITS = 4;
+    public const CONST_KEY_CHARGEBACK = 'ACTION_CHARGEBACK';
+    public const CONST_KEY_AUTHORIZE  = 'ACTION_AUTHORIZE';
 
+    /** @var int */
+    public const UNZER_MAX_DIGITS = 4;
+
+    /** @var string */
     public const INVALID_TRANSITION = 'invalid';
 
+    /** @var bool */
     protected $isShipmentAllowed = false;
 
     abstract public function supports(BasePaymentType $paymentType): bool;
@@ -53,8 +59,8 @@ abstract class AbstractTransitionMapper
         } elseif ($paymentObject->isChargeBack()) {
             $status = StateMachineTransitionActions::ACTION_CANCEL;
 
-            if ($this->stateMachineTransitionExists('ACTION_CHARGEBACK')) {
-                $status = StateMachineTransitionActions::ACTION_CHARGEBACK;
+            if ($this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)) {
+                $status = constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK));
             }
         } elseif ($paymentObject->isPending()) {
             $status = StateMachineTransitionActions::ACTION_REOPEN;
@@ -73,15 +79,15 @@ abstract class AbstractTransitionMapper
 
     protected function checkForRefund(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
-        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::HEIDELPAY_MAX_DIGITS));
-        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::HEIDELPAY_MAX_DIGITS));
-        $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::UNZER_MAX_DIGITS));
+        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::UNZER_MAX_DIGITS));
+        $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** self::UNZER_MAX_DIGITS));
 
         if ($cancelledAmount === $totalAmount && $remainingAmount === 0
             && $currentStatus !== StateMachineTransitionActions::ACTION_CANCEL
             && !(
-                $this->stateMachineTransitionExists('ACTION_CHARGEBACK')
-                && $currentStatus === StateMachineTransitionActions::ACTION_CHARGEBACK
+                $this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)
+                && $currentStatus === constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK))
             )
         ) {
             return StateMachineTransitionActions::ACTION_REFUND;
@@ -93,24 +99,25 @@ abstract class AbstractTransitionMapper
     protected function checkForShipment(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
         $shippedAmount   = 0;
-        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::HEIDELPAY_MAX_DIGITS));
-        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::UNZER_MAX_DIGITS));
+        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::UNZER_MAX_DIGITS));
 
         if (empty($paymentObject->getShipments())) {
             return $currentStatus;
         }
 
-        if ($this->stateMachineTransitionExists('ACTION_CHARGEBACK') && $currentStatus === StateMachineTransitionActions::ACTION_CHARGEBACK) {
+        if ($this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)
+            && $currentStatus === constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK))) {
             return $currentStatus;
         }
 
         /** @var Shipment $shipment */
         foreach ($paymentObject->getShipments() as $shipment) {
             if (!empty($shipment->getAmount())) {
-                $shippedAmount += (int) round($shipment->getAmount() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+                $shippedAmount += (int) round($shipment->getAmount() * (10 ** self::UNZER_MAX_DIGITS));
 
                 if ($shippedAmount > ($totalAmount - $cancelledAmount)) {
-                    $shippedAmount -= (int) round($shipment->getAmount() * (10 ** self::HEIDELPAY_MAX_DIGITS));
+                    $shippedAmount -= (int) round($shipment->getAmount() * (10 ** self::UNZER_MAX_DIGITS));
                 }
             }
         }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Event;
+namespace UnzerPayment6\Components\Event;
 
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;

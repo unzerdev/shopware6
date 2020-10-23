@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentTransitionMapper\Exception;
+namespace UnzerPayment6\Components\PaymentTransitionMapper\Exception;
 
-use HeidelPayment6\Components\AbstractHeidelPaymentException;
+use UnzerPayment6\Components\AbstractUnzerPaymentException;
 
-class TransitionMapperException extends AbstractHeidelPaymentException
+class TransitionMapperException extends AbstractUnzerPaymentException
 {
     public function __construct(string $paymentName)
     {

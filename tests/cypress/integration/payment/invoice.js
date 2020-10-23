@@ -1,9 +1,9 @@
-describe('Invoice Test', function () {
-    it('Buy with Invoice', function () {
-        cy.buyDemoArticle()
-        cy.register()
-        cy.selectPaymentMethod('Invoice (heidelpay)')
+describe('Invoice Test', () => {
+    it('Buy with Invoice', () => {
+        cy.buyDemoArticle();
+        cy.register();
+        cy.selectPaymentMethod('Invoice (Unzer payment)');
 
-        cy.finishCheckout()
-    })
-})
+        cy.finishCheckout();
+    });
+});

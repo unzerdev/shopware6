@@ -1,9 +1,9 @@
-describe('WeChat', function () {
-    it('Buy with WeChat', function () {
-        cy.buyDemoArticle()
-        cy.register()
-        cy.selectPaymentMethod('WeChat (heidelpay)')
+describe('WeChat', () => {
+    it('Buy with WeChat', () => {
+        cy.buyDemoArticle();
+        cy.register();
+        cy.selectPaymentMethod('WeChat (Unzer payment)');
 
-        cy.finishCheckout()
-    })
-})
+        cy.finishCheckout();
+    });
+});

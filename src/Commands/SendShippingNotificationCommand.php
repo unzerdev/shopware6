@@ -2,13 +2,8 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Commands;
+namespace UnzerPayment6\Commands;
 
-use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment6\Components\ConfigReader\ConfigReaderInterface;
-use HeidelPayment6\Components\Event\AutomaticShippingNotificationEvent;
-use HeidelPayment6\Components\Validator\AutomaticShippingValidatorInterface;
-use HeidelPayment6\Installers\CustomFieldInstaller;
 use heidelpayPHP\Constants\ApiResponseCodes;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use RuntimeException;
@@ -26,6 +21,11 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
+use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
+use UnzerPayment6\Installers\CustomFieldInstaller;
 
 class SendShippingNotificationCommand extends Command
 {
@@ -70,8 +70,8 @@ class SendShippingNotificationCommand extends Command
      */
     protected function configure(): void
     {
-        $this->setName('heidelpay:send:shipping')
-            ->setDescription('Send all shipping notifications for the necessary orders to heidelpay.');
+        $this->setName('unzer:send:shipping')
+            ->setDescription('Send all shipping notifications for the necessary orders to Unzer GmbH.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -143,7 +143,7 @@ class SendShippingNotificationCommand extends Command
     ): void {
         $customFields = $transaction->getCustomFields() ?? [];
         $customFields = array_merge($customFields, [
-            CustomFieldInstaller::HEIDELPAY_IS_SHIPPED => true,
+            CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED => true,
         ]);
 
         $update = [
@@ -158,7 +158,7 @@ class SendShippingNotificationCommand extends Command
     {
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter(sprintf('customFields.%s', CustomFieldInstaller::HEIDELPAY_IS_SHIPPED), false),
+            new EqualsFilter(sprintf('customFields.%s', CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED), false),
             new EqualsAnyFilter('paymentMethodId', AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS),
             new EqualsFilter('order.deliveries.stateId', $stateId),
             new EqualsFilter('order.documents.documentType.technicalName', 'invoice')

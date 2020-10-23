@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Struct\PageExtension\Checkout\Confirm;
+namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
 use Shopware\Core\Framework\Struct\Struct;
 
@@ -17,6 +17,7 @@ class HirePurchasePageExtension extends Struct
     /** @var float */
     private $effectiveInterest = 4.5;
 
+    /** @var string */
     private $orderDate = '';
 
     public function getAmount(): float

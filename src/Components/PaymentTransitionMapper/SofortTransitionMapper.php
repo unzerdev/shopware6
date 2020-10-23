@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentTransitionMapper;
+namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\Sofort;

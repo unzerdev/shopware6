@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Migration;
+namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
@@ -17,6 +17,12 @@ class Migration1566288547AddAddressHash extends MigrationStep
 
     public function update(Connection $connection): void
     {
+        $result = $connection->fetchColumn('SHOW TABLES LIKE \'unzer_payment_payment_device\';');
+
+        if ($result) {
+            return;
+        }
+
         $sql = <<<SQL
             ALTER TABLE `heidelpay_payment_device`
             ADD COLUMN `address_hash` VARCHAR(32) NOT NULL AFTER `data`;

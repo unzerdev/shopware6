@@ -1,7 +1,7 @@
 {
-    "name": "heidelpayment",
+    "name": "unzerpayment",
     "version": "1.0.0",
-    "description": "Administration for Heidel Payment",
+    "description": "Administration for Unzer payment",
     "main": "index.js",
     "author": "composer.json",
     "license": "MIT"

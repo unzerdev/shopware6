@@ -2,12 +2,8 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\EventListeners\StateMachine;
+namespace UnzerPayment6\EventListeners\StateMachine;
 
-use HeidelPayment6\Components\ClientFactory\ClientFactoryInterface;
-use HeidelPayment6\Components\Event\AutomaticShippingNotificationEvent;
-use HeidelPayment6\Components\Validator\AutomaticShippingValidatorInterface;
-use HeidelPayment6\Installers\CustomFieldInstaller;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Document\DocumentCollection;
@@ -22,6 +18,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Event\StateMachineTransitionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
+use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
+use UnzerPayment6\Installers\CustomFieldInstaller;
 
 class TransitionEventListener implements EventSubscriberInterface
 {
@@ -92,7 +92,7 @@ class TransitionEventListener implements EventSubscriberInterface
         }
 
         if (empty($firstTransaction) || empty($invoiceId)) {
-            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice or orderTransaction couldn\'t be found', $order->getOrderNumber()));
+            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice or orderTransaction could not be found', $order->getOrderNumber()));
 
             return;
         }
@@ -116,7 +116,7 @@ class TransitionEventListener implements EventSubscriberInterface
     ): void {
         $customFields = $transaction->getCustomFields() ?? [];
         $customFields = array_merge($customFields, [
-            CustomFieldInstaller::HEIDELPAY_IS_SHIPPED => true,
+            CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED => true,
         ]);
 
         $update = [

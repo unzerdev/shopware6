@@ -1,5 +1,5 @@
-import './module/heidel-payment';
-import './module/heidel-payment-configuration';
-import './api/heidel-payment.service';
-import './api/heidel-payment-configuration.service';
+import './module/unzer-payment';
+import './module/unzer-payment-configuration';
+import './api/unzer-payment.service';
+import './api/unzer-payment-configuration.service';
 import './scss/base.scss';

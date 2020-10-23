@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\DependencyInjection\Factory;
+namespace UnzerPayment6\Components\DependencyInjection\Factory;
 
-use HeidelPayment6\Components\PaymentTransitionMapper\AbstractTransitionMapper;
-use HeidelPayment6\Components\PaymentTransitionMapper\Exception\NoTransitionMapperFoundException;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
+use UnzerPayment6\Components\PaymentTransitionMapper\AbstractTransitionMapper;
+use UnzerPayment6\Components\PaymentTransitionMapper\Exception\NoTransitionMapperFoundException;
 
 class PaymentTransitionMapperFactory
 {

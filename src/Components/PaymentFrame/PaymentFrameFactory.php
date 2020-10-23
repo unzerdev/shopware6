@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentFrame;
+namespace UnzerPayment6\Components\PaymentFrame;
 
 class PaymentFrameFactory implements PaymentFrameFactoryInterface
 {

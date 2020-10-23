@@ -3,51 +3,51 @@
 {% block document_head %}
     {{ parent() }}
 
-    {% sw_include '@Framework/documents/heidelpay_style.css.twig' %}
+    {% sw_include '@Framework/documents/unzer-payment-style.css.twig' %}
 {% endblock %}
 
 {% block document_payment_shipping %}
     {{ parent() }}
 
     {% for transaction in order.transactions %}
-        {% if transaction.extensions.heidelpayTransferInfo is not null %}
+        {% if transaction.extensions.unzerTransferInfo is not null %}
             <div class="page_break"></div>
-            <div class="heidelpay-document">
+            <div class="unzer-payment-document">
                 <div>
-                    {% block document_payment_shipping_heidelpay_transfer_info_title %}
-                        <div class="heidelpay-document--title">
-                            {{ "HeidelPayment.transferInformation.title" | trans  }}
+                    {% block document_payment_shipping_unzer_paymenttransfer_info_title %}
+                        <div class="unzer-payment-document--title">
+                            {{ "UnzerPayment.transferInformation.title" | trans  }}
                         </div>
                     {% endblock %}
 
-                    {% block document_payment_shipping_heidelpay_transfer_info_message %}
-                        <h4 class="heidelpay-document--message">
-                            {{ "HeidelPayment.transferInformation.message"|trans({'%amount%': (transaction.extensions.heidelpayTransferInfo.amount|currency(currencyIsoCode))})  }}
+                    {% block document_payment_shipping_unzer_paymenttransfer_info_message %}
+                        <h4 class="unzer-payment-document--message">
+                            {{ "UnzerPayment.transferInformation.message"|trans({'%amount%': (transaction.extensions.unzerTransferInfo.amount|currency(currencyIsoCode))})  }}
                         </h4>
                     {% endblock %}
 
-                    {% block document_payment_shipping_heidelpay_transfer_info_table %}
-                        <table class="heidelpay-document--table">
+                    {% block document_payment_shipping_unzer_paymenttransfer_info_table %}
+                        <table class="unzer-payment-document--table">
                             <tbody>
                             <tr>
-                                <td class="heidelpay-document-table--main-column">{{ "HeidelPayment.transferInformation.iban" | trans  }}</td>
-                                <td>{{ transaction.extensions.heidelpayTransferInfo.iban }}</td>
+                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.iban" | trans  }}</td>
+                                <td>{{ transaction.extensions.unzerTransferInfo.iban }}</td>
                             </tr>
                             <tr>
-                                <td class="heidelpay-document-table--main-column">{{ "HeidelPayment.transferInformation.bic" | trans  }}</td>
-                                <td>{{ transaction.extensions.heidelpayTransferInfo.bic }}</td>
+                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.bic" | trans  }}</td>
+                                <td>{{ transaction.extensions.unzerTransferInfo.bic }}</td>
                             </tr>
                             <tr>
-                                <td class="heidelpay-document-table--main-column">{{ "HeidelPayment.transferInformation.holder" | trans  }}</td>
-                                <td>{{ transaction.extensions.heidelpayTransferInfo.holder }}</td>
+                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.holder" | trans  }}</td>
+                                <td>{{ transaction.extensions.unzerTransferInfo.holder }}</td>
                             </tr>
                             <tr>
-                                <td class="heidelpay-document-table--main-column">{{ "HeidelPayment.transferInformation.descriptor" | trans  }}</td>
-                                <td>{{ transaction.extensions.heidelpayTransferInfo.descriptor }}</td>
+                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.descriptor" | trans  }}</td>
+                                <td>{{ transaction.extensions.unzerTransferInfo.descriptor }}</td>
                             </tr>
                             <tr>
-                                <td class="heidelpay-document-table--main-column">{{ "HeidelPayment.transferInformation.amount" | trans  }}</td>
-                                <td>{{ transaction.extensions.heidelpayTransferInfo.amount|currency(currencyIsoCode) }}</td>
+                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.amount" | trans  }}</td>
+                                <td>{{ transaction.extensions.unzerTransferInfo.amount|currency(currencyIsoCode) }}</td>
                             </tr>
                             </tbody>
                         </table>

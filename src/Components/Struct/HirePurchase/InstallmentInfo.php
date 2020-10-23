@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\Struct\HirePurchase;
+namespace UnzerPayment6\Components\Struct\HirePurchase;
 
 use heidelpayPHP\Resources\InstalmentPlan;
 use Shopware\Core\Framework\Struct\Struct;

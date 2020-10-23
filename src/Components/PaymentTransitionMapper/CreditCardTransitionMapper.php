@@ -2,32 +2,33 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentTransitionMapper;
+namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
-use HeidelPayment6\Components\BookingMode;
-use HeidelPayment6\Components\ConfigReader\ConfigReader;
-use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
-use HeidelPayment6\Components\PaymentTransitionMapper\Traits\HasBookingMode;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\Card;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
+use UnzerPayment6\Components\BookingMode;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
+use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
+use UnzerPayment6\Components\PaymentTransitionMapper\Traits\HasBookingMode;
 
 class CreditCardTransitionMapper extends AbstractTransitionMapper
 {
     use HasBookingMode;
 
-    private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKINMODE_CARD;
+    private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKING_MODE_CARD;
     private const DEFAULT_MODE     = BookingMode::CHARGE;
 
-    /** @var ConfigReader */
+    /** @var ConfigReaderInterface */
     private $configReader;
 
     /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
 
-    public function __construct(ConfigReader $configReader, EntityRepositoryInterface $orderTransactionRepository)
+    public function __construct(ConfigReaderInterface $configReader, EntityRepositoryInterface $orderTransactionRepository)
     {
         $this->configReader               = $configReader;
         $this->orderTransactionRepository = $orderTransactionRepository;
@@ -75,9 +76,9 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
             return StateMachineTransitionActions::ACTION_DO_PAY;
         }
 
-        if ($this->stateMachineTransitionExists('ACTION_AUTHORIZE')) {
+        if ($this->stateMachineTransitionExists(AbstractTransitionMapper::CONST_KEY_AUTHORIZE)) {
             if ($paymentObject->isPending() && !empty($paymentObject->getAuthorization())) {
-                return StateMachineTransitionActions::ACTION_AUTHORIZE;
+                return constant(sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
             }
         }
 

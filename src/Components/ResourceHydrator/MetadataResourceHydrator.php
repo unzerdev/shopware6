@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\ResourceHydrator;
+namespace UnzerPayment6\Components\ResourceHydrator;
 
 use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Metadata;
@@ -15,7 +15,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class MetadataResourceHydrator implements ResourceHydratorInterface
 {
-    public const PLUGIN_NAME = 'HeidelPayment6';
+    public const PLUGIN_NAME = 'UnzerPayment6';
 
     /** @var string */
     private $shopwareVersion;
@@ -35,16 +35,16 @@ class MetadataResourceHydrator implements ResourceHydratorInterface
     ): AbstractHeidelpayResource {
         $pluginData = $this->getPluginData($channelContext->getContext());
 
-        $heidelMetadata = new Metadata();
-        $heidelMetadata->setShopType('Shopware 6');
-        $heidelMetadata->setShopVersion($this->shopwareVersion);
+        $unzerMetadata = new Metadata();
+        $unzerMetadata->setShopType('Shopware 6');
+        $unzerMetadata->setShopVersion($this->shopwareVersion);
+        $unzerMetadata->addMetadata('pluginType', self::PLUGIN_NAME);
 
         if ($pluginData !== null) {
-            $heidelMetadata->addMetadata('pluginVersion', $pluginData->getVersion());
+            $unzerMetadata->addMetadata('pluginVersion', $pluginData->getVersion());
         }
-        $heidelMetadata->addMetadata('pluginType', self::PLUGIN_NAME);
 
-        return $heidelMetadata;
+        return $unzerMetadata;
     }
 
     protected function getPluginData(Context $context): ?PluginEntity

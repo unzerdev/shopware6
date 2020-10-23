@@ -1,0 +1,27 @@
+{# @var device \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
+
+{% block page_account_payment_main_unzer_paymentpaypal %}
+    <div class="unzer-payment-device paypal-account">
+        {% block page_account_payment_main_unzer_paymentdevice_title %}
+            <div class="card-title">
+                {{ "UnzerPayment.accountPayment.payPal" | trans  }}
+            </div>
+        {% endblock %}
+
+        {% block page_account_payment_main_unzer_paymentpaypal_email %}
+            <div id="email">
+                <strong>{{ device.data.email }}</strong>
+            </div>
+        {% endblock %}
+
+        {% block page_account_payment_main_unzer_paymentdevice_actions %}
+            <div class="unzer-payment-device-actions">
+                <a class="btn btn-light btn-sm" href="{{ path('unzer.device.delete', {
+                    'id': device.id
+                }) }}">
+                    {{ "UnzerPayment.accountPayment.delete" | trans  }}
+                </a>
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

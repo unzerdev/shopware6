@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\TransactionStateHandler;
+namespace UnzerPayment6\Components\TransactionStateHandler;
 
 use heidelpayPHP\Resources\Payment;
 use Shopware\Core\Framework\Context;

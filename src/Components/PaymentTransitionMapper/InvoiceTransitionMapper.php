@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HeidelPayment6\Components\PaymentTransitionMapper;
+namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
-use HeidelPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\Invoice;
+use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 
 class InvoiceTransitionMapper extends AbstractTransitionMapper
 {

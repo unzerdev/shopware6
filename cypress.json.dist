@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://heidelpay.local",
+  "baseUrl": "http://unzer.local",
   "integrationFolder": "tests/cypress/integration",
   "fixturesFolder": "tests/cypress/fixtures",
   "componentFolder": "tests/cypress/component",

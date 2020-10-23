@@ -2,11 +2,11 @@
 
 {% block page_account_order_item_detail_table_header %}
     {% for transaction in order.transactions %}
-        {% if transaction.extensions.heidelpayTransferInfo %}
-            {% block page_account_order_item_detail_heidelpay_payment_instructions %}
-                <div class="heidelpay-transfer-information-wrapper">
-                    {% sw_include '@Storefront/storefront/component/heidelpay/finish/transfer-information.html.twig' with {
-                        'transferInformation': transaction.extensions.heidelpayTransferInfo
+        {% if transaction.extensions.unzerTransferInfo %}
+            {% block page_account_order_item_detail_unzer_paymentpayment_instructions %}
+                <div class="unzer-payment-transfer-information-wrapper">
+                    {% sw_include '@Storefront/storefront/component/unzer/finish/transfer-information.html.twig' with {
+                        'transferInformation': transaction.extensions.unzerTransferInfo
                     } %}
                 </div>
             {% endblock %}

@@ -3,7 +3,7 @@
 {% block page_checkout_confirm_errors %}
     {{ parent() }}
 
-    <div class="heidelpay-error-wrapper" hidden="hidden">
+    <div class="unzer-payment--error-wrapper" hidden="hidden">
         {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
             type: "danger",
             content: ""
@@ -12,29 +12,29 @@
 {% endblock %}
 
 {% block page_checkout_confirm_product_table %}
-    {% if page.extensions.heidelpayPaymentFrame.paymentFrame %}
-        {% block heidelpay_checkout_confirm_frame %}
-            {% sw_include '@Storefront/storefront/component/heidelpay/base/heidelpay-library.html.twig' %}
+    {% if page.extensions.unzerPaymentFrame.paymentFrame %}
+        {% block unzer_payment_checkout_confirm_frame %}
+            {% sw_include '@Storefront/storefront/component/unzer/base/unzer-library.html.twig' %}
 
-            {% block page_checkout_heidelpay_form_elements %}
-                <input type="hidden" id="heidelpayResourceId" name="heidelpayResourceId" form="confirmOrderForm">
+            {% block page_checkout_unzer_payment_form_elements %}
+                <input type="hidden" id="unzerResourceId" name="unzerResourceId" form="confirmOrderForm">
             {% endblock %}
 
-            {% block heidelpay_checkout_confirm_frame_card %}
-                {% if 'paypal' in page.extensions.heidelpayPaymentFrame.paymentFrame and page.extensions.heidelpayPayPal.displayPayPalAccountSelection
-                    or 'paypal' not in page.extensions.heidelpayPaymentFrame.paymentFrame %}
-                    <div class="heidelpay-card"
-                         id="heidelpay-card"
-                         data-heidelpay-base="true"
-                         data-heidelpay-base-options='{
-                         "publicKey": "{{ shopware.config.HeidelPayment6.settings.publicKey }}",
+            {% block unzer_payment_checkout_confirm_frame_card %}
+                {% if 'paypal' in page.extensions.unzerPaymentFrame.paymentFrame and page.extensions.unzerPayPal.displayPayPalAccountSelection
+                    or 'paypal' not in page.extensions.unzerPaymentFrame.paymentFrame %}
+                    <div class="unzer-payment-card"
+                         id="unzer-payment-card"
+                         data-unzer-payment-base="true"
+                         data-unzer-payment-base-options='{
+                         "publicKey": "{{ shopware.config.UnzerPayment6.settings.publicKey }}",
                          "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
                      }'>
                         <div class="card-body">
-                            {% block heidelpay_checkout_confirm_frame_card_body %}
-                                {% block heidelpay_checkout_confirm_frame_card_body_frame %}
-                                    <div class="heidelpay-frame">
-                                        {% sw_include page.extensions.heidelpayPaymentFrame.paymentFrame ignore missing %}
+                            {% block unzer_payment_checkout_confirm_frame_card_body %}
+                                {% block unzer_payment_checkout_confirm_frame_card_body_frame %}
+                                    <div class="unzer-payment-frame">
+                                        {% sw_include page.extensions.unzerPaymentFrame.paymentFrame ignore missing %}
                                     </div>
                                 {% endblock %}
                             {% endblock %}
