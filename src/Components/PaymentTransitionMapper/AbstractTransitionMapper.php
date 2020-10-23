@@ -12,6 +12,9 @@ use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperE
 
 abstract class AbstractTransitionMapper
 {
+    public const CONST_KEY_CHARGEBACK = 'ACTION_CHARGEBACK';
+    public const CONST_KEY_AUTHORIZE  = 'ACTION_AUTHORIZE';
+
     /** @var int */
     public const UNZER_MAX_DIGITS = 4;
 
@@ -56,8 +59,8 @@ abstract class AbstractTransitionMapper
         } elseif ($paymentObject->isChargeBack()) {
             $status = StateMachineTransitionActions::ACTION_CANCEL;
 
-            if ($this->stateMachineTransitionExists('ACTION_CHARGEBACK')) {
-                $status = StateMachineTransitionActions::ACTION_CHARGEBACK;
+            if ($this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)) {
+                $status = constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK));
             }
         } elseif ($paymentObject->isPending()) {
             $status = StateMachineTransitionActions::ACTION_REOPEN;
@@ -83,8 +86,8 @@ abstract class AbstractTransitionMapper
         if ($cancelledAmount === $totalAmount && $remainingAmount === 0
             && $currentStatus !== StateMachineTransitionActions::ACTION_CANCEL
             && !(
-                $this->stateMachineTransitionExists('ACTION_CHARGEBACK')
-                && $currentStatus === StateMachineTransitionActions::ACTION_CHARGEBACK
+                $this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)
+                && $currentStatus === constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK))
             )
         ) {
             return StateMachineTransitionActions::ACTION_REFUND;
@@ -103,7 +106,8 @@ abstract class AbstractTransitionMapper
             return $currentStatus;
         }
 
-        if ($this->stateMachineTransitionExists('ACTION_CHARGEBACK') && $currentStatus === StateMachineTransitionActions::ACTION_CHARGEBACK) {
+        if ($this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)
+            && $currentStatus === constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK))) {
             return $currentStatus;
         }
 

@@ -6,6 +6,4 @@ parameters:
     ignoreErrors:
         - '#Property(.*)does not accept object(.*)#'
         - '#does not accept heidelpayPHP\\Resources\\AbstractHeidelpayResource#'
-        - '#StateMachineTransitionActions::ACTION_AUTHORIZE#'
-        - '#StateMachineTransitionActions::ACTION_CHARGEBACK#'
         - '#UnzerPayment6\\Components\\Struct\\Configuration::get\(\)#'
