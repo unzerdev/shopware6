@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 
+/**
+ * @RouteScope(scopes={"storefront"})
+ */
 class UnzerPaymentDeviceController extends StorefrontController
 {
     /** @var UnzerPaymentDeviceRepositoryInterface */
@@ -24,7 +27,6 @@ class UnzerPaymentDeviceController extends StorefrontController
 
     /**
      * @Route("/unzer/deleteDevice", name="unzer.device.delete", methods={"GET"})
-     * @RouteScope(scopes={"storefront"})
      */
     public function deleteDevice(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {

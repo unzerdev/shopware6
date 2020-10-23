@@ -20,6 +20,9 @@ use UnzerPayment6\Components\ArrayHydrator\PaymentArrayHydratorInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 
+/**
+ * @RouteScope(scopes={"api"})
+ */
 class UnzerPaymentTransactionController extends AbstractController
 {
     /** @var ClientFactoryInterface */
@@ -47,8 +50,7 @@ class UnzerPaymentTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer/transaction/{orderTransactionId}/details", name="api.action.unzer.transaction.details", methods={"GET"})
-     * @RouteScope(scopes={"api"})
+     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/details", name="api.action.unzer.transaction.details", methods={"GET"})
      */
     public function fetchTransactionDetails(string $orderTransactionId, Context $context): JsonResponse
     {
@@ -84,8 +86,7 @@ class UnzerPaymentTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer/transaction/{orderTransactionId}/charge/{amount}", name="api.action.unzer.transaction.charge", methods={"GET"})
-     * @RouteScope(scopes={"api"})
+     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/charge/{amount}", name="api.action.unzer.transaction.charge", methods={"GET"})
      */
     public function chargeTransaction(string $orderTransactionId, float $amount, Context $context): JsonResponse
     {
@@ -120,8 +121,7 @@ class UnzerPaymentTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund", methods={"GET"})
-     * @RouteScope(scopes={"api"})
+     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund", methods={"GET"})
      */
     public function refundTransaction(string $orderTransactionId, string $chargeId, float $amount, Context $context): JsonResponse
     {
@@ -156,8 +156,7 @@ class UnzerPaymentTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer/transaction/{orderTransactionId}/ship", name="api.action.unzer.transaction.ship", methods={"GET"})
-     * @RouteScope(scopes={"api"})
+     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/ship", name="api.action.unzer.transaction.ship", methods={"GET"})
      */
     public function shipTransaction(string $orderTransactionId, Context $context): JsonResponse
     {

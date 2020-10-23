@@ -17,6 +17,9 @@ use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Struct\Webhook;
 use UnzerPayment6\Components\WebhookHandler\WebhookHandlerInterface;
 
+/**
+ * @RouteScope(scopes={"storefront"})
+ */
 class UnzerPaymentWebhookController extends StorefrontController
 {
     /** @var WebhookHandlerInterface[] */
@@ -36,14 +39,12 @@ class UnzerPaymentWebhookController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
      * @Route("/unzer/webhook", name="unzer.webhook.execute", methods={"POST", "GET"}, defaults={"csrf_protected": false})
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         $webhook = new Webhook($request->getContent());
-
-        $config = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $config  = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
         foreach ($this->handlers as $handler) {
             if ($webhook->getPublicKey() !== $config->get('publicKey')) {
