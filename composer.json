@@ -1,5 +1,5 @@
 {
-    "name": "unzer/shopware-6",
+    "name": "unzerdev/shopware-6",
     "description": "Unzer payment integration for Shopware 6",
     "version": "1.0.0.0",
     "type": "shopware-platform-plugin",
