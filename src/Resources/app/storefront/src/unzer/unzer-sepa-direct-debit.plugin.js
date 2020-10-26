@@ -28,7 +28,7 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
 
     init() {
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.sepa = this._unzerPaymentPlugin.unzerPaymentInstance.SepaDirectDebit();
+        this.sepa = this._unzerPaymentPlugin.unzerInstance.SepaDirectDebit();
 
         this._createForm();
         this._registerEvents();

@@ -47,15 +47,12 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     protected $unzerClient;
 
     /** @var Customer */
-    // phpstan-ignore-next-line
     protected $unzerCustomer;
 
     /** @var Basket */
-    // phpstan-ignore-next-line
     protected $unzerBasket;
 
     /** @var Metadata */
-    // phpstan-ignore-next-line
     protected $unzerMetadata;
 
     /** @var Configuration */
