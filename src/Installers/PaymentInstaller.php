@@ -16,7 +16,6 @@ use UnzerPayment6\Components\PaymentHandler\UnzerCreditCardPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitGuaranteedPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerEpsPaymentHandler;
-use UnzerPayment6\Components\PaymentHandler\UnzerFlexipayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerGiropayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerHirePurchasePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
@@ -24,6 +23,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceFactoringPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceGuaranteedPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPisPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerSofortPaymentHandler;
@@ -142,7 +142,7 @@ class PaymentInstaller implements InstallerInterface
         ],
         [
             'id'                => self::PAYMENT_ID_FLEXIPAY,
-            'handlerIdentifier' => UnzerFlexipayPaymentHandler::class,
+            'handlerIdentifier' => UnzerPisPaymentHandler::class,
             'name'              => 'Unzer bank transfer (Unzer payments)',
             'translations'      => [
                 'de-DE' => [

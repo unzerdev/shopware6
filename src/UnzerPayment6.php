@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6;
 
+use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -107,6 +108,10 @@ class UnzerPayment6 extends Plugin
 
         if (!$uninstallContext->keepUserData()) {
             (new CustomFieldInstaller($customFieldSetRepository))->uninstall($uninstallContext);
+            $this->container->get(Connection::class)->exec('
+                DROP TABLE IF EXISTS `unzer_payment_transfer_info`;
+                DROP TABLE IF EXISTS `unzer_payment_payment_device`;
+            ');
         }
     }
 }

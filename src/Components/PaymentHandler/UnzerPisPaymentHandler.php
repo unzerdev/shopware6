@@ -13,7 +13,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 
-class UnzerFlexipayPaymentHandler extends AbstractUnzerPaymentHandler
+class UnzerPisPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use CanCharge;
 
