@@ -10,6 +10,13 @@
     </sw-button-process>
     <sw-modal v-if="showWebhookModal" @modal-close="closeModal"
               :title="$tc(`unzer-payment-settings.modal.webhook.title`)" class="unzer-payment-detail--webhook-modal">
+        <sw-alert
+            variant="info"
+            appearance="default"
+            :showIcon="true"
+            :closable="false">
+            {{ $tc('unzer-payment-settings.modal.webhook.httpsInfo') }}
+        </sw-alert>
         <sw-data-grid
                 v-on:select-item="onSelectItem"
                 :dataSource="salesChannelDomains"
@@ -17,6 +24,7 @@
                 :showActions="false"
                 :showSelection="true">
         </sw-data-grid>
+        <sw-text></sw-text>
 
         <template slot="modal-footer">
             <sw-button :disabled="isLoading" @click="closeModal">

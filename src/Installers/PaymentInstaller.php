@@ -188,14 +188,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
             'handlerIdentifier' => UnzerDirectDebitPaymentHandler::class,
-            'name'              => 'Unzer direct debit',
+            'name'              => 'SEPA direct debit',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer direct debit',
+                    'name'        => 'SEPA direct debit',
                     'description' => 'SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer direct debit',
+                    'name'        => 'SEPA direct debit',
                     'description' => 'SEPA direct debit payments with Unzer payments',
                 ],
             ],
@@ -293,15 +293,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_HIRE_PURCHASE,
             'handlerIdentifier' => UnzerHirePurchasePaymentHandler::class,
-            'name'              => 'FlexiPay® Rate (Unzer payments)',
+            'name'              => 'Unzer Rate',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer instalment',
-                    'description' => 'Unzer instalment',
+                    'name'        => 'Unzer Ratenzahlung',
+                    'description' => 'Unzer Ratenzahlung',
                 ],
                 'en-GB' => [
                     'name'        => 'Unzer instalment',
-                    'description' => 'Unzer instalment payment',
+                    'description' => 'Unzer instalment',
                 ],
             ],
         ],

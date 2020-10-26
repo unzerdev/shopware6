@@ -18,9 +18,9 @@
             <required>true</required>
         </input-field>
         <input-field type="bool">
-            <name>testMode</name>
-            <label>Test mode</label>
-            <label lang="de-DE">Testmodus</label>
+            <name>testData</name>
+            <label>Show test data</label>
+            <label lang="de-DE">Testdaten anzeigen</label>
             <helpText lang="de-DE">Aktivieren, um Testdaten zu Zahlungsmitteln in der Storefront auszugeben.</helpText>
             <helpText>Activate to display test data for means of payments in the storefront.</helpText>
         </input-field>

@@ -14,7 +14,7 @@ class ConfigReader implements ConfigReaderInterface
 
     public const CONFIG_KEY_PUBLIC_KEY            = 'publicKey';
     public const CONFIG_KEY_PRIVATE_KEY           = 'privateKey';
-    public const CONFIG_KEY_TEST_MODE             = 'testMode';
+    public const CONFIG_KEY_TEST_DATA             = 'testData';
     public const CONFIG_KEY_EXTENDED_LOGGING      = 'extendedLogging';
     public const CONFIG_KEY_BOOKING_MODE_CARD     = 'bookingModeCreditCard';
     public const CONFIG_KEY_REGISTER_CARD         = 'registerCreditCard';

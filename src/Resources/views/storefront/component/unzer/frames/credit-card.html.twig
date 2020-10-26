@@ -11,9 +11,13 @@
             "hasSavedCards": "{{ page.extensions.unzerCreditCard.creditCards|length > 0 }}"
          }'>
 
-        {% if shopware.config.UnzerPayment6.settings.testMode %}
-            {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/credit-card.html.twig' %}
-        {% endif %}
+
+        {% block unzer_payment_frame_credit_card_test_data %}
+            {% set testDataConst = constant('UnzerPayment6\\Components\\ConfigReader\\ConfigReader::CONFIG_KEY_TEST_DATA') %}
+            {% if shopware.config.UnzerPayment6.settings[testDataConst] %}
+                {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/credit-card.html.twig' %}
+            {% endif %}
+        {% endblock %}
 
         {% if page.extensions.unzerCreditCard.displayCreditCardSelection and page.extensions.unzerCreditCard.creditCards|length > 0 %}
             <div class="unzer-payment-saved-cards-wrapper">

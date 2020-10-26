@@ -88,6 +88,7 @@
             "close": "Close",
             "webhook": {
                 "title": "Webhooks",
+                "httpsInfo": "Webhooks can only be registered for HTTPS domains.",
                 "submit": {
                     "register": "Register webhooks",
                     "clear": "Clear webhooks"
