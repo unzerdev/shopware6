@@ -3,9 +3,9 @@ import './component/unzer-payment-detail';
 import './component/unzer-payment-history';
 import './component/unzer-payment-metadata';
 import './component/unzer-payment-basket';
+import './extension/sw-order-create-details-footer';
 import './extension/sw-order-detail';
 import './extension/sw-order-list';
-import './extension/sw-order-create-details-footer';
 import './page/unzer-payment-tab';
 
 import deDE from '../../snippets/de-DE.json';
