@@ -82,7 +82,7 @@
                 }
             },
             "testButton": "API Zugangsdaten testen",
-            "webhookButton": "Webhooks registrieren testen"
+            "webhookButton": "Webhooks registrieren"
         },
         "modal": {
             "close": "Schließen",
