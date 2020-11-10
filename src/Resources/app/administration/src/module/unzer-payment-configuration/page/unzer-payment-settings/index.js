@@ -82,14 +82,14 @@ Component.register('unzer-payment-settings', {
             this.isLoading = true;
             this.$refs.systemConfig.saveAll().then(() => {
                 this.createNotificationSuccess({
-                    title: this.$tc('sw-plugin-config.titleSaveSuccess'),
+                    title: this.$tc('global.default.success'),
                     message: this.$tc('sw-plugin-config.messageSaveSuccess')
                 });
 
                 this.isLoading = false;
             }).catch((err) => {
                 this.createNotificationError({
-                    title: this.$tc('sw-plugin-config.titleSaveError'),
+                    title: this.$tc('global.default.error'),
                     message: err
                 });
 
