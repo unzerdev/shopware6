@@ -122,18 +122,16 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
         try {
             if ($this->paymentType === null) {
-                $registerAccounts = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
-                /** @var Paypal $payPalPaymentType - Required due to phpstan */
-                $payPalPaymentType = $this->unzerClient->createPaymentType(new Paypal());
-                $this->paymentType = $payPalPaymentType;
+                $registerAccounts  = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
+                $payPalPaymentType = new Paypal();
 
-                if (!empty($this->unzerCustomer->getEmail()) && empty($this->paymentType->getEmail())) {
-                    $this->paymentType->setEmail($this->unzerCustomer->getEmail());
+                if (!empty($this->unzerCustomer->getEmail())) {
+                    $payPalPaymentType->setEmail($this->unzerCustomer->getEmail());
                 }
 
-                if ($registerAccounts) {
-                    $this->paymentType = $this->unzerClient->updatePaymentType($this->paymentType);
+                $this->paymentType = $this->unzerClient->createPaymentType($payPalPaymentType);
 
+                if ($registerAccounts) {
                     $returnUrl = $this->activateRecurring($transaction->getReturnUrl());
 
                     return new RedirectResponse($returnUrl);
