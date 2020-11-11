@@ -132,6 +132,8 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 }
 
                 if ($registerAccounts) {
+                    $this->paymentType = $this->unzerClient->updatePaymentType($this->paymentType);
+
                     $returnUrl = $this->activateRecurring($transaction->getReturnUrl());
 
                     return new RedirectResponse($returnUrl);
