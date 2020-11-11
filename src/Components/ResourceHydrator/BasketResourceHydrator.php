@@ -89,6 +89,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         $unzerBasket->setAmountTotalGross($amountTotalGross);
         $unzerBasket->setAmountTotalVat($amountTotalVat);
 
+        // dd($unzerBasket);
+
         return $unzerBasket;
     }
 
@@ -147,8 +149,6 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 $unitPrice      = 0;
                 $amountGross    = 0;
                 $amountNet      = 0;
-                $amountTax      = 0;
-                $taxRate        = 0;
                 $amountDiscount = round(
                     $this->getAmountByItemType($type, $lineItem->getTotalPrice()),
                     $currencyPrecision

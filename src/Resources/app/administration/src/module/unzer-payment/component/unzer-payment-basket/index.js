@@ -17,14 +17,26 @@ Component.register('unzer-payment-basket', {
             const data = [];
 
             this.paymentResource.basket.basketItems.forEach((basketItem) => {
-                const amountGross = this.$options.filters.currency(
+                let amountGross = this.$options.filters.currency(
                     parseFloat(basketItem.amountGross),
                     this.paymentResource.currency
                 );
-                const amountNet = this.$options.filters.currency(
+                let amountNet = this.$options.filters.currency(
                     parseFloat(basketItem.amountNet),
                     this.paymentResource.currency
                 );
+
+                if(basketItem.amountDiscount > 0) {
+                    amountGross = this.$options.filters.currency(
+                        parseFloat(basketItem.amountDiscount) * -1,
+                        this.paymentResource.currency
+                    );
+
+                    amountNet = this.$options.filters.currency(
+                        parseFloat(basketItem.amountDiscount - basketItem.amountVat) * -1,
+                        this.paymentResource.currency
+                    );
+                }
 
                 data.push({
                     quantity: basketItem.quantity,
@@ -33,6 +45,8 @@ Component.register('unzer-payment-basket', {
                     amountNet: amountNet
                 });
             });
+
+            window.console.log(data);
 
             return data;
         },

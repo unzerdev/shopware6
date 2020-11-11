@@ -59,7 +59,7 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
                 'id'     => $charge->getId(),
             ];
 
-            if (!array_key_exists('shortId', $data) && $charge->getShortId() !== null) {
+            if (!empty($charge->getShortId())) {
                 $data['shortId'] = $charge->getShortId();
             }
         }
@@ -90,6 +90,10 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
                 'date'   => $cancellation->getDate(),
                 'id'     => $cancellation->getId(),
             ];
+
+            if (!empty($cancellation->getShortId())) {
+                $data['shortId'] = $cancellation->getShortId();
+            }
         }
 
         foreach ($resource->getMetadata()->expose() as $key => $value) {
