@@ -2,7 +2,6 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-
     <services>
         <service id="UnzerPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory">
             <argument type="tagged" tag="unzer.transition_mapper" />
@@ -23,11 +22,11 @@
             <tag name="unzer.transition_mapper"/>
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentTransitionMapper\FlexipayDirectTransitionMapper">
+        <service id="UnzerPayment6\Components\PaymentTransitionMapper\DirectTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentTransitionMapper\FlexipayRateTransitionMapper">
+        <service id="UnzerPayment6\Components\PaymentTransitionMapper\HirePurchaseTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>
 
