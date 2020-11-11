@@ -7,7 +7,7 @@ namespace UnzerPayment6\Components\PaymentTransitionMapper;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\PaymentTypes\PIS;
 
-class DirectTransitionMapper extends AbstractTransitionMapper
+class BankTransferTransitionMapper extends AbstractTransitionMapper
 {
     public function supports(BasePaymentType $paymentType): bool
     {
