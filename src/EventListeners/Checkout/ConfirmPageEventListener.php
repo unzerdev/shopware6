@@ -20,7 +20,7 @@ use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFrameP
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
-use UnzerPayment6\Installers\PaymentInstaller;
+use UnzerPayment6\Installer\PaymentInstaller;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
 {

@@ -22,7 +22,7 @@
             <tag name="unzer.transition_mapper"/>
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentTransitionMapper\DirectTransitionMapper">
+        <service id="UnzerPayment6\Components\PaymentTransitionMapper\BankTransferTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>
 
