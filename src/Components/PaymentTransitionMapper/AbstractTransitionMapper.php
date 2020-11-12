@@ -66,7 +66,7 @@ abstract class AbstractTransitionMapper
             $status = StateMachineTransitionActions::ACTION_REOPEN;
         } elseif ($paymentObject->isPartlyPaid()) {
             $status = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
-        } elseif ($paymentObject->isPaymentReview() || $paymentObject->isCompleted() || $paymentObject->isCompleted()) {
+        } elseif ($paymentObject->isPaymentReview() || $paymentObject->isCompleted()) {
             $status = StateMachineTransitionActions::ACTION_DO_PAY;
         }
 
