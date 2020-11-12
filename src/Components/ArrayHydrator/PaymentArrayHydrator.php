@@ -6,6 +6,7 @@ namespace UnzerPayment6\Components\ArrayHydrator;
 
 use heidelpayPHP\Resources\EmbeddedResources\Amount;
 use heidelpayPHP\Resources\Payment;
+use heidelpayPHP\Resources\PaymentTypes\HirePurchaseDirectDebit;
 use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
 use heidelpayPHP\Resources\TransactionTypes\Authorization;
 use heidelpayPHP\Resources\TransactionTypes\Cancellation;
@@ -17,24 +18,25 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
     public function hydrateArray(Payment $resource): array
     {
         $authorization = $resource->getAuthorization();
+        $paymentType   = $resource->getPaymentType();
 
         $data = array_merge($resource->expose(), [
             'state' => [
                 'name' => $resource->getStateName(),
                 'id'   => $resource->getState(),
             ],
-            'currency'      => $resource->getCurrency(),
-            'authorization' => $authorization ? $authorization->expose() : null,
-            'basket'        => $resource->getBasket() ? $resource->getBasket()->expose() : null,
-            'customer'      => $resource->getCustomer() ? $resource->getCustomer()->expose() : null,
-            'metadata'      => [],
-            'isGuaranteed'  => $resource->getPaymentType() instanceof InvoiceGuaranteed,
-            'type'          => $resource->getPaymentType() ? $resource->getPaymentType()->expose() : null,
-            'amount'        => $this->hydrateAmount($resource->getAmount()),
-            'charges'       => [],
-            'shipments'     => [],
-            'cancellations' => [],
-            'transactions'  => [],
+            'currency'          => $resource->getCurrency(),
+            'authorization'     => $authorization ? $authorization->expose() : null,
+            'basket'            => $resource->getBasket() ? $resource->getBasket()->expose() : null,
+            'customer'          => $resource->getCustomer() ? $resource->getCustomer()->expose() : null,
+            'metadata'          => [],
+            'isShipmentAllowed' => $paymentType instanceof InvoiceGuaranteed || $paymentType instanceof HirePurchaseDirectDebit,
+            'type'              => $paymentType ? $paymentType->expose() : null,
+            'amount'            => $this->hydrateAmount($resource->getAmount()),
+            'charges'           => [],
+            'shipments'         => [],
+            'cancellations'     => [],
+            'transactions'      => [],
         ]);
 
         if ($authorization instanceof Authorization) {
