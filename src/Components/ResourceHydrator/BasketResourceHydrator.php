@@ -123,7 +123,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         foreach ($lineItemCollection as $lineItem) {
             $type = $lineItem->getType();
 
-            if ($this->isCustomProductOption($type) || $this->isParentCustomProduct($lineItemCollection, $lineItem)) {
+            if ($this->isCustomProduct($lineItemCollection, $lineItem)) {
                 continue;
             }
 
@@ -157,14 +157,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                     $currencyPrecision
                 );
             } else {
-                $product = $lineItem->getProduct();
-
                 $unitPrice      = round($this->getAmountByItemType($type, $lineItem->getUnitPrice()), $currencyPrecision);
                 $amountGross    = round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision);
                 $amountNet      = round($amountGross - $amountTax, $currencyPrecision);
-                $amountDiscount = $product !== null
-                    ? round(($product->getPrice() - $lineItem->getTotalPrice()) * -1, $currencyPrecision)
-                    : 0;
+                $amountDiscount = 0;
             }
 
             $amountTotalDiscount += $amountDiscount;
@@ -198,20 +194,22 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         return $type === PromotionProcessor::LINE_ITEM_TYPE;
     }
 
-    private function isCustomProductOption(string $type): bool
+    private function isCustomProduct(OrderLineItemCollection $lineItemCollection, OrderLineItemEntity $lineItemEntity): bool
     {
         if (!class_exists(CustomizedProductsCartDataCollector::class)) {
             return false;
         }
 
-        return in_array(
-            $type,
+        $isCustomProductOption = in_array(
+            $lineItemEntity->getType(),
             [
                 CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_OPTION_LINE_ITEM_TYPE,
                 CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_OPTION_VALUE_LINE_ITEM_TYPE,
             ],
             true
         );
+
+        return $isCustomProductOption || $this->isParentCustomProduct($lineItemCollection, $lineItemEntity);
     }
 
     private function isParentCustomProduct(OrderLineItemCollection $lineItemCollection, OrderLineItemEntity $lineItemEntity): bool
