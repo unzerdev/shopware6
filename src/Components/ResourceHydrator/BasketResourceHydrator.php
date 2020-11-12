@@ -17,6 +17,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
 class BasketResourceHydrator implements ResourceHydratorInterface
 {
@@ -118,9 +119,17 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         int &$amountTotalGross,
         int &$amountTotalVat
     ): void {
+        $hasCustomizedProducts = count($transaction->getOrder()->getLineItems()->fmap(function(OrderLineItemEntity $lineItemEntity) {
+            return $lineItemEntity->getType() === 'customized-products';
+        })) > 0;
+
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
             $type = $lineItem->getType();
+
+            if ($type === 'customized-products-option' || $type === 'option-values') {
+                continue;
+            }
 
             if ($lineItem->getPrice() === null) {
                 $unzerBasket->addBasketItem(
@@ -147,25 +156,36 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 $unitPrice      = 0;
                 $amountGross    = 0;
                 $amountNet      = 0;
-                $amountTax      = 0;
-                $taxRate        = 0;
                 $amountDiscount = round(
                     $this->getAmountByItemType($type, $lineItem->getTotalPrice()),
                     $currencyPrecision
                 );
             } else {
-                $unitPrice   = round($this->getAmountByItemType($type, $lineItem->getUnitPrice()), $currencyPrecision);
-                $amountGross = round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision);
-                $amountNet   = round($amountGross - $amountTax, $currencyPrecision);
-                $product     = $lineItem->getProduct();
-
-                if ($product !== null) {
-                    $amountDiscount = round(
-                        ($product->getPrice() - $lineItem->getTotalPrice()) * -1,
+                // TODO consider other products
+                if ($hasCustomizedProducts && $type !== 'customized-products') {
+                    $unitPrice = 0;
+                    $amountGross = 0;
+                    $amountNet = 0;
+                    $amountTax = 0;
+                    $taxRate = 0;
+                    $amountDiscount = 0;
+                } else {
+                    $unitPrice = round(
+                        $this->getAmountByItemType($type, $lineItem->getUnitPrice()),
                         $currencyPrecision
                     );
-                } else {
-                    $amountDiscount = 0;
+                    $amountGross = round(
+                        $this->getAmountByItemType($type, $lineItem->getTotalPrice()),
+                        $currencyPrecision
+                    );
+                    $amountNet = round($amountGross - $amountTax, $currencyPrecision);
+
+                    $product     = $lineItem->getProduct();
+                        if ($product !== null) {
+                        $amountDiscount = round(($product->getPrice() - $lineItem->getTotalPrice()) * -1, $currencyPrecision);
+                    } else {
+                        $amountDiscount = 0;
+                    }
                 }
             }
 
