@@ -14,6 +14,6 @@
 
         <service id="UnzerPayment6\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
 
-        <service id="UnzerPayment6\Components\ArrayHydrator\PaymentArrayHydrator" />
+        <service id="UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydrator" />
     </services>
 </container>

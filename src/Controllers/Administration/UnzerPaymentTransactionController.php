@@ -16,8 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
-use UnzerPayment6\Components\ArrayHydrator\PaymentArrayHydratorInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 
 /**
@@ -31,7 +31,7 @@ class UnzerPaymentTransactionController extends AbstractController
     /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
 
-    /** @var PaymentArrayHydratorInterface */
+    /** @var PaymentResourceHydratorInterface */
     private $hydrator;
 
     /** @var TransactionStateHandlerInterface */
@@ -40,7 +40,7 @@ class UnzerPaymentTransactionController extends AbstractController
     public function __construct(
         ClientFactoryInterface $clientFactory,
         EntityRepositoryInterface $orderTransactionRepository,
-        PaymentArrayHydratorInterface $hydrator,
+        PaymentResourceHydratorInterface $hydrator,
         TransactionStateHandlerInterface $transactionStateHandler
     ) {
         $this->clientFactory              = $clientFactory;
@@ -63,8 +63,11 @@ class UnzerPaymentTransactionController extends AbstractController
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $resource = $client->fetchPaymentByOrderId($orderTransactionId);
-            $data     = $this->hydrator->hydrateArray($resource);
+            $payment          = $client->fetchPaymentByOrderId($orderTransactionId);
+            $payment          = $client->fetchPayment($payment);
+            $orderTransaction = $this->getOrderTransaction($orderTransactionId, $context);
+
+            $data = $this->hydrator->hydrateArray($payment, $orderTransaction);
         } catch (HeidelpayApiException $exception) {
             return new JsonResponse(
                 [
@@ -73,6 +76,8 @@ class UnzerPaymentTransactionController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
+            dd($exception);
+
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -218,6 +223,7 @@ class UnzerPaymentTransactionController extends AbstractController
         $criteria = new Criteria([$orderTransaction]);
         $criteria->addAssociations([
             'order',
+            'order.currency',
             'order.documents',
             'order.documents.documentType',
         ]);

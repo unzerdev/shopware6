@@ -20,7 +20,8 @@
             "actions": {
                 "chargeButton": "Einziehen",
                 "shipButton": "Versandmitteilung",
-                "refundButton": "Rückerstatten"
+                "refundButton": "Rückerstatten",
+                "defaultButton": "Erledigt"
             },
             "detail": {
                 "cardTitle": "Zahlungsdetails",
