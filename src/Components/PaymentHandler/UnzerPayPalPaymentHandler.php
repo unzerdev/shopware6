@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Throwable;
 use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
@@ -142,6 +143,8 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+        } catch (Throwable $exception) {
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
 
@@ -205,7 +208,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
         } catch (HeidelpayApiException $apiException) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
-        } catch (RuntimeException $exception) {
+        } catch (Throwable $exception) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
@@ -228,7 +231,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
-        } catch (RuntimeException $exception) {
+        } catch (Throwable $exception) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }

@@ -24,6 +24,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
@@ -135,7 +136,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             return new RedirectResponse($transaction->getReturnUrl());
         } catch (HeidelpayApiException $exception) {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
-        } catch (RuntimeException $exception) {
+        } catch (Throwable $exception) {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
@@ -166,7 +167,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
         } catch (HeidelpayApiException $exception) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
-        } catch (RuntimeException $exception) {
+        } catch (Throwable $exception) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
