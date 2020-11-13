@@ -76,8 +76,6 @@ class UnzerPaymentTransactionController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
-            dd($exception);
-
             return new JsonResponse(
                 [
                     'status'  => false,
