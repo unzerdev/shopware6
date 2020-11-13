@@ -26,7 +26,7 @@ Component.register('unzer-payment-basket', {
                     this.paymentResource.currency
                 );
 
-                if(basketItem.amountDiscount > 0) {
+                if (basketItem.amountDiscount > 0) {
                     amountGross = this.$options.filters.currency(
                         parseFloat(basketItem.amountDiscount) * -1,
                         this.paymentResource.currency

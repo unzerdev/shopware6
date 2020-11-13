@@ -9,6 +9,7 @@ use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use heidelpayPHP\Resources\Basket;
 use heidelpayPHP\Resources\EmbeddedResources\BasketItem;
 use InvalidArgumentException;
+use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
@@ -17,6 +18,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
 class BasketResourceHydrator implements ResourceHydratorInterface
 {
@@ -56,9 +58,6 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             round($order->getAmountTotal(), $currencyPrecision),
             $channelContext->getCurrency()->getIsoCode()
         );
-
-        $unzerBasket->setAmountTotalVat($amountTotalVat);
-        $unzerBasket->setAmountTotalDiscount($amountTotalDiscount);
 
         $lineItems = $order->getLineItems();
 
@@ -120,9 +119,15 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         int &$amountTotalGross,
         int &$amountTotalVat
     ): void {
+        $customProductLabels = $this->mapCustomProductsLabel($lineItemCollection);
+
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
             $type = $lineItem->getType();
+
+            if ($this->isCustomProduct($lineItemCollection, $lineItem)) {
+                continue;
+            }
 
             if ($lineItem->getPrice() === null) {
                 $unzerBasket->addBasketItem(
@@ -154,27 +159,22 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                     $currencyPrecision
                 );
             } else {
-                $unitPrice   = round($this->getAmountByItemType($type, $lineItem->getUnitPrice()), $currencyPrecision);
-                $amountGross = round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision);
-                $amountNet   = round($amountGross - $amountTax, $currencyPrecision);
-                $product     = $lineItem->getProduct();
-
-                if ($product !== null) {
-                    $amountDiscount = round(
-                        ($product->getPrice() - $lineItem->getTotalPrice()) * -1,
-                        $currencyPrecision
-                    );
-                } else {
-                    $amountDiscount = 0;
-                }
+                $unitPrice      = round($this->getAmountByItemType($type, $lineItem->getUnitPrice()), $currencyPrecision);
+                $amountGross    = round($this->getAmountByItemType($type, $lineItem->getTotalPrice()), $currencyPrecision);
+                $amountNet      = round($amountGross - $amountTax, $currencyPrecision);
+                $amountDiscount = 0;
             }
 
             $amountTotalDiscount += $amountDiscount;
             $amountTotalGross += $amountGross;
             $amountTotalVat += $amountTax;
 
+            $label = $customProductLabels[$lineItem->getId()]
+                ? sprintf('%s: %s', $lineItem->getLabel(), $customProductLabels[$lineItem->getId()])
+                : $lineItem->getLabel();
+
             $basketItem = new BasketItem(
-                $lineItem->getLabel(),
+                $label,
                 $amountNet,
                 $unitPrice,
                 $lineItem->getQuantity()
@@ -194,6 +194,70 @@ class BasketResourceHydrator implements ResourceHydratorInterface
     private function isPromotionLineItemType(string $type): bool
     {
         return $type === PromotionProcessor::LINE_ITEM_TYPE;
+    }
+
+    private function isCustomProduct(OrderLineItemCollection $lineItemCollection, OrderLineItemEntity $lineItemEntity): bool
+    {
+        if (!class_exists(CustomizedProductsCartDataCollector::class)) {
+            return false;
+        }
+
+        $isCustomProductOption = in_array(
+            $lineItemEntity->getType(),
+            [
+                CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_OPTION_LINE_ITEM_TYPE,
+                CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_OPTION_VALUE_LINE_ITEM_TYPE,
+            ],
+            true
+        );
+
+        return $isCustomProductOption || $this->isParentCustomProduct($lineItemCollection, $lineItemEntity);
+    }
+
+    private function isParentCustomProduct(OrderLineItemCollection $lineItemCollection, OrderLineItemEntity $lineItemEntity): bool
+    {
+        if (!class_exists(CustomizedProductsCartDataCollector::class)) {
+            return false;
+        }
+
+        $parentLineItem = $lineItemCollection->get($lineItemEntity->getParentId());
+
+        if ($parentLineItem === null) {
+            return false;
+        }
+
+        return $this->isCustomProductLineItemType($parentLineItem->getType());
+    }
+
+    private function isCustomProductLineItemType(string $type): bool
+    {
+        if (!class_exists(CustomizedProductsCartDataCollector::class)) {
+            return false;
+        }
+
+        return $type === CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE;
+    }
+
+    private function mapCustomProductsLabel(OrderLineItemCollection $lineItemCollection): array
+    {
+        if (!class_exists(CustomizedProductsCartDataCollector::class)) {
+            return [];
+        }
+
+        $customProductsLabel = [];
+
+        $productLineItems = $lineItemCollection->filterByType(LineItem::PRODUCT_LINE_ITEM_TYPE);
+
+        /** @var OrderLineItemEntity $lineItem */
+        foreach ($productLineItems as $lineItem) {
+            if (!$this->isParentCustomProduct($lineItemCollection, $lineItem)) {
+                continue;
+            }
+
+            $customProductsLabel[$lineItem->getParentId()] = $lineItem->getLabel();
+        }
+
+        return $customProductsLabel;
     }
 
     /**

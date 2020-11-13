@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\HirePurchase\InstallmentInfo;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
-use UnzerPayment6\Installers\PaymentInstaller;
+use UnzerPayment6\Installer\PaymentInstaller;
 
 class FinishPageEventListener implements EventSubscriberInterface
 {

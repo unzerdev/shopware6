@@ -16,8 +16,8 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use UnzerPayment6\Components\UnzerPaymentClassLoader;
-use UnzerPayment6\Installers\CustomFieldInstaller;
-use UnzerPayment6\Installers\PaymentInstaller;
+use UnzerPayment6\Installer\CustomFieldInstaller;
+use UnzerPayment6\Installer\PaymentInstaller;
 
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     (new UnzerPaymentClassLoader())->register();
