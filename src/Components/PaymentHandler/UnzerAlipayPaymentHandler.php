@@ -11,7 +11,7 @@ use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Throwablee;
+use Throwable;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 
 class UnzerAlipayPaymentHandler extends AbstractUnzerPaymentHandler
