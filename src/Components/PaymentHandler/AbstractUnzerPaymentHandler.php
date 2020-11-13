@@ -31,7 +31,7 @@ use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
-use UnzerPayment6\Installers\CustomFieldInstaller;
+use UnzerPayment6\Installer\CustomFieldInstaller;
 
 abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
