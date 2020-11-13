@@ -36,13 +36,13 @@ Shopware.Component.register('unzer-payment-register-webhook', {
 
     data() {
         return {
-            showWebhookModal: false,
+            isModalActive: false,
             isLoading: false,
             isRegistering: false,
             isRegistrationSuccessful: false,
             isClearing: false,
             isClearingSuccessful: false,
-            salesChannelDomains: {},
+            salesChannelDomains: [],
             selection: []
         };
     },
@@ -56,11 +56,11 @@ Shopware.Component.register('unzer-payment-register-webhook', {
 
     methods: {
         openModal() {
-            this.showWebhookModal = true;
+            this.isModalActive = true;
         },
 
         closeModal() {
-            this.showWebhookModal = false;
+            this.isModalActive = false;
         },
 
         registerWebhooks() {
