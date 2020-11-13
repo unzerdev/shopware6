@@ -13,7 +13,7 @@ use heidelpayPHP\Resources\Metadata;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\Recurring;
-use RuntimeException;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
@@ -24,6 +24,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
@@ -61,6 +62,9 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var string */
     protected $unzerCustomerId;
 
+    /** @var LoggerInterface */
+    protected $logger;
+
     /** @var ResourceHydratorInterface */
     private $basketHydrator;
 
@@ -93,7 +97,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        LoggerInterface $logger
     ) {
         $this->basketHydrator          = $basketHydrator;
         $this->customerHydrator        = $customerHydrator;
@@ -103,6 +108,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         $this->transactionStateHandler = $transactionStateHandler;
         $this->clientFactory           = $clientFactory;
         $this->requestStack            = $requestStack;
+        $this->logger                  = $logger;
     }
 
     public function pay(
@@ -134,8 +140,28 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
             return new RedirectResponse($transaction->getReturnUrl());
         } catch (HeidelpayApiException $exception) {
+            $this->logger->error(
+                sprintf('Catched API exception in %s of %s', __METHOD__, __CLASS__),
+                [
+                    'transaction' => $transaction,
+                    'dataBag'     => $dataBag,
+                    'context'     => $salesChannelContext,
+                    'exception'   => $exception,
+                ]
+            );
+
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
-        } catch (RuntimeException $exception) {
+        } catch (Throwable $exception) {
+            $this->logger->error(
+                sprintf('Catched generic exception in %s of %s', __METHOD__, __CLASS__),
+                [
+                    'transaction' => $transaction,
+                    'dataBag'     => $dataBag,
+                    'context'     => $salesChannelContext,
+                    'exception'   => $exception,
+                ]
+            );
+
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
@@ -165,8 +191,28 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
         } catch (HeidelpayApiException $exception) {
+            $this->logger->error(
+                sprintf('Catched API exception in %s of %s', __METHOD__, __CLASS__),
+                [
+                    'transaction' => $transaction,
+                    'request'     => $request,
+                    'context'     => $salesChannelContext,
+                    'exception'   => $exception,
+                ]
+            );
+
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
-        } catch (RuntimeException $exception) {
+        } catch (Throwable $exception) {
+            $this->logger->error(
+                sprintf('Catched generic exception in %s of %s', __METHOD__, __CLASS__),
+                [
+                    'transaction' => $transaction,
+                    'request'     => $request,
+                    'context'     => $salesChannelContext,
+                    'exception'   => $exception,
+                ]
+            );
+
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
