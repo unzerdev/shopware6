@@ -46,8 +46,6 @@ Component.register('unzer-payment-basket', {
                 });
             });
 
-            window.console.log(data);
-
             return data;
         },
 
