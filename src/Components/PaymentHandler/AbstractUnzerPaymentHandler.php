@@ -141,7 +141,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             return new RedirectResponse($transaction->getReturnUrl());
         } catch (HeidelpayApiException $exception) {
             $this->logger->error(
-                sprintf('Catched API exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
@@ -153,7 +153,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
         } catch (Throwable $exception) {
             $this->logger->error(
-                sprintf('Catched generic exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
@@ -192,7 +192,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
         } catch (HeidelpayApiException $exception) {
             $this->logger->error(
-                sprintf('Catched API exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
                     'request'     => $request,
@@ -204,7 +204,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getClientMessage());
         } catch (Throwable $exception) {
             $this->logger->error(
-                sprintf('Catched generic exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
                     'request'     => $request,

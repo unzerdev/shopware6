@@ -71,7 +71,7 @@ class UnzerInvoicePaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
             $this->logger->error(
-                sprintf('Catched API exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
@@ -83,7 +83,7 @@ class UnzerInvoicePaymentHandler extends AbstractUnzerPaymentHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
         } catch (Throwable $exception) {
             $this->logger->error(
-                sprintf('Catched generic exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
