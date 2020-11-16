@@ -56,7 +56,8 @@ Component.register('unzer-payment-tab', {
                             return;
                         }
 
-                        if (!orderTransaction.customFields.unzer_payment_is_transaction && !orderTransaction.customFields.heidelpay_is_transaction) {
+                        if (!orderTransaction.customFields.unzer_payment_is_transaction
+                            && !orderTransaction.customFields.heidelpay_is_transaction) {
                             return;
                         }
 

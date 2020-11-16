@@ -1,0 +1,159 @@
+<?php
+
+declare(strict_types=1);
+
+namespace UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator;
+
+use DateTimeImmutable;
+use heidelpayPHP\Resources\EmbeddedResources\Amount;
+use heidelpayPHP\Resources\Payment;
+use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
+use heidelpayPHP\Resources\TransactionTypes\AbstractTransactionType;
+use heidelpayPHP\Resources\TransactionTypes\Authorization;
+use heidelpayPHP\Resources\TransactionTypes\Cancellation;
+use heidelpayPHP\Resources\TransactionTypes\Charge;
+use heidelpayPHP\Resources\TransactionTypes\Shipment;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+
+class PaymentResourceHydrator implements PaymentResourceHydratorInterface
+{
+    public const DEFAULT_DECIMAL_PRECISION = 4;
+
+    public function hydrateArray(Payment $payment, ?OrderTransactionEntity $orderTransaction): array
+    {
+        $decimalPrecision = $this->getDecimalPrecision($orderTransaction);
+        $data             = $this->getBaseData($payment);
+        $authorization    = $payment->getAuthorization();
+
+        if ($authorization instanceof Authorization) {
+            $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateTransactionItem($authorization, 'authorization');
+        }
+
+        $this->hydrateTransactions($data, $payment, $decimalPrecision);
+
+        foreach ($payment->getMetadata()->expose() as $key => $value) {
+            $data['metadata'][] = compact('key', 'value');
+        }
+
+        return $data;
+    }
+
+    protected function getBaseData(Payment $payment): array
+    {
+        return array_merge(
+            $payment->expose(),
+            [
+                'state' => [
+                    'name' => $payment->getStateName(),
+                    'id'   => $payment->getState(),
+                ],
+                'currency'     => $payment->getCurrency(),
+                'basket'       => $payment->getBasket() ? $payment->getBasket()->expose() : null,
+                'customer'     => $payment->getCustomer() ? $payment->getCustomer()->expose() : null,
+                'metadata'     => [],
+                'isGuaranteed' => $payment->getPaymentType() instanceof InvoiceGuaranteed,
+                'type'         => $payment->getPaymentType() ? $payment->getPaymentType()->expose() : null,
+                'amount'       => $this->hydrateAmount($payment->getAmount()),
+                'transactions' => [],
+            ]
+        );
+    }
+
+    protected function hydrateTransactions(array &$data, Payment $payment, int $decimalPrecision): void
+    {
+        /** @var Charge $lazyCharge */
+        foreach ($payment->getCharges() as $lazyCharge) {
+            /** @var Charge $charge */
+            $charge = $payment->getCharge($lazyCharge->getId());
+
+            $data['transactions'][$this->getTransactionKey($charge)] = $this->hydrateCharge($charge, $decimalPrecision);
+
+            /** @var Cancellation $lazyCancellation */
+            foreach ($charge->getCancellations() as $lazyCancellation) {
+                /** @var Cancellation $cancellation */
+                $cancellation = $charge->getCancellation($lazyCancellation->getId());
+
+                $data['transactions'][$this->getTransactionKey($cancellation)] = $this->hydrateTransactionItem($cancellation, 'cancellation');
+            }
+        }
+
+        /** @var Shipment $lazyShipment */
+        foreach ($payment->getShipments() as $lazyShipment) {
+            /** @var Shipment $shipment */
+            $shipment = $payment->getShipment($lazyShipment->getId());
+
+            $data['transactions'][$this->getTransactionKey($shipment)] = $this->hydrateTransactionItem($shipment, 'shipment');
+        }
+
+        foreach (array_reverse($data['transactions'], true) as $transaction) {
+            if (array_key_exists('shortId', $transaction) && !empty($transaction['shortId'])) {
+                $data['shortId'] = $transaction['shortId'];
+
+                break;
+            }
+        }
+
+        ksort($data['transactions']);
+    }
+
+    protected function hydrateAmount(Amount $amount): array
+    {
+        return [
+            'total'     => $amount->getTotal(),
+            'canceled'  => $amount->getCanceled(),
+            'charged'   => $amount->getCharged(),
+            'remaining' => $amount->getRemaining(),
+        ];
+    }
+
+    protected function getTransactionKey(AbstractTransactionType $item): string
+    {
+        $date = '';
+
+        if (!empty($item->getDate())) {
+            $date = (new DateTimeImmutable($item->getDate()))->getTimestamp();
+        }
+
+        return sprintf('%s_%s', $date, $item->getId());
+    }
+
+    protected function hydrateCharge(Charge $charge, int $decimalPrecision): array
+    {
+        $data = $this->hydrateTransactionItem($charge, 'charge');
+
+        if (!empty($charge->getCancelledAmount())) {
+            $amount         = $charge->getAmount() * (10 ** $decimalPrecision) - $charge->getCancelledAmount() * (10 ** $decimalPrecision);
+            $data['amount'] = $amount / (10 ** $decimalPrecision);
+        }
+
+        return $data;
+    }
+
+    protected function hydrateTransactionItem(AbstractTransactionType $item, string $type): array
+    {
+        $amount = 0.00;
+
+        if ($item instanceof Charge || $item instanceof Authorization || $item instanceof Cancellation || $item instanceof Shipment) {
+            $amount = $item->getAmount();
+        }
+
+        return [
+            'id'      => $item->getId(),
+            'shortId' => $item->getShortId(),
+            'date'    => $item->getDate(),
+            'type'    => $type,
+            'amount'  => $amount,
+        ];
+    }
+
+    protected function getDecimalPrecision(?OrderTransactionEntity $orderTransaction): int
+    {
+        if ($orderTransaction === null
+        || $orderTransaction->getOrder() === null
+        || $orderTransaction->getOrder()->getCurrency() === null) {
+            return self::DEFAULT_DECIMAL_PRECISION;
+        }
+
+        return $orderTransaction->getOrder()->getCurrency()->getDecimalPrecision();
+    }
+}

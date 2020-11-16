@@ -18,7 +18,7 @@
         <service id="UnzerPayment6\Controllers\Administration\UnzerPaymentTransactionController">
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="UnzerPayment6\Components\ArrayHydrator\PaymentArrayHydrator" />
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydrator" />
             <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler" />
 
             <call method="setContainer">
