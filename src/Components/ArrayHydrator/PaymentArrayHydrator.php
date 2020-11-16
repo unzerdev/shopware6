@@ -12,9 +12,19 @@ use heidelpayPHP\Resources\TransactionTypes\Authorization;
 use heidelpayPHP\Resources\TransactionTypes\Cancellation;
 use heidelpayPHP\Resources\TransactionTypes\Charge;
 use heidelpayPHP\Resources\TransactionTypes\Shipment;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 class PaymentArrayHydrator implements PaymentArrayHydratorInterface
 {
+    /** @var LoggerInterface */
+    protected $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function hydrateArray(Payment $resource): array
     {
         $authorization = $resource->getAuthorization();
@@ -50,8 +60,14 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
 
         /** @var Charge $metaCharge */
         foreach ($resource->getCharges() as $metaCharge) {
-            /** @var Charge $charge */
-            $charge = $resource->getCharge($metaCharge->getId());
+            try {
+                /** @var Charge $charge */
+                $charge = $resource->getCharge($metaCharge->getId());
+            } catch (Throwable $t) {
+                $this->logResourceError($t);
+
+                continue;
+            }
 
             $data['charges'][]      = $charge->expose();
             $data['transactions'][] = [
@@ -68,8 +84,14 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
 
         /** @var Shipment $metaShipment */
         foreach ($resource->getShipments() as $metaShipment) {
-            /** @var Shipment $shipment */
-            $shipment = $resource->getShipment($metaShipment->getId());
+            try {
+                /** @var Shipment $shipment */
+                $shipment = $resource->getShipment($metaShipment->getId());
+            } catch (Throwable $t) {
+                $this->logResourceError($t);
+
+                continue;
+            }
 
             $data['shipments'][]    = $shipment->expose();
             $data['transactions'][] = [
@@ -82,8 +104,14 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
 
         /** @var Cancellation $metaCancellation */
         foreach ($resource->getCancellations() as $metaCancellation) {
-            /** @var Cancellation $cancellation */
-            $cancellation = $resource->getCancellation($metaCancellation->getId());
+            try {
+                /** @var Cancellation $cancellation */
+                $cancellation = $resource->getCancellation($metaCancellation->getId());
+            } catch (Throwable $t) {
+                $this->logResourceError($t);
+
+                continue;
+            }
 
             $data['cancellations'][] = $cancellation->expose();
             $data['transactions'][]  = [
@@ -94,11 +122,13 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
             ];
         }
 
-        foreach ($resource->getMetadata()->expose() as $key => $value) {
-            $data['metadata'][] = [
-                'key'   => $key,
-                'value' => $value,
-            ];
+        if ($resource->getMetadata() !== null) {
+            foreach ($resource->getMetadata()->expose() as $key => $value) {
+                $data['metadata'][] = [
+                    'key'   => $key,
+                    'value' => $value,
+                ];
+            }
         }
 
         return $data;
@@ -112,5 +142,14 @@ class PaymentArrayHydrator implements PaymentArrayHydratorInterface
             'charged'   => $amount->getCharged(),
             'remaining' => $amount->getRemaining(),
         ];
+    }
+
+    private function logResourceError(Throwable $t): void
+    {
+        $this->logger->error('PaymentArrayHydration: ' . $t->getMessage(), [
+            'file'  => $t->getFile(),
+            'line'  => $t->getLine(),
+            'trace' => $t->getTraceAsString(),
+        ]);
     }
 }

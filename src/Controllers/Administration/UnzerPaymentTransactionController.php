@@ -175,11 +175,11 @@ class UnzerPaymentTransactionController extends AbstractController
 
         $documents     = $transaction->getOrder()->getDocuments()->getElements();
         $invoiceNumber = null;
-        $documentDate     = null;
+        $documentDate  = null;
 
         foreach ($documents as $document) {
             if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
-                $documentDate = new DateTimeImmutable($document->getConfig()['documentDate']);
+                $documentDate  = new DateTimeImmutable($document->getConfig()['documentDate']);
                 $invoiceNumber = $document->getConfig()['documentNumber'];
             }
         }
