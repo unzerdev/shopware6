@@ -20,7 +20,8 @@
             "actions": {
                 "chargeButton": "Charge",
                 "shipButton": "Shipping notice",
-                "refundButton": "Refund"
+                "refundButton": "Refund",
+                "defaultButton": "Done"
             },
             "detail": {
                 "cardTitle": "Payment Details",

@@ -3,8 +3,11 @@
         {% block unzer_payment_actions_amount_field %}
             <div class="unzer-payment-actions--input">
                 <sw-number-field
-                        :min="0.01"
-                        :max="maxTransactionAmount"
+                    numberType="float"
+                    :min="0.00"
+                    :max="maxTransactionAmount"
+                    :digits="decimalPrecision"
+                    :disabled="maxTransactionAmount <= 0"
                     v-model="transactionAmount">
                 </sw-number-field>
             </div>
@@ -12,20 +15,20 @@
 
         <div class="unzer-payment-actions--button">
             {% block unzer_payment_actions_charge_button %}
-                <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" v-if="isChargePossible" @click="charge">
+                <sw-button-process :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0" :isLoading="isLoading" :processSuccess="isSuccessful" v-if="isChargePossible" @click="charge">
                     {{ $tc('unzer-payment.paymentDetails.actions.chargeButton') }}
                 </sw-button-process>
             {% endblock %}
 
             {% block unzer_payment_actions_refund_button %}
-                <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" v-if="isRefundPossible" @click="refund">
+                <sw-button-process :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0" :isLoading="isLoading" :processSuccess="isSuccessful" v-else-if="isRefundPossible" @click="refund">
                     {{ $tc('unzer-payment.paymentDetails.actions.refundButton') }}
                 </sw-button-process>
             {% endblock %}
 
             {% block unzer_payment_actions_default_button %}
-                <sw-button :disabled="true" v-if="!isChargePossible && !isRefundPossible">
-                    {{ $tc('unzer-payment.paymentDetails.actions.chargeButton') }}
+                <sw-button :disabled="true" v-else>
+                    {{ $tc('unzer-payment.paymentDetails.actions.defaultButton') }}
                 </sw-button>
             {% endblock %}
 

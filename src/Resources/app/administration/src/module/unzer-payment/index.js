@@ -31,8 +31,11 @@ Module.register('unzer-payment', {
             currentRoute.children.push({
                 component: 'unzer-payment-tab',
                 name: 'unzer-payment.payment.detail',
+                path: '/sw/order/detail/:id/unzer-payment',
                 isChildren: true,
-                path: '/sw/order/unzerpayment/detail/:id'
+                meta: {
+                    parentPath: 'sw.order.index'
+                }
             });
         }
 
