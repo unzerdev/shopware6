@@ -62,8 +62,6 @@
             "deviceDeleted": "The mean of payment has been deleted successfully.",
             "title": "Your saved means of payment"
         },
-        "finishPaymentFailed": {
-
-        }
+        "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Change payment method</a>"
     }
 }

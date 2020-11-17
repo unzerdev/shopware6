@@ -63,8 +63,6 @@
             "deviceDeleted": "Das Zahlungsmittel wurde erfolgreich entfernt.",
             "title": "Ihre gespeicherten Zahlungsmittel"
         },
-        "finishPaymentFailed": {
-
-        }
+        "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Zahlung ändern</a>"
     }
 }

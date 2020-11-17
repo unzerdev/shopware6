@@ -18,6 +18,7 @@ use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -67,28 +68,28 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     protected $logger;
 
     /** @var ResourceHydratorInterface */
-    private $basketHydrator;
+    protected $basketHydrator;
 
     /** @var ResourceHydratorInterface */
-    private $customerHydrator;
+    protected $customerHydrator;
 
     /** @var ResourceHydratorInterface */
-    private $metadataHydrator;
+    protected $metadataHydrator;
 
     /** @var EntityRepositoryInterface */
-    private $transactionRepository;
+    protected $transactionRepository;
 
     /** @var TransactionStateHandlerInterface */
-    private $transactionStateHandler;
+    protected $transactionStateHandler;
 
     /** @var ClientFactoryInterface */
-    private $clientFactory;
+    protected $clientFactory;
 
     /** @var ConfigReaderInterface */
-    private $configReader;
+    protected $configReader;
 
     /** @var RequestStack */
-    private $requestStack;
+    protected $requestStack;
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
@@ -122,7 +123,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         try {
             $salesChannelId     = $salesChannelContext->getSalesChannel()->getId();
             $this->pluginConfig = $this->configReader->read($salesChannelId);
-            $this->unzerClient  = $this->clientFactory->createClient($salesChannelId);
+            $this->unzerClient  = $this->clientFactory->createClient($salesChannelId, $currentRequest->getLocale() ?? $currentRequest->getDefaultLocale());
 
             $resourceId            = $currentRequest->get('unzerResourceId', '');
             $this->unzerCustomerId = $currentRequest->get('unzerCustomerId', '');
@@ -149,6 +150,11 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                     'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
+            );
+
+            $this->executeFailTransition(
+                $transaction->getOrderTransaction()->getId(),
+                $salesChannelContext->getContext()
             );
 
             throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $apiException);
@@ -195,14 +201,19 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'transaction' => $transaction,
-                    'request'     => $request,
-                    'context'     => $salesChannelContext,
-                    'exception'   => $apiException,
+                    'transaction'                   => $transaction,
+                    'request'                       => $request,
+                    'context'                       => $salesChannelContext,
+                                        'exception' => [
+                        'trace'           => $apiException->getTraceAsString(),
+                        'clientMessage'   => $apiException->getClientMessage(),
+                        'merchantMessage' => $apiException->getMerchantMessage(),
+                        'code'            => $apiException->getCode(),
+                    ],
                 ]
             );
 
-            throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $apiException);
+            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getMessage());
         } catch (Throwable $exception) {
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
@@ -246,5 +257,13 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         }
 
         return $currentRequest;
+    }
+
+    protected function executeFailTransition(string $transactionId, Context $context): void
+    {
+        $this->transactionStateHandler->fail(
+            $transactionId,
+            $context
+        );
     }
 }

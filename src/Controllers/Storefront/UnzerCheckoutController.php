@@ -74,10 +74,10 @@ class UnzerCheckoutController extends CheckoutController
             return $this->forwardToRoute(
                 'frontend.checkout.finish.page',
                 [
-                    'orderId'                   => $apiException->getOrderId(),
-                    'changedPayment'            => false,
-                    'paymentFailed'             => true,
-                    'unzerPaymentExceptionCode' => $apiException->getCode(),
+                    'orderId'                      => $apiException->getOrderId(),
+                    'changedPayment'               => false,
+                    'paymentFailed'                => true,
+                    'unzerPaymentExceptionMessage' => $apiException->getClientMessage(),
                 ]
             );
         }
@@ -89,21 +89,22 @@ class UnzerCheckoutController extends CheckoutController
             return $this->redirectToRoute('frontend.checkout.register.page');
         }
 
-        $unzerPaymentExceptionCode = $request->get('unzerPaymentExceptionCode', '');
+        $unzerPaymentExceptionMessage = $request->get('unzerPaymentExceptionMessage', '');
 
-        if ($request->get('paymentFailed', false) === true && !empty($unzerPaymentExceptionCode)) {
+        if ($request->get('paymentFailed', false) === true && !empty($unzerPaymentExceptionMessage)) {
             $page = $this->finishPageLoader->load($request, $context);
 
             $this->addFlash(
                 'danger',
-                $this->trans(
-                    sprintf('UnzerPayment.finishPaymentFailed.%s', $unzerPaymentExceptionCode),
-                    [
-                        '%editOrderUrl%' => $this->generateUrl(
-                            'frontend.account.edit-order.page',
-                            ['orderId' => $request->get('orderId')]
-                        ),
-                    ]
+                sprintf(
+                    '%s %s',
+                    $unzerPaymentExceptionMessage,
+                    $this->trans(
+                        'UnzerPayment.finishPaymentFailed',
+                        [
+                            '%editOrderUrl%' => $this->generateUrl('frontend.account.edit-order.page', ['orderId' => $request->get('orderId')]),
+                        ]
+                    )
                 )
             );
 
