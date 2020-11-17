@@ -61,6 +61,9 @@
             "directDebit": "Sepa account",
             "deviceDeleted": "The mean of payment has been deleted successfully.",
             "title": "Your saved means of payment"
+        },
+        "finishPaymentFailed": {
+
         }
     }
 }

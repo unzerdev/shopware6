@@ -62,6 +62,9 @@
             "directDebit": "Sepa Konto",
             "deviceDeleted": "Das Zahlungsmittel wurde erfolgreich entfernt.",
             "title": "Ihre gespeicherten Zahlungsmittel"
+        },
+        "finishPaymentFailed": {
+
         }
     }
 }
