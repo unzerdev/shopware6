@@ -4,7 +4,14 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
+use heidelpayPHP\Heidelpay;
+use heidelpayPHP\Resources\Payment;
+use heidelpayPHP\Resources\PaymentTypes\HirePurchaseDirectDebit;
+use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -165,20 +172,22 @@ class UnzerPaymentTransactionController extends AbstractController
     {
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
-        if ($transaction === null || $transaction->getOrder() === null) {
+        if ($transaction === null || $transaction->getOrder() === null || $transaction->getOrder()->getDocuments() === null) {
             throw new NotFoundHttpException();
         }
 
-        $documents = $transaction->getOrder()->getDocuments()->getElements();
-        $invoiceId = null;
+        $documents     = $transaction->getOrder()->getDocuments()->getElements();
+        $invoiceNumber = null;
+        $documentDate  = null;
 
         foreach ($documents as $document) {
-            if ($document->getDocumentType()->getTechnicalName() === 'invoice') {
-                $invoiceId = $document->getConfig()['documentNumber'];
+            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
+                $documentDate  = new DateTimeImmutable($document->getConfig()['documentDate']);
+                $invoiceNumber = $document->getConfig()['documentNumber'];
             }
         }
 
-        if (!$invoiceId) {
+        if (!$invoiceNumber) {
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -188,12 +197,20 @@ class UnzerPaymentTransactionController extends AbstractController
             );
         }
 
-        $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
+        $client  = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
+        $payment = $this->getPayment($orderTransactionId, $documentDate, $client);
+
+        if ($payment === null) {
+            return new JsonResponse(
+                [
+                    'status'  => false,
+                    'message' => 'Payment could not be fetched',
+                ],
+                Response::HTTP_BAD_REQUEST);
+        }
 
         try {
-            $client->ship($orderTransactionId, $invoiceId);
-
-            $payment = $client->fetchPaymentByOrderId($orderTransactionId);
+            $client->ship($payment, $invoiceNumber, $orderTransactionId);
 
             $this->transactionStateHandler->transformTransactionState($orderTransactionId, $payment, $context);
         } catch (HeidelpayApiException $exception) {
@@ -216,9 +233,9 @@ class UnzerPaymentTransactionController extends AbstractController
         return new JsonResponse(['status' => true]);
     }
 
-    private function getOrderTransaction(string $orderTransaction, Context $context): ?OrderTransactionEntity
+    protected function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
     {
-        $criteria = new Criteria([$orderTransaction]);
+        $criteria = new Criteria([$orderTransactionId]);
         $criteria->addAssociations([
             'order',
             'order.currency',
@@ -227,5 +244,32 @@ class UnzerPaymentTransactionController extends AbstractController
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();
+    }
+
+    protected function getPayment(string $orderTransactionId, DateTimeInterface $documentDate, Heidelpay $client): ?Payment
+    {
+        try {
+            $payment = $client->fetchPaymentByOrderId($orderTransactionId);
+        } catch (HeidelpayApiException $exception) {
+            return null;
+        }
+
+        $paymentType = $payment->getPaymentType();
+
+        if ($paymentType !== null && $documentDate !== null && $paymentType instanceof HirePurchaseDirectDebit) {
+            $invoiceDueDate = new DateTime($documentDate->format('c'));
+            date_add($invoiceDueDate, date_interval_create_from_date_string(sprintf('%s months', $paymentType->getNumberOfRates())));
+
+            $paymentType->setInvoiceDate($documentDate->format('Y-m-d'));
+            $paymentType->setInvoiceDueDate($invoiceDueDate->format('Y-m-d'));
+
+            try {
+                $payment->setPaymentType($client->updatePaymentType($paymentType));
+            } catch (HeidelpayApiException $exception) {
+                return null;
+            }
+        }
+
+        return $payment;
     }
 }

@@ -39,7 +39,7 @@
         {% endblock %}
 
         {% block unzer_payment_detail_ship_button %}
-            <sw-container v-if="paymentResource.isGuaranteed" columns="1fr" justify="left">
+            <sw-container v-if="paymentResource.isShipmentAllowed" columns="1fr" justify="left">
                 <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" @click="ship">
                     {{ $tc('unzer-payment.paymentDetails.actions.shipButton') }}
                 </sw-button-process>
