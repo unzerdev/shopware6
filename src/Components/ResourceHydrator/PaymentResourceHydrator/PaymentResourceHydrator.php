@@ -81,6 +81,8 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
     protected function hydrateTransactions(array &$data, Payment $payment, int $decimalPrecision): void
     {
+        $totalShippingAmount = 0;
+
         /** @var Charge $lazyCharge */
         foreach ($payment->getCharges() as $lazyCharge) {
             try {
@@ -121,6 +123,14 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
             }
 
             $data['transactions'][$this->getTransactionKey($shipment)] = $this->hydrateTransactionItem($shipment, 'shipment');
+
+            if ($shipment->getAmount()) {
+                $totalShippingAmount += round($shipment->getAmount() * (10 ** $decimalPrecision));
+            }
+        }
+
+        if ($totalShippingAmount === round($payment->getAmount()->getTotal() * (10 ** $decimalPrecision))) {
+            $data['isShipmentAllowed'] = false;
         }
 
         foreach (array_reverse($data['transactions'], true) as $transaction) {
