@@ -14,6 +14,8 @@
 
         <service id="UnzerPayment6\Components\ResourceHydrator\BusinessCustomerResourceHydrator"/>
 
-        <service id="UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydrator" />
+        <service id="UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydrator">
+            <argument type="service" id="unzer_payment.logger" />
+        </service>
     </services>
 </container>

@@ -51,6 +51,10 @@ Component.register('unzer-payment-tab', {
                 this.order = order;
 
                 this.order.getAssociation('transactions').getList({}).then((orderTransactions) => {
+                    if (!orderTransactions || !orderTransactions.items) {
+                        return;
+                    }
+
                     orderTransactions.items.forEach((orderTransaction) => {
                         if (!orderTransaction.customFields) {
                             return;
@@ -64,6 +68,7 @@ Component.register('unzer-payment-tab', {
                         this.UnzerPaymentService.fetchPaymentDetails(orderTransaction.id)
                             .then((response) => {
                                 this.isLoading = false;
+
                                 this.paymentResources.push(response);
                             })
                             .catch(() => {

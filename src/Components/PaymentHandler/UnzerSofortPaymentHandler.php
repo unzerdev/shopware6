@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
+use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 
 class UnzerSofortPaymentHandler extends AbstractUnzerPaymentHandler
@@ -41,11 +42,21 @@ class UnzerSofortPaymentHandler extends AbstractUnzerPaymentHandler
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
                     'context'     => $salesChannelContext,
-                    'exception'   => $apiException,
+                    'exception'   => [
+                        'trace'           => $apiException->getTraceAsString(),
+                        'clientMessage'   => $apiException->getClientMessage(),
+                        'merchantMessage' => $apiException->getMerchantMessage(),
+                        'code'            => $apiException->getCode(),
+                    ],
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+            $this->executeFailTransition(
+                $transaction->getOrderTransaction()->getId(),
+                $salesChannelContext->getContext()
+            );
+
+            throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),

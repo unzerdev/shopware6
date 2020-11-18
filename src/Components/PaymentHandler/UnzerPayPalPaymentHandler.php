@@ -24,6 +24,7 @@ use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanRecur;
@@ -46,27 +47,6 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
     /** @var SessionInterface */
     private $session;
-
-    /** @var ConfigReaderInterface */
-    private $configReader;
-
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
-
-    /** @var ResourceHydratorInterface */
-    private $basketHydrator;
-
-    /** @var ResourceHydratorInterface */
-    private $customerHydrator;
-
-    /** @var ResourceHydratorInterface, */
-    private $metadataHydrator;
-
-    /** @var EntityRepositoryInterface */
-    private $transactionRepository;
-
-    /** @var TransactionStateHandlerInterface */
-    private $transactionStateHandler;
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
@@ -118,7 +98,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         $this->clearSpecificSessionStorage();
 
         if ($currentRequest->get('savedPayPalAccount', false)) {
-            return $this->handleRecurringPayment($transaction);
+            return $this->handleRecurringPayment($transaction, $salesChannelContext);
         }
 
         $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
@@ -160,7 +140,12 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+            $this->executeFailTransition(
+                $transaction->getOrderTransaction()->getId(),
+                $salesChannelContext->getContext()
+            );
+
+            throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
@@ -239,30 +224,29 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'request'     => $request,
                     'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getMessage());
         } catch (Throwable $exception) {
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'request'     => $request,
                     'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
 
     protected function handleRecurringPayment(
-        AsyncPaymentTransactionStruct $transaction
+        AsyncPaymentTransactionStruct $transaction,
+        SalesChannelContext $salesChannelContext
     ): RedirectResponse {
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
@@ -286,7 +270,12 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+            $this->executeFailTransition(
+                $transaction->getOrderTransaction()->getId(),
+                $salesChannelContext->getContext()
+            );
+
+            throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),

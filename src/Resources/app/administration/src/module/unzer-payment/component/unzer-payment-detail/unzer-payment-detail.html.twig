@@ -37,7 +37,7 @@
         </template>
 
         {% block unzer_payment_detail_footer %}
-            <template #footer>
+            <template #footer v-if="paymentResource.isShipmentAllowed">
                 {% block unzer_payment_detail_ship_button %}
                     <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" @click="ship">
                         {{ $tc('unzer-payment.paymentDetails.actions.shipButton') }}
