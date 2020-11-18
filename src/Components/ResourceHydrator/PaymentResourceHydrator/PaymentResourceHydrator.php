@@ -208,7 +208,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     protected function logResourceError(Throwable $t): void
     {
         $this->logger->error(
-            sprintf('PaymentArrayHydration: %s', $t->getMessage()), [
+            sprintf('Error while preparing payment data: %s', $t->getMessage()), [
             'file'  => $t->getFile(),
             'line'  => $t->getLine(),
             'trace' => $t->getTraceAsString(),
