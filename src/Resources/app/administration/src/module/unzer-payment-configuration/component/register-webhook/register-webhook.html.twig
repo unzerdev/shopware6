@@ -16,7 +16,7 @@
                       :title="$tc(`unzer-payment-settings.modal.webhook.title`)"
                       class="unzer-payment-detail--webhook-modal">
 
-                <template slot="default">
+                <template #default>
                     <sw-alert
                         variant="info"
                         appearance="default"
@@ -34,7 +34,7 @@
                     </sw-data-grid>
                 </template>
 
-                <template slot="modal-footer">
+                <template #modal-footer>
                     <sw-button :disabled="isLoading" @click="closeModal">
                         {{ $tc('unzer-payment-settings.modal.close') }}
                     </sw-button>

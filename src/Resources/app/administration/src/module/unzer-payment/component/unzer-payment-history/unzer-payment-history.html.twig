@@ -1,7 +1,7 @@
 {% block unzer_payment_history %}
     <sw-card :title="$tc('unzer-payment.paymentDetails.history.cardTitle')">
         {% block unzer_payment_history_container %}
-            <sw-container slot="grid" type="row">
+            <template #grid>
                 {% block unzer_payment_history_data_grid %}
                     <sw-data-grid
                         :dataSource="data"
@@ -10,7 +10,7 @@
                         sortBy="date">
 
                         {% block unzer_payment_history_actions %}
-                            <template slot="actions" slot-scope="{ item }">
+                            <template #actions="{ item }">
                                 {% block unzer_payment_history_data_grid_item_actions %}
                                     <unzer-payment-actions
                                         :transactionResource="item.resource"
@@ -23,7 +23,7 @@
                         {% endblock %}
                     </sw-data-grid>
                 {% endblock %}
-            </sw-container>
+            </template>
         {% endblock %}
     </sw-card>
 {% endblock %}
