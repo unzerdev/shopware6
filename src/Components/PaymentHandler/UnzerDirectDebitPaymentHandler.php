@@ -18,6 +18,7 @@ use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
@@ -99,7 +100,12 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException->getClientMessage());
+            $this->executeFailTransition(
+                $transaction->getOrderTransaction()->getId(),
+                $salesChannelContext->getContext()
+            );
+
+            throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),

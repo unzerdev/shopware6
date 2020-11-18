@@ -17,4 +17,6 @@ interface TransactionStateHandlerInterface
         Payment $payment,
         Context $context
     ): void;
+
+    public function fail(string $transactionId, Context $context): void;
 }
