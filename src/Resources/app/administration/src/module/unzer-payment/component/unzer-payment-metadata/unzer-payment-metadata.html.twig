@@ -1,6 +1,6 @@
 {% block unzer_payment_metadata %}
     <sw-card class="unzer-payment-metadata" :title="$tc('unzer-payment.paymentDetails.metadata.cardTitle')">
-        <sw-container slot="grid" type="row">
+        <template #grid>
             {% block unzer_payment_metadata_container %}
                 <sw-data-grid
                     :dataSource="data"
@@ -9,6 +9,6 @@
                     :showActions="false">
                 </sw-data-grid>
             {% endblock %}
-        </sw-container>
+        </template>
     </sw-card>
 {% endblock %}

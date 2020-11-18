@@ -1,7 +1,7 @@
 {% block unzer_payment_settings %}
     <sw-page class="unzer-payment-settings">
         {% block unzer_payment_settings_header %}
-            <template slot="smart-bar-header">
+            <template #smart-bar-header>
                 <h2>
                     {{ $tc('sw-settings.index.title') }}
                     <sw-icon name="small-arrow-medium-right" small></sw-icon>
@@ -11,7 +11,7 @@
         {% endblock %}
 
         {% block unzer_payment_settings_actions %}
-            <template slot="smart-bar-actions">
+            <template smart-bar-actions>
                 {% block unzer_payment_settings_actions_save %}
                     <sw-button-process
                         class="sw-settings-login-registration__save-action"
@@ -43,7 +43,7 @@
         {% endblock %}
 
         {% block unzer_payment_settings_content %}
-            <template slot="content">
+            <template #content>
                 <sw-card-view>
                     <sw-system-config
                         ref="systemConfig"
