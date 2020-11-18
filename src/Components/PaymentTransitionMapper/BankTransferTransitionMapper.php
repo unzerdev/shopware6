@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
-use heidelpayPHP\Resources\PaymentTypes\HirePurchaseDirectDebit;
+use heidelpayPHP\Resources\PaymentTypes\PIS;
 
-class FlexipayRateTransitionMapper extends AbstractTransitionMapper
+class BankTransferTransitionMapper extends AbstractTransitionMapper
 {
     public function supports(BasePaymentType $paymentType): bool
     {
-        return $paymentType instanceof HirePurchaseDirectDebit;
+        return $paymentType instanceof PIS;
     }
 
     protected function getResourceName(): string
     {
-        return HirePurchaseDirectDebit::getResourceName();
+        return PIS::getResourceName();
     }
 }

@@ -21,7 +21,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
-use UnzerPayment6\Installers\CustomFieldInstaller;
+use UnzerPayment6\Installer\CustomFieldInstaller;
 
 class TransitionEventListener implements EventSubscriberInterface
 {

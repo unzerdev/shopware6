@@ -60,7 +60,7 @@ abstract class AbstractTransitionMapper
             $status = StateMachineTransitionActions::ACTION_CANCEL;
 
             if ($this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)) {
-                $status = constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK));
+                return constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK));
             }
         } elseif ($paymentObject->isPending()) {
             $status = StateMachineTransitionActions::ACTION_REOPEN;
@@ -103,11 +103,6 @@ abstract class AbstractTransitionMapper
         $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::UNZER_MAX_DIGITS));
 
         if (empty($paymentObject->getShipments())) {
-            return $currentStatus;
-        }
-
-        if ($this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)
-            && $currentStatus === constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK))) {
             return $currentStatus;
         }
 

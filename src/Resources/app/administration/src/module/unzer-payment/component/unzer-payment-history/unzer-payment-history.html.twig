@@ -6,7 +6,8 @@
                     <sw-data-grid
                         :dataSource="data"
                         :columns="columns"
-                        :showSelection="false">
+                        :showSelection="false"
+                        sortBy="date">
 
                         {% block unzer_payment_history_actions %}
                             <template slot="actions" slot-scope="{ item }">
@@ -14,6 +15,7 @@
                                     <unzer-payment-actions
                                         :transactionResource="item.resource"
                                         :paymentResource="paymentResource"
+                                        :decimalPrecision="decimalPrecision"
                                         @reload="reloadPaymentDetails">
                                     </unzer-payment-actions>
                                 {% endblock %}

@@ -61,6 +61,15 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         $this->executeTransition($transactionId, $transition, $context);
     }
 
+    public function fail(string $transactionId, Context $context): void
+    {
+        $this->executeTransition(
+            $transactionId,
+            StateMachineTransitionActions::ACTION_FAIL,
+            $context
+        );
+    }
+
     protected function getTargetTransition(Payment $payment): string
     {
         try {
@@ -90,21 +99,13 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
                 ),
                 $context
             );
-
-            // If the previous state is "paid_partially", "paid" is currently not allowed as direct transition
-            if ($transition === StateMachineTransitionActions::ACTION_DO_PAY) {
-                $this->stateMachineRegistry->transition(
-                    new Transition(
-                        OrderTransactionDefinition::ENTITY_NAME,
-                        $transactionId,
-                        StateMachineTransitionActions::ACTION_PAID,
-                        'stateId'
-                    ),
-                    $context
-                );
-            }
         } catch (IllegalTransitionException $exception) {
             // false positive handling (state to state) like open -> open, paid -> paid, etc.
+
+            // If the previous state is "paid_partially" or "authorized" - "paid" is currently not allowed as direct transition
+            if ($transition === StateMachineTransitionActions::ACTION_DO_PAY) {
+                $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_PAID, $context);
+            }
         }
     }
 }

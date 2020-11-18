@@ -6,7 +6,7 @@ namespace UnzerPayment6\Components\Validator;
 
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
-use UnzerPayment6\Installers\PaymentInstaller;
+use UnzerPayment6\Installer\PaymentInstaller;
 
 interface AutomaticShippingValidatorInterface
 {
