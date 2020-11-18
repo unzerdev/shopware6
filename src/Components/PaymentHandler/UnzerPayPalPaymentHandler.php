@@ -133,15 +133,10 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'transaction'                   => $transaction,
-                    'dataBag'                       => $dataBag,
-                    'context'                       => $salesChannelContext,
-                                        'exception' => [
-                        'trace'           => $apiException->getTraceAsString(),
-                        'clientMessage'   => $apiException->getClientMessage(),
-                        'merchantMessage' => $apiException->getMerchantMessage(),
-                        'code'            => $apiException->getCode(),
-                    ],
+                    'transaction' => $transaction,
+                    'dataBag'     => $dataBag,
+                    'context'     => $salesChannelContext,
+                    'exception'   => $apiException,
                 ]
             );
 
@@ -270,13 +265,8 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'transaction'                   => $transaction,
-                                        'exception' => [
-                        'trace'           => $apiException->getTraceAsString(),
-                        'clientMessage'   => $apiException->getClientMessage(),
-                        'merchantMessage' => $apiException->getMerchantMessage(),
-                        'code'            => $apiException->getCode(),
-                    ],
+                    'transaction' => $transaction,
+                    'exception'   => $apiException,
                 ]
             );
 

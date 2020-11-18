@@ -201,15 +201,10 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'transaction'                   => $transaction,
-                    'request'                       => $request,
-                    'context'                       => $salesChannelContext,
-                                        'exception' => [
-                        'trace'           => $apiException->getTraceAsString(),
-                        'clientMessage'   => $apiException->getClientMessage(),
-                        'merchantMessage' => $apiException->getMerchantMessage(),
-                        'code'            => $apiException->getCode(),
-                    ],
+                    'transaction' => $transaction,
+                    'request'     => $request,
+                    'context'     => $salesChannelContext,
+                    'exception'   => $apiException,
                 ]
             );
 
