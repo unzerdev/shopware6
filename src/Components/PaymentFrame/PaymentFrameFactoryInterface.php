@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentFrame;
 
-use UnzerPayment6\Installers\PaymentInstaller;
+use UnzerPayment6\Installer\PaymentInstaller;
 
 interface PaymentFrameFactoryInterface
 {

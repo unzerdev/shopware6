@@ -28,6 +28,12 @@ Component.register('unzer-payment-actions', {
         paymentResource: {
             type: Object,
             required: true
+        },
+
+        decimalPrecision: {
+            type: Number,
+            required: true,
+            default: 2
         }
     },
 
@@ -42,13 +48,18 @@ Component.register('unzer-payment-actions', {
 
         maxTransactionAmount() {
             let transactionVal = 0;
+
             if (this.isRefundPossible) {
-                transactionVal = this.paymentResource.amount.charged - this.paymentResource.amount.canceled;
+                transactionVal = this.transactionResource.amount;
             } else if (this.isChargePossible) {
                 transactionVal = this.paymentResource.amount.remaining;
             }
 
             return transactionVal;
+        },
+
+        decimalQuantity() {
+            return 10 ** this.decimalPrecision;
         }
     },
 

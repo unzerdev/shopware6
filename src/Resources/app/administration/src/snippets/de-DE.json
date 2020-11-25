@@ -20,7 +20,8 @@
             "actions": {
                 "chargeButton": "Einziehen",
                 "shipButton": "Versandmitteilung",
-                "refundButton": "Rückerstatten"
+                "refundButton": "Rückerstatten",
+                "defaultButton": "Erledigt"
             },
             "detail": {
                 "cardTitle": "Zahlungsdetails",
@@ -82,7 +83,7 @@
                 }
             },
             "testButton": "API Zugangsdaten testen",
-            "webhookButton": "Webhooks registrieren testen"
+            "webhookButton": "Webhooks registrieren"
         },
         "modal": {
             "close": "Schließen",
