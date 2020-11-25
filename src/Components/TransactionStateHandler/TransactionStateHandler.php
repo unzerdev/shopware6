@@ -101,11 +101,11 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
             );
         } catch (IllegalTransitionException $exception) {
             // false positive handling (state to state) like open -> open, paid -> paid, etc.
+        }
 
-            // If the previous state is "paid_partially" or "authorized" - "paid" is currently not allowed as direct transition
-            if ($transition === StateMachineTransitionActions::ACTION_DO_PAY) {
-                $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_PAID, $context);
-            }
+        // If payment should be in state "paid", `do_pay` is given -> finalize state
+        if ($transition === StateMachineTransitionActions::ACTION_DO_PAY) {
+            $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_PAID, $context);
         }
     }
 }
