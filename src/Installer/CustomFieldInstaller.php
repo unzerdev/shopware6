@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace UnzerPayment6\Installers;
+namespace UnzerPayment6\Installer;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;

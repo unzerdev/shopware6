@@ -3,9 +3,9 @@ import './component/unzer-payment-detail';
 import './component/unzer-payment-history';
 import './component/unzer-payment-metadata';
 import './component/unzer-payment-basket';
+import './extension/sw-order-create-details-footer';
 import './extension/sw-order-detail';
 import './extension/sw-order-list';
-import './extension/sw-order-create-details-footer';
 import './page/unzer-payment-tab';
 
 import deDE from '../../snippets/de-DE.json';
@@ -31,8 +31,11 @@ Module.register('unzer-payment', {
             currentRoute.children.push({
                 component: 'unzer-payment-tab',
                 name: 'unzer-payment.payment.detail',
+                path: '/sw/order/detail/:id/unzer-payment',
                 isChildren: true,
-                path: '/sw/order/unzerpayment/detail/:id'
+                meta: {
+                    parentPath: 'sw.order.index'
+                }
             });
         }
 

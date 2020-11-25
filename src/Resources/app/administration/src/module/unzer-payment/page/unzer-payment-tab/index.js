@@ -51,18 +51,24 @@ Component.register('unzer-payment-tab', {
                 this.order = order;
 
                 this.order.getAssociation('transactions').getList({}).then((orderTransactions) => {
+                    if (!orderTransactions || !orderTransactions.items) {
+                        return;
+                    }
+
                     orderTransactions.items.forEach((orderTransaction) => {
                         if (!orderTransaction.customFields) {
                             return;
                         }
 
-                        if (!orderTransaction.customFields.unzer_payment_is_transaction && !orderTransaction.customFields.heidelpay_is_transaction) {
+                        if (!orderTransaction.customFields.unzer_payment_is_transaction
+                            && !orderTransaction.customFields.heidelpay_is_transaction) {
                             return;
                         }
 
                         this.UnzerPaymentService.fetchPaymentDetails(orderTransaction.id)
                             .then((response) => {
                                 this.isLoading = false;
+
                                 this.paymentResources.push(response);
                             })
                             .catch(() => {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace UnzerPayment6\Installers;
+namespace UnzerPayment6\Installer;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -143,14 +143,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_FLEXIPAY,
             'handlerIdentifier' => UnzerPisPaymentHandler::class,
-            'name'              => 'Unzer bank transfer (Unzer payments)',
+            'name'              => 'Unzer bank transfer',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer bank transfer (Unzer payments)',
+                    'name'        => 'Unzer bank transfer',
                     'description' => 'Unzer bank transfer Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer bank transfer (Unzer payments)',
+                    'name'        => 'Unzer bank transfer',
                     'description' => 'Unzer bank transfer payments',
                 ],
             ],
@@ -188,14 +188,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
             'handlerIdentifier' => UnzerDirectDebitPaymentHandler::class,
-            'name'              => 'SEPA direct debit',
+            'name'              => 'SEPA direct debit (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA direct debit',
+                    'name'        => 'SEPA direct debit (Unzer payments)',
                     'description' => 'SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'SEPA direct debit',
+                    'name'        => 'SEPA direct debit (Unzer payments)',
                     'description' => 'SEPA direct debit payments with Unzer payments',
                 ],
             ],

@@ -15,7 +15,7 @@ variables:
     SHOPWARE_VERSION: "v6.2.0" # Tag
     COMPOSER_COMMAND: "composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
 
-shopware_redeem:
+setup:
     stage: setup
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     script:
@@ -35,7 +35,7 @@ codestyle:
     stage: test
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     needs:
-        - job: shopware_redeem
+        - job: setup
           artifacts: true
     script:
         - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/php-cs-fixer fix -v --dry-run
@@ -48,7 +48,7 @@ k10r-phpstan:
     stage: test
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     needs:
-        - job: shopware_redeem
+        - job: setup
           artifacts: true
     script:
         - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan.neon src tests -a vendor/autoload.php -a ../../../vendor/autoload.php
@@ -57,7 +57,7 @@ sw-phpstan:
     stage: test
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     needs:
-        - job: shopware_redeem
+        - job: setup
           artifacts: true
     before_script:
         - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git
