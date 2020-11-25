@@ -48,6 +48,9 @@
             "en-GB": "https://www.unzer.com/en/"
         }
     },
+    "replace": {
+        "heidelpay/shopware-6": "*"
+    },
     "autoload": {
         "psr-4": {
             "UnzerPayment6\\": "src/"
