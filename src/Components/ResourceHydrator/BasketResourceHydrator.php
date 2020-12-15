@@ -20,6 +20,7 @@ use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
+use UnzerPayment6\UnzerPayment6;
 
 class BasketResourceHydrator implements ResourceHydratorInterface
 {
@@ -40,9 +41,9 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             throw new InvalidArgumentException('Order can not be null');
         }
 
-        $currencyPrecision = $order->getCurrency() !== null ? $order->getCurrency()->getDecimalPrecision() : 4;
+        $currencyPrecision = $order->getCurrency() !== null ? min($order->getCurrency()->getDecimalPrecision(), UnzerPayment6::MAX_DECIMAL_PRECISION) : UnzerPayment6::MAX_DECIMAL_PRECISION;
         /** @var int $currencyPrecision */
-        $currencyPrecision = min($currencyPrecision, 4);
+        $currencyPrecision = min($currencyPrecision, UnzerPayment6::MAX_DECIMAL_PRECISION);
 
         if ($transaction instanceof AsyncPaymentTransactionStruct) {
             $transactionId = $transaction->getOrderTransaction()->getId();

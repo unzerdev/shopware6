@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\UnzerPayment6;
 
 class CancelService implements CancelServiceInterface
 {
@@ -33,7 +34,7 @@ class CancelService implements CancelServiceInterface
      */
     public function cancelChargeById(string $orderTransactionId, string $chargeId, float $amountGross, Context $context): void
     {
-        $decimalPrecision = 4;
+        $decimalPrecision = UnzerPayment6::MAX_DECIMAL_PRECISION;
 
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
