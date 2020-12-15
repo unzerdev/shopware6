@@ -29,6 +29,7 @@ use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
+use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
@@ -70,7 +71,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var ResourceHydratorInterface */
     protected $basketHydrator;
 
-    /** @var ResourceHydratorInterface */
+    /** @var CustomerResourceHydratorInterface */
     protected $customerHydrator;
 
     /** @var ResourceHydratorInterface */
@@ -93,7 +94,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
-        ResourceHydratorInterface $customerHydrator,
+        CustomerResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
         ConfigReaderInterface $configReader,
@@ -130,10 +131,25 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->unzerBasket     = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
             $this->unzerMetadata   = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
 
+            $customer        = $salesChannelContext->getCustomer();
+            $fetchedCustomer = null;
+
             if (!empty($this->unzerCustomerId)) {
-                $this->unzerCustomer = $this->unzerClient->fetchCustomer($this->unzerCustomerId);
+                $fetchedCustomer = $this->unzerClient->fetchCustomer($this->unzerCustomerId);
+            }
+
+            if ($customer && !$fetchedCustomer) {
+                $fetchedCustomer = $this->unzerClient->fetchCustomerByExtCustomerId($customer->getCustomerNumber());
+            }
+
+            if ($fetchedCustomer) {
+                /** @var Customer $updatedCustomer */
+                $updatedCustomer = $this->customerHydrator->hydrateExistingCustomer($fetchedCustomer, $salesChannelContext);
+                $this->unzerClient->updateCustomer($updatedCustomer);
+
+                $this->unzerCustomer = $updatedCustomer;
             } else {
-                $this->unzerCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
+                $this->unzerCustomer = $this->customerHydrator->hydrateObject($salesChannelContext);
             }
 
             if (!empty($resourceId)) {

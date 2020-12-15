@@ -28,7 +28,7 @@ trait CanAuthorize
         }
 
         $paymentResult = $this->paymentType->authorize(
-            $this->unzerBasket->getAmountTotalGross(),
+            $this->unzerBasket->getAmountTotalGross() - $this->unzerBasket->getAmountTotalDiscount(),
             $this->unzerBasket->getCurrencyCode(),
             $returnUrl,
             $this->unzerCustomer,

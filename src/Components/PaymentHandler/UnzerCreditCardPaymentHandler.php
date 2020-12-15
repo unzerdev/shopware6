@@ -23,6 +23,7 @@ use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessExcepti
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
+use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
@@ -39,7 +40,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
-        ResourceHydratorInterface $customerHydrator,
+        CustomerResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
         ConfigReaderInterface $configReader,

@@ -79,7 +79,7 @@ trait CanRecur
         if ($this->session->has($this->sessionCustomerIdKey) && !empty($this->session->get($this->sessionCustomerIdKey))) {
             $this->unzerCustomer = $this->unzerClient->fetchCustomer($this->session->get($this->sessionCustomerIdKey));
         } else {
-            $this->unzerCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->unzerCustomer = $this->customerHydrator->hydrateObject($salesChannelContext);
         }
     }
 
