@@ -102,11 +102,23 @@ Component.register('unzer-payment-settings', {
         },
 
         getBind(element, config) {
+            let originalElement;
+
             if (config !== this.config) {
                 this.config = config;
             }
 
-            return element;
+            this.$refs.systemConfig.config.forEach((configElement) => {
+                configElement.elements.forEach((child) => {
+                    if (child.name === element.name) {
+                        originalElement = child;
+                        return;
+                    }
+                })
+            });
+
+            return originalElement ? originalElement : element;
+
         },
 
         getDeliveryStatusCriteria() {
