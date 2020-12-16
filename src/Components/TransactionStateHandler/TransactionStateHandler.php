@@ -47,12 +47,16 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         Context $context
     ): void {
         if ($payment->getPaymentType() === null) {
+            $this->logger->error(sprintf('The payment has no payment type for transition mapping. TransactionId: %s', $transactionId));
+
             return;
         }
 
         $transition = $this->getTargetTransition($payment);
 
         if (empty($transition)) {
+            $this->logger->error('Due to empty transition, FAIL is executed');
+
             $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_FAIL, $context);
 
             throw new RuntimeException('Invalid transition status');
@@ -105,6 +109,14 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
 
         // If payment should be in state "paid", `do_pay` is given -> finalize state
         if ($transition === StateMachineTransitionActions::ACTION_DO_PAY) {
+            $this->logger->debug(
+                sprintf(
+                    '%s transition is executed as fallback for %s',
+                    StateMachineTransitionActions::ACTION_PAID,
+                    StateMachineTransitionActions::ACTION_DO_PAY
+                )
+            );
+
             $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_PAID, $context);
         }
     }

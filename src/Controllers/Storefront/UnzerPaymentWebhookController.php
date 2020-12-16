@@ -57,6 +57,13 @@ class UnzerPaymentWebhookController extends StorefrontController
             }
 
             try {
+                $this->logger->debug(
+                    sprintf(
+                        'Started handling of incoming webhook with content: %s',
+                        json_encode($request->getContent())
+                    )
+                );
+
                 $handler->execute($webhook, $salesChannelContext);
             } catch (Throwable $exception) {
                 $this->logger->info(

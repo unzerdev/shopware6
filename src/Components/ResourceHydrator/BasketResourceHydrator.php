@@ -149,6 +149,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 if ($taxStatus === CartPrice::TAX_STATE_NET) {
                     $amountNet = round($amountGross, $currencyPrecision);
                     $amountGross += $amountTax;
+
                     $unitPrice = $amountGross;
                 }
             }

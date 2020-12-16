@@ -163,7 +163,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -180,7 +179,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );
@@ -219,7 +217,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 [
                     'transaction' => $transaction,
                     'request'     => $request,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -231,7 +228,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 [
                     'transaction' => $transaction,
                     'request'     => $request,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );

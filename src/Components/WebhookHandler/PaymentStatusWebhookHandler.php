@@ -62,12 +62,26 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
         $payment = $client->getResourceService()->fetchResourceByUrl($webhook->getRetrieveUrl());
 
         if (!$payment instanceof Payment) {
+            $this->logger->error(
+                sprintf(
+                    'Webhook could not be executed due to missing payment for retrieveUrl: %s',
+                    $webhook->getRetrieveUrl()
+                )
+            );
+
             return;
         }
 
         $transaction = $this->getOrderTransaction($payment, $context->getContext());
 
         if ($transaction === null) {
+            $this->logger->error(
+                sprintf(
+                    'Webhook could not be executed due to missing transaction for payment: %s',
+                    $payment->getOrderId()
+                )
+            );
+
             return;
         }
 

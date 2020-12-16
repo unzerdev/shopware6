@@ -136,7 +136,6 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -153,7 +152,6 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );
@@ -225,7 +223,6 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -236,7 +233,6 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );

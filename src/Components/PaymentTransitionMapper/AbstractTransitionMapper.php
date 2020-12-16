@@ -81,7 +81,7 @@ abstract class AbstractTransitionMapper
         $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
         $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
 
-        if ($cancelledAmount === $totalAmount && $remainingAmount === 0
+        if ($cancelledAmount === $totalAmount && $cancelledAmount !== 0 && $totalAmount !== 0 && $remainingAmount === 0
             && $currentStatus !== StateMachineTransitionActions::ACTION_CANCEL
             && !(
                 $this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)
@@ -89,6 +89,20 @@ abstract class AbstractTransitionMapper
             )
         ) {
             return StateMachineTransitionActions::ACTION_REFUND;
+        }
+
+        return $currentStatus;
+    }
+
+    protected function checkForCancellation(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
+    {
+        $amount    = $paymentObject->getAmount();
+        $total     = (int) round($amount->getTotal() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $charged   = (int) round($amount->getCharged() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $cancelled = (int) round($amount->getCanceled() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+
+        if ($total === 0 && $charged === 0 && $cancelled === 0 && count($paymentObject->getCancellations()) > 0) {
+            return StateMachineTransitionActions::ACTION_CANCEL;
         }
 
         return $currentStatus;
