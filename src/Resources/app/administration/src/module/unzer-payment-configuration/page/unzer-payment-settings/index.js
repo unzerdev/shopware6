@@ -114,11 +114,10 @@ Component.register('unzer-payment-settings', {
                         originalElement = child;
                         return;
                     }
-                })
+                });
             });
 
-            return originalElement ? originalElement : element;
-
+            return originalElement || element;
         },
 
         getDeliveryStatusCriteria() {
