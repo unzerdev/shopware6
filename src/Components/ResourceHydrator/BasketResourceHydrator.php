@@ -62,18 +62,17 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
         $lineItems = $order->getLineItems();
 
-        if ($lineItems === null) {
-            return $unzerBasket;
+        if ($lineItems !== null) {
+            $this->hydrateLineItems(
+                $lineItems,
+                $unzerBasket,
+                $currencyPrecision,
+                $amountTotalDiscount,
+                $amountTotalGross,
+                $amountTotalVat
+            );
         }
 
-        $this->hydrateLineItems(
-            $lineItems,
-            $unzerBasket,
-            $currencyPrecision,
-            $amountTotalDiscount,
-            $amountTotalGross,
-            $amountTotalVat
-        );
         $this->hydrateShippingCosts(
             $order,
             $unzerBasket,
@@ -85,8 +84,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         );
 
         $unzerBasket->setAmountTotalDiscount($amountTotalDiscount);
-        $unzerBasket->setAmountTotalGross($amountTotalGross);
-        $unzerBasket->setAmountTotalVat($amountTotalVat);
+        $unzerBasket->setAmountTotalVat($order->getAmountTotal() - $order->getAmountNet());
 
         return $unzerBasket;
     }
