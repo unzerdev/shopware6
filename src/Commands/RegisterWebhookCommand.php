@@ -18,16 +18,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator;
+use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistratorInterface;
 
 class RegisterWebhookCommand extends Command
 {
-    /** @var WebhookRegistrator */
+    /** @var WebhookRegistratorInterface */
     private $webhookRegistrator;
 
     /** @var EntityRepositoryInterface */
     private $domainRepository;
 
-    public function __construct(WebhookRegistrator $webhookRegistrator, EntityRepositoryInterface $domainRepository)
+    public function __construct(WebhookRegistratorInterface $webhookRegistrator, EntityRepositoryInterface $domainRepository)
     {
         $this->webhookRegistrator = $webhookRegistrator;
         $this->domainRepository   = $domainRepository;

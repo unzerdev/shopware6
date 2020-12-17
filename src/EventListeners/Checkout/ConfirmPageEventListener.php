@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\Checkout;
 
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPage;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPage;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -71,12 +73,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         if (empty($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY, ''))
          || empty($this->configData->get(ConfigReader::CONFIG_KEY_PRIVATE_KEY, ''))) {
-            $paymentMethods = $event->getPage()->getPaymentMethods();
-            $paymentMethods = $paymentMethods->filter(function (PaymentMethodEntity $paymentMethod) {
-                return !in_array($paymentMethod->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true);
-            });
-
-            $event->getPage()->setPaymentMethods($paymentMethods);
+            $this->removePaymentMethodsFromPage($event);
 
             return;
         }
@@ -214,5 +211,29 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension->setOrderDate(date('Y-m-d'));
 
         $event->getPage()->addExtension('unzerHirePurchase', $extension);
+    }
+
+    private function removePaymentMethodsFromPage(PageLoadedEvent $event): void
+    {
+        /** @var AccountEditOrderPage|CheckoutConfirmPage $page */
+        $page                       = $event->getPage();
+        $salesChannelPaymentMethods = $page->getSalesChannelPaymentMethods();
+        $pagePaymentMethods         = $page->getPaymentMethods();
+
+        if ($salesChannelPaymentMethods !== null && $salesChannelPaymentMethods->count() > 0) {
+            $page->setSalesChannelPaymentMethods(
+                $salesChannelPaymentMethods->filter(function (PaymentMethodEntity $paymentMethod) {
+                    return !in_array($paymentMethod->getId(), PaymentInstaller::getPaymentIds(), false);
+                })
+            );
+        }
+
+        if ($pagePaymentMethods !== null && $pagePaymentMethods->count() > 0) {
+            $page->setPaymentMethods(
+                $pagePaymentMethods->filter(function (PaymentMethodEntity $paymentMethod) {
+                    return !in_array($paymentMethod->getId(), PaymentInstaller::getPaymentIds(), false);
+                })
+            );
+        }
     }
 }
