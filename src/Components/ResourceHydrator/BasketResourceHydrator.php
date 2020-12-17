@@ -83,7 +83,6 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         );
 
         $unzerBasket->setAmountTotalDiscount($amountTotalDiscount);
-        $unzerBasket->setAmountTotalGross(round($order->getAmountTotal() + $amountTotalDiscount, $currencyPrecision));
 
         return $unzerBasket;
     }

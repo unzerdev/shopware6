@@ -179,24 +179,28 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      * @public
      */
     getB2bCustomerObject(customerInfo) {
+        const combinedName = customerInfo.firstName + ' ' + customerInfo.lastName;
+
         return {
             firstname: customerInfo.firstName,
             lastname: customerInfo.lastName,
+            email: customerInfo.email,
             company: customerInfo.activeBillingAddress.company,
             salutation: customerInfo.salutation.salutationKey,
             birthDate: customerInfo.lastName.birthday,
-            email: customerInfo.email,
             billingAddress: {
+                name: combinedName,
                 street: customerInfo.activeBillingAddress.street,
                 zip: customerInfo.activeBillingAddress.zipcode,
                 city: customerInfo.activeBillingAddress.city,
-                country: customerInfo.activeBillingAddress.country.name
+                country: customerInfo.activeBillingAddress.country.iso
             },
             shippingAddress: {
+                name: combinedName,
                 street: customerInfo.activeShippingAddress.street,
                 zip: customerInfo.activeShippingAddress.zipcode,
                 city: customerInfo.activeShippingAddress.city,
-                country: customerInfo.activeShippingAddress.country.name
+                country: customerInfo.activeShippingAddress.country.iso
             }
         };
     }
