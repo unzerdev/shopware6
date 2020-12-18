@@ -122,35 +122,16 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
         try {
-            $salesChannelId     = $salesChannelContext->getSalesChannel()->getId();
+            $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
+
             $this->pluginConfig = $this->configReader->read($salesChannelId);
             $this->unzerClient  = $this->clientFactory->createClient($salesChannelId, $currentRequest->getLocale() ?? $currentRequest->getDefaultLocale());
 
-            $resourceId            = $currentRequest->get('unzerResourceId', '');
-            $this->unzerCustomerId = $currentRequest->get('unzerCustomerId', '');
-            $this->unzerBasket     = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
-            $this->unzerMetadata   = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->unzerCustomer = $this->getUnzerCustomer($currentRequest->get('unzerCustomerId', ''), $salesChannelContext);
 
-            $customer        = $salesChannelContext->getCustomer();
-            $fetchedCustomer = null;
-
-            if (!empty($this->unzerCustomerId)) {
-                $fetchedCustomer = $this->unzerClient->fetchCustomer($this->unzerCustomerId);
-            }
-
-            if ($customer && !$fetchedCustomer) {
-                $fetchedCustomer = $this->unzerClient->fetchCustomerByExtCustomerId($customer->getCustomerNumber());
-            }
-
-            if ($fetchedCustomer) {
-                /** @var Customer $updatedCustomer */
-                $updatedCustomer = $this->customerHydrator->hydrateExistingCustomer($fetchedCustomer, $salesChannelContext);
-                $this->unzerClient->updateCustomer($updatedCustomer);
-
-                $this->unzerCustomer = $updatedCustomer;
-            } else {
-                $this->unzerCustomer = $this->customerHydrator->hydrateObject($salesChannelContext);
-            }
+            $resourceId = $currentRequest->get('unzerResourceId', '');
 
             if (!empty($resourceId)) {
                 $this->paymentType = $this->unzerClient->fetchPaymentType($resourceId);
@@ -272,5 +253,42 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $transactionId,
             $context
         );
+    }
+
+    protected function getUnzerCustomer(string $unzerCustomerId, SalesChannelContext $salesChannelContext): AbstractHeidelpayResource
+    {
+        $customer        = $salesChannelContext->getCustomer();
+        $fetchedCustomer = null;
+
+        if (!empty($unzerCustomerId)) {
+            try {
+                $fetchedCustomer = $this->unzerClient->fetchCustomer($unzerCustomerId);
+            } catch (Throwable $e) {
+                // silentfail
+            }
+        }
+
+        if ($customer && !$fetchedCustomer) {
+            try {
+                $fetchedCustomer = $this->unzerClient->fetchCustomerByExtCustomerId($customer->getCustomerNumber());
+            } catch (Throwable $e) {
+                // silentfail
+            }
+        }
+
+        if ($fetchedCustomer) {
+            /** @var Customer $updatedCustomer */
+            $updatedCustomer = $this->customerHydrator->hydrateExistingCustomer($fetchedCustomer, $salesChannelContext);
+
+            try {
+                $this->unzerClient->updateCustomer($updatedCustomer);
+            } catch (Throwable $e) {
+                // silentfail
+            }
+
+            return $updatedCustomer;
+        }
+
+        return $this->customerHydrator->hydrateObject($salesChannelContext);
     }
 }
