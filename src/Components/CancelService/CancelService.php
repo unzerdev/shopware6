@@ -6,10 +6,10 @@ namespace UnzerPayment6\Components\CancelService;
 
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\UnzerPayment6;
 
@@ -39,7 +39,7 @@ class CancelService implements CancelServiceInterface
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
         if ($transaction === null || $transaction->getOrder() === null) {
-            throw new NotFoundHttpException(); // TODO: change to better exception
+            throw new InvalidTransactionException($orderTransactionId);
         }
 
         if ($transaction->getOrder()->getCurrency()) {

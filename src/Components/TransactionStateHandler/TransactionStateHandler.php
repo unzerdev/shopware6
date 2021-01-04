@@ -47,7 +47,9 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         Context $context
     ): void {
         if ($payment->getPaymentType() === null) {
-            $this->logger->error(sprintf('The payment has no payment type for transition mapping. TransactionId: %s', $transactionId));
+            $this->logger->error(sprintf('The payment has no payment type for transition mapping. TransactionId: %s', $transactionId), [
+                'payment' => $payment,
+            ]);
 
             return;
         }

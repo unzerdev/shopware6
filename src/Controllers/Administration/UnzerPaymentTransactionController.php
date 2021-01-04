@@ -13,6 +13,7 @@ use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\HirePurchaseDirectDebit;
 use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -20,7 +21,6 @@ use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
@@ -70,7 +70,7 @@ class UnzerPaymentTransactionController extends AbstractController
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
         if ($transaction === null || $transaction->getOrder() === null) {
-            throw new NotFoundHttpException();
+            throw new InvalidTransactionException($orderTransactionId);
         }
 
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
@@ -109,7 +109,7 @@ class UnzerPaymentTransactionController extends AbstractController
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
         if ($transaction === null || $transaction->getOrder() === null) {
-            throw new NotFoundHttpException();
+            throw new InvalidTransactionException($orderTransactionId);
         }
 
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
@@ -171,7 +171,7 @@ class UnzerPaymentTransactionController extends AbstractController
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
         if ($transaction === null || $transaction->getOrder() === null || $transaction->getOrder()->getDocuments() === null) {
-            throw new NotFoundHttpException();
+            throw new InvalidTransactionException($orderTransactionId);
         }
 
         $documents     = $transaction->getOrder()->getDocuments()->getElements();
