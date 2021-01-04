@@ -1,4 +1,5 @@
 import template from './unzer-payment-actions.html.twig';
+import './unzer-payment-actions.scss';
 
 const { Component, Mixin } = Shopware;
 
