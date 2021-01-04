@@ -179,7 +179,7 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      * @public
      */
     getB2bCustomerObject(customerInfo) {
-        const combinedName = customerInfo.firstName + ' ' + customerInfo.lastName;
+        const combinedName = `${customerInfo.firstName} ${customerInfo.lastName}`;
 
         return {
             firstname: customerInfo.firstName,

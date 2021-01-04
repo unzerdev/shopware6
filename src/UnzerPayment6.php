@@ -106,11 +106,14 @@ class UnzerPayment6 extends Plugin
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
+        /** @var Connection $connection */
+        $connection = $this->container->get(Connection::class);
+
         (new PaymentInstaller($paymentRepository))->uninstall($uninstallContext);
 
         if (!$uninstallContext->keepUserData()) {
             (new CustomFieldInstaller($customFieldSetRepository))->uninstall($uninstallContext);
-            $this->container->get(Connection::class)->exec('
+            $connection->exec('
                 DROP TABLE IF EXISTS `unzer_payment_transfer_info`;
                 DROP TABLE IF EXISTS `unzer_payment_payment_device`;
             ');

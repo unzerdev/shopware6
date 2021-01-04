@@ -112,7 +112,6 @@ Component.register('unzer-payment-settings', {
                 configElement.elements.forEach((child) => {
                     if (child.name === element.name) {
                         originalElement = child;
-                        return;
                     }
                 });
             });

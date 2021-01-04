@@ -41,9 +41,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             throw new InvalidArgumentException('Order can not be null');
         }
 
-        $currencyPrecision = $order->getCurrency() !== null ? min($order->getCurrency()->getDecimalPrecision(), UnzerPayment6::MAX_DECIMAL_PRECISION) : UnzerPayment6::MAX_DECIMAL_PRECISION;
         /** @var int $currencyPrecision */
-        $currencyPrecision = min($currencyPrecision, UnzerPayment6::MAX_DECIMAL_PRECISION);
+        $currencyPrecision = $order->getCurrency() !== null ? min($order->getCurrency()->getDecimalPrecision(), UnzerPayment6::MAX_DECIMAL_PRECISION) : UnzerPayment6::MAX_DECIMAL_PRECISION;
 
         if ($transaction instanceof AsyncPaymentTransactionStruct) {
             $transactionId = $transaction->getOrderTransaction()->getId();

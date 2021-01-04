@@ -7,6 +7,7 @@ namespace UnzerPayment6\Components\PaymentHandler\Traits;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
+use stdClass;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 
 /**
@@ -23,11 +24,27 @@ trait HasDeviceVault
             return;
         }
 
+        $exposedPaymentType = $this->paymentType->expose();
+
+        if ($exposedPaymentType instanceof stdClass) {
+            $encoded = json_encode($exposedPaymentType);
+
+            if (!$encoded) {
+                $exposedPaymentType = [];
+            } else {
+                $exposedPaymentType = json_decode($encoded, true);
+
+                if (!is_array($exposedPaymentType) || empty($exposedPaymentType)) {
+                    $exposedPaymentType = [];
+                }
+            }
+        }
+
         $this->deviceRepository->create(
             $customer,
             $deviceType,
             $this->paymentType->getId(),
-            array_merge($additionalParams, $this->paymentType->expose()),
+            array_merge($additionalParams, $exposedPaymentType),
             $context
         );
     }
