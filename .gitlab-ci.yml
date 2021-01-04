@@ -1,6 +1,8 @@
 stages:
     - setup
-    - test
+    - codestyle
+    - codequality
+    - validate
     - package
 
 cache:
@@ -32,7 +34,7 @@ setup:
         when: always
 
 codestyle:
-    stage: test
+    stage: codestyle
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     needs:
         - job: setup
@@ -45,7 +47,7 @@ codestyle:
             - .php_cs.cache
 
 k10r-phpstan:
-    stage: test
+    stage: codequality
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     needs:
         - job: setup
@@ -54,7 +56,7 @@ k10r-phpstan:
         - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan.neon src tests -a vendor/autoload.php -a ../../../vendor/autoload.php
 
 sw-phpstan:
-    stage: test
+    stage: codequality
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     needs:
         - job: setup
@@ -64,6 +66,20 @@ sw-phpstan:
         - cp -r /tmp/store-plugin-codereview/configs/phpstan/phpstan.neon.sw6 ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon
     script:
         - cd ${CI_PROJECT_DIR}/sw_dir/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan_sw.neon -a vendor/autoload.php -a ../../../vendor/autoload.php src tests
+
+shopware-validate:
+    stage: validate
+    image:
+        name: friendsofshopware/plugin-uploader:0.3.5
+        entrypoint: [ "/bin/sh", "-c" ]
+    needs:
+        -   job: setup
+            artifacts: true
+    before_script:
+        - rm -rf sw_dir
+    script:
+        - php /app/bin/pluginupload ext:zip . $CI_COMMIT_SHA
+        - php /app/bin/pluginupload ext:validate *$CI_COMMIT_SHA.zip
 
 package:
     image: kellerkinder/shopware-package-plugin:latest
