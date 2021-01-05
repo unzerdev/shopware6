@@ -71,13 +71,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $registerPayPalAccounts = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
         $registerDirectDebit    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
 
-        if (empty($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY, ''))
-         || empty($this->configData->get(ConfigReader::CONFIG_KEY_PRIVATE_KEY, ''))) {
-            $this->removePaymentMethodsFromPage($event);
-
-            return;
-        }
-
         if ($registerCreditCards &&
             $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
         ) {
