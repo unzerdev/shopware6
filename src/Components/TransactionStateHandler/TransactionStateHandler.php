@@ -76,6 +76,15 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         );
     }
 
+    public function pay(string $transactionId, Context $context): void
+    {
+        $this->executeTransition(
+            $transactionId,
+            StateMachineTransitionActions::ACTION_DO_PAY,
+            $context
+        );
+    }
+
     protected function getTargetTransition(Payment $payment): string
     {
         try {

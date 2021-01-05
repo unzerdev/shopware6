@@ -35,6 +35,7 @@ use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
+use UnzerPayment6\UnzerPayment6;
 
 abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
@@ -119,6 +120,10 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
+        if ($this->isZeroOrder($transaction)) {
+            return $this->handleZeroOrder($transaction, $salesChannelContext);
+        }
+
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
         try {
@@ -173,6 +178,10 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         Request $request,
         SalesChannelContext $salesChannelContext
     ): void {
+        if ($this->isZeroOrder($transaction)) {
+            return;
+        }
+
         try {
             $this->pluginConfig = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
             $this->unzerClient  = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
@@ -201,9 +210,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                     'exception'   => $apiException,
                 ]
             );
-
-            dump($this->unzerCustomer);
-            dd($apiException);
 
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getMessage());
         } catch (Throwable $exception) {
@@ -293,5 +299,37 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         }
 
         return $this->customerHydrator->hydrateObject($paymentMethodId, $salesChannelContext);
+    }
+
+    protected function isZeroOrder(AsyncPaymentTransactionStruct $transaction): bool
+    {
+        $orderTransaction = $transaction->getOrderTransaction();
+        $currency         = $transaction->getOrder()->getCurrency();
+
+        $totalAmount        = $orderTransaction->getAmount()->getTotalPrice();
+        $currencyPrecision  = $currency !== null ? min($currency->getDecimalPrecision(), UnzerPayment6::MAX_DECIMAL_PRECISION) : UnzerPayment6::MAX_DECIMAL_PRECISION;
+        $roundedAmountTotal = (int) round($totalAmount, $currencyPrecision);
+
+        return $roundedAmountTotal <= 0;
+    }
+
+    protected function handleZeroOrder(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $salesChannelContext): RedirectResponse
+    {
+        $transactionId = $transaction->getOrderTransaction()->getId();
+        $context       = $salesChannelContext->getContext();
+
+        $this->transactionRepository->update([[
+            'id'           => $transactionId,
+            'customFields' => array_merge(
+                $transaction->getOrderTransaction()->getCustomFields() ?? [],
+                [
+                    CustomFieldInstaller::UNZER_PAYMENT_IS_ZERO_ORDER_AMOUNT => true,
+                ]
+            ),
+        ]], $context);
+
+        $this->transactionStateHandler->pay($transactionId, $context);
+
+        return new RedirectResponse($transaction->getReturnUrl());
     }
 }

@@ -22,4 +22,6 @@ interface TransactionStateHandlerInterface
     ): void;
 
     public function fail(string $transactionId, Context $context): void;
+
+    public function pay(string $transactionId, Context $context): void;
 }

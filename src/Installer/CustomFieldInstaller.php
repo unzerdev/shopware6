@@ -14,8 +14,9 @@ use Shopware\Core\System\CustomField\CustomFieldTypes;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    public const UNZER_PAYMENT_IS_TRANSACTION = 'unzer_payment_is_transaction';
-    public const UNZER_PAYMENT_IS_SHIPPED     = 'unzer_payment_is_shipped';
+    public const UNZER_PAYMENT_IS_TRANSACTION       = 'unzer_payment_is_transaction';
+    public const UNZER_PAYMENT_IS_SHIPPED           = 'unzer_payment_is_shipped';
+    public const UNZER_PAYMENT_IS_ZERO_ORDER_AMOUNT = 'unzer_payment_is_zero_order_amount';
 
     public const CUSTOM_FIELDS = [
         [
@@ -31,6 +32,11 @@ class CustomFieldInstaller implements InstallerInterface
                 [
                     'id'   => '4962176184c25acbd46f60a15c24b334',
                     'name' => self::UNZER_PAYMENT_IS_SHIPPED,
+                    'type' => CustomFieldTypes::BOOL,
+                ],
+                [
+                    'id'   => 'b80f82ca86c848d7ba9f19852088242e',
+                    'name' => self::UNZER_PAYMENT_IS_ZERO_ORDER_AMOUNT,
                     'type' => CustomFieldTypes::BOOL,
                 ],
             ],

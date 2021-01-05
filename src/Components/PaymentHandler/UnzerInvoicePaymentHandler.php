@@ -64,6 +64,10 @@ class UnzerInvoicePaymentHandler extends AbstractUnzerPaymentHandler
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
+        if ($this->isZeroOrder($transaction)) {
+            return $this->handleZeroOrder($transaction, $salesChannelContext);
+        }
+
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         try {
