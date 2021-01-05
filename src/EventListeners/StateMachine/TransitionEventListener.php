@@ -42,6 +42,7 @@ class TransitionEventListener implements EventSubscriberInterface
 
     /** @var AutomaticShippingValidatorInterface */
     private $automaticShippingValidator;
+
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 

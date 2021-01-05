@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\EventListeners\Checkout;
 
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPage;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPage;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -64,9 +67,16 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         $salesChannelContext    = $event->getSalesChannelContext();
         $this->configData       = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $registerCreditCards    = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
-        $registerPayPalAccounts = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
-        $registerDirectDebit    = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
+        $registerCreditCards    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
+        $registerPayPalAccounts = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
+        $registerDirectDebit    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
+
+        if (empty($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY, ''))
+         || empty($this->configData->get(ConfigReader::CONFIG_KEY_PRIVATE_KEY, ''))) {
+            $this->removePaymentMethodsFromPage($event);
+
+            return;
+        }
 
         if ($registerCreditCards &&
             $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
@@ -191,7 +201,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     {
         $extension = new HirePurchasePageExtension();
         $extension->setCurrency($event->getSalesChannelContext()->getCurrency()->getIsoCode());
-        $extension->setEffectiveInterest((float) $this->configData->get('hirePurchaseEffectiveInterest', self::HIRE_PURCHASE_EFFECTIVE_INTEREST_DEFAULT));
+        $extension->setEffectiveInterest((float) $this->configData->get(ConfigReader::CONFIG_KEY_HIRE_PURCHASE_INTEREST, self::HIRE_PURCHASE_EFFECTIVE_INTEREST_DEFAULT));
 
         if ($event instanceof CheckoutConfirmPageLoadedEvent) {
             $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());
@@ -201,5 +211,29 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension->setOrderDate(date('Y-m-d'));
 
         $event->getPage()->addExtension('unzerHirePurchase', $extension);
+    }
+
+    private function removePaymentMethodsFromPage(PageLoadedEvent $event): void
+    {
+        /** @var AccountEditOrderPage|CheckoutConfirmPage $page */
+        $page                       = $event->getPage();
+        $salesChannelPaymentMethods = $page->getSalesChannelPaymentMethods();
+        $pagePaymentMethods         = $page->getPaymentMethods();
+
+        if ($salesChannelPaymentMethods !== null && $salesChannelPaymentMethods->count() > 0) {
+            $page->setSalesChannelPaymentMethods(
+                $salesChannelPaymentMethods->filter(function (PaymentMethodEntity $paymentMethod) {
+                    return !in_array($paymentMethod->getId(), PaymentInstaller::getPaymentIds(), false);
+                })
+            );
+        }
+
+        if ($pagePaymentMethods !== null && $pagePaymentMethods->count() > 0) {
+            $page->setPaymentMethods(
+                $pagePaymentMethods->filter(function (PaymentMethodEntity $paymentMethod) {
+                    return !in_array($paymentMethod->getId(), PaymentInstaller::getPaymentIds(), false);
+                })
+            );
+        }
     }
 }

@@ -29,6 +29,7 @@ use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
+use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
@@ -70,7 +71,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var ResourceHydratorInterface */
     protected $basketHydrator;
 
-    /** @var ResourceHydratorInterface */
+    /** @var CustomerResourceHydratorInterface */
     protected $customerHydrator;
 
     /** @var ResourceHydratorInterface */
@@ -93,7 +94,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
-        ResourceHydratorInterface $customerHydrator,
+        CustomerResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
         ConfigReaderInterface $configReader,
@@ -121,20 +122,16 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
         try {
-            $salesChannelId     = $salesChannelContext->getSalesChannel()->getId();
+            $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
+
             $this->pluginConfig = $this->configReader->read($salesChannelId);
             $this->unzerClient  = $this->clientFactory->createClient($salesChannelId, $currentRequest->getLocale() ?? $currentRequest->getDefaultLocale());
 
-            $resourceId            = $currentRequest->get('unzerResourceId', '');
-            $this->unzerCustomerId = $currentRequest->get('unzerCustomerId', '');
-            $this->unzerBasket     = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
-            $this->unzerMetadata   = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->unzerCustomer = $this->getUnzerCustomer($currentRequest->get('unzerCustomerId', ''), $salesChannelContext);
 
-            if (!empty($this->unzerCustomerId)) {
-                $this->unzerCustomer = $this->unzerClient->fetchCustomer($this->unzerCustomerId);
-            } else {
-                $this->unzerCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
-            }
+            $resourceId = $currentRequest->get('unzerResourceId', '');
 
             if (!empty($resourceId)) {
                 $this->paymentType = $this->unzerClient->fetchPaymentType($resourceId);
@@ -147,7 +144,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -164,7 +160,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );
@@ -203,7 +198,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 [
                     'transaction' => $transaction,
                     'request'     => $request,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -215,7 +209,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 [
                     'transaction' => $transaction,
                     'request'     => $request,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );
@@ -260,5 +253,42 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $transactionId,
             $context
         );
+    }
+
+    protected function getUnzerCustomer(string $unzerCustomerId, SalesChannelContext $salesChannelContext): AbstractHeidelpayResource
+    {
+        $customer        = $salesChannelContext->getCustomer();
+        $fetchedCustomer = null;
+
+        if (!empty($unzerCustomerId)) {
+            try {
+                $fetchedCustomer = $this->unzerClient->fetchCustomer($unzerCustomerId);
+            } catch (Throwable $e) {
+                // silentfail
+            }
+        }
+
+        if ($customer && !$fetchedCustomer) {
+            try {
+                $fetchedCustomer = $this->unzerClient->fetchCustomerByExtCustomerId($customer->getCustomerNumber());
+            } catch (Throwable $e) {
+                // silentfail
+            }
+        }
+
+        if ($fetchedCustomer) {
+            /** @var Customer $updatedCustomer */
+            $updatedCustomer = $this->customerHydrator->hydrateExistingCustomer($fetchedCustomer, $salesChannelContext);
+
+            try {
+                $this->unzerClient->updateCustomer($updatedCustomer);
+            } catch (Throwable $e) {
+                // silentfail
+            }
+
+            return $updatedCustomer;
+        }
+
+        return $this->customerHydrator->hydrateObject($salesChannelContext);
     }
 }

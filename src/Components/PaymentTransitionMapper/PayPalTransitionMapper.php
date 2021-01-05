@@ -22,12 +22,6 @@ class PayPalTransitionMapper extends AbstractTransitionMapper
     private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL;
     private const DEFAULT_MODE     = BookingMode::CHARGE;
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
-
-    /** @var EntityRepositoryInterface */
-    private $orderTransactionRepository;
-
     public function __construct(ConfigReaderInterface $configReader, EntityRepositoryInterface $orderTransactionRepository)
     {
         $this->configReader               = $configReader;
@@ -64,6 +58,12 @@ class PayPalTransitionMapper extends AbstractTransitionMapper
     {
         if ($paymentObject->isCanceled()) {
             $status = $this->checkForRefund($paymentObject);
+
+            if ($status !== self::INVALID_TRANSITION) {
+                return $status;
+            }
+
+            $status = $this->checkForCancellation($paymentObject);
 
             if ($status !== self::INVALID_TRANSITION) {
                 return $status;

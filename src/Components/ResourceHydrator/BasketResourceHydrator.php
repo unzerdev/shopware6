@@ -20,6 +20,7 @@ use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
+use UnzerPayment6\UnzerPayment6;
 
 class BasketResourceHydrator implements ResourceHydratorInterface
 {
@@ -33,15 +34,15 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         if (!($transaction instanceof AsyncPaymentTransactionStruct) && !($transaction instanceof OrderTransactionEntity)) {
             throw new InvalidArgumentException('Transaction struct can not be null');
         }
+
         $order = $transaction->getOrder();
 
         if ($order === null) {
             throw new InvalidArgumentException('Order can not be null');
         }
 
-        $currencyPrecision = $order->getCurrency() !== null ? $order->getCurrency()->getDecimalPrecision() : 4;
         /** @var int $currencyPrecision */
-        $currencyPrecision = min($currencyPrecision, 4);
+        $currencyPrecision = $order->getCurrency() !== null ? min($order->getCurrency()->getDecimalPrecision(), UnzerPayment6::MAX_DECIMAL_PRECISION) : UnzerPayment6::MAX_DECIMAL_PRECISION;
 
         if ($transaction instanceof AsyncPaymentTransactionStruct) {
             $transactionId = $transaction->getOrderTransaction()->getId();
@@ -62,17 +63,15 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
         $lineItems = $order->getLineItems();
 
-        if ($lineItems === null) {
-            return $unzerBasket;
+        if ($lineItems !== null) {
+            $this->hydrateLineItems(
+                $lineItems,
+                $unzerBasket,
+                $currencyPrecision,
+                $order->getTaxStatus(),
+                $amountTotalDiscount
+            );
         }
-
-        $this->hydrateLineItems(
-            $lineItems,
-            $unzerBasket,
-            $currencyPrecision,
-            $order->getTaxStatus(),
-            $amountTotalDiscount
-        );
 
         $this->hydrateShippingCosts(
             $order,
@@ -148,6 +147,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 if ($taxStatus === CartPrice::TAX_STATE_NET) {
                     $amountNet = round($amountGross, $currencyPrecision);
                     $amountGross += $amountTax;
+
                     $unitPrice = $amountGross;
                 }
             }
@@ -233,7 +233,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function getAmountByType(string $type, float $price): float
     {
-        if ($this->isPromotionLineItemType($type)) {
+        if ($this->isPromotionLineItemType($type) && $price < 0) {
             return $price * -1;
         }
 

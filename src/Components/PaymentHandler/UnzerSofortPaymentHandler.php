@@ -41,13 +41,7 @@ class UnzerSofortPaymentHandler extends AbstractUnzerPaymentHandler
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
-                    'exception'   => [
-                        'trace'           => $apiException->getTraceAsString(),
-                        'clientMessage'   => $apiException->getClientMessage(),
-                        'merchantMessage' => $apiException->getMerchantMessage(),
-                        'code'            => $apiException->getCode(),
-                    ],
+                    'exception'   => $apiException,
                 ]
             );
 
@@ -63,7 +57,6 @@ class UnzerSofortPaymentHandler extends AbstractUnzerPaymentHandler
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );

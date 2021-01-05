@@ -55,7 +55,8 @@ export default class UnzerPaymentInvoiceGuaranteedPlugin extends Plugin {
         this.b2bCustomerProvider.initFormFields(this._unzerPaymentPlugin.getB2bCustomerObject(this.options.customerInfo));
 
         this.b2bCustomerProvider.create({
-            containerId: 'unzer-payment-b2b-form'
+            containerId: 'unzer-payment-b2b-form',
+            externalCustomerId: this.options.customerInfo.customerNumber
         });
     }
 

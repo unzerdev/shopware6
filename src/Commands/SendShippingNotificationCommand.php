@@ -22,6 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
@@ -77,7 +78,7 @@ class SendShippingNotificationCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $config          = $this->configReader->read();
-        $configuredState = $config->get('statusForAutomaticShippingNotification');
+        $configuredState = $config->get(ConfigReader::CONFIG_KEY_SHIPPING_STATUS);
 
         if (empty($configuredState)) {
             $output->writeln('<error>Execution aborted: Please configure a value for [Order status for shipping notification] in your plugin settings.</error>');

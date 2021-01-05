@@ -41,7 +41,6 @@ class UnzerPisPaymentHandler extends AbstractUnzerPaymentHandler
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -58,7 +57,6 @@ class UnzerPisPaymentHandler extends AbstractUnzerPaymentHandler
                 [
                     'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );

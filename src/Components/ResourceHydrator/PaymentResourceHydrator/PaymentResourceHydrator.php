@@ -18,11 +18,10 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use stdClass;
 use Throwable;
+use UnzerPayment6\UnzerPayment6;
 
 class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 {
-    public const DEFAULT_DECIMAL_PRECISION = 4;
-
     /** @var LoggerInterface */
     protected $logger;
 
@@ -240,12 +239,12 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     protected function getDecimalPrecision(?OrderTransactionEntity $orderTransaction): int
     {
         if ($orderTransaction === null
-            || $orderTransaction->getOrder() === null
-            || $orderTransaction->getOrder()->getCurrency() === null) {
-            return self::DEFAULT_DECIMAL_PRECISION;
+        || $orderTransaction->getOrder() === null
+        || $orderTransaction->getOrder()->getCurrency() === null) {
+            return UnzerPayment6::MAX_DECIMAL_PRECISION;
         }
 
-        return $orderTransaction->getOrder()->getCurrency()->getDecimalPrecision();
+        return min($orderTransaction->getOrder()->getCurrency()->getDecimalPrecision(), UnzerPayment6::MAX_DECIMAL_PRECISION);
     }
 
     protected function logResourceError(Throwable $t): void

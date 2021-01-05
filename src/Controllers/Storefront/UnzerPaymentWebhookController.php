@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 use Traversable;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Struct\Webhook;
 use UnzerPayment6\Components\WebhookHandler\WebhookHandlerInterface;
@@ -56,16 +57,23 @@ class UnzerPaymentWebhookController extends StorefrontController
         $webhook = new Webhook($requestContent);
         $config  = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
-        foreach ($this->handlers as $handler) {
-            if ($webhook->getPublicKey() !== $config->get('publicKey')) {
-                throw new UnauthorizedHttpException('Unzer Webhooks');
-            }
+        if ($webhook->getPublicKey() !== $config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY)) {
+            throw new UnauthorizedHttpException('Unzer Webhooks');
+        }
 
+        foreach ($this->handlers as $handler) {
             if (!$handler->supports($webhook, $salesChannelContext)) {
                 continue;
             }
 
             try {
+                $this->logger->debug(
+                    sprintf(
+                        'Started handling of incoming webhook with content: %s',
+                        json_encode($request->getContent())
+                    )
+                );
+
                 $handler->execute($webhook, $salesChannelContext);
             } catch (Throwable $exception) {
                 $this->logger->error(
