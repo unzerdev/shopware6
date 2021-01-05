@@ -59,13 +59,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         );
 
         $unzerBasket->setAmountTotalVat($order->getAmountTotal() - $order->getAmountNet());
-        $unzerBasket->setAmountTotalDiscount($amountTotalDiscount);
 
-        $lineItems = $order->getLineItems();
-
-        if ($lineItems !== null) {
+        if ($order->getLineItems() !== null) {
             $this->hydrateLineItems(
-                $lineItems,
+                $order->getLineItems(),
                 $unzerBasket,
                 $currencyPrecision,
                 $order->getTaxStatus(),

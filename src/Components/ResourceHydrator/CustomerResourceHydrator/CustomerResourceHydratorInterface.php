@@ -9,7 +9,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface CustomerResourceHydratorInterface
 {
-    public function hydrateObject(SalesChannelContext $channelContext): AbstractHeidelpayResource;
+    public function hydrateObject(string $paymentMethodId, SalesChannelContext $channelContext): AbstractHeidelpayResource;
 
     public function hydrateExistingCustomer(AbstractHeidelpayResource $unzerCustomer, SalesChannelContext $salesChannelContext): AbstractHeidelpayResource;
 }

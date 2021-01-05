@@ -100,8 +100,8 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'transaction' => $transaction,
                     'dataBag'     => $dataBag,
+                    'transaction' => $transaction,
                     'exception'   => $apiException,
                 ]
             );
@@ -116,8 +116,8 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'transaction' => $transaction,
                     'dataBag'     => $dataBag,
+                    'transaction' => $transaction,
                     'exception'   => $exception,
                 ]
             );

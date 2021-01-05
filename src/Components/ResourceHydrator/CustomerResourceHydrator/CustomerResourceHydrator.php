@@ -12,10 +12,17 @@ use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use UnzerPayment6\Installer\PaymentInstaller;
 
 class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 {
-    public function hydrateObject(SalesChannelContext $channelContext): AbstractHeidelpayResource
+    private const B2B_CUSTOMERS_ALLOWED = [
+      PaymentInstaller::PAYMENT_ID_INVOICE_GUARANTEED,
+      PaymentInstaller::PAYMENT_ID_INVOICE_FACTORING,
+      PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED,
+    ];
+
+    public function hydrateObject(string $paymentMethodId, SalesChannelContext $channelContext): AbstractHeidelpayResource
     {
         $customer = $channelContext->getCustomer();
 
@@ -30,7 +37,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
             throw new RuntimeException(sprintf('Could not determine the address for customer with number %s', $customer->getCustomerNumber()));
         }
 
-        if (empty($billingAddress->getCompany())) {
+        if (empty($billingAddress->getCompany()) || !in_array($paymentMethodId, self::B2B_CUSTOMERS_ALLOWED, true)) {
             $unzerCustomer = CustomerFactory::createCustomer(
                 $customer->getFirstName(),
                 $customer->getLastName()
