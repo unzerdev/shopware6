@@ -28,6 +28,7 @@
 
         <service id="UnzerPayment6\EventListeners\PaymentMethod\PaymentMethodLoadedEventListener">
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
