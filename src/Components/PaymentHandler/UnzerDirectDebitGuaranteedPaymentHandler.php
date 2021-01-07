@@ -111,7 +111,7 @@ class UnzerDirectDebitGuaranteedPaymentHandler extends AbstractUnzerPaymentHandl
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => $currentRequest,
+                    'request'     => json_encode($currentRequest->__toString()),
                     'transaction' => $transaction,
                     'exception'   => $apiException,
                 ]
@@ -127,7 +127,7 @@ class UnzerDirectDebitGuaranteedPaymentHandler extends AbstractUnzerPaymentHandl
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => $currentRequest,
+                    'request'     => json_encode($currentRequest->__toString()),
                     'transaction' => $transaction,
                     'exception'   => $exception,
                 ]
