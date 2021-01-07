@@ -2,6 +2,7 @@
 * Adjustments of the code style and increase of the code quality
 * Correction of missing decimal places Display in admin for reimbursement and collection
 * Correction of missing labels in the plugin settings
+* Correction of webhook registration
 * Disable payment methods for carts with a value of zero
 
 # 1.0.2.0

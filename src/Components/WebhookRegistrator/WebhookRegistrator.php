@@ -187,11 +187,11 @@ class WebhookRegistrator implements WebhookRegistratorInterface
 
         if ($context !== null && is_array($parsedUrl)) {
             if (array_key_exists('host', $parsedUrl) && !empty($parsedUrl['host'])) {
-                $context->setHost($parsedUrl['host']);
+                $context = $context->setHost($parsedUrl['host']);
             }
 
             if (array_key_exists('scheme', $parsedUrl) && !empty($parsedUrl['scheme'])) {
-                $context->setHost($parsedUrl['scheme']);
+                $context = $context->setScheme($parsedUrl['scheme']);
             }
         }
 
