@@ -111,7 +111,7 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
     {
         $totalAmount        = $cart->getPrice()->getTotalPrice();
         $currencyPrecision  = min($currency->getDecimalPrecision(), UnzerPayment6::MAX_DECIMAL_PRECISION);
-        $roundedAmountTotal = (int) round($totalAmount, $currencyPrecision);
+        $roundedAmountTotal = (int) round($totalAmount * (10 ** $currencyPrecision));
 
         return $roundedAmountTotal <= 0;
     }

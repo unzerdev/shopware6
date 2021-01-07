@@ -74,8 +74,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $order,
             $unzerBasket,
             $currencyPrecision,
-            $channelContext->getShippingMethod()->getName(),
-            $amountTotalDiscount
+            $channelContext->getShippingMethod()->getName()
         );
 
         $unzerBasket->setAmountTotalDiscount($amountTotalDiscount);
@@ -180,8 +179,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         OrderEntity $order,
         Basket $basket,
         int $currencyPrecision,
-        string $shippingMethodName,
-        float &$amountTotalDiscount
+        string $shippingMethodName
     ): void {
         $shippingCosts = $order->getShippingCosts();
 
@@ -224,7 +222,6 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         $dispatchBasketItem->setAmountNet($amountNet);
         $dispatchBasketItem->setAmountPerUnit($amountPerUnit);
 
-        $amountTotalDiscount += $dispatchBasketItem->getAmountDiscount();
         $basket->addBasketItem($dispatchBasketItem);
     }
 

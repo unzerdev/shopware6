@@ -12,18 +12,29 @@ use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\RequestStack;
 use UnzerPayment6\Installer\PaymentInstaller;
 
 class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 {
     private const B2B_CUSTOMERS_ALLOWED = [
-      PaymentInstaller::PAYMENT_ID_INVOICE_GUARANTEED,
-      PaymentInstaller::PAYMENT_ID_INVOICE_FACTORING,
-      PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED,
+        PaymentInstaller::PAYMENT_ID_INVOICE_GUARANTEED,
+        PaymentInstaller::PAYMENT_ID_INVOICE_FACTORING,
+        PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED,
     ];
 
-    public function hydrateObject(string $paymentMethodId, SalesChannelContext $channelContext): AbstractHeidelpayResource
+    /** @var RequestStack */
+    private $requestStack;
+
+    public function __construct(RequestStack $requestStack)
     {
+        $this->requestStack = $requestStack;
+    }
+
+    public function hydrateObject(
+        string $paymentMethodId,
+        SalesChannelContext $channelContext
+    ): AbstractHeidelpayResource {
         $customer = $channelContext->getCustomer();
 
         if (!$customer) {
@@ -46,7 +57,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
             $unzerCustomer = CustomerFactory::createNotRegisteredB2bCustomer(
                 $customer->getFirstName(),
                 $customer->getLastName(),
-                '',
+                $this->getBirthDate($customer),
                 $this->getUnzerAddress($billingAddress),
                 $customer->getEmail(),
                 !empty($billingAddress->getCompany()) ? $billingAddress->getCompany() : ''
@@ -60,8 +71,10 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         return $this->addAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
     }
 
-    public function hydrateExistingCustomer(AbstractHeidelpayResource $unzerCustomer, SalesChannelContext $salesChannelContext): AbstractHeidelpayResource
-    {
+    public function hydrateExistingCustomer(
+        AbstractHeidelpayResource $unzerCustomer,
+        SalesChannelContext $salesChannelContext
+    ): AbstractHeidelpayResource {
         if (!$unzerCustomer instanceof Customer) {
             return $unzerCustomer;
         }
@@ -85,7 +98,9 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
     {
         $address = new Address();
         $address->setCountry($shopwareAddress->getCountry() !== null ? $shopwareAddress->getCountry()->getIso() : null);
-        $address->setState($shopwareAddress->getCountryState() !== null ? $shopwareAddress->getCountryState()->getShortCode() : null);
+        $address->setState(
+            $shopwareAddress->getCountryState() !== null ? $shopwareAddress->getCountryState()->getShortCode() : null
+        );
         $address->setZip($shopwareAddress->getZipcode());
         $address->setStreet($shopwareAddress->getStreet());
         $address->setCity($shopwareAddress->getCity());
@@ -94,8 +109,11 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         return $address;
     }
 
-    protected function addAdditionalDataToCustomer(Customer $unzerCustomer, CustomerEntity $customer, CustomerAddressEntity $billingAddress): Customer
-    {
+    protected function addAdditionalDataToCustomer(
+        Customer $unzerCustomer,
+        CustomerEntity $customer,
+        CustomerAddressEntity $billingAddress
+    ): Customer {
         if (empty($unzerCustomer->getFirstname())) {
             $unzerCustomer->setFirstname($customer->getFirstName());
         }
@@ -109,11 +127,13 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         }
 
         if (empty($unzerCustomer->getSalutation())) {
-            $unzerCustomer->setSalutation($customer->getSalutation() !== null ? $customer->getSalutation()->getSalutationKey() : null);
+            $unzerCustomer->setSalutation(
+                $customer->getSalutation() !== null ? $customer->getSalutation()->getSalutationKey() : null
+            );
         }
 
         if (empty($unzerCustomer->getBirthDate())) {
-            $unzerCustomer->setBirthDate($customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null);
+            $unzerCustomer->setBirthDate($this->getBirthDate($customer));
         }
 
         if (empty($unzerCustomer->getCompany()) && !empty($billingAddress->getCompany())) {
@@ -121,5 +141,20 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         }
 
         return $unzerCustomer;
+    }
+
+    protected function getBirthDate(CustomerEntity $customer): ?string
+    {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+
+        if ($currentRequest !== null) {
+            $requestBirthday = $currentRequest->get('unzerPaymentBirthday', '');
+
+            if (!empty($requestBirthday)) {
+                return $requestBirthday;
+            }
+        }
+
+        return $customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null;
     }
 }

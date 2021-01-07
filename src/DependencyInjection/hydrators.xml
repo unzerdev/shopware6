@@ -5,7 +5,9 @@
     <services>
         <service id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
 
-        <service id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+        <service id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator">
+            <argument type="service" id="request_stack" />
+        </service>
 
         <service id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator">
             <argument>%kernel.shopware_version%</argument>
