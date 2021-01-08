@@ -47,7 +47,7 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
         ElementLoadingIndicatorUtil.create(loadingIndicatorElement);
 
         this.installmentSecured.create({
-            containerId: 'unzer-payment-hire-purchase-container',
+            containerId: 'unzer-payment-installment-secured-container',
             amount: this.options.installmentSecuredAmount.toFixed(4),
             currency: this.options.installmentSecuredCurrency,
             effectiveInterest: this.options.installmentSecuredEffectiveInterest,
