@@ -4,23 +4,22 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator;
 
-use heidelpayPHP\Resources\AbstractHeidelpayResource;
-use heidelpayPHP\Resources\Customer;
-use heidelpayPHP\Resources\CustomerFactory;
-use heidelpayPHP\Resources\EmbeddedResources\Address;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use UnzerPayment6\Installer\PaymentInstaller;
+use UnzerSDK\Resources\AbstractUnzerResource;
+use UnzerSDK\Resources\Customer;
+use UnzerSDK\Resources\CustomerFactory;
+use UnzerSDK\Resources\EmbeddedResources\Address;
 
 class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 {
     private const B2B_CUSTOMERS_ALLOWED = [
-        PaymentInstaller::PAYMENT_ID_INVOICE_GUARANTEED,
-        PaymentInstaller::PAYMENT_ID_INVOICE_FACTORING,
-        PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED,
+        PaymentInstaller::PAYMENT_ID_INVOICE_SECURED,
+        PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED,
     ];
 
     /** @var RequestStack */
@@ -34,7 +33,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
     public function hydrateObject(
         string $paymentMethodId,
         SalesChannelContext $channelContext
-    ): AbstractHeidelpayResource {
+    ): AbstractUnzerResource {
         $customer = $channelContext->getCustomer();
 
         if (!$customer) {
@@ -72,9 +71,9 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
     }
 
     public function hydrateExistingCustomer(
-        AbstractHeidelpayResource $unzerCustomer,
+        AbstractUnzerResource $unzerCustomer,
         SalesChannelContext $salesChannelContext
-    ): AbstractHeidelpayResource {
+    ): AbstractUnzerResource {
         if (!$unzerCustomer instanceof Customer) {
             return $unzerCustomer;
         }

@@ -1,3 +1,6 @@
+# 1.1.0.0
+* Rebranding auf das neue unzer SDK (https://packagist.org/packages/unzerdev/php-sdk)
+
 # 1.0.3.0
 * Anpassungen des Codestyles und erhöhen der Codequalität
 * Korrektur der fehlenden Nachkommastellen Anzeige im Admin für Erstattung und Einzug

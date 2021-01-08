@@ -7,7 +7,7 @@ namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 use Shopware\Core\Framework\Struct\Struct;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 
-class DirectDebitGuaranteedPageExtension extends Struct
+class DirectDebitSecuredPageExtension extends Struct
 {
     /** @var UnzerPaymentDeviceEntity[] */
     protected $directDebitDevices = [];

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\Struct\PageExtension\Checkout;
 
 use Shopware\Core\Framework\Struct\Struct;
-use UnzerPayment6\Components\Struct\HirePurchase\InstallmentInfo;
+use UnzerPayment6\Components\Struct\InstallmentSecured\InstallmentInfo;
 
 class FinishPageExtension extends Struct
 {

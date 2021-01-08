@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler\Exception;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
+use UnzerSDK\Exceptions\UnzerApiException;
 
-class UnzerPaymentProcessException extends HeidelpayApiException
+class UnzerPaymentProcessException extends UnzerApiException
 {
     /** @var string */
     protected $orderId;
 
     public function __construct(
         string $orderId,
-        HeidelpayApiException $apiException
+        UnzerApiException $apiException
     ) {
         $this->orderId = $orderId;
 

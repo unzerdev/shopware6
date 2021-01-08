@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ResourceHydrator;
 
-use heidelpayPHP\Constants\BasketItemTypes;
-use heidelpayPHP\Resources\AbstractHeidelpayResource;
-use heidelpayPHP\Resources\Basket;
-use heidelpayPHP\Resources\EmbeddedResources\BasketItem;
 use InvalidArgumentException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
@@ -21,6 +17,10 @@ use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 use UnzerPayment6\UnzerPayment6;
+use UnzerSDK\Constants\BasketItemTypes;
+use UnzerSDK\Resources\AbstractUnzerResource;
+use UnzerSDK\Resources\Basket;
+use UnzerSDK\Resources\EmbeddedResources\BasketItem;
 
 class BasketResourceHydrator implements ResourceHydratorInterface
 {
@@ -30,7 +30,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
     public function hydrateObject(
         SalesChannelContext $channelContext,
         $transaction = null
-    ): AbstractHeidelpayResource {
+    ): AbstractUnzerResource {
         if (!($transaction instanceof AsyncPaymentTransactionStruct) && !($transaction instanceof OrderTransactionEntity)) {
             throw new InvalidArgumentException('Transaction struct can not be null');
         }

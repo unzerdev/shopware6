@@ -66,11 +66,11 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
         }
 
         if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null) {
-            $directDebitDevices           = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT)->getElements();
-            $directDebitGuaranteedDevices = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED)->getElements();
+            $directDebitDevices        = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT)->getElements();
+            $directDebitSecuredDevices = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_SECURED)->getElements();
 
             $extension->addPaymentDevices($directDebitDevices);
-            $extension->addPaymentDevices($directDebitGuaranteedDevices);
+            $extension->addPaymentDevices($directDebitSecuredDevices);
         }
 
         $event->getPage()->addExtension('unzer', $extension);

@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
-use UnzerSDK\Resources\PaymentTypes\Alipay;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
+use UnzerSDK\Resources\PaymentTypes\SepaDirectDebitSecured;
 
-class AliPayTransitionMapper extends AbstractTransitionMapper
+class SepaDirectDebitSecuredTransitionMapper extends AbstractTransitionMapper
 {
     public function supports(BasePaymentType $paymentType): bool
     {
-        return $paymentType instanceof Alipay;
+        return $paymentType instanceof SepaDirectDebitSecured;
     }
 
     protected function getResourceName(): string
     {
-        return Alipay::getResourceName();
+        return SepaDirectDebitSecured::getResourceName();
     }
 }

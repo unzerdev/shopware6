@@ -1,12 +1,12 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import ElementLoadingIndicatorUtil from 'src/utility/loading-indicator/element-loading-indicator.util';
 
-export default class UnzerPaymentHirePurchasePlugin extends Plugin {
+export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
     static options = {
-        hirePurchaseAmount: 0.0,
-        hirePurchaseCurrency: '',
-        hirePurchaseEffectiveInterest: 0.0,
-        hirePurchaseOrderDate: '',
+        installmentSecuredAmount: 0.0,
+        installmentSecuredCurrency: '',
+        installmentSecuredEffectiveInterest: 0.0,
+        installmentSecuredOrderDate: '',
         installmentsTotalValueElementId: 'unzer-payment-installments-total',
         installmentsInterestValueElementId: 'unzer-payment-installments-interest',
         formLoadingIndicatorElementId: 'element-loader',
@@ -20,7 +20,7 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
      *
      * @public
      */
-    static hirePurchase;
+    static installmentSecured;
 
     /**
      * @type {UnzerPaymentBasePlugin}
@@ -31,7 +31,7 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
 
     init() {
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.hirePurchase = this._unzerPaymentPlugin.unzerInstance.HirePurchase();
+        this.installmentSecured = this._unzerPaymentPlugin.unzerInstance.InstallmentSecured();
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
         this._createForm();
@@ -46,12 +46,12 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
 
         ElementLoadingIndicatorUtil.create(loadingIndicatorElement);
 
-        this.hirePurchase.create({
+        this.installmentSecured.create({
             containerId: 'unzer-payment-hire-purchase-container',
-            amount: this.options.hirePurchaseAmount.toFixed(4),
-            currency: this.options.hirePurchaseCurrency,
-            effectiveInterest: this.options.hirePurchaseEffectiveInterest,
-            orderDate: this.options.hirePurchaseOrderDate
+            amount: this.options.installmentSecuredAmount.toFixed(4),
+            currency: this.options.installmentSecuredCurrency,
+            effectiveInterest: this.options.installmentSecuredEffectiveInterest,
+            orderDate: this.options.installmentSecuredOrderDate
         }).then(() => {
             // Hide the loading indicator
             loadingIndicatorElement.hidden = true;
@@ -71,7 +71,7 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
             scope: this
         });
 
-        this.hirePurchase.addEventListener('hirePurchaseEvent', (event) => this._onChangeHirePurchaseForm(event));
+        this.installmentSecured.addEventListener('installmentSecuredEvent', (event) => this._onChangeInstallmentSecuredForm(event));
     }
 
     /**
@@ -80,7 +80,7 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
     _onCreateResource() {
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
-        this.hirePurchase.createResource()
+        this.installmentSecured.createResource()
             .then((resource) => this._unzerPaymentPlugin.submitResource(resource))
             .catch((error) => this._unzerPaymentPlugin.showError(error));
     }
@@ -90,7 +90,7 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
      *
      * @private
      */
-    _onChangeHirePurchaseForm(event) {
+    _onChangeInstallmentSecuredForm(event) {
         if (event.action === 'validate') {
             if (event.success) {
                 this._unzerPaymentPlugin.setSubmitButtonActive(true);
@@ -103,8 +103,8 @@ export default class UnzerPaymentHirePurchasePlugin extends Plugin {
             const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId);
             const installmentInterestElement = document.getElementById(this.options.installmentsInterestValueElementId);
 
-            installmentAmountTotalElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalAmount) + this.options.starSymbol;
-            installmentInterestElement.innerText = this._formatCurrency(this.hirePurchase.selectedInstallmentPlan.totalInterestAmount) + this.options.starSymbol;
+            installmentAmountTotalElement.innerText = this._formatCurrency(this.installmentSecured.selectedInstallmentPlan.totalAmount) + this.options.starSymbol;
+            installmentInterestElement.innerText = this._formatCurrency(this.installmentSecured.selectedInstallmentPlan.totalInterestAmount) + this.options.starSymbol;
         }
     }
 

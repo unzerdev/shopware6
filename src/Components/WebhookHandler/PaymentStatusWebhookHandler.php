@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\WebhookHandler;
 
-use heidelpayPHP\Resources\Payment;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -15,6 +14,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\Webhook;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerSDK\Resources\Payment;
 
 /**
  * @property Payment $resource

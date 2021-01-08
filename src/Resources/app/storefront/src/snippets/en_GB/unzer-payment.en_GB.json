@@ -40,7 +40,7 @@
                     "new": "Register a new account"
                 }
             },
-            "hirePurchase": {
+            "installmentSecured": {
                 "totalAmount": "Total incl. interest",
                 "totalInterest": "Interest on hire purchase",
                 "testData": {

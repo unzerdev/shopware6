@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Resources\PaymentTypes\Wechatpay;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -14,6 +12,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
+use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\PaymentTypes\Wechatpay;
 
 class UnzerWeChatPaymentHandler extends AbstractUnzerPaymentHandler
 {
@@ -35,7 +35,7 @@ class UnzerWeChatPaymentHandler extends AbstractUnzerPaymentHandler
             $returnUrl = $this->charge($transaction->getReturnUrl());
 
             return new RedirectResponse($returnUrl);
-        } catch (HeidelpayApiException $apiException) {
+        } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [

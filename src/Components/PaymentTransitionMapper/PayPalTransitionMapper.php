@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
-use heidelpayPHP\Resources\Payment;
-use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
-use heidelpayPHP\Resources\PaymentTypes\Paypal;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use UnzerPayment6\Components\BookingMode;
@@ -14,6 +11,9 @@ use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use UnzerPayment6\Components\PaymentTransitionMapper\Traits\HasBookingMode;
+use UnzerSDK\Resources\Payment;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
+use UnzerSDK\Resources\PaymentTypes\Paypal;
 
 class PayPalTransitionMapper extends AbstractTransitionMapper
 {

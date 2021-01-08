@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Resources\AbstractHeidelpayResource;
-use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
-use heidelpayPHP\Resources\PaymentTypes\Paypal;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
@@ -35,6 +31,10 @@ use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInte
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
+use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\AbstractUnzerResource;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
+use UnzerSDK\Resources\PaymentTypes\Paypal;
 
 class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 {
@@ -43,7 +43,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
     use CanRecur;
     use HasDeviceVault;
 
-    /** @var null|AbstractHeidelpayResource|BasePaymentType|Paypal */
+    /** @var null|AbstractUnzerResource|BasePaymentType|Paypal */
     protected $paymentType;
 
     /** @var SessionInterface */
@@ -130,7 +130,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $this->session->set($this->sessionPaymentTypeKey, $this->payment->getId());
 
             return new RedirectResponse($returnUrl);
-        } catch (HeidelpayApiException $apiException) {
+        } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
@@ -218,7 +218,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             );
 
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
-        } catch (HeidelpayApiException $apiException) {
+        } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
@@ -256,7 +256,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $this->session->set($this->sessionPaymentTypeKey, $this->payment->getId());
 
             return new RedirectResponse($returnUrl);
-        } catch (HeidelpayApiException $apiException) {
+        } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [

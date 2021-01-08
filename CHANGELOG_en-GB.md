@@ -1,3 +1,6 @@
+# 1.1.0.0
+* Rebranding to the new unzer SDK (https://packagist.org/packages/unzerdev/php-sdk)
+
 # 1.0.3.0
 * Adjustments of the code style and increase of the code quality
 * Correction of missing decimal places Display in admin for reimbursement and collection

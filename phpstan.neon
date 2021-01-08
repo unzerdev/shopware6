@@ -4,4 +4,4 @@ parameters:
     checkMissingIterableValueType: false
     ignoreErrors:
         - '#UnzerPayment6\\Components\\Struct\\Configuration::get\(\)#'
-        - '#does not accept heidelpayPHP\\Resources\\AbstractHeidelpayResource#'
+        - '#does not accept UnzerSDK\\Resources\\AbstractUnzerResource.#'
