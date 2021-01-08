@@ -75,7 +75,7 @@ class FinishPageEventListener implements EventSubscriberInterface
             }
         }
 
-        $event->getPage()->addExtension('unzer', $extension);
+        $event->getPage()->addExtension(FinishPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function getPaymentByOrderId(Unzer $unzerClient, string $orderId): ?Payment

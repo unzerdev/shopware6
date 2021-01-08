@@ -108,7 +108,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $event->getPage()->addExtension('unzerPaymentFrame', (new PaymentFramePageExtension())->setPaymentFrame($mappedFrameTemplate));
+        $event->getPage()->addExtension(PaymentFramePageExtension::EXTENSION_NAME, (new PaymentFramePageExtension())->setPaymentFrame($mappedFrameTemplate));
     }
 
     private function addCreditCardExtension(PageLoadedEvent $event): void
@@ -127,7 +127,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $extension->addCreditCard($creditCard);
         }
 
-        $event->getPage()->addExtension('unzerCreditCard', $extension);
+        $event->getPage()->addExtension(CreditCardPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addPayPalExtension(PageLoadedEvent $event): void
@@ -146,7 +146,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $extension->addPayPalAccount($payPalAccount);
         }
 
-        $event->getPage()->addExtension('unzerPayPal', $extension);
+        $event->getPage()->addExtension(PayPalPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addDirectDebitExtension(PageLoadedEvent $event): void
@@ -165,7 +165,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $extension->addDirectDebitDevice($directDebitDevice);
         }
 
-        $event->getPage()->addExtension('unzerDirectDebit', $extension);
+        $event->getPage()->addExtension(DirectDebitPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addDirectDebitSecuredExtension(PageLoadedEvent $event): void
@@ -184,7 +184,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $extension->addDirectDebitDevice($directDebitDevice);
         }
 
-        $event->getPage()->addExtension('unzerDirectDebitSecured', $extension);
+        $event->getPage()->addExtension(DirectDebitSecuredPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addInstallmentSecuredExtension(PageLoadedEvent $event): void
@@ -200,6 +200,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
         $extension->setOrderDate(date('Y-m-d'));
 
-        $event->getPage()->addExtension('unzerInstallmentSecured', $extension);
+        $event->getPage()->addExtension(InstallmentSecuredPageExtension::EXTENSION_NAME, $extension);
     }
 }

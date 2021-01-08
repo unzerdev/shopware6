@@ -9,6 +9,8 @@ use UnzerPayment6\Components\Struct\InstallmentSecured\InstallmentInfo;
 
 class FinishPageExtension extends Struct
 {
+    public const EXTENSION_NAME = 'unzerFinishPage';
+
     /** @var InstallmentInfo[] */
     protected $installmentInformation = [];
 

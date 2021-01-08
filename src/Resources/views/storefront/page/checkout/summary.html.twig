@@ -11,8 +11,8 @@
 
         {% block page_checkout_summary_unzer_paymentinstallment_interest_value %}
             <dd class="col-5 checkout-aside-summary-value" id="unzer-payment-installments-interest">
-                {% if page.extensions.unzer and (page.extensions.unzer.installmentInformation|length > 0) %}
-                    {{ page.extensions.unzer.installmentInformation[0].totalInterestAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {% if page.extensions.unzerFinishPage and (page.extensions.unzerFinishPage.installmentInformation|length > 0) %}
+                    {{ page.extensions.unzerFinishPage.installmentInformation[0].totalInterestAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% else %}
                     {{ 0|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% endif %}
@@ -39,8 +39,8 @@
 
         {% block page_checkout_summary_unzer_paymentinstallment_total_value %}
             <dd class="col-5 checkout-aside-summary-value checkout-aside-summary-total" id="unzer-payment-installments-total">
-                {% if page.extensions.unzer and (page.extensions.unzer.installmentInformation|length > 0) %}
-                    {{ page.extensions.unzer.installmentInformation[0].totalAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {% if page.extensions.unzerFinishPage and (page.extensions.unzerFinishPage.installmentInformation|length > 0) %}
+                    {{ page.extensions.unzerFinishPage.installmentInformation[0].totalAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% else %}
                     {{ summary.price.totalPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% endif %}

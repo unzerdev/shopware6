@@ -73,6 +73,6 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
             $extension->addPaymentDevices($directDebitSecuredDevices);
         }
 
-        $event->getPage()->addExtension('unzer', $extension);
+        $event->getPage()->addExtension(PaymentMethodPageExtension::EXTENSION_NAME, $extension);
     }
 }

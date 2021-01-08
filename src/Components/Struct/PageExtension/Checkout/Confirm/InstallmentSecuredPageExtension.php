@@ -8,6 +8,8 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class InstallmentSecuredPageExtension extends Struct
 {
+    public const EXTENSION_NAME = 'unzerInstallmentSecured';
+
     /** @var float */
     private $amount = 0.0;
 
