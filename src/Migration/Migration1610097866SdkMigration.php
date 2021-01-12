@@ -27,7 +27,7 @@ SQL
         // disable invoiceGuaranteed
         $connection->exec(<<<SQL
             UPDATE `payment_method`
-            SET `active` = 0
+            SET `active` = 0, `after_order_enabled` = 0
             WHERE `id` = UNHEX('78F3CFA6AB2D9168759724E7CDE1EAB2')
 SQL
         );

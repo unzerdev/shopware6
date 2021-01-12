@@ -68,6 +68,36 @@ class PaymentInstaller implements InstallerInterface
 
     public const PAYMENT_METHODS = [
         [
+            'id'                => self::PAYMENT_ID_ALIPAY,
+            'handlerIdentifier' => UnzerAlipayPaymentHandler::class,
+            'name'              => 'Alipay (Unzer payments)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Alipay (Unzer payments)',
+                    'description' => 'Alipay Zahlungen mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'Alipay (Unzer payments)',
+                    'description' => 'Alipay payments with Unzer payments',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_FLEXIPAY,
+            'handlerIdentifier' => UnzerPisPaymentHandler::class,
+            'name'              => 'Unzer bank transfer',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Unzer bank transfer',
+                    'description' => 'Unzer bank transfer Zahlungen mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'Unzer bank transfer',
+                    'description' => 'Unzer bank transfer payments',
+                ],
+            ],
+        ],
+        [
             'id'                => self::PAYMENT_ID_CREDIT_CARD,
             'handlerIdentifier' => UnzerCreditCardPaymentHandler::class,
             'name'              => 'Credit card (Unzer payments)',
@@ -79,6 +109,51 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name'        => 'Credit card (Unzer payments)',
                     'description' => 'Credit card payments with Unzer payments',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_EPS,
+            'handlerIdentifier' => UnzerEpsPaymentHandler::class,
+            'name'              => 'EPS (Unzer payments)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'EPS (Unzer payments)',
+                    'description' => 'EPS Zahlungen mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'EPS (Unzer payments)',
+                    'description' => 'EPS payments with Unzer payments',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_GIROPAY,
+            'handlerIdentifier' => UnzerGiropayPaymentHandler::class,
+            'name'              => 'Giropay (Unzer payments)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Giropay (Unzer payments)',
+                    'description' => 'Giropay Zahlungen mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'Giropay (Unzer payments)',
+                    'description' => 'Giropay payments with Unzer payments',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_IDEAL,
+            'handlerIdentifier' => UnzerIdealPaymentHandler::class,
+            'name'              => 'iDEAL (Unzer payments)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'iDEAL (Unzer payments)',
+                    'description' => 'iDEAL Zahlungen mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'iDEAL (Unzer payments)',
+                    'description' => 'iDEAL payments with Unzer payments',
                 ],
             ],
         ],
@@ -113,32 +188,17 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
         [
-            'id'                => self::PAYMENT_ID_EPS,
-            'handlerIdentifier' => UnzerEpsPaymentHandler::class,
-            'name'              => 'EPS (Unzer payments)',
+            'id'                => self::PAYMENT_ID_INSTALLMENT_SECURED,
+            'handlerIdentifier' => UnzerInstallmentSecuredPaymentHandler::class,
+            'name'              => 'Unzer Installment',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'EPS (Unzer payments)',
-                    'description' => 'EPS Zahlungen mit Unzer payments',
+                    'name'        => 'Unzer Ratenzahlung',
+                    'description' => 'Unzer Ratenzahlung',
                 ],
                 'en-GB' => [
-                    'name'        => 'EPS (Unzer payments)',
-                    'description' => 'EPS payments with Unzer payments',
-                ],
-            ],
-        ],
-        [
-            'id'                => self::PAYMENT_ID_FLEXIPAY,
-            'handlerIdentifier' => UnzerPisPaymentHandler::class,
-            'name'              => 'Unzer bank transfer',
-            'translations'      => [
-                'de-DE' => [
-                    'name'        => 'Unzer bank transfer',
-                    'description' => 'Unzer bank transfer Zahlungen mit Unzer payments',
-                ],
-                'en-GB' => [
-                    'name'        => 'Unzer bank transfer',
-                    'description' => 'Unzer bank transfer payments',
+                    'name'        => 'Unzer Installment',
+                    'description' => 'Unzer Installment',
                 ],
             ],
         ],
@@ -154,66 +214,6 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name'        => 'PayPal (Unzer payments)',
                     'description' => 'PayPal payments with Unzer payments',
-                ],
-            ],
-        ],
-        [
-            'id'                => self::PAYMENT_ID_IDEAL,
-            'handlerIdentifier' => UnzerIdealPaymentHandler::class,
-            'name'              => 'iDEAL (Unzer payments)',
-            'translations'      => [
-                'de-DE' => [
-                    'name'        => 'iDEAL (Unzer payments)',
-                    'description' => 'iDEAL Zahlungen mit Unzer payments',
-                ],
-                'en-GB' => [
-                    'name'        => 'iDEAL (Unzer payments)',
-                    'description' => 'iDEAL payments with Unzer payments',
-                ],
-            ],
-        ],
-        [
-            'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
-            'handlerIdentifier' => UnzerDirectDebitPaymentHandler::class,
-            'name'              => 'SEPA direct debit (Unzer payments)',
-            'translations'      => [
-                'de-DE' => [
-                    'name'        => 'SEPA direct debit (Unzer payments)',
-                    'description' => 'SEPA Lastschrift Zahlungen mit Unzer payments',
-                ],
-                'en-GB' => [
-                    'name'        => 'SEPA direct debit (Unzer payments)',
-                    'description' => 'SEPA direct debit payments with Unzer payments',
-                ],
-            ],
-        ],
-        [
-            'id'                => self::PAYMENT_ID_DIRECT_DEBIT_SECURED,
-            'handlerIdentifier' => UnzerDirectDebitSecuredPaymentHandler::class,
-            'name'              => 'SEPA direct debit secured (Unzer payments)',
-            'translations'      => [
-                'de-DE' => [
-                    'name'        => 'SEPA Lastschrift gesichert (Unzer payments)',
-                    'description' => 'Gesicherte SEPA Lastschrift Zahlungen mit Unzer payments',
-                ],
-                'en-GB' => [
-                    'name'        => 'SEPA direct debit secured (Unzer payments)',
-                    'description' => 'Secured SEPA direct debit payments with Unzer payments',
-                ],
-            ],
-        ],
-        [
-            'id'                => self::PAYMENT_ID_GIROPAY,
-            'handlerIdentifier' => UnzerGiropayPaymentHandler::class,
-            'name'              => 'Giropay (Unzer payments)',
-            'translations'      => [
-                'de-DE' => [
-                    'name'        => 'Giropay (Unzer payments)',
-                    'description' => 'Giropay Zahlungen mit Unzer payments',
-                ],
-                'en-GB' => [
-                    'name'        => 'Giropay (Unzer payments)',
-                    'description' => 'Giropay payments with Unzer payments',
                 ],
             ],
         ],
@@ -248,47 +248,32 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
         [
-            'id'                => self::PAYMENT_ID_WE_CHAT,
-            'handlerIdentifier' => UnzerWeChatPaymentHandler::class,
-            'name'              => 'WeChat (Unzer payments)',
+            'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
+            'handlerIdentifier' => UnzerDirectDebitPaymentHandler::class,
+            'name'              => 'SEPA direct debit (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'WeChat (Unzer payments)',
-                    'description' => 'WeChat Zahlungen mit Unzer payments',
+                    'name'        => 'SEPA direct debit (Unzer payments)',
+                    'description' => 'SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'WeChat (Unzer payments)',
-                    'description' => 'WeChat payments with Unzer payments',
+                    'name'        => 'SEPA direct debit (Unzer payments)',
+                    'description' => 'SEPA direct debit payments with Unzer payments',
                 ],
             ],
         ],
         [
-            'id'                => self::PAYMENT_ID_ALIPAY,
-            'handlerIdentifier' => UnzerAlipayPaymentHandler::class,
-            'name'              => 'Alipay (Unzer payments)',
+            'id'                => self::PAYMENT_ID_DIRECT_DEBIT_SECURED,
+            'handlerIdentifier' => UnzerDirectDebitSecuredPaymentHandler::class,
+            'name'              => 'SEPA direct debit secured (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Alipay (Unzer payments)',
-                    'description' => 'Alipay Zahlungen mit Unzer payments',
+                    'name'        => 'SEPA Lastschrift gesichert (Unzer payments)',
+                    'description' => 'Gesicherte SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Alipay (Unzer payments)',
-                    'description' => 'Alipay payments with Unzer payments',
-                ],
-            ],
-        ],
-        [
-            'id'                => self::PAYMENT_ID_INSTALLMENT_SECURED,
-            'handlerIdentifier' => UnzerInstallmentSecuredPaymentHandler::class,
-            'name'              => 'Unzer Rate',
-            'translations'      => [
-                'de-DE' => [
-                    'name'        => 'Unzer Ratenzahlung',
-                    'description' => 'Unzer Ratenzahlung',
-                ],
-                'en-GB' => [
-                    'name'        => 'Unzer installment',
-                    'description' => 'Unzer installment',
+                    'name'        => 'SEPA direct debit secured (Unzer payments)',
+                    'description' => 'Secured SEPA direct debit payments with Unzer payments',
                 ],
             ],
         ],
@@ -304,6 +289,21 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name'        => 'Sofort (Unzer payments)',
                     'description' => 'Sofort with Unzer payments',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_WE_CHAT,
+            'handlerIdentifier' => UnzerWeChatPaymentHandler::class,
+            'name'              => 'WeChat (Unzer payments)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'WeChat (Unzer payments)',
+                    'description' => 'WeChat Zahlungen mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'WeChat (Unzer payments)',
+                    'description' => 'WeChat payments with Unzer payments',
                 ],
             ],
         ],
