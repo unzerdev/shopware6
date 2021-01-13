@@ -46,7 +46,6 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
         $salesChannelContext      = $event->getSalesChannelContext();
         $salesChannelContextToken = $event->getSalesChannelContext()->getToken();
         $cart                     = $this->cartService->getCart($salesChannelContextToken, $salesChannelContext);
-        $configData               = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
         if ($this->isZeroAmountCart($cart, $salesChannelContext->getCurrency())) {
             $this->removePaymentMethodsFromIdResult($result);
