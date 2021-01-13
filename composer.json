@@ -1,7 +1,7 @@
 {
     "name": "unzerdev/shopware6",
     "description": "Unzer payment integration for Shopware 6",
-    "version": "1.0.1.0",
+    "version": "1.0.2",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "minimum-stability": "dev",
@@ -36,8 +36,8 @@
             "en-GB": "Unzer Payment"
         },
         "description": {
-            "de-DE": "Unzer ist eine schnell wachsende, innovative und modulare Plattform für den internationalen Zahlungsverkehr. Unternehmen aller Größen und Branchen vertrauen auf die datengetriebenen, sicheren und passgenauen Lösungen für mehr Wachstum - online, mobil oder am Point of Sale. Die einfach integrierbaren Module decken das gesamte Spektrum des Zahlungsmanagements ab: von der Abwicklung verschiedener Zahlungsarten, über automatisierte Analysen von Kundenverhalten und -bedürfnissen bis hin zum ganzheitlichen Risikomanagement.",
-            "en-GB": "Unzer is a fast growing, innovative and modular platform for international payment transactions. Companies of all sizes and from all sectors rely on the data-driven, secure and perfectly tailored solutions to help them drive growth - whether online, mobile or at the point of sale. The modules, which are easy to integrate, cover the entire spectrum of payment management: from processing of various payment types, through automated analytics of customer behaviour and requirements, all the way up to integrative risk management."
+            "de-DE": "Unzer Shopware 6 bietet verschiedene Zahlungsmethoden, die schnell und einfach in Deinen Webshop integriert werden können. Dein Mix an Zahlungsmethoden für mehr Umsatz im Online-Shop.",
+            "en-GB": "Unzer Shopware 6 offers various payment methods, which can be integrated into your online shop both quickly and easily. Your mix of payment methods to increase online shop revenue."
         },
         "manufacturerLink": {
             "de-DE": "https://www.unzer.com/de/",
