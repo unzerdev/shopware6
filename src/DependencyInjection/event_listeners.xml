@@ -26,6 +26,13 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="UnzerPayment6\EventListeners\PaymentMethod\PaymentMethodLoadedEventListener">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="UnzerPayment6\EventListeners\StateMachine\TransitionEventListener">
             <argument type="service" id="order.repository" />
             <argument type="service" id="order_delivery.repository" />
@@ -40,6 +47,7 @@
 
         <service id="UnzerPayment6\EventListeners\DataAbstractionLayer\OrderTransactionEventListener">
             <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepository"/>
+
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

@@ -57,7 +57,7 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         $transition = $this->getTargetTransition($payment);
 
         if (empty($transition)) {
-            $this->logger->error('Due to empty transition, FAIL is executed');
+            $this->logger->error('Due to an empty transition, the FAIL transition is executed');
 
             $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_FAIL, $context);
 
@@ -72,6 +72,15 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         $this->executeTransition(
             $transactionId,
             StateMachineTransitionActions::ACTION_FAIL,
+            $context
+        );
+    }
+
+    public function pay(string $transactionId, Context $context): void
+    {
+        $this->executeTransition(
+            $transactionId,
+            StateMachineTransitionActions::ACTION_DO_PAY,
             $context
         );
     }

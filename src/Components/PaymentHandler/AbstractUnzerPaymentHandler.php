@@ -129,7 +129,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
             $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
             $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
-            $this->unzerCustomer = $this->getUnzerCustomer($currentRequest->get('unzerCustomerId', ''), $salesChannelContext);
+            $this->unzerCustomer = $this->getUnzerCustomer($currentRequest->get('unzerCustomerId', ''), $transaction->getOrderTransaction()->getPaymentMethodId(), $salesChannelContext);
 
             $resourceId = $currentRequest->get('unzerResourceId', '');
 
@@ -142,8 +142,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'dataBag'     => $dataBag,
                     'exception'   => $apiException,
                 ]
             );
@@ -158,8 +158,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'dataBag'     => $dataBag,
                     'exception'   => $exception,
                 ]
             );
@@ -197,7 +197,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'request'     => $request,
+                    'request'     => $this->getLoggableRequest($request),
                     'exception'   => $apiException,
                 ]
             );
@@ -208,7 +208,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'request'     => $request,
+                    'request'     => $this->getLoggableRequest($request),
                     'exception'   => $exception,
                 ]
             );
@@ -255,7 +255,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         );
     }
 
-    protected function getUnzerCustomer(string $unzerCustomerId, SalesChannelContext $salesChannelContext): AbstractHeidelpayResource
+    protected function getUnzerCustomer(string $unzerCustomerId, string $paymentMethodId, SalesChannelContext $salesChannelContext): AbstractHeidelpayResource
     {
         $customer        = $salesChannelContext->getCustomer();
         $fetchedCustomer = null;
@@ -263,7 +263,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         if (!empty($unzerCustomerId)) {
             try {
                 $fetchedCustomer = $this->unzerClient->fetchCustomer($unzerCustomerId);
-            } catch (Throwable $e) {
+            } catch (Throwable $t) {
                 // silentfail
             }
         }
@@ -271,7 +271,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         if ($customer && !$fetchedCustomer) {
             try {
                 $fetchedCustomer = $this->unzerClient->fetchCustomerByExtCustomerId($customer->getCustomerNumber());
-            } catch (Throwable $e) {
+            } catch (Throwable $t) {
                 // silentfail
             }
         }
@@ -281,14 +281,38 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $updatedCustomer = $this->customerHydrator->hydrateExistingCustomer($fetchedCustomer, $salesChannelContext);
 
             try {
-                $this->unzerClient->updateCustomer($updatedCustomer);
-            } catch (Throwable $e) {
+                $updatedCustomer = $this->unzerClient->updateCustomer($updatedCustomer);
+            } catch (Throwable $t) {
                 // silentfail
             }
 
             return $updatedCustomer;
         }
 
-        return $this->customerHydrator->hydrateObject($salesChannelContext);
+        return $this->customerHydrator->hydrateObject($paymentMethodId, $salesChannelContext);
+    }
+
+    protected function getLoggableRequest(Request $request): array
+    {
+        $result = [
+            'request-info' => sprintf('%s %s %s', $request->getMethod(), $request->getRequestUri(), $request->getScheme()) . "\r\n",
+            'header'       => $request->headers->all(),
+            'content'      => $request->getContent(false),
+        ];
+        $cookies = [];
+
+        foreach ($request->cookies->all() as $k => $v) {
+            if (is_array($v)) {
+                $cookies[] = $k . '=' . json_encode($v);
+            } else {
+                $cookies[] = $k . '=' . $v;
+            }
+        }
+
+        if (!empty($cookies)) {
+            $result['cookie-header'] = 'Cookie: ' . implode('; ', $cookies) . "\r\n";
+        }
+
+        return $result;
     }
 }

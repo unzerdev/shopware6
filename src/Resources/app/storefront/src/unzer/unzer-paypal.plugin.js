@@ -4,8 +4,7 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
     static options = {
         radioButtonSelector: 'input[name="savedPayPalAccount"]',
         selectedRadioButtonSelector: 'input[name="savedPayPalAccount"]:checked',
-        radioButtonNewSelector: '#new',
-        hasSavedAccounts: false
+        radioButtonNewSelector: '#new'
     };
 
     /**
@@ -18,10 +17,10 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
      *
      * @private
      */
-    static __unzerPaymentPlugin = null;
+    static _unzerPaymentPlugin = null;
 
     init() {
-        this.__unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
 
         this._registerEvents();
     }
@@ -30,30 +29,22 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this.__unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
-            scope: this
-        });
+        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource());
     }
 
     /**
      * @private
      */
     _onCreateResource() {
-        let checkedRadioButton = null;
-
-        this.__unzerPaymentPlugin.setSubmitButtonActive(false);
-
-        if (this.options.hasSavedAccounts) {
-            /** @type {Element} */
-            checkedRadioButton = document.querySelectorAll(this.options.selectedRadioButtonSelector)[0];
-        }
+        /** @type {Element} */
+        const checkedRadioButton = document.querySelector(this.options.selectedRadioButtonSelector);
 
         if (checkedRadioButton !== null && checkedRadioButton.value !== 'new') {
-            this.__unzerPaymentPlugin.submitTypeId(checkedRadioButton.value);
+            this._unzerPaymentPlugin.submitTypeId(checkedRadioButton.value);
 
             return;
         }
 
-        document.getElementById(this.__unzerPaymentPlugin.options.confirmFormId).submit();
+        this._unzerPaymentPlugin.confirmForm.submit();
     }
 }
