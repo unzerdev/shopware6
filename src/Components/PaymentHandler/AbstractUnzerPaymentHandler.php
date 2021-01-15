@@ -301,11 +301,11 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         ];
         $cookies = [];
 
-        foreach ($request->cookies->all() as $k => $v) {
-            if (is_array($v)) {
-                $cookies[] = $k . '=' . json_encode($v);
-            } else {
-                $cookies[] = $k . '=' . $v;
+        foreach ($request->cookies->all() as $cookieKey => $cookieValue) {
+            if (is_array($cookieValue)) {
+                $cookies[] = $cookieKey . '=' . json_encode($cookieValue);
+            } elseif (is_scalar($cookieValue)) {
+                $cookies[] = $cookieKey . '=' . $cookieValue;
             }
         }
 
