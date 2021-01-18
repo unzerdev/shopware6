@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\EventListeners\Checkout;
 
-use Shopware\Core\Checkout\Payment\Cart\Error\PaymentMethodBlockedError;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
@@ -68,15 +67,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $registerCreditCards    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
         $registerPayPalAccounts = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
         $registerDirectDebit    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
-
-        if (!array_key_exists($salesChannelContext->getPaymentMethod()->getId(), $event->getPage()->getPaymentMethods()->getElements())
-        && in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true)) {
-            if ($event instanceof CheckoutConfirmPageLoadedEvent) {
-                $event->getPage()->getCart()->addErrors(new PaymentMethodBlockedError($salesChannelContext->getPaymentMethod()->getName()));
-            }
-
-            return;
-        }
 
         if ($registerCreditCards &&
             $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD

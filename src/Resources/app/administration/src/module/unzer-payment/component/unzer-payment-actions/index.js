@@ -48,15 +48,15 @@ Component.register('unzer-payment-actions', {
         },
 
         maxTransactionAmount() {
-            let transactionVal = 0;
-
             if (this.isRefundPossible) {
-                transactionVal = this.transactionResource.amount;
-            } else if (this.isChargePossible) {
-                transactionVal = this.paymentResource.amount.remaining;
+                return this.transactionResource.amount;
             }
 
-            return transactionVal;
+            if (this.isChargePossible) {
+                return this.paymentResource.amount.remaining;
+            }
+
+            return 0;
         },
 
         decimalQuantity() {
