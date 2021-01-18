@@ -3,7 +3,7 @@
 * Correction of missing decimal places Display in admin for reimbursement and collection
 * Correction of missing labels in the plugin settings
 * Correction of webhook registration
-* Disable payment methods for carts with a value of zero
+* Payment methods for shopping carts with a value of zero are now disabled
 
 # 1.0.2
 * Correction of the voucher handling
