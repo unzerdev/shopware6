@@ -1,12 +1,16 @@
 import template from './unzer-payment-tab.html.twig';
 
-const { Component, Context } = Shopware;
+const { Component, Context, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 
 Component.register('unzer-payment-tab', {
     template,
 
     inject: ['UnzerPaymentService', 'repositoryFactory'],
+
+    mixins: [
+        Mixin.getByName('notification')
+    ],
 
     data() {
         return {
@@ -76,6 +80,11 @@ Component.register('unzer-payment-tab', {
                             this.paymentResources.push(response);
                         })
                         .catch(() => {
+                            this.createNotificationError({
+                                title: this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage'),
+                                message: this.$tc('unzer-payment.paymentDetails.notifications.couldNotRetrieveMessage')
+                            });
+
                             this.isLoading = false;
                         });
                 });
