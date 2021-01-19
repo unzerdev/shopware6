@@ -15,10 +15,9 @@
         <div class="unzer-payment-frame-row">
             {% if context.customer.activeBillingAddress.company is not empty %}
                 {% block unzer_payment_frame_invoice_factoring_b2b_form %}
-                <div id="unzer-payment-b2b-form" class="field">
-                </div>
+                    <div id="unzer-payment-b2b-form" class="field"></div>
 
-                <input type="hidden" id="unzerCustomerId" name="unzerCustomerId" form="confirmOrderForm">
+                    <input type="hidden" id="unzerCustomerId" name="unzerCustomerId" form="confirmOrderForm">
                 {% endblock %}
             {% else %}
                 {% block unzer_payment_frame_invoice_factoring_birthday %}

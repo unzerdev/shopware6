@@ -46,12 +46,12 @@
             <options>
                 <option>
                     <id>charge</id>
-                    <name>charge</name>
+                    <name>Charge</name>
                     <name lang="de-DE">Direkt</name>
                 </option>
                 <option>
                     <id>authorize</id>
-                    <name>authorize</name>
+                    <name>Authorize</name>
                     <name lang="de-DE">Autorisierung</name>
                 </option>
             </options>
@@ -72,12 +72,12 @@
             <options>
                 <option>
                     <id>charge</id>
-                    <name>charge</name>
+                    <name>Charge</name>
                     <name lang="de-DE">Direkt</name>
                 </option>
                 <option>
                     <id>authorize</id>
-                    <name>authorize</name>
+                    <name>Authorize</name>
                     <name lang="de-DE">Autorisierung</name>
                 </option>
             </options>

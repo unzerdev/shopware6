@@ -15,10 +15,6 @@ Component.override('sw-order-detail', {
     computed: {
         showTabs() {
             return true; // TODO remove with PT-10455
-        },
-
-        paymentMethodStore() {
-            return State.getStore('payment_method');
         }
     },
 

@@ -16,12 +16,12 @@ use heidelpayPHP\Resources\TransactionTypes\Charge;
 use heidelpayPHP\Resources\TransactionTypes\Shipment;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use stdClass;
 use Throwable;
+use UnzerPayment6\UnzerPayment6;
 
 class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 {
-    public const DEFAULT_DECIMAL_PRECISION = 4;
-
     /** @var LoggerInterface */
     protected $logger;
 
@@ -39,7 +39,10 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
             $authorization = $payment->getAuthorization();
 
             if ($authorization instanceof Authorization) {
-                $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateTransactionItem($authorization, 'authorization');
+                $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateTransactionItem(
+                    $authorization,
+                    'authorization'
+                );
             }
         } catch (Throwable $throwable) {
             $this->logResourceError($throwable);
@@ -48,7 +51,23 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         $this->hydrateTransactions($data, $payment, $decimalPrecision);
 
         if ($payment->getMetadata() !== null) {
-            foreach ($payment->getMetadata()->expose() as $key => $value) {
+            $exposedMeta = $payment->getMetadata()->expose();
+
+            if ($exposedMeta instanceof stdClass) {
+                $encoded = json_encode($exposedMeta);
+
+                if (!$encoded) {
+                    return $data;
+                }
+
+                $exposedMeta = json_decode($encoded, true);
+
+                if (!is_array($exposedMeta) || empty($exposedMeta)) {
+                    return $data;
+                }
+            }
+
+            foreach ($exposedMeta as $key => $value) {
                 $data['metadata'][] = compact('key', 'value');
             }
         }
@@ -60,8 +79,24 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     {
         $paymentType = $payment->getPaymentType();
 
+        $exposedPayment = $payment->expose();
+
+        if ($exposedPayment instanceof stdClass) {
+            $encoded = json_encode($exposedPayment);
+
+            if (!$encoded) {
+                $exposedPayment = [];
+            } else {
+                $exposedPayment = json_decode($encoded, true);
+
+                if (!is_array($exposedPayment) || empty($exposedPayment)) {
+                    $exposedPayment = [];
+                }
+            }
+        }
+
         return array_merge(
-            $payment->expose(),
+            $exposedPayment,
             [
                 'state' => [
                     'name' => $payment->getStateName(),
@@ -107,7 +142,10 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                     continue;
                 }
 
-                $data['transactions'][$this->getTransactionKey($cancellation)] = $this->hydrateTransactionItem($cancellation, 'cancellation');
+                $data['transactions'][$this->getTransactionKey($cancellation)] = $this->hydrateTransactionItem(
+                    $cancellation,
+                    'cancellation'
+                );
             }
         }
 
@@ -122,7 +160,10 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 continue;
             }
 
-            $data['transactions'][$this->getTransactionKey($shipment)] = $this->hydrateTransactionItem($shipment, 'shipment');
+            $data['transactions'][$this->getTransactionKey($shipment)] = $this->hydrateTransactionItem(
+                $shipment,
+                'shipment'
+            );
 
             if ($shipment->getAmount()) {
                 $totalShippingAmount += round($shipment->getAmount() * (10 ** $decimalPrecision));
@@ -170,7 +211,8 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         $data = $this->hydrateTransactionItem($charge, 'charge');
 
         if (!empty($charge->getCancelledAmount())) {
-            $amount         = $charge->getAmount() * (10 ** $decimalPrecision) - $charge->getCancelledAmount() * (10 ** $decimalPrecision);
+            $amount = $charge->getAmount() * (10 ** $decimalPrecision) - $charge->getCancelledAmount(
+                ) * (10 ** $decimalPrecision);
             $data['amount'] = $amount / (10 ** $decimalPrecision);
         }
 
@@ -199,19 +241,21 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         if ($orderTransaction === null
         || $orderTransaction->getOrder() === null
         || $orderTransaction->getOrder()->getCurrency() === null) {
-            return self::DEFAULT_DECIMAL_PRECISION;
+            return UnzerPayment6::MAX_DECIMAL_PRECISION;
         }
 
-        return $orderTransaction->getOrder()->getCurrency()->getDecimalPrecision();
+        return min($orderTransaction->getOrder()->getCurrency()->getDecimalPrecision(), UnzerPayment6::MAX_DECIMAL_PRECISION);
     }
 
     protected function logResourceError(Throwable $t): void
     {
         $this->logger->error(
-            sprintf('Error while preparing payment data: %s', $t->getMessage()), [
-            'file'  => $t->getFile(),
-            'line'  => $t->getLine(),
-            'trace' => $t->getTraceAsString(),
-        ]);
+            sprintf('Error while preparing payment data: %s', $t->getMessage()),
+            [
+                'file'  => $t->getFile(),
+                'line'  => $t->getLine(),
+                'trace' => $t->getTraceAsString(),
+            ]
+        );
     }
 }

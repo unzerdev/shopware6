@@ -18,16 +18,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator;
+use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistratorInterface;
 
 class RegisterWebhookCommand extends Command
 {
-    /** @var WebhookRegistrator */
+    /** @var WebhookRegistratorInterface */
     private $webhookRegistrator;
 
     /** @var EntityRepositoryInterface */
     private $domainRepository;
 
-    public function __construct(WebhookRegistrator $webhookRegistrator, EntityRepositoryInterface $domainRepository)
+    public function __construct(WebhookRegistratorInterface $webhookRegistrator, EntityRepositoryInterface $domainRepository)
     {
         $this->webhookRegistrator = $webhookRegistrator;
         $this->domainRepository   = $domainRepository;
@@ -50,8 +51,15 @@ class RegisterWebhookCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $style  = new SymfonyStyle($input, $output);
-        $domain = $this->handleDomain($input->getArgument('host') ?? '', $style);
+        $style = new SymfonyStyle($input, $output);
+
+        $host = $input->getArgument('host') ?? '';
+
+        if (!is_string($host)) {
+            return WebhookRegistrator::EXIT_CODE_INVALID_HOST;
+        }
+
+        $domain = $this->handleDomain($host, $style);
 
         if ($domain === null) {
             return WebhookRegistrator::EXIT_CODE_INVALID_HOST;
@@ -82,7 +90,7 @@ class RegisterWebhookCommand extends Command
         }
 
         $style->success(
-            sprintf('The webhooks have been registered to the following URL: %s', $input->getArgument('host') ?? '')
+            sprintf('The webhooks have been registered to the following URL: %s', $host)
         );
 
         return WebhookRegistrator::EXIT_CODE_SUCCESS;

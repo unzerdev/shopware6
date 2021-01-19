@@ -6,6 +6,7 @@ namespace UnzerPayment6\Components\Struct\HirePurchase;
 
 use heidelpayPHP\Resources\InstalmentPlan;
 use Shopware\Core\Framework\Struct\Struct;
+use stdClass;
 
 class InstallmentInfo extends Struct
 {
@@ -222,6 +223,20 @@ class InstallmentInfo extends Struct
     public function fromInstalmentPlan(InstalmentPlan $instalmentPlan): self
     {
         $values = $instalmentPlan->expose();
+
+        if ($values instanceof stdClass) {
+            $encoded = json_encode($values);
+
+            if (!$encoded) {
+                return $this;
+            }
+
+            $values = json_decode($encoded, true);
+
+            if (!is_array($values) || empty($values)) {
+                return $this;
+            }
+        }
 
         foreach ($values as $key => $value) {
             $method = 'set' . ucfirst($key);

@@ -1,7 +1,7 @@
-.php_cs.cache
-vendor
-.phpunit.result.cache
 .idea
-package-lock.json
+.php_cs.cache
+.phpunit.result.cache
 cypress.json
 node_modules
+package-lock.json
+vendor
