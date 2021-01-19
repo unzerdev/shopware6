@@ -28,6 +28,12 @@ class InvoiceFactoringTransitionMapper extends AbstractTransitionMapper
                 return $status;
             }
 
+            $status = $this->checkForCancellation($paymentObject);
+
+            if ($status !== self::INVALID_TRANSITION) {
+                return $status;
+            }
+
             throw new TransitionMapperException($this->getResourceName());
         }
 

@@ -64,9 +64,9 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         $salesChannelContext    = $event->getSalesChannelContext();
         $this->configData       = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $registerCreditCards    = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
-        $registerPayPalAccounts = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
-        $registerDirectDebit    = (bool) $this->configReader->read($salesChannelContext->getSalesChannel()->getId())->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
+        $registerCreditCards    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
+        $registerPayPalAccounts = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
+        $registerDirectDebit    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
 
         if ($registerCreditCards &&
             $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
@@ -191,7 +191,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     {
         $extension = new HirePurchasePageExtension();
         $extension->setCurrency($event->getSalesChannelContext()->getCurrency()->getIsoCode());
-        $extension->setEffectiveInterest((float) $this->configData->get('hirePurchaseEffectiveInterest', self::HIRE_PURCHASE_EFFECTIVE_INTEREST_DEFAULT));
+        $extension->setEffectiveInterest((float) $this->configData->get(ConfigReader::CONFIG_KEY_HIRE_PURCHASE_INTEREST, self::HIRE_PURCHASE_EFFECTIVE_INTEREST_DEFAULT));
 
         if ($event instanceof CheckoutConfirmPageLoadedEvent) {
             $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());

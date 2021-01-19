@@ -19,6 +19,7 @@ use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
+use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepositoryInterface;
@@ -30,7 +31,7 @@ class UnzerInvoicePaymentHandler extends AbstractUnzerPaymentHandler
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
-        ResourceHydratorInterface $customerHydrator,
+        CustomerResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
         ConfigReaderInterface $configReader,
@@ -74,9 +75,8 @@ class UnzerInvoicePaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
+                    'transaction' => $transaction,
                     'exception'   => $apiException,
                 ]
             );
@@ -91,9 +91,8 @@ class UnzerInvoicePaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'transaction' => $transaction,
                     'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
+                    'transaction' => $transaction,
                     'exception'   => $exception,
                 ]
             );

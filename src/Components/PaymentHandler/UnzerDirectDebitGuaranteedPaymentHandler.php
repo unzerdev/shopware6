@@ -20,6 +20,7 @@ use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
+use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
@@ -32,7 +33,7 @@ class UnzerDirectDebitGuaranteedPaymentHandler extends AbstractUnzerPaymentHandl
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
-        ResourceHydratorInterface $customerHydrator,
+        CustomerResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
         ConfigReaderInterface $configReader,
@@ -66,7 +67,6 @@ class UnzerDirectDebitGuaranteedPaymentHandler extends AbstractUnzerPaymentHandl
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
-
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
         if (!$this->isPaymentAllowed($transaction->getOrderTransaction()->getId())) {
@@ -111,9 +111,8 @@ class UnzerDirectDebitGuaranteedPaymentHandler extends AbstractUnzerPaymentHandl
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -128,9 +127,8 @@ class UnzerDirectDebitGuaranteedPaymentHandler extends AbstractUnzerPaymentHandl
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );

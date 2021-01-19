@@ -5,7 +5,7 @@
     <services>
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerCreditCardPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -20,7 +20,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -35,7 +35,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerInvoiceGuaranteedPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -50,7 +50,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerInvoiceFactoringPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -65,7 +65,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerSofortPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -79,7 +79,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerEpsPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -93,7 +93,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -109,7 +109,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerPisPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -123,7 +123,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -138,7 +138,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitGuaranteedPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -153,7 +153,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -167,7 +167,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerGiropayPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -181,7 +181,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -196,7 +196,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -210,7 +210,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -224,7 +224,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerWeChatPaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
@@ -238,7 +238,7 @@
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerHirePurchasePaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
-            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>

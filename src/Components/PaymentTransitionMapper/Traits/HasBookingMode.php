@@ -8,10 +8,22 @@ use heidelpayPHP\Resources\Payment;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 
+/**
+ * @property ConfigReaderInterface     $configReader
+ * @property EntityRepositoryInterface $orderTransactionRepository
+ */
 trait HasBookingMode
 {
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
+    /** @var EntityRepositoryInterface */
+    private $orderTransactionRepository;
+
     protected function getBookingMode(Payment $paymentObject): string
     {
         $order = $this->getOrderByPayment($paymentObject->getOrderId());

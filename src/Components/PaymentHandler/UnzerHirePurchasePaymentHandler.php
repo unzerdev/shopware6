@@ -27,7 +27,6 @@ class UnzerHirePurchasePaymentHandler extends AbstractUnzerPaymentHandler
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
-
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
         $birthday = $currentRequest->get('unzerPaymentBirthday', '');
@@ -44,9 +43,8 @@ class UnzerHirePurchasePaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -66,9 +64,8 @@ class UnzerHirePurchasePaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );

@@ -9,14 +9,12 @@ use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use heidelpayPHP\Resources\TransactionTypes\Shipment;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
+use UnzerPayment6\UnzerPayment6;
 
 abstract class AbstractTransitionMapper
 {
     public const CONST_KEY_CHARGEBACK = 'ACTION_CHARGEBACK';
     public const CONST_KEY_AUTHORIZE  = 'ACTION_AUTHORIZE';
-
-    /** @var int */
-    public const UNZER_MAX_DIGITS = 4;
 
     /** @var string */
     public const INVALID_TRANSITION = 'invalid';
@@ -37,6 +35,12 @@ abstract class AbstractTransitionMapper
 
         if ($paymentObject->isCanceled()) {
             $status = $this->checkForRefund($paymentObject);
+
+            if ($status !== self::INVALID_TRANSITION) {
+                return $status;
+            }
+
+            $status = $this->checkForCancellation($paymentObject);
 
             if ($status !== self::INVALID_TRANSITION) {
                 return $status;
@@ -79,11 +83,11 @@ abstract class AbstractTransitionMapper
 
     protected function checkForRefund(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
-        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::UNZER_MAX_DIGITS));
-        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::UNZER_MAX_DIGITS));
-        $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** self::UNZER_MAX_DIGITS));
+        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
 
-        if ($cancelledAmount === $totalAmount && $remainingAmount === 0
+        if ($cancelledAmount === $totalAmount && $cancelledAmount !== 0 && $totalAmount !== 0 && $remainingAmount === 0
             && $currentStatus !== StateMachineTransitionActions::ACTION_CANCEL
             && !(
                 $this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)
@@ -96,11 +100,25 @@ abstract class AbstractTransitionMapper
         return $currentStatus;
     }
 
+    protected function checkForCancellation(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
+    {
+        $amount    = $paymentObject->getAmount();
+        $total     = (int) round($amount->getTotal() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $charged   = (int) round($amount->getCharged() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $cancelled = (int) round($amount->getCanceled() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+
+        if ($total === 0 && $charged === 0 && $cancelled === 0 && count($paymentObject->getCancellations()) > 0) {
+            return StateMachineTransitionActions::ACTION_CANCEL;
+        }
+
+        return $currentStatus;
+    }
+
     protected function checkForShipment(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
         $shippedAmount   = 0;
-        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** self::UNZER_MAX_DIGITS));
-        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** self::UNZER_MAX_DIGITS));
+        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
 
         if (empty($paymentObject->getShipments())) {
             return $currentStatus;
@@ -109,10 +127,10 @@ abstract class AbstractTransitionMapper
         /** @var Shipment $shipment */
         foreach ($paymentObject->getShipments() as $shipment) {
             if (!empty($shipment->getAmount())) {
-                $shippedAmount += (int) round($shipment->getAmount() * (10 ** self::UNZER_MAX_DIGITS));
+                $shippedAmount += (int) round($shipment->getAmount() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
 
                 if ($shippedAmount > ($totalAmount - $cancelledAmount)) {
-                    $shippedAmount -= (int) round($shipment->getAmount() * (10 ** self::UNZER_MAX_DIGITS));
+                    $shippedAmount -= (int) round($shipment->getAmount() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
                 }
             }
         }

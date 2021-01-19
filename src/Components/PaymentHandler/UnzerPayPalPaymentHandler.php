@@ -29,6 +29,7 @@ use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanRecur;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
+use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
@@ -50,7 +51,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
-        ResourceHydratorInterface $customerHydrator,
+        CustomerResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
         EntityRepositoryInterface $transactionRepository,
         ConfigReaderInterface $configReader,
@@ -97,7 +98,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
         $this->clearSpecificSessionStorage();
 
-        if ($currentRequest->get('savedPayPalAccount', false)) {
+        if (!empty($this->paymentType)) {
             return $this->handleRecurringPayment($transaction, $salesChannelContext);
         }
 
@@ -133,9 +134,8 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -150,10 +150,9 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'transaction' => $transaction,
-                    'dataBag'     => $dataBag,
-                    'context'     => $salesChannelContext,
-                    'exception'   => $exception,
+                      'request' => $this->getLoggableRequest($currentRequest),
+                    'dataBag'   => $dataBag,
+                    'exception' => $exception,
                 ]
             );
 
@@ -224,7 +223,6 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'context'     => $salesChannelContext,
                     'exception'   => $apiException,
                 ]
             );
@@ -235,7 +233,6 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'context'     => $salesChannelContext,
                     'exception'   => $exception,
                 ]
             );
@@ -248,17 +245,15 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         AsyncPaymentTransactionStruct $transaction,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
-        $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
-
         try {
-            $this->paymentType = $this->unzerClient->fetchPaymentType($currentRequest->get('savedPayPalAccount', ''));
-            $bookingMode       = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
+            $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
 
             $returnUrl = $bookingMode === BookingMode::CHARGE
                 ? $this->charge($transaction->getReturnUrl())
                 : $this->authorize($transaction->getReturnUrl());
 
             $this->session->set($this->sessionIsRecurring, true);
+            $this->session->set($this->sessionPaymentTypeKey, $this->payment->getId());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {

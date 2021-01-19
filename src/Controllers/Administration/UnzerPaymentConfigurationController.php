@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
-use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator;
+use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistratorInterface;
 
 /**
  * @RouteScope(scopes={"api"})
@@ -28,13 +28,13 @@ class UnzerPaymentConfigurationController extends AbstractController
     /** @var LoggerInterface */
     private $logger;
 
-    /** @var WebhookRegistrator */
+    /** @var WebhookRegistratorInterface */
     private $webhookRegistrator;
 
     public function __construct(
         ClientFactoryInterface $clientFactory,
         LoggerInterface $logger,
-        WebhookRegistrator $webhookRegistrator
+        WebhookRegistratorInterface $webhookRegistrator
     ) {
         $this->clientFactory      = $clientFactory;
         $this->logger             = $logger;

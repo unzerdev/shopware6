@@ -75,12 +75,7 @@ trait CanRecur
 
         $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
         $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
-
-        if ($this->session->has($this->sessionCustomerIdKey) && !empty($this->session->get($this->sessionCustomerIdKey))) {
-            $this->unzerCustomer = $this->unzerClient->fetchCustomer($this->session->get($this->sessionCustomerIdKey));
-        } else {
-            $this->unzerCustomer = $this->customerHydrator->hydrateObject($salesChannelContext, $transaction);
-        }
+        $this->unzerCustomer = $this->getUnzerCustomer($this->session->get($this->sessionCustomerIdKey, '') ?? '', $transaction->getOrderTransaction()->getPaymentMethodId(), $salesChannelContext);
     }
 
     protected function fetchTransactionById(string $transactionId, Context $context): ?OrderTransactionEntity

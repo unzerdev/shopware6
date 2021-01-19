@@ -50,11 +50,13 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
      */
     _createB2bForm() {
         this.b2bCustomerProvider = this._unzerPaymentPlugin.unzerInstance.B2BCustomer();
+
         this.b2bCustomerProvider.b2bCustomerEventHandler = (event) => this._onValidateB2bForm(event);
         this.b2bCustomerProvider.initFormFields(this._unzerPaymentPlugin.getB2bCustomerObject(this.options.customerInfo));
 
         this.b2bCustomerProvider.create({
-            containerId: 'unzer-payment-b2b-form'
+            containerId: 'unzer-payment-b2b-form',
+            externalCustomerId: this.options.customerInfo.customerNumber
         });
     }
 

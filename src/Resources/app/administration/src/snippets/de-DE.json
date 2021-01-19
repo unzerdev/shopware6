@@ -59,7 +59,8 @@
                 "shipSuccessTitle": "Versandmitteilung",
                 "shipSuccessMessage": "Die Versandmitteilung wurde erfolgreich gesendet.",
                 "shipErrorTitle": "Versandmitteilung",
-                "invoiceNotFoundMessage": "Zu dieser Bestellung wurde keine Rechnung gefunden"
+                "invoiceNotFoundMessage": "Zu dieser Bestellung wurde keine Rechnung gefunden",
+                "couldNotRetrieveMessage": "Die Zahlungsdetails konnten nicht abgerufen werden, bitte prüfen Sie die Logdateien für weitere Informationen."
             }
         },
         "order-list": {

@@ -185,9 +185,14 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         $parsedUrl = parse_url($host->getUrl());
         $context   = $this->router->getContext();
 
-        if ($context !== null) {
-            $context->setHost($parsedUrl['host']);
-            $context->setScheme($parsedUrl['scheme']);
+        if ($context !== null && is_array($parsedUrl)) {
+            if (array_key_exists('host', $parsedUrl) && !empty($parsedUrl['host'])) {
+                $context = $context->setHost($parsedUrl['host']);
+            }
+
+            if (array_key_exists('scheme', $parsedUrl) && !empty($parsedUrl['scheme'])) {
+                $context = $context->setScheme($parsedUrl['scheme']);
+            }
         }
 
         $this->context = $context;
