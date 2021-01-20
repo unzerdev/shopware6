@@ -49,6 +49,9 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
         return Card::getResourceName();
     }
 
+    /**
+     * @throws TransitionMapperException
+     */
     protected function mapForChargeMode(Payment $paymentObject): string
     {
         return parent::getTargetPaymentStatus($paymentObject);

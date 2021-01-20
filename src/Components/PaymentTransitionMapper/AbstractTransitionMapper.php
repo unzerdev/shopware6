@@ -29,7 +29,7 @@ abstract class AbstractTransitionMapper
      */
     public function getTargetPaymentStatus(Payment $paymentObject): string
     {
-        if ($paymentObject->isPending()) {
+        if ($paymentObject->isPending() && !$this->isPendingAllowed()) {
             throw new TransitionMapperException($this->getResourceName());
         }
 
@@ -152,5 +152,10 @@ abstract class AbstractTransitionMapper
     protected function stateMachineTransitionExists(string $stateMachineActionConstantName): bool
     {
         return defined(sprintf('%s::%s', StateMachineTransitionActions::class, $stateMachineActionConstantName));
+    }
+
+    protected function isPendingAllowed(): bool
+    {
+        return false;
     }
 }
