@@ -69,7 +69,9 @@ class UnzerInvoiceFactoringPaymentHandler extends AbstractUnzerPaymentHandler
         $birthday       = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {
-            if (empty($this->unzerCustomerId)) {
+            if (empty($currentRequest->get('unzerCustomerId', ''))
+                && empty($this->unzerCustomer->getBirthDate())
+                && !empty($birthday)) {
                 $this->unzerCustomer->setBirthDate($birthday);
                 $this->unzerCustomer = $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
             }
