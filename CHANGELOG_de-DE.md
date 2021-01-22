@@ -1,3 +1,6 @@
+# 1.0.4
+* Fehler in Invoice (guaranteed/factoring) für B2B-Kunden korrigiert
+
 # 1.0.3
 * Anpassungen des Codestyles und erhöhen der Codequalität
 * Korrektur der fehlenden Nachkommastellen Anzeige im Admin für Erstattung und Einzug
