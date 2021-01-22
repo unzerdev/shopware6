@@ -34,7 +34,7 @@ Component.register('unzer-payment-actions', {
         decimalPrecision: {
             type: Number,
             required: true,
-            default: 2
+            default: 4
         }
     },
 
@@ -57,10 +57,6 @@ Component.register('unzer-payment-actions', {
             }
 
             return 0;
-        },
-
-        decimalQuantity() {
-            return 10 ** this.decimalPrecision;
         }
     },
 

@@ -3,6 +3,8 @@ import template from './unzer-payment-history.html.twig';
 const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
+const UNZER_MAX_DIGITS = 4;
+
 Component.register('unzer-payment-history', {
     template,
 
@@ -17,7 +19,7 @@ Component.register('unzer-payment-history', {
 
     data() {
         return {
-            decimalPrecision: 2
+            decimalPrecision: UNZER_MAX_DIGITS
         };
     },
 
@@ -83,7 +85,7 @@ Component.register('unzer-payment-history', {
         this.orderTransactionRepository.get(this.paymentResource.orderId, Shopware.Context.api, orderTransactionCriteria)
             .then((result) => {
                 if (result && result.order && result.order.currency) {
-                    this.decimalPrecision = result.order.currency.decimalPrecision;
+                    this.decimalPrecision = Math.min(UNZER_MAX_DIGITS, result.order.currency.decimalPrecision)
                 }
             });
     },
