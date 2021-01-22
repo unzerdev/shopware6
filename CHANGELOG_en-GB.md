@@ -1,3 +1,6 @@
+# 1.0.4
+* Error in Invoice (guaranteed/factoring) for B2B customers corrected.
+
 # 1.0.3
 * Adjustments of the code style and increase of the code quality
 * Correction of missing decimal places Display in admin for reimbursement and collection
