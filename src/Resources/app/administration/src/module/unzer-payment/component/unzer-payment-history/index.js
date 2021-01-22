@@ -33,7 +33,7 @@ Component.register('unzer-payment-history', {
 
             Object.values(this.paymentResource.transactions).forEach((transaction) => {
                 const amount = this.$options.filters.currency(
-                    parseFloat(transaction.amount),
+                    (parseFloat(transaction.amount) / (10 ** this.paymentResource.amount.decimalPrecision)),
                     this.paymentResource.currency
                 );
 
