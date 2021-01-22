@@ -1,5 +1,7 @@
 # 1.0.4
+* Handling of status mapping adjusted.
 * Error in Invoice (guaranteed/factoring) for B2B customers corrected.
+* Error in AliPay & WeChatPay corrected.
 
 # 1.0.3
 * Adjustments of the code style and increase of the code quality
