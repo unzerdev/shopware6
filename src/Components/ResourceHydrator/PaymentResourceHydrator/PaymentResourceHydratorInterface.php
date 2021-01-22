@@ -9,5 +9,5 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 
 interface PaymentResourceHydratorInterface
 {
-    public function hydrateArray(Payment $resource, ?OrderTransactionEntity $orderTransaction): array;
+    public function hydrateArray(Payment $payment, ?OrderTransactionEntity $orderTransaction): array;
 }

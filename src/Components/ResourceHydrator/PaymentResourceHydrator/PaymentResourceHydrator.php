@@ -210,10 +210,12 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     {
         $data = $this->hydrateTransactionItem($charge, 'charge');
 
-        if (!empty($charge->getCancelledAmount())) {
-            $amount = $charge->getAmount() * (10 ** $decimalPrecision) - $charge->getCancelledAmount(
-                ) * (10 ** $decimalPrecision);
-            $data['amount'] = $amount / (10 ** $decimalPrecision);
+        if ($charge->getCancelledAmount() !== null) {
+            $chargedAmount   = $charge->getAmount() * (10 ** $decimalPrecision);
+            $cancelledAmount = $charge->getCancelledAmount() * (10 ** $decimalPrecision);
+            $reducedAmount   = $chargedAmount - $cancelledAmount;
+
+            $data['amount'] = $reducedAmount / (10 ** $decimalPrecision);
         }
 
         return $data;
