@@ -1,9 +1,6 @@
 import template from './unzer-payment-history.html.twig';
 
-const { Component } = Shopware;
-const { Criteria } = Shopware.Data;
-
-const UNZER_MAX_DIGITS = 4;
+const { Component, Module } = Shopware;
 
 Component.register('unzer-payment-history', {
     template,
@@ -17,15 +14,27 @@ Component.register('unzer-payment-history', {
         }
     },
 
-    data() {
-        return {
-            decimalPrecision: UNZER_MAX_DIGITS
-        };
-    },
-
     computed: {
+        unzerMaxDigits() {
+            const unzerPaymentModule = Module.getModuleRegistry().get('unzer-payment');
+
+            if(!unzerPaymentModule || !unzerPaymentModule.manifest) {
+                return 4;
+            }
+
+            return unzerPaymentModule.manifest.maxDigits;
+        },
+
         orderTransactionRepository: function () {
             return this.repositoryFactory.create('order_transaction');
+        },
+
+        decimalPrecision() {
+            if(!this.paymentResource || !this.paymentResource.amount || !this.paymentResource.amount.decimalPrecision) {
+                return this.unzerMaxDigits;
+            }
+
+          return Math.min(this.unzerMaxDigits, this.paymentResource.amount.decimalPrecision)
         },
 
         data: function () {
@@ -33,7 +42,7 @@ Component.register('unzer-payment-history', {
 
             Object.values(this.paymentResource.transactions).forEach((transaction) => {
                 const amount = this.$options.filters.currency(
-                    (parseFloat(transaction.amount) / (10 ** this.paymentResource.amount.decimalPrecision)),
+                    this.formatAmount(parseFloat(transaction.amount), this.decimalPrecision),
                     this.paymentResource.currency
                 );
 
@@ -78,18 +87,6 @@ Component.register('unzer-payment-history', {
         }
     },
 
-    created() {
-        const orderTransactionCriteria = new Criteria();
-        orderTransactionCriteria.addAssociation('order.currency');
-
-        this.orderTransactionRepository.get(this.paymentResource.orderId, Shopware.Context.api, orderTransactionCriteria)
-            .then((result) => {
-                if (result && result.order && result.order.currency) {
-                    this.decimalPrecision = Math.min(UNZER_MAX_DIGITS, result.order.currency.decimalPrecision)
-                }
-            });
-    },
-
     methods: {
         transactionTypeRenderer: function (value) {
             switch (value) {
@@ -108,6 +105,10 @@ Component.register('unzer-payment-history', {
 
         reloadPaymentDetails: function () {
             this.$emit('reload');
+        },
+
+        formatAmount(cents, decimalPrecision) {
+            return cents / (10 ** decimalPrecision);
         }
     }
 });

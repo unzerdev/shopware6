@@ -50,7 +50,7 @@ class UnzerPaymentWebhookController extends StorefrontController
         if (!$requestContent || empty($requestContent)) {
             $this->logger->error('The webhook was not executed due to missing data.');
 
-            return new Response('The webhook was not executed due to wrong publicKey.', Response::HTTP_BAD_REQUEST);
+            return new Response('The webhook was not executed due to missing data.', Response::HTTP_BAD_REQUEST);
         }
 
         $webhook = new Webhook($requestContent);

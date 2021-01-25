@@ -193,7 +193,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         return [
             'decimalPrecision' => $decimalPrecision,
             'total'            => (int) round($amount->getTotal() * (10 ** $decimalPrecision)),
-            'canceled'         => (int) round($amount->getCanceled() * (10 ** $decimalPrecision)),
+            'cancelled'        => (int) round($amount->getCanceled() * (10 ** $decimalPrecision)),
             'charged'          => (int) round($amount->getCharged() * (10 ** $decimalPrecision)),
             'remaining'        => (int) round($amount->getRemaining() * (10 ** $decimalPrecision)),
         ];
