@@ -1,6 +1,6 @@
 import template from './unzer-payment-detail.html.twig';
 
-const { Component, Mixin } = Shopware;
+const {Component, Mixin, Module} = Shopware;
 
 Component.register('unzer-payment-detail', {
     template,
@@ -22,6 +22,42 @@ Component.register('unzer-payment-detail', {
         paymentResource: {
             type: Object,
             required: true
+        }
+    },
+
+    computed: {
+        unzerMaxDigits() {
+            const unzerPaymentModule = Module.getModuleRegistry().get('unzer-payment');
+
+            if(!unzerPaymentModule || !unzerPaymentModule.manifest) {
+                return 4;
+            }
+
+            return unzerPaymentModule.manifest.maxDigits;
+        },
+
+        remainingAmount() {
+            if(!this.paymentResource || !this.paymentResource.amount) {
+                return 0;
+            }
+
+            return this.formatAmount(this.paymentResource.amount.remaining, this.paymentResource.amount.decimalPrecision)
+        },
+
+        cancelledAmount() {
+            if(!this.paymentResource || !this.paymentResource.amount) {
+                return 0;
+            }
+
+            return this.formatAmount(this.paymentResource.amount.cancelled, this.paymentResource.amount.decimalPrecision)
+        },
+
+        chargedAmount() {
+            if(!this.paymentResource || !this.paymentResource.amount) {
+                return 0;
+            }
+
+            return this.formatAmount(this.paymentResource.amount.charged, this.paymentResource.amount.decimalPrecision)
         }
     },
 
@@ -56,6 +92,10 @@ Component.register('unzer-payment-detail', {
 
                 this.isLoading = false;
             });
+        },
+
+        formatAmount(cents, decimalPrecision) {
+            return cents / (10 ** Math.min(this.unzerMaxDigits, decimalPrecision));
         }
     }
 });
