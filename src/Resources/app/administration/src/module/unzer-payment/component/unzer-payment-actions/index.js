@@ -34,7 +34,7 @@ Component.register('unzer-payment-actions', {
         decimalPrecision: {
             type: Number,
             required: true,
-            default: 2
+            default: 4
         }
     },
 
@@ -48,19 +48,17 @@ Component.register('unzer-payment-actions', {
         },
 
         maxTransactionAmount() {
+            let amount = 0;
+
             if (this.isRefundPossible) {
-                return this.transactionResource.amount;
+                amount = this.transactionResource.amount;
             }
 
             if (this.isChargePossible) {
-                return this.paymentResource.amount.remaining;
+                amount = this.paymentResource.amount.remaining;
             }
 
-            return 0;
-        },
-
-        decimalQuantity() {
-            return 10 ** this.decimalPrecision;
+            return amount / (10 ** this.paymentResource.amount.decimalPrecision);
         }
     },
 
