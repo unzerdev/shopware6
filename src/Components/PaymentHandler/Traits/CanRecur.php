@@ -47,7 +47,7 @@ trait CanRecur
 
         if ($this->recurring !== null && !empty($this->recurring->getRedirectUrl())) {
             $this->session->set($this->sessionPaymentTypeKey, $this->recurring->getPaymentTypeId());
-            $this->session->set($this->sessionCustomerIdKey, $this->unzerCustomerId);
+            $this->session->set($this->sessionCustomerIdKey, $this->unzerCustomer->getId());
 
             return $this->recurring->getRedirectUrl();
         }

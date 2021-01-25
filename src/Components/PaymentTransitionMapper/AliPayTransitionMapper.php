@@ -18,4 +18,9 @@ class AliPayTransitionMapper extends AbstractTransitionMapper
     {
         return Alipay::getResourceName();
     }
+
+    protected function isPendingAllowed(): bool
+    {
+        return true;
+    }
 }

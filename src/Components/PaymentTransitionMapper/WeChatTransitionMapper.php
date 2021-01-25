@@ -18,4 +18,9 @@ class WeChatTransitionMapper extends AbstractTransitionMapper
     {
         return Wechatpay::getResourceName();
     }
+
+    protected function isPendingAllowed(): bool
+    {
+        return true;
+    }
 }

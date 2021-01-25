@@ -18,4 +18,9 @@ class SofortTransitionMapper extends AbstractTransitionMapper
     {
         return Sofort::getResourceName();
     }
+
+    protected function isPendingAllowed(): bool
+    {
+        return true;
+    }
 }

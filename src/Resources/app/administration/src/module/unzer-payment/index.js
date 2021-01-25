@@ -20,6 +20,7 @@ Module.register('unzer-payment', {
     description: 'unzer-payment.general.descriptionTextModule',
     version: '0.0.1',
     targetVersion: '0.0.1',
+    maxDigits: 4,
 
     snippets: {
         'de-DE': deDE,
