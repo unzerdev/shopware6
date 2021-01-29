@@ -253,7 +253,7 @@ class PaymentInstaller implements InstallerInterface
             'name'              => 'SEPA direct debit (Unzer payments)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA direct debit (Unzer payments)',
+                    'name'        => 'SEPA Lastschrift (Unzer payments)',
                     'description' => 'SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [

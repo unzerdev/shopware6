@@ -46,5 +46,7 @@
                 {% endif %}
             </dd>
         {% endblock %}
+    {% else %}
+        {{ parent() }}
     {% endif %}
 {% endblock %}
