@@ -82,7 +82,7 @@ class UnzerInvoiceSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => json_encode($currentRequest->__toString()),
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
                     'exception'   => $apiException,
                 ]
@@ -98,7 +98,7 @@ class UnzerInvoiceSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => json_encode($currentRequest->__toString()),
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
                     'exception'   => $exception,
                 ]

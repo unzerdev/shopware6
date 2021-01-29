@@ -142,7 +142,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => json_encode($currentRequest->__toString()),
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
                     'exception'   => $apiException,
                 ]
@@ -158,7 +158,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => json_encode($currentRequest->__toString()),
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
                     'exception'   => $exception,
                 ]
@@ -197,7 +197,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'request'     => json_encode($request->__toString()),
+                    'request'     => $this->getLoggableRequest($request),
                     'exception'   => $apiException,
                 ]
             );
@@ -208,7 +208,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'request'     => json_encode($request->__toString()),
+                    'request'     => $this->getLoggableRequest($request),
                     'exception'   => $exception,
                 ]
             );
@@ -290,5 +290,29 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         }
 
         return $this->customerHydrator->hydrateObject($paymentMethodId, $salesChannelContext);
+    }
+
+    protected function getLoggableRequest(Request $request): array
+    {
+        $result = [
+            'request-info' => sprintf('%s %s %s', $request->getMethod(), $request->getRequestUri(), $request->getScheme()) . "\r\n",
+            'header'       => $request->headers->all(),
+            'content'      => $request->getContent(false),
+        ];
+        $cookies = [];
+
+        foreach ($request->cookies->all() as $cookieKey => $cookieValue) {
+            if (is_array($cookieValue)) {
+                $cookies[] = $cookieKey . '=' . json_encode($cookieValue);
+            } elseif (is_scalar($cookieValue)) {
+                $cookies[] = $cookieKey . '=' . $cookieValue;
+            }
+        }
+
+        if (!empty($cookies)) {
+            $result['cookie-header'] = 'Cookie: ' . implode('; ', $cookies) . "\r\n";
+        }
+
+        return $result;
     }
 }

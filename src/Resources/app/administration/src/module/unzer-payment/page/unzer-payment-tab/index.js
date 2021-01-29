@@ -1,11 +1,16 @@
 import template from './unzer-payment-tab.html.twig';
 
-const { Component, StateDeprecated } = Shopware;
+const { Component, Context, Mixin } = Shopware;
+const { Criteria } = Shopware.Data;
 
 Component.register('unzer-payment-tab', {
     template,
 
-    inject: ['UnzerPaymentService'],
+    inject: ['UnzerPaymentService', 'repositoryFactory'],
+
+    mixins: [
+        Mixin.getByName('notification')
+    ],
 
     data() {
         return {
@@ -16,6 +21,12 @@ Component.register('unzer-payment-tab', {
 
     created() {
         this.createdComponent();
+    },
+
+    computed: {
+        orderRepository() {
+            return this.repositoryFactory.create('order');
+        }
     },
 
     watch: {
@@ -30,10 +41,6 @@ Component.register('unzer-payment-tab', {
             this.loadData();
         },
 
-        orderStore() {
-            return StateDeprecated.getStore('order');
-        },
-
         resetDataAttributes() {
             this.paymentResources = [];
             this.isLoading = true;
@@ -46,35 +53,40 @@ Component.register('unzer-payment-tab', {
 
         loadData() {
             const orderId = this.$route.params.id;
+            const criteria = new Criteria();
+            criteria.addAssociation('transactions');
 
-            this.orderStore().getByIdAsync(orderId).then((order) => {
+            this.orderRepository.get(orderId, Context.api, criteria).then((order) => {
                 this.order = order;
 
-                this.order.getAssociation('transactions').getList({}).then((orderTransactions) => {
-                    if (!orderTransactions || !orderTransactions.items) {
+                if (!order.transactions) {
+                    return;
+                }
+
+                order.transactions.forEach((orderTransaction) => {
+                    if (!orderTransaction.customFields) {
                         return;
                     }
 
-                    orderTransactions.items.forEach((orderTransaction) => {
-                        if (!orderTransaction.customFields) {
-                            return;
-                        }
+                    if (!orderTransaction.customFields.unzer_payment_is_transaction
+                        && !orderTransaction.customFields.heidelpay_is_transaction) {
+                        return;
+                    }
 
-                        if (!orderTransaction.customFields.unzer_payment_is_transaction
-                            && !orderTransaction.customFields.heidelpay_is_transaction) {
-                            return;
-                        }
+                    this.UnzerPaymentService.fetchPaymentDetails(orderTransaction.id)
+                        .then((response) => {
+                            this.isLoading = false;
 
-                        this.UnzerPaymentService.fetchPaymentDetails(orderTransaction.id)
-                            .then((response) => {
-                                this.isLoading = false;
-
-                                this.paymentResources.push(response);
-                            })
-                            .catch(() => {
-                                this.isLoading = false;
+                            this.paymentResources.push(response);
+                        })
+                        .catch(() => {
+                            this.createNotificationError({
+                                title: this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage'),
+                                message: this.$tc('unzer-payment.paymentDetails.notifications.couldNotRetrieveMessage')
                             });
-                    });
+
+                            this.isLoading = false;
+                        });
                 });
             });
         }

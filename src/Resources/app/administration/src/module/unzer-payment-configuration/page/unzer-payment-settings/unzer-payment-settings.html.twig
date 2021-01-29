@@ -57,8 +57,8 @@
                                 <sw-form-field-renderer
                                     :config="{
                                         componentName: 'sw-entity-single-select',
-                                        label: getInlineSnippet(getBind(element, config).config.label),
-                                        helpText: getInlineSnippet(getBind(element, config).config.helpText),
+                                        label: getInlineSnippet(getElementBind(getBind(element, config)).config.label),
+                                        helpText: getInlineSnippet(getElementBind(getBind(element, config)).config.helpText),
                                         entity: 'state_machine_state',
                                         criteria: getDeliveryStatusCriteria(),
                                     }"
@@ -67,7 +67,7 @@
                                 </sw-form-field-renderer>
 
                                 <sw-form-field-renderer
-                                    v-bind="getElementBind(element)"
+                                    v-bind="getElementBind(getBind(element, config))"
                                     v-model="config[element.name]"
                                     v-else>
                                 </sw-form-field-renderer>

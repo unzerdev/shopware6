@@ -1,6 +1,6 @@
 # UnzerPayment
 
-Unzer payment integration for Shopware 6.2 including the following payment methods:
+Unzer payment integration for Shopware 6 including the following payment methods:
 * Alipay
 * Credit Card
 * EPS
@@ -16,6 +16,8 @@ Unzer payment integration for Shopware 6.2 including the following payment metho
 * Unzer Invoice B2C / B2B (secured)
 * Unzer Installment (secured)
 * WeChat Pay
+
+The plugin is compatible with Shopware versions **6.2.X** to **6.3.4.X**
 
 ## Installation
 ### For production

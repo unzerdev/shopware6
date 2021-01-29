@@ -59,7 +59,8 @@
                 "shipSuccessTitle": "Shipping notice",
                 "shipSuccessMessage": "The shipping notification was successfully sent.",
                 "shipErrorTitle": "Shipping notice",
-                "invoiceNotFoundMessage": "No invoice was found for this order."
+                "invoiceNotFoundMessage": "No invoice was found for this order.",
+                "couldNotRetrieveMessage": "The payment details could not be retrieved, please check the log files for more information."
             }
         },
         "order-list": {
