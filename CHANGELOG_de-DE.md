@@ -1,5 +1,5 @@
 # 1.0.4
-* Handhabung des Statusmappings angepasst.
+* Verarbeitung des Status-Mappings angepasst
 * Fehler in Invoice (guaranteed/factoring) für B2B-Kunden korrigiert
 * Fehler in AliPay & WeChatPay korrigiert
 * Fehler in der Nachkommastellen-Anzeige in der Administration behoben
