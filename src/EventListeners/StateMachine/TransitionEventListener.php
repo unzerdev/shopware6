@@ -91,7 +91,7 @@ class TransitionEventListener implements EventSubscriberInterface
         $orderTransactions = $order->getTransactions();
 
         if ($order->getDocuments() !== null) {
-            $invoiceId = $this->getInvoiceDocumentId($order->getDocuments());
+            $invoiceId = $this->getInvoiceDocumentNumber($order->getDocuments());
         }
 
         if ($orderTransactions !== null) {
@@ -172,7 +172,7 @@ class TransitionEventListener implements EventSubscriberInterface
         return $this->orderRepository->search($criteria, $transitionEvent->getContext())->first();
     }
 
-    private function getInvoiceDocumentId(DocumentCollection $documents): string
+    private function getInvoiceDocumentNumber(DocumentCollection $documents): string
     {
         $firstDocument = $documents->filter(static function (DocumentEntity $entity) {
             if ($entity->getDocumentType() !== null && $entity->getDocumentType()->getTechnicalName() === 'invoice') {

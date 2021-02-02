@@ -28,9 +28,7 @@ class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
         $config             = $this->configReader->read($orderEntity->getSalesChannelId());
         $configuredStatusId = $config->get(ConfigReader::CONFIG_KEY_SHIPPING_STATUS);
 
-        if (empty($configuredStatusId) || $deliveryState->getId() !== $configuredStatusId) {
-            return false;
-        }
+        return !(empty($configuredStatusId) || $deliveryState->getId() !== $configuredStatusId);
     }
 
     public function hasInvoiceDocument(OrderEntity $orderEntity): bool
