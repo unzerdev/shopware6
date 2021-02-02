@@ -82,6 +82,12 @@ class TransitionEventListener implements EventSubscriberInterface
             return;
         }
 
+        if (!$this->automaticShippingValidator->hasInvoiceDocument($order)) {
+            $this->logger->error(sprintf('Error during automatic shipping validation for order [%s]: No invoice could be found', $order->getOrderNumber()));
+
+            return;
+        }
+
         $orderTransactions = $order->getTransactions();
 
         if ($order->getDocuments() !== null) {
@@ -92,8 +98,14 @@ class TransitionEventListener implements EventSubscriberInterface
             $firstTransaction = $orderTransactions->first();
         }
 
-        if (empty($firstTransaction) || empty($invoiceId)) {
-            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice or orderTransaction could not be found', $order->getOrderNumber()));
+        if (empty($firstTransaction)) {
+            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: orderTransaction could not be found', $order->getOrderNumber()));
+
+            return;
+        }
+
+        if (empty($invoiceId)) {
+            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice could not be found', $order->getOrderNumber()));
 
             return;
         }
@@ -104,6 +116,7 @@ class TransitionEventListener implements EventSubscriberInterface
             $this->setCustomFields($event->getContext(), $firstTransaction);
 
             $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $event->getContext()));
+            $this->logger->info(sprintf('The automatic shipping notification for order [%s] was executed', $order->getOrderNumber()));
         } catch (RuntimeException $exception) {
             $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                 'trace' => $exception->getTrace(),

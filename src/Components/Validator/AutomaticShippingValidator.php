@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\Validator;
 
-use Shopware\Core\Checkout\Document\DocumentCollection;
 use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
@@ -32,19 +31,33 @@ class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
         if (empty($configuredStatusId) || $deliveryState->getId() !== $configuredStatusId) {
             return false;
         }
+    }
 
-        $orderTransaction = $orderEntity->getTransactions()->first();
+    public function hasInvoiceDocument(OrderEntity $orderEntity): bool
+    {
+        $orderTransactions = $orderEntity->getTransactions();
 
-        if (!$orderTransaction || !in_array($orderTransaction->getPaymentMethodId(), self::HANDLED_PAYMENT_METHODS, false)) {
+        if ($orderTransactions === null) {
             return false;
         }
 
-        return $this->hasInvoiceDocument($orderEntity->getDocuments());
-    }
+        $firstOrderTransaction = $orderTransactions->first();
 
-    private function hasInvoiceDocument(DocumentCollection $documents): bool
-    {
+        if (!$firstOrderTransaction || !in_array($firstOrderTransaction->getPaymentMethodId(), self::HANDLED_PAYMENT_METHODS, false)) {
+            return false;
+        }
+
+        $documents = $orderEntity->getDocuments();
+
+        if (empty($documents)) {
+            return false;
+        }
+
         return $documents->filter(static function (DocumentEntity $entity) {
+            if (!$entity->getDocumentType()) {
+                return null;
+            }
+
             if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
                 return $entity;
             }
