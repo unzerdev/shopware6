@@ -130,7 +130,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 continue;
             }
 
-            $data['transactions'][$this->getTransactionKey($charge)] = $this->hydrateCharge($charge, $decimalPrecision);
+            $data['transactions'][$this->getTransactionKey($charge)] = $this->hydrateTransactionItem($charge, 'charge', $decimalPrecision);
 
             /** @var Cancellation $lazyCancellation */
             foreach ($charge->getCancellations() as $lazyCancellation) {
@@ -208,21 +208,6 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         }
 
         return sprintf('%s_%s', $date, $item->getId());
-    }
-
-    protected function hydrateCharge(Charge $charge, int $decimalPrecision): array
-    {
-        $data = $this->hydrateTransactionItem($charge, 'charge', $decimalPrecision);
-
-        if ($charge->getCancelledAmount() !== null) {
-            $chargedAmount   = (int) round($charge->getAmount() * (10 ** $decimalPrecision));
-            $cancelledAmount = (int) round($charge->getCancelledAmount() * (10 ** $decimalPrecision));
-            $reducedAmount   = $chargedAmount - $cancelledAmount;
-
-            $data['amount'] = $reducedAmount;
-        }
-
-        return $data;
     }
 
     protected function hydrateTransactionItem(AbstractTransactionType $item, string $type, int $decimalPrecision): array
