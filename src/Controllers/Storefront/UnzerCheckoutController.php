@@ -1,23 +1,16 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Storefront;
 
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
-use Shopware\Core\Checkout\Order\SalesChannel\OrderService;
-use Shopware\Core\Checkout\Payment\PaymentService;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\CheckoutController;
 use Shopware\Storefront\Controller\StorefrontController;
-use Shopware\Storefront\Page\Checkout\Cart\CheckoutCartPageLoader;
-use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoader;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoader;
-use Shopware\Storefront\Page\Checkout\Offcanvas\OffcanvasCartPageLoader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
@@ -25,7 +18,7 @@ use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessExcepti
 /**
  * @RouteScope(scopes={"storefront"})
  */
-class UnzerCheckoutController extends CheckoutController
+class UnzerCheckoutController extends StorefrontController
 {
     /** @var CheckoutController */
     protected $innerService;
