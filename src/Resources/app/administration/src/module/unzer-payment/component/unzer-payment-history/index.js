@@ -41,10 +41,21 @@ Component.register('unzer-payment-history', {
             const data = [];
 
             Object.values(this.paymentResource.transactions).forEach((transaction) => {
-                const amount = this.$options.filters.currency(
+                let amount = this.$options.filters.currency(
                     this.formatAmount(parseFloat(transaction.amount), this.decimalPrecision),
                     this.paymentResource.currency
                 );
+
+                window.console.log(transaction);
+
+                if(transaction.processedAmount) {
+                    const processedAmount = this.$options.filters.currency(
+                        this.formatAmount(parseFloat(transaction.processedAmount), this.decimalPrecision),
+                        this.paymentResource.currency
+                    );
+
+                    amount += ` ( -${processedAmount})`;
+                }
 
                 const date = this.$options.filters.date(
                     transaction.date,

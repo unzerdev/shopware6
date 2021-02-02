@@ -39,11 +39,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
             $authorization = $payment->getAuthorization();
 
             if ($authorization instanceof Authorization) {
-                $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateTransactionItem(
-                    $authorization,
-                    'authorization',
-                    $decimalPrecision
-                );
+                $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateAuthorize($authorization, $decimalPrecision);
             }
         } catch (Throwable $throwable) {
             $this->logResourceError($throwable);
@@ -130,7 +126,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 continue;
             }
 
-            $data['transactions'][$this->getTransactionKey($charge)] = $this->hydrateTransactionItem($charge, 'charge', $decimalPrecision);
+            $data['transactions'][$this->getTransactionKey($charge)] = $this->hydrateCharge($charge, $decimalPrecision);
 
             /** @var Cancellation $lazyCancellation */
             foreach ($charge->getCancellations() as $lazyCancellation) {
@@ -208,6 +204,46 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         }
 
         return sprintf('%s_%s', $date, $item->getId());
+    }
+
+    protected function hydrateCharge(Charge $charge, int $decimalPrecision): array
+    {
+        $data = $this->hydrateTransactionItem($charge, 'charge', $decimalPrecision);
+
+        if ($charge->getCancelledAmount() !== null) {
+            $chargedAmount   = (int) round($charge->getAmount() * (10 ** $decimalPrecision));
+            $cancelledAmount = (int) round($charge->getCancelledAmount() * (10 ** $decimalPrecision));
+            $reducedAmount   = $chargedAmount - $cancelledAmount;
+
+            $data['processedAmount'] = $cancelledAmount;
+            $data['remainingAmount'] = $reducedAmount;
+        }
+
+        return $data;
+    }
+
+    protected function hydrateAuthorize(Authorization $authorization, int $decimalPrecision): array
+    {
+        $data = $this->hydrateTransactionItem(
+            $authorization,
+            'authorization',
+            $decimalPrecision
+        );
+
+        $payment = $authorization->getPayment();
+
+        if ($payment !== null) {
+            $amount = $payment->getAmount();
+
+            $authorizedAmount = (int) round($authorization->getAmount() * (10 ** $decimalPrecision));
+            $remainingAmount  = (int) round($amount->getRemaining() * (10 ** $decimalPrecision));
+            $reducedAmount    = $authorizedAmount - $remainingAmount;
+
+            $data['processedAmount'] = $reducedAmount;
+            $data['remainingAmount'] = $remainingAmount;
+        }
+
+        return $data;
     }
 
     protected function hydrateTransactionItem(AbstractTransactionType $item, string $type, int $decimalPrecision): array
