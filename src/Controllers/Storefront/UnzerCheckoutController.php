@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace UnzerPayment6\Controllers\Storefront;
 
@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\CheckoutController;
+use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Page\Checkout\Cart\CheckoutCartPageLoader;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoader;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoader;
@@ -38,29 +39,31 @@ class UnzerCheckoutController extends CheckoutController
     public function __construct(
         CheckoutController $innerService,
         LoggerInterface $logger,
-        CartService $cartService,
-        CheckoutCartPageLoader $cartPageLoader,
-        CheckoutConfirmPageLoader $confirmPageLoader,
-        CheckoutFinishPageLoader $finishPageLoader,
-        OrderService $orderService,
-        PaymentService $paymentService,
-        OffcanvasCartPageLoader $offcanvasCartPageLoader,
-        EntityRepositoryInterface $orderRepository
+        CheckoutFinishPageLoader $finishPageLoader
     ) {
         $this->innerService     = $innerService;
         $this->logger           = $logger;
         $this->finishPageLoader = $finishPageLoader;
+    }
 
-        parent::__construct(
-            $cartService,
-            $cartPageLoader,
-            $confirmPageLoader,
-            $finishPageLoader,
-            $orderService,
-            $paymentService,
-            $offcanvasCartPageLoader,
-            $orderRepository
-        );
+    public function cartPage(Request $request, SalesChannelContext $context): Response
+    {
+        return $this->innerService->cartPage($request, $context);
+    }
+
+    public function confirmPage(Request $request, SalesChannelContext $context): Response
+    {
+        return $this->innerService->confirmPage($request, $context);
+    }
+
+    public function info(Request $request, SalesChannelContext $context): Response
+    {
+        return $this->innerService->info($request, $context);
+    }
+
+    public function offcanvas(Request $request, SalesChannelContext $context): Response
+    {
+        return $this->innerService->offcanvas($request, $context);
     }
 
     /**
@@ -102,7 +105,10 @@ class UnzerCheckoutController extends CheckoutController
                     $this->trans(
                         'UnzerPayment.finishPaymentFailed',
                         [
-                            '%editOrderUrl%' => $this->generateUrl('frontend.account.edit-order.page', ['orderId' => $request->get('orderId')]),
+                            '%editOrderUrl%' => $this->generateUrl(
+                                'frontend.account.edit-order.page',
+                                ['orderId' => $request->get('orderId')]
+                            ),
                         ]
                     )
                 )
