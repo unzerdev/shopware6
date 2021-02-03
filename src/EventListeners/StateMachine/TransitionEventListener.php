@@ -91,7 +91,7 @@ class TransitionEventListener implements EventSubscriberInterface
         $orderTransactions = $order->getTransactions();
 
         if ($order->getDocuments() !== null) {
-            $invoiceId = $this->getInvoiceDocumentNumber($order->getDocuments());
+            $invoiceNumber = $this->getInvoiceDocumentNumber($order->getDocuments());
         }
 
         if ($orderTransactions !== null) {
@@ -104,7 +104,7 @@ class TransitionEventListener implements EventSubscriberInterface
             return;
         }
 
-        if (empty($invoiceId)) {
+        if (empty($invoiceNumber)) {
             $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice could not be found', $order->getOrderNumber()));
 
             return;
@@ -112,11 +112,11 @@ class TransitionEventListener implements EventSubscriberInterface
 
         try {
             $client = $this->clientFactory->createClient($order->getSalesChannelId());
-            $client->ship($firstTransaction->getId(), $invoiceId);
+            $client->ship($firstTransaction->getId(), $invoiceNumber);
             $this->setCustomFields($event->getContext(), $firstTransaction);
 
-            $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $event->getContext()));
-            $this->logger->info(sprintf('The automatic shipping notification for order [%s] was executed', $order->getOrderNumber()));
+            $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceNumber, $event->getContext()));
+            $this->logger->info(sprintf('The automatic shipping notification for order [%s] was executed with invoice [%s]', $order->getOrderNumber(), $invoiceNumber));
         } catch (RuntimeException $exception) {
             $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                 'trace' => $exception->getTrace(),
