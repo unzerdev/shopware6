@@ -18,9 +18,4 @@ class GiropayTransitionMapper extends AbstractTransitionMapper
     {
         return Giropay::getResourceName();
     }
-
-    protected function isPendingAllowed(): bool
-    {
-        return true;
-    }
 }

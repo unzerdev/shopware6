@@ -18,9 +18,4 @@ class EpsTransitionMapper extends AbstractTransitionMapper
     {
         return EPS::getResourceName();
     }
-
-    protected function isPendingAllowed(): bool
-    {
-        return true;
-    }
 }

@@ -18,9 +18,4 @@ class PrzelewyTransitionMapper extends AbstractTransitionMapper
     {
         return Przelewy24::getResourceName();
     }
-
-    protected function isPendingAllowed(): bool
-    {
-        return true;
-    }
 }

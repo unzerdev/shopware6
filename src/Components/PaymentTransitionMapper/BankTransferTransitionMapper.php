@@ -18,9 +18,4 @@ class BankTransferTransitionMapper extends AbstractTransitionMapper
     {
         return PIS::getResourceName();
     }
-
-    protected function isPendingAllowed(): bool
-    {
-        return true;
-    }
 }
