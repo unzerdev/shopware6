@@ -58,6 +58,10 @@ Component.register('unzer-payment-actions', {
                 amount = this.paymentResource.amount.remaining;
             }
 
+            if (this.transactionResource.remainingAmount) {
+                amount = this.transactionResource.remainingAmount;
+            }
+
             return amount / (10 ** this.paymentResource.amount.decimalPrecision);
         }
     },
