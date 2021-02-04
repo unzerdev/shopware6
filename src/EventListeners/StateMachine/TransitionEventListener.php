@@ -82,28 +82,41 @@ class TransitionEventListener implements EventSubscriberInterface
             return;
         }
 
+        if (!$this->automaticShippingValidator->hasInvoiceDocument($order)) {
+            $this->logger->error(sprintf('Error during automatic shipping validation for order [%s]: No invoice could be found', $order->getOrderNumber()));
+
+            return;
+        }
+
         $orderTransactions = $order->getTransactions();
 
         if ($order->getDocuments() !== null) {
-            $invoiceId = $this->getInvoiceDocumentId($order->getDocuments());
+            $invoiceNumber = $this->getInvoiceDocumentNumber($order->getDocuments());
         }
 
         if ($orderTransactions !== null) {
             $firstTransaction = $orderTransactions->first();
         }
 
-        if (empty($firstTransaction) || empty($invoiceId)) {
-            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice or orderTransaction could not be found', $order->getOrderNumber()));
+        if (empty($firstTransaction)) {
+            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: orderTransaction could not be found', $order->getOrderNumber()));
+
+            return;
+        }
+
+        if (empty($invoiceNumber)) {
+            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice could not be found', $order->getOrderNumber()));
 
             return;
         }
 
         try {
             $client = $this->clientFactory->createClient($order->getSalesChannelId());
-            $client->ship($firstTransaction->getId(), $invoiceId);
+            $client->ship($firstTransaction->getId(), $invoiceNumber);
             $this->setCustomFields($event->getContext(), $firstTransaction);
 
-            $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $event->getContext()));
+            $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceNumber, $event->getContext()));
+            $this->logger->info(sprintf('The automatic shipping notification for order [%s] was executed with invoice [%s]', $order->getOrderNumber(), $invoiceNumber));
         } catch (RuntimeException $exception) {
             $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                 'trace' => $exception->getTrace(),
@@ -159,7 +172,7 @@ class TransitionEventListener implements EventSubscriberInterface
         return $this->orderRepository->search($criteria, $transitionEvent->getContext())->first();
     }
 
-    private function getInvoiceDocumentId(DocumentCollection $documents): string
+    private function getInvoiceDocumentNumber(DocumentCollection $documents): string
     {
         $firstDocument = $documents->filter(static function (DocumentEntity $entity) {
             if ($entity->getDocumentType() !== null && $entity->getDocumentType()->getTechnicalName() === 'invoice') {

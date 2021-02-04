@@ -1,6 +1,7 @@
 # 1.0.4
-* Error in Invoice (guaranteed/factoring) for B2B customers corrected.
+* Error in Invoice (guaranteed/factoring) for B2B customers corrected
 * Error in the decimal place display in the administration fixed
+* Correction of the missing display of the total amount in the checkout
 
 # 1.0.3
 * Adjustments of the code style and increase of the code quality
