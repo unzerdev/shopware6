@@ -71,7 +71,9 @@ class UnzerPrePaymentPaymentHandler extends AbstractUnzerPaymentHandler
             $this->paymentType = $this->unzerClient->createPaymentType(new Prepayment());
 
             $returnUrl = $this->charge($transaction->getReturnUrl());
-            $this->saveTransferInfo($transaction->getOrderTransaction()->getId(), $salesChannelContext->getContext());
+
+            $orderTransaction = $transaction->getOrderTransaction();
+            $this->saveTransferInfo($orderTransaction->getId(), $orderTransaction->getVersionId(), $salesChannelContext->getContext());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
