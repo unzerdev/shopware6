@@ -18,9 +18,4 @@ class IdealTransitionMapper extends AbstractTransitionMapper
     {
         return Ideal::getResourceName();
     }
-
-    protected function isPendingAllowed(): bool
-    {
-        return true;
-    }
 }

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
+use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
+use heidelpayPHP\Resources\PaymentTypes\InvoiceFactoring;
 use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
+use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 
 class InvoiceGuaranteedTransitionMapper extends AbstractTransitionMapper
 {
@@ -17,13 +20,29 @@ class InvoiceGuaranteedTransitionMapper extends AbstractTransitionMapper
         return $paymentType instanceof InvoiceGuaranteed;
     }
 
-    protected function getResourceName(): string
+    public function getTargetPaymentStatus(Payment $paymentObject): string
     {
-        return InvoiceGuaranteed::getResourceName();
+        if ($paymentObject->isCanceled()) {
+            $status = $this->checkForRefund($paymentObject);
+
+            if ($status !== self::INVALID_TRANSITION) {
+                return $status;
+            }
+
+            $status = $this->checkForCancellation($paymentObject);
+
+            if ($status !== self::INVALID_TRANSITION) {
+                return $status;
+            }
+
+            throw new TransitionMapperException($this->getResourceName());
+        }
+
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 
-    protected function isPendingAllowed(): bool
+    protected function getResourceName(): string
     {
-        return true;
+        return InvoiceFactoring::getResourceName();
     }
 }

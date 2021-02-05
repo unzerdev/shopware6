@@ -12,6 +12,7 @@ use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMa
 use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use UnzerPayment6\Components\PaymentTransitionMapper\Traits\HasBookingMode;
 
 class CreditCardTransitionMapper extends AbstractTransitionMapper
@@ -36,10 +37,8 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
     {
         $bookingMode = $this->getBookingMode($paymentObject);
 
-        if ($bookingMode !== self::DEFAULT_MODE
-            && $this->stateMachineTransitionExists(AbstractTransitionMapper::CONST_KEY_AUTHORIZE)
-            && $paymentObject->isPending() && !empty($paymentObject->getAuthorization())) {
-            return constant(sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
+        if ($bookingMode !== self::DEFAULT_MODE) {
+            return $this->mapForAuthorizeMode($paymentObject);
         }
 
         return parent::getTargetPaymentStatus($paymentObject);
@@ -50,8 +49,30 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
         return Card::getResourceName();
     }
 
-    protected function isPendingAllowed(): bool
+    protected function mapForAuthorizeMode(Payment $paymentObject): string
     {
-        return true;
+        if ($paymentObject->isCanceled()) {
+            $status = $this->checkForRefund($paymentObject);
+
+            if ($status !== self::INVALID_TRANSITION) {
+                return $status;
+            }
+
+            $status = $this->checkForCancellation($paymentObject);
+
+            if ($status !== self::INVALID_TRANSITION) {
+                return $status;
+            }
+
+            throw new TransitionMapperException($this->getResourceName());
+        }
+
+        if ($this->stateMachineTransitionExists(AbstractTransitionMapper::CONST_KEY_AUTHORIZE)) {
+            if ($paymentObject->isPending() && !empty($paymentObject->getAuthorization())) {
+                return constant(sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
+            }
+        }
+
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 }
