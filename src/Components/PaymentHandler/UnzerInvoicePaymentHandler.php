@@ -68,7 +68,9 @@ class UnzerInvoicePaymentHandler extends AbstractUnzerPaymentHandler
 
         try {
             $returnUrl = $this->charge($transaction->getReturnUrl());
-            $this->saveTransferInfo($transaction->getOrderTransaction()->getId(), $salesChannelContext->getContext());
+
+            $orderTransaction = $transaction->getOrderTransaction();
+            $this->saveTransferInfo($orderTransaction->getId(), $orderTransaction->getVersionId(), $salesChannelContext->getContext());
 
             return new RedirectResponse($returnUrl);
         } catch (HeidelpayApiException $apiException) {
