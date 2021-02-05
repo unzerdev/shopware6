@@ -54,10 +54,15 @@ SQL
             try {
                 $connection->exec(<<<SQL
                 ALTER TABLE unzer_payment_transfer_info
-                ADD CONSTRAINT `fk.unzer_payment_transfer_info.transaction_id`
-                    FOREIGN KEY (`transaction_id`)
-                    REFERENCES `order_transaction` (`id`)
-                    ON DELETE RESTRICT ON UPDATE CASCADE
+                    ADD `transaction_version_id` BINARY(16) NOT NULL AFTER `transaction_id`;
+
+                SET FOREIGN_KEY_CHECKS = 0;
+                ALTER TABLE unzer_payment_transfer_info
+                    ADD CONSTRAINT `fk.unzer_payment_transfer_info.transaction_id`
+                        FOREIGN KEY (`transaction_id`, `transaction_version_id`)
+                        REFERENCES `order_transaction`(`id`, `version_id`)
+                        ON DELETE CASCADE ON UPDATE CASCADE;
+                SET FOREIGN_KEY_CHECKS = 1;
 SQL
                 );
             } catch (\Throwable $t) {
