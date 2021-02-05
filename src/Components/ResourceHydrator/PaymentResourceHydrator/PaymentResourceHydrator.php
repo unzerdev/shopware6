@@ -39,11 +39,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
             $authorization = $payment->getAuthorization();
 
             if ($authorization instanceof Authorization) {
-                $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateTransactionItem(
-                    $authorization,
-                    'authorization',
-                    $decimalPrecision
-                );
+                $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateAuthorize($authorization, $decimalPrecision);
             }
         } catch (Throwable $throwable) {
             $this->logResourceError($throwable);
@@ -219,7 +215,32 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
             $cancelledAmount = (int) round($charge->getCancelledAmount() * (10 ** $decimalPrecision));
             $reducedAmount   = $chargedAmount - $cancelledAmount;
 
-            $data['amount'] = $reducedAmount;
+            $data['processedAmount'] = $cancelledAmount;
+            $data['remainingAmount'] = $reducedAmount;
+        }
+
+        return $data;
+    }
+
+    protected function hydrateAuthorize(Authorization $authorization, int $decimalPrecision): array
+    {
+        $data = $this->hydrateTransactionItem(
+            $authorization,
+            'authorization',
+            $decimalPrecision
+        );
+
+        $payment = $authorization->getPayment();
+
+        if ($payment !== null) {
+            $amount = $payment->getAmount();
+
+            $authorizedAmount = (int) round($authorization->getAmount() * (10 ** $decimalPrecision));
+            $remainingAmount  = (int) round($amount->getRemaining() * (10 ** $decimalPrecision));
+            $reducedAmount    = $authorizedAmount - $remainingAmount;
+
+            $data['processedAmount'] = $reducedAmount;
+            $data['remainingAmount'] = $remainingAmount;
         }
 
         return $data;
