@@ -7,11 +7,11 @@ namespace UnzerPayment6\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
-class Migration1605179799ForeignKeyChanges extends MigrationStep
+class Migration1612513284ForeignKeyChanges extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1605179799;
+        return 1612513284;
     }
 
     public function update(Connection $connection): void
