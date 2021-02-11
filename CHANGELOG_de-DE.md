@@ -1,3 +1,8 @@
+# 1.0.4
+* Fehler in Invoice (guaranteed/factoring) für B2B-Kunden korrigiert
+* Fehler in der Nachkommastellen-Anzeige in der Administration behoben
+* Korrektur der fehlenden Anzeige der Gesamtsumme im Checkout
+
 # 1.0.3
 * Anpassungen des Codestyles und erhöhen der Codequalität
 * Korrektur der fehlenden Nachkommastellen Anzeige im Admin für Erstattung und Einzug

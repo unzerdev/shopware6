@@ -6,6 +6,7 @@ namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
+use heidelpayPHP\Resources\PaymentTypes\InvoiceFactoring;
 use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 
@@ -42,6 +43,6 @@ class InvoiceGuaranteedTransitionMapper extends AbstractTransitionMapper
 
     protected function getResourceName(): string
     {
-        return InvoiceGuaranteed::getResourceName();
+        return InvoiceFactoring::getResourceName();
     }
 }
