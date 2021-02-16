@@ -18,12 +18,15 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
+use Shopware\Core\Checkout\Shipping\ShippingMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 use UnzerPayment6\UnzerPayment6;
 
 class BasketResourceHydrator implements ResourceHydratorInterface
 {
+    private const UNDEFINED_SHIPPING_METHOD_NAME = 'UndefinedShippingMethod';
+
     /**
      * {@inheritdoc}
      */
@@ -42,7 +45,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         }
 
         /** @var int $currencyPrecision */
-        $currencyPrecision = $order->getCurrency() !== null ? min($order->getCurrency()->getDecimalPrecision(), UnzerPayment6::MAX_DECIMAL_PRECISION) : UnzerPayment6::MAX_DECIMAL_PRECISION;
+        $currencyPrecision = $order->getCurrency() !== null ? min(
+            $order->getCurrency()->getDecimalPrecision(),
+            UnzerPayment6::MAX_DECIMAL_PRECISION
+        ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
 
         if ($transaction instanceof AsyncPaymentTransactionStruct) {
             $transactionId = $transaction->getOrderTransaction()->getId();
@@ -74,7 +80,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $order,
             $unzerBasket,
             $currencyPrecision,
-            $channelContext->getShippingMethod()->getName()
+            $this->getShippingMethodName($channelContext->getShippingMethod())
         );
 
         $unzerBasket->setAmountTotalDiscount(round($amountTotalDiscount, $currencyPrecision));
@@ -314,5 +320,20 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         }
 
         return $type === CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE;
+    }
+
+    protected function getShippingMethodName(ShippingMethodEntity $shippingMethod): string
+    {
+        if (!empty($shippingMethod->getName())) {
+            return $shippingMethod->getName();
+        }
+
+        if (!empty($shippingMethod->getTranslated())
+            && array_key_exists('name', $shippingMethod->getTranslated())
+            && !empty($shippingMethod->getTranslated()['name'])) {
+            return $shippingMethod->getTranslated()['name'];
+        }
+
+        return self::UNDEFINED_SHIPPING_METHOD_NAME;
     }
 }
