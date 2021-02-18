@@ -54,23 +54,35 @@
 
                         <template #card-element="{ element, config }">
                             <div>
-                                <sw-form-field-renderer
-                                    :config="{
-                                        componentName: 'sw-entity-single-select',
-                                        label: getInlineSnippet(getElementBind(getBind(element, config)).config.label),
-                                        helpText: getInlineSnippet(getElementBind(getBind(element, config)).config.helpText),
-                                        entity: 'state_machine_state',
-                                        criteria: getDeliveryStatusCriteria(),
-                                    }"
-                                    v-model="config[element.name]"
-                                    v-if="element.name.endsWith('statusForAutomaticShippingNotification')">
-                                </sw-form-field-renderer>
+                                <sw-inherit-wrapper v-model="$refs.systemConfig.actualConfigData[$refs.systemConfig.currentSalesChannelId][element.name]"
+                                                    v-bind="$refs.systemConfig.getInheritWrapperBind(element)"
+                                                    :hasParent="$refs.systemConfig.isNotDefaultSalesChannel"
+                                                    :inheritedValue="$refs.systemConfig.getInheritedValue(element)"
+                                                    :class="'sw-system-config--field-' + kebabCase(getElementBind(element).name)">
+                                    <template #content="props">
+                                        <sw-form-field-renderer
+                                            :config="{
+                                                componentName: 'sw-entity-single-select',
+                                                label: getInlineSnippet(getElementBind(getBind(element, config)).config.label),
+                                                helpText: getInlineSnippet(getElementBind(getBind(element, config)).config.helpText),
+                                                entity: 'state_machine_state',
+                                                criteria: getDeliveryStatusCriteria(),
+                                            }"
+                                            v-model="config[element.name]"
+                                            v-if="element.name.endsWith('statusForAutomaticShippingNotification')">
+                                        </sw-form-field-renderer>
 
-                                <sw-form-field-renderer
-                                    v-bind="getElementBind(getBind(element, config))"
-                                    v-model="config[element.name]"
-                                    v-else>
-                                </sw-form-field-renderer>
+                                        <sw-form-field-renderer
+                                            v-bind="$refs.systemConfig.getElementBind(element, props)"
+                                            :disabled="props.isInherited"
+                                            :value="props.currentValue"
+                                            :key="props.isInheritField + props.isInherited"
+                                            @input="props.updateCurrentValue"
+                                            @change="props.updateCurrentValue"
+                                            v-else>
+                                        </sw-form-field-renderer>
+                                    </template>
+                                </sw-inherit-wrapper>
                             </div>
                         </template>
                     </sw-system-config>
