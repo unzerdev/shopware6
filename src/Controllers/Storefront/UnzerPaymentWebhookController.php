@@ -10,7 +10,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 use Traversable;
@@ -51,14 +50,16 @@ class UnzerPaymentWebhookController extends StorefrontController
         if (!$requestContent || empty($requestContent)) {
             $this->logger->error('The webhook was not executed due to missing data.');
 
-            return new Response();
+            return new Response('The webhook was not executed due to missing data.', Response::HTTP_BAD_REQUEST);
         }
 
         $webhook = new Webhook($requestContent);
         $config  = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
         if ($webhook->getPublicKey() !== $config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY)) {
-            throw new UnauthorizedHttpException('Unzer Webhooks');
+            $this->logger->error('The webhook was not executed due to wrong publicKey.');
+
+            return new Response('The webhook was not executed due to wrong publicKey.', Response::HTTP_FORBIDDEN);
         }
 
         foreach ($this->handlers as $handler) {
