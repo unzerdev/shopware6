@@ -2,7 +2,7 @@
 * Fehler in Invoice (guaranteed/factoring) für B2B-Kunden korrigiert
 * Fehler in der Nachkommastellen-Anzeige in der Administration behoben
 * Korrektur der fehlenden Anzeige der Gesamtsumme im Checkout
-Korrektur eines Fehlers in der Administration bei der Bearbeitung einer Bestellung
+* Korrektur eines Fehlers in der Administration bei der Bearbeitung einer Bestellung
 * Kompatibilität mit shopware 6.3.5.1 hergestellt
 
 # 1.0.3
