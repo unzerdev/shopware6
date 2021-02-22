@@ -16,7 +16,7 @@ Unzer payment integration for Shopware 6 including the following payment methods
 * Unzer direct debit (secured)
 * WeChat Pay
 
-Regarding plugin compatibility, please take a look at the [Shopware store page](https://store.shopware.com/unzer48059319318f/unzer-payments-fuer-shopware-6.html).
+Regarding plugin compatibility, please take a look at the [Shopware store page](https://store.shopware.com/en/unzer48059319318f/unzer-payments-for-shopware-6.html).
 
 ## Installation
 ### For production
