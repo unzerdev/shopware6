@@ -9,15 +9,22 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelperInterface;
 
 class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
 {
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    public function __construct(ConfigReaderInterface $configReader)
-    {
-        $this->configReader = $configReader;
+    /** @var TransactionSelectionHelperInterface */
+    private $transactionSelectionHelper;
+
+    public function __construct(
+        ConfigReaderInterface $configReader,
+        TransactionSelectionHelperInterface $transactionSelectionHelper
+    ) {
+        $this->configReader               = $configReader;
+        $this->transactionSelectionHelper = $transactionSelectionHelper;
     }
 
     /**
@@ -28,23 +35,17 @@ class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
         $config             = $this->configReader->read($orderEntity->getSalesChannelId());
         $configuredStatusId = $config->get(ConfigReader::CONFIG_KEY_SHIPPING_STATUS);
 
+        $transaction = $this->transactionSelectionHelper->getBestUnzerTransaction($orderEntity);
+
+        if (!$transaction || !in_array($transaction->getPaymentMethodId(), self::HANDLED_PAYMENT_METHODS, false)) {
+            return false;
+        }
+
         return !(empty($configuredStatusId) || $deliveryState->getId() !== $configuredStatusId);
     }
 
     public function hasInvoiceDocument(OrderEntity $orderEntity): bool
     {
-        $orderTransactions = $orderEntity->getTransactions();
-
-        if ($orderTransactions === null) {
-            return false;
-        }
-
-        $firstOrderTransaction = $orderTransactions->first();
-
-        if (!$firstOrderTransaction || !in_array($firstOrderTransaction->getPaymentMethodId(), self::HANDLED_PAYMENT_METHODS, false)) {
-            return false;
-        }
-
         $documents = $orderEntity->getDocuments();
 
         if (empty($documents)) {
@@ -52,15 +53,15 @@ class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
         }
 
         return $documents->filter(static function (DocumentEntity $entity) {
-                if (!$entity->getDocumentType()) {
-                    return null;
-                }
-
-                if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
-                    return $entity;
-                }
-
+            if (!$entity->getDocumentType()) {
                 return null;
-            })->count() > 0;
+            }
+
+            if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
+                return $entity;
+            }
+
+            return null;
+        })->count() > 0;
     }
 }

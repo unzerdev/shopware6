@@ -3,14 +3,25 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler">
-            <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
-            <argument type="service" id="UnzerPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory"/>
-            <argument type="service" id="unzer_payment.logger"/>
+        <service id="unzer_payment.logger" class="Monolog\Logger">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+            <argument type="string">plugin_unzer_payment</argument>
         </service>
 
         <service id="UnzerPayment6\Components\ConfigReader\ConfigReader">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+        </service>
+
+        <service id="UnzerPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
+
+        <service id="UnzerPayment6\Components\Validator\AutomaticShippingValidator">
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelper"/>
+        </service>
+
+        <service id="UnzerPayment6\Components\CancelService\CancelService">
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
         </service>
 
         <service id="UnzerPayment6\Components\ClientFactory\ClientFactory">
@@ -18,33 +29,26 @@
             <argument type="service" id="UnzerPayment6\Components\UnzerPaymentDebugHandler"/>
         </service>
 
-        <service id="UnzerPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
-
         <service id="UnzerPayment6\Components\UnzerPaymentDebugHandler">
             <argument type="service" id="unzer_payment.logger"/>
         </service>
 
-        <service id="unzer_payment.logger" class="Monolog\Logger">
-            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
-            <argument type="string">plugin_unzer_payment</argument>
-        </service>
-
-        <service id="UnzerPayment6\Components\Validator\AutomaticShippingValidator">
-            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
-        </service>
-
         <service id="UnzerPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
+
+        <service id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler">
+            <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
+            <argument type="service" id="UnzerPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory"/>
+            <argument type="service" id="unzer_payment.logger"/>
+        </service>
+
+        <service id="UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelper">
+        </service>
 
         <service id="UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator">
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="router.default"/>
             <argument type="service" id="sales_channel_domain.repository"/>
             <argument type="service" id="unzer_payment.logger"/>
-        </service>
-
-        <service id="UnzerPayment6\Components\CancelService\CancelService">
-            <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
         </service>
     </services>
 </container>

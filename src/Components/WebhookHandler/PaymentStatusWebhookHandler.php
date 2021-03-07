@@ -72,7 +72,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
             return;
         }
 
-        $transaction = $this->getOrderTransaction($payment, $context->getContext());
+        $transaction = $this->getOrderTransaction($payment->getOrderId(), $context->getContext());
 
         if ($transaction === null) {
             $this->logger->error(
@@ -92,9 +92,13 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
         );
     }
 
-    private function getOrderTransaction(Payment $payment, Context $context): ?OrderTransactionEntity
+    private function getOrderTransaction(?string $orderId, Context $context): ?OrderTransactionEntity
     {
-        $criteria = new Criteria([$payment->getOrderId()]);
+        if (empty($orderId)) {
+            return null;
+        }
+
+        $criteria = new Criteria([$orderId]);
 
         try {
             $orderTransactions = $this->orderTransactionRepository->search($criteria, $context);
