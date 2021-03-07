@@ -1,6 +1,13 @@
 # 1.1.0
 * Switch to the new unzer SDK (https://packagist.org/packages/unzerdev/php-sdk)
 
+# 1.0.4
+* Error in Invoice (guaranteed/factoring) for B2B customers corrected
+* Error in the decimal place display in the administration fixed
+* Correction of the missing display of the total amount in the checkout
+* Correction of an error in the administration when editing an order.
+* Compatibility with shopware 6.3.5.1 ensured
+
 # 1.0.3
 * Adjustments of the code style and increase of the code quality
 * Correction of missing decimal places Display in admin for reimbursement and collection

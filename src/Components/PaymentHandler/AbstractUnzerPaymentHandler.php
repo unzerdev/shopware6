@@ -62,9 +62,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var Configuration */
     protected $pluginConfig;
 
-    /** @var string */
-    protected $unzerCustomerId;
-
     /** @var LoggerInterface */
     protected $logger;
 

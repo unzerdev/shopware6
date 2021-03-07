@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\Validator;
 
-use Shopware\Core\Checkout\Document\DocumentCollection;
 use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
@@ -29,27 +28,39 @@ class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
         $config             = $this->configReader->read($orderEntity->getSalesChannelId());
         $configuredStatusId = $config->get(ConfigReader::CONFIG_KEY_SHIPPING_STATUS);
 
-        if (empty($configuredStatusId) || $deliveryState->getId() !== $configuredStatusId) {
-            return false;
-        }
-
-        $orderTransaction = $orderEntity->getTransactions()->first();
-
-        if (!$orderTransaction || !in_array($orderTransaction->getPaymentMethodId(), self::HANDLED_PAYMENT_METHODS, false)) {
-            return false;
-        }
-
-        return $this->hasInvoiceDocument($orderEntity->getDocuments());
+        return !(empty($configuredStatusId) || $deliveryState->getId() !== $configuredStatusId);
     }
 
-    private function hasInvoiceDocument(DocumentCollection $documents): bool
+    public function hasInvoiceDocument(OrderEntity $orderEntity): bool
     {
-        return $documents->filter(static function (DocumentEntity $entity) {
-            if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
-                return $entity;
-            }
+        $orderTransactions = $orderEntity->getTransactions();
 
-            return null;
-        })->count() > 0;
+        if ($orderTransactions === null) {
+            return false;
+        }
+
+        $firstOrderTransaction = $orderTransactions->first();
+
+        if (!$firstOrderTransaction || !in_array($firstOrderTransaction->getPaymentMethodId(), self::HANDLED_PAYMENT_METHODS, false)) {
+            return false;
+        }
+
+        $documents = $orderEntity->getDocuments();
+
+        if (empty($documents)) {
+            return false;
+        }
+
+        return $documents->filter(static function (DocumentEntity $entity) {
+                if (!$entity->getDocumentType()) {
+                    return null;
+                }
+
+                if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
+                    return $entity;
+                }
+
+                return null;
+            })->count() > 0;
     }
 }

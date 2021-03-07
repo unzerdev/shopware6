@@ -17,7 +17,7 @@ Unzer payment integration for Shopware 6 including the following payment methods
 * Unzer Installment (secured)
 * WeChat Pay
 
-The plugin is compatible with Shopware versions **6.2.X** to **6.3.4.X**
+Regarding plugin compatibility, please take a look at the [Shopware store page](https://store.shopware.com/en/unzer48059319318f/unzer-payments-for-shopware-6.html).
 
 ## Installation
 ### For production
@@ -41,22 +41,3 @@ After the actual plugin installation it is necessary to add the new payment meth
 Currently the only sales channel that is supported is the Storefront.
 
 Further information and configuration you can find within the <a href="https://dev.unzer.de/handbuch-shopware-ab-6-2-version-0-0-1/" target="_blank">manual</a>
-
-## Troubleshooting
-
-#### Known Issues
-> This plugin is a beta-release. For all known issues please have a look at the <a href="https://dev.unzer.de/handbuch-shopware-ab-6-2-version-0-0-1/#Known_issues" target="_blank">documentation</a>
-
-#### JavaScript does not load correctly in the storefront
-
-> In this case it's required to run the command `./psh.phar storefront:build` manually in the shopware directory
-
-#### I can not see the Unzer-Tab inside the order details
-
->In this case it's required to run the command `./psh.phar administration:build` manually in the shopware directory
-
-#### I do not see the plugin inside the plugin list
->In this case it's required to run the command `./bin/console plugin:refresh` manually in the shopware directory
-
-#### Support
-If you need support please feel free to contact us via e-mail <a href="mailto:support@unzer.com">support@unzer.com</a>

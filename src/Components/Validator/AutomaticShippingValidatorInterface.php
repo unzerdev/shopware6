@@ -18,4 +18,9 @@ interface AutomaticShippingValidatorInterface
      * Returns a boolean indicating if the provided order is able to send a shipping call to unzer.
      */
     public function shouldSendAutomaticShipping(OrderEntity $orderEntity, StateMachineStateEntity $deliveryState): bool;
+
+    /**
+     * Returns a boolean indicating if an invoice exists.
+     */
+    public function hasInvoiceDocument(OrderEntity $orderEntity): bool;
 }

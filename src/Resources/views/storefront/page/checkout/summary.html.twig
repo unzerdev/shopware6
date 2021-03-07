@@ -27,7 +27,7 @@
 
         {% block page_checkout_summary_total_value %}
             <dd class="col-5 checkout-aside-summary-value">
-                {{ summary.price.totalPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {{ summary.price.totalPrice|currency }}{% if page.cart.price.taxStatus == "gross" %}{{ "general.star"|trans|sw_sanitize|trim }}{% endif %}
             </dd>
         {% endblock %}
 
@@ -38,7 +38,8 @@
         {% endblock %}
 
         {% block page_checkout_summary_unzer_paymentinstallment_total_value %}
-            <dd class="col-5 checkout-aside-summary-value checkout-aside-summary-total" id="unzer-payment-installments-total">
+            <dd id="unzer-payment-installments-total"
+                class="col-5 checkout-aside-summary-value checkout-aside-summary-total">
                 {% if page.extensions.unzerFinishPage and (page.extensions.unzerFinishPage.installmentInformation|length > 0) %}
                     {{ page.extensions.unzerFinishPage.installmentInformation[0].totalAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% else %}

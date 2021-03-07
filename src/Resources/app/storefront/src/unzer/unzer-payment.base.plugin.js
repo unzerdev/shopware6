@@ -180,14 +180,13 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      */
     getB2bCustomerObject(customerInfo) {
         const combinedName = `${customerInfo.firstName} ${customerInfo.lastName}`;
-
-        return {
+        const birthDate = !customerInfo.birthday ? null : new Date(customerInfo.birthday);
+        const customerObject =  {
             firstname: customerInfo.firstName,
             lastname: customerInfo.lastName,
             email: customerInfo.email,
             company: customerInfo.activeBillingAddress.company,
             salutation: customerInfo.salutation.salutationKey,
-            birthDate: customerInfo.lastName.birthday,
             billingAddress: {
                 name: combinedName,
                 street: customerInfo.activeBillingAddress.street,
@@ -203,5 +202,12 @@ export default class UnzerPaymentBasePlugin extends Plugin {
                 country: customerInfo.activeShippingAddress.country.iso
             }
         };
+
+        if(birthDate) {
+            // @see https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
+            customerObject.birthDate = birthDate.getFullYear() + '-' + (birthDate.getMonth() + 1).toString().padStart(2, "0") + '-' + (birthDate.getDay()).toString().padStart(2, "0");
+        }
+
+        return customerObject;
     }
 }

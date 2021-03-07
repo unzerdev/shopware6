@@ -37,21 +37,16 @@ class PayPalTransitionMapper extends AbstractTransitionMapper
     {
         $bookingMode = $this->getBookingMode($paymentObject);
 
-        if ($bookingMode === self::DEFAULT_MODE) {
-            return $this->mapForChargeMode($paymentObject);
+        if ($bookingMode !== self::DEFAULT_MODE) {
+            return $this->mapForAuthorizeMode($paymentObject);
         }
 
-        return $this->mapForAuthorizeMode($paymentObject);
+        return parent::getTargetPaymentStatus($paymentObject);
     }
 
     protected function getResourceName(): string
     {
         return Paypal::getResourceName();
-    }
-
-    protected function mapForChargeMode(Payment $paymentObject): string
-    {
-        return parent::getTargetPaymentStatus($paymentObject);
     }
 
     protected function mapForAuthorizeMode(Payment $paymentObject): string

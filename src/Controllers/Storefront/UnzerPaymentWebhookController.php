@@ -50,7 +50,7 @@ class UnzerPaymentWebhookController extends StorefrontController
         if (!$requestContent || empty($requestContent)) {
             $this->logger->error('The webhook was not executed due to missing data.');
 
-            return new Response();
+            return new Response('The webhook was not executed due to missing data.', Response::HTTP_BAD_REQUEST);
         }
 
         $webhook = new Webhook($requestContent);
@@ -59,7 +59,7 @@ class UnzerPaymentWebhookController extends StorefrontController
         if ($webhook->getPublicKey() !== $config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY)) {
             $this->logger->error('The provided public key does not match the configured public key');
 
-            return new Response();
+            return new Response('The provided public key does not match the configured public key.', Response::HTTP_FORBIDDEN);
         }
 
         foreach ($this->handlers as $handler) {
