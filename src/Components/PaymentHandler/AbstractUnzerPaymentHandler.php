@@ -266,8 +266,15 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         }
 
         if ($customer && !$fetchedCustomer) {
+            $customerNumber = $customer->getCustomerNumber();
+            $billingAddress = $customer->getActiveBillingAddress();
+
+            if ($billingAddress !== null && !empty($billingAddress->getCompany())) {
+                $customerNumber .= '_b';
+            }
+
             try {
-                $fetchedCustomer = $this->unzerClient->fetchCustomerByExtCustomerId($customer->getCustomerNumber());
+                $fetchedCustomer = $this->unzerClient->fetchCustomerByExtCustomerId($customerNumber);
             } catch (Throwable $t) {
                 // silentfail
             }

@@ -43,7 +43,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         $billingAddress  = $customer->getActiveBillingAddress();
         $shippingAddress = $customer->getActiveShippingAddress();
 
-        if (!$billingAddress || !$shippingAddress) {
+        if (empty($billingAddress) || empty($shippingAddress)) {
             throw new RuntimeException(sprintf('Could not determine the address for customer with number %s', $customer->getCustomerNumber()));
         }
 
@@ -65,7 +65,14 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 
         $unzerCustomer->setShippingAddress($this->getUnzerAddress($shippingAddress));
         $unzerCustomer->setBillingAddress($this->getUnzerAddress($billingAddress));
-        $unzerCustomer->setCustomerId($customer->getCustomerNumber());
+
+        $customerNumber = $customer->getCustomerNumber();
+
+        if (!empty($billingAddress->getCompany())) {
+            $customerNumber .= '_b';
+        }
+
+        $unzerCustomer->setCustomerId($customerNumber);
 
         return $this->addAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
     }
