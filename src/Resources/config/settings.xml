@@ -107,7 +107,7 @@
         <title>Advanced settings</title>
         <title lang="de-DE">Erweiterte Einstellungen</title>
 
-        <component name="entity-single-select-delivery-status">
+        <component name="unzer-entity-single-select-delivery-status">
             <name>statusForAutomaticShippingNotification</name>
             <entity>state_machine_state</entity>
             <label>Delivery status for shipping notification</label>
