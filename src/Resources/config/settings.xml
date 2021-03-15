@@ -107,12 +107,13 @@
         <title>Advanced settings</title>
         <title lang="de-DE">Erweiterte Einstellungen</title>
 
-        <input-field type="single-select">
+        <component name="entity-single-select-delivery-status">
             <name>statusForAutomaticShippingNotification</name>
+            <entity>state_machine_state</entity>
             <label>Delivery status for shipping notification</label>
             <label lang="de-DE">Versandstatus für die Versandbenachrichtigung</label>
             <helpText>Automatic shipping notifications (if active) will be sent if an order enters the selected status. Leave empty to disable automatic shipping notifications.</helpText>
             <helpText lang="de-DE">Die automatische Versandbenachrichtigung wird, wenn aktiv, ausgelöst sobald eine Bestellung den hier ausgewählten Status erhält. Lassen Sie dieses Feld leer, um keine automatischen Versandbenachrichtigungen anzustoßen.</helpText>
-        </input-field>
+        </component>
     </card>
 </config>

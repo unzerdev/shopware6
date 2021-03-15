@@ -1,0 +1,29 @@
+import template from './unzer-entity-single-select-delivery-status.html.twig';
+
+const { Component } = Shopware;
+const { Criteria } = Shopware.Data;
+
+// extend the existing component `sw-entity-single-select` by
+// overwriting the default criteria
+Component.extend('entity-single-select-delivery-status', 'sw-entity-single-select', {
+    template,
+
+    props: {
+        criteria: {
+            type: Object,
+            required: false,
+            default() {
+                const criteria = new Criteria(1, 100);
+
+                criteria.addFilter(
+                    Criteria.equals(
+                        'stateMachine.technicalName',
+                        'order_delivery.state'
+                    )
+                );
+
+                return criteria;
+            }
+        }
+    }
+});
