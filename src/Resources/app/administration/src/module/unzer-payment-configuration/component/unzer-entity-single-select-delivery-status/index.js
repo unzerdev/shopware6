@@ -1,12 +1,9 @@
-import template from './unzer-entity-single-select-delivery-status.html.twig';
-
 const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
 // extend the existing component `sw-entity-single-select` by
 // overwriting the default criteria
 Component.extend('unzer-entity-single-select-delivery-status', 'sw-entity-single-select', {
-    template,
 
     props: {
         criteria: {

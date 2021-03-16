@@ -1,8 +1,6 @@
 import template from './unzer-payment-settings.html.twig';
 
 const { Component, Mixin } = Shopware;
-const { Criteria } = Shopware.Data;
-const { object, types, string: { kebabCase } } = Shopware.Utils;
 
 Component.register('unzer-payment-settings', {
     template,
@@ -127,10 +125,6 @@ Component.register('unzer-payment-settings', {
 
         closeWebhookModal() {
             this.showWebhookModal = false;
-        },
-
-        kebabCase(value) {
-            return kebabCase(value);
         }
     }
 });
