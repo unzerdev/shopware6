@@ -51,28 +51,6 @@
                         inherit
                         @config-changed="onConfigChange"
                         domain="UnzerPayment6.settings">
-
-                        <template #card-element="{ element, config }">
-                            <div>
-                                <sw-form-field-renderer
-                                    :config="{
-                                        componentName: 'sw-entity-single-select',
-                                        label: getInlineSnippet(getElementBind(getBind(element, config)).config.label),
-                                        helpText: getInlineSnippet(getElementBind(getBind(element, config)).config.helpText),
-                                        entity: 'state_machine_state',
-                                        criteria: getDeliveryStatusCriteria(),
-                                    }"
-                                    v-model="config[element.name]"
-                                    v-if="element.name.endsWith('statusForAutomaticShippingNotification')">
-                                </sw-form-field-renderer>
-
-                                <sw-form-field-renderer
-                                    v-bind="getElementBind(getBind(element, config))"
-                                    v-model="config[element.name]"
-                                    v-else>
-                                </sw-form-field-renderer>
-                            </div>
-                        </template>
                     </sw-system-config>
                 </sw-card-view>
             </template>

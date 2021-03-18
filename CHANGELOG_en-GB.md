@@ -1,3 +1,6 @@
+# 1.0.5
+* Error in Plugin Connfiguration for inherited settings corrected
+
 # 1.0.4
 * Error in Invoice (guaranteed/factoring) for B2B customers corrected
 * Error in the decimal place display in the administration fixed
