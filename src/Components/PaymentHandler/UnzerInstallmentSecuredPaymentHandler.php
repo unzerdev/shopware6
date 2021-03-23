@@ -30,10 +30,13 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
         $birthday = $currentRequest->get('unzerPaymentBirthday', '');
-        $this->unzerCustomer->setBirthDate($birthday);
 
         try {
-            $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
+            if(!empty($birthday) && empty($this->unzerCustomer->getBirthDate())
+            && $birthday !== $this->unzerCustomer->getBirthDate()) {
+                $this->unzerCustomer->setBirthDate($birthday);
+                $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
+            }
 
             $returnUrl = $this->authorize($transaction->getReturnUrl());
             $this->payment->charge();
