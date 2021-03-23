@@ -1,6 +1,9 @@
 # 1.1.0
 * Wechsel auf das neue unzer SDK (https://packagist.org/packages/unzerdev/php-sdk)
 
+# 1.0.5
+* Fehler bei der Darstellung der vererbten Plugineinstellungen behoben
+
 # 1.0.4
 * Fehler in Invoice (guaranteed/factoring) für B2B-Kunden korrigiert
 * Fehler in der Nachkommastellen-Anzeige in der Administration behoben
