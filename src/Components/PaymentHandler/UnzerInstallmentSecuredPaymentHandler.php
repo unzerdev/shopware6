@@ -57,11 +57,6 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
                 $salesChannelContext->getContext()
             );
 
-            $this->executeFailTransition(
-                $transaction->getOrderTransaction()->getId(),
-                $salesChannelContext->getContext()
-            );
-
             throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
