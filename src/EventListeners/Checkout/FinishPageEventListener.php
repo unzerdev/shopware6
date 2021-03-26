@@ -48,15 +48,27 @@ class FinishPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $unzerClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
-        $extension   = new FinishPageExtension();
+        $unzerPaymentIds        = PaymentInstaller::getPaymentIds();
+        $unzerOrderTransactions = $orderTransactions->filter(function (OrderTransactionEntity $orderTransaction) use ($unzerPaymentIds) {
+            return in_array($orderTransaction->getPaymentMethodId(), $unzerPaymentIds, false);
+        });
+
+        if ($unzerOrderTransactions->count() === 0) {
+            return;
+        }
+
+        try {
+            $unzerClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
+        } catch (\RuntimeException $ex) {
+            $this->logger->error($ex->getMessage());
+
+            return;
+        }
+
+        $extension = new FinishPageExtension();
 
         /** @var OrderTransactionEntity $transaction */
-        foreach ($orderTransactions as $transaction) {
-            if (!in_array($transaction->getPaymentMethodId(), PaymentInstaller::getPaymentIds(), false)) {
-                continue;
-            }
-
+        foreach ($unzerOrderTransactions as $transaction) {
             $payment = $this->getPaymentByOrderId($unzerClient, $transaction->getId());
 
             if (!$payment) {
