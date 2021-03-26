@@ -77,7 +77,8 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
         $birthday            = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {
-            if (!empty($birthday)) {
+            if (!empty($birthday)
+                && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
                 $this->unzerCustomer->setBirthDate($birthday);
             } else {
                 $paymentDevice = $this->deviceRepository->getByPaymentTypeId($this->paymentType->getId(), $salesChannelContext->getContext());

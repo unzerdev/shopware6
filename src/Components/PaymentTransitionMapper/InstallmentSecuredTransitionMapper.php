@@ -11,6 +11,9 @@ use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
 
 class InstallmentSecuredTransitionMapper extends AbstractTransitionMapper
 {
+    /** @var bool */
+    protected $isShipmentAllowed = true;
+
     public function supports(BasePaymentType $paymentType): bool
     {
         return $paymentType instanceof InstallmentSecured;
