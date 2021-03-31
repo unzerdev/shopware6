@@ -60,7 +60,8 @@
                 "shipSuccessMessage": "The shipping notification was successfully sent.",
                 "shipErrorTitle": "Shipping notice",
                 "invoiceNotFoundMessage": "No invoice was found for this order.",
-                "couldNotRetrieveMessage": "The payment details could not be retrieved, please check the log files for more information."
+                "couldNotRetrieveMessage": "The payment details could not be retrieved, please check the log files for more information.",
+                "documentDateMissingError": "Document Date for invoice is empty."
             }
         },
         "order-list": {

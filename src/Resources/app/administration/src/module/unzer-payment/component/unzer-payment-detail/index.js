@@ -83,6 +83,8 @@ Component.register('unzer-payment-detail', {
                     message = this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage');
                 } else if (message === 'invoice-missing-error') {
                     message = this.$tc('unzer-payment.paymentDetails.notifications.invoiceNotFoundMessage');
+                } else if(message === 'documentdate-missing-error') {
+                    message = this.$tc('unzer-payment.paymentDetails.notifications.documentDateMissingError');
                 }
 
                 this.createNotificationError({

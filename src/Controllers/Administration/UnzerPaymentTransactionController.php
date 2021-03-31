@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
@@ -41,18 +42,23 @@ class UnzerPaymentTransactionController extends AbstractController
     /** @var ShipServiceInterface */
     private $shipService;
 
+    /** @var LoggerInterface */
+    private $logger;
+
     public function __construct(
         ClientFactoryInterface $clientFactory,
         EntityRepositoryInterface $orderTransactionRepository,
         PaymentResourceHydratorInterface $hydrator,
         CancelServiceInterface $cancelService,
-        ShipServiceInterface $shipService
+        ShipServiceInterface $shipService,
+        LoggerInterface $logger
     ) {
         $this->clientFactory              = $clientFactory;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->hydrator                   = $hydrator;
         $this->cancelService              = $cancelService;
         $this->shipService                = $shipService;
+        $this->logger = $logger;
     }
 
     /**
@@ -164,11 +170,17 @@ class UnzerPaymentTransactionController extends AbstractController
         try {
             $result = $this->shipService->shipTransaction($orderTransactionId, $context);
         } catch (UnzerApiException $exception) {
+            $this->logger->error(sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
+                'trace' => $exception->getTrace(),
+            ]);
             $result = [
                     'status'  => false,
                     'message' => $exception->getMerchantMessage(),
                 ];
         } catch (Throwable $exception) {
+            $this->logger->error(sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
+                'trace' => $exception->getTrace(),
+            ]);
             $result = [
                     'status'  => false,
                     'message' => 'generic-error',
