@@ -1,33 +1,33 @@
 import Plugin from 'src/plugin-system/plugin.class';
 
-export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
+export default class UnzerPaymentInvoiceSecuredPlugin extends Plugin {
     static options = {
         isB2BCustomer: false,
         customerInfo: null
     };
 
     /**
-     * @type {Object}
-     *
-     * @public
-     */
-    static invoiceFactoring;
-
-    /**
-     * @type {UnzerPaymentBasePlugin}
+     * @type {null|UnzerPaymentBasePlugin}
      *
      * @private
      */
     static _unzerPaymentPlugin = null;
 
     /**
-     * @type {Object}
+     * @type {null|InvoiceSecured}
+     *
+     * @public
+     */
+    static invoiceSecured = null;
+
+    /**
+     * @type {null|b2bCustomer}
      */
     static b2bCustomerProvider = null;
 
     init() {
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.invoiceFactoring = this._unzerPaymentPlugin.unzerInstance.InvoiceFactoring();
+        this.invoiceSecured = this._unzerPaymentPlugin.unzerInstance.InvoiceSecured();
 
         if (this.options.isB2BCustomer) {
             this._createB2bForm();
@@ -61,6 +61,15 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
     }
 
     /**
+     * @param {Object} event
+     *
+     * @private
+     */
+    _onValidateB2bForm(event) {
+        this._unzerPaymentPlugin.setSubmitButtonActive(event.success);
+    }
+
+    /**
      * @private
      */
     _onCreateResource() {
@@ -71,7 +80,7 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
                 .then((data) => this._onB2bCustomerCreated(data.id))
                 .catch((error) => this._handleError(error));
         } else {
-            this.invoiceFactoring.createResource()
+            this.invoiceSecured.createResource()
                 .then((resource) => this._submitPayment(resource))
                 .catch((error) => this._handleError(error));
         }
@@ -86,18 +95,9 @@ export default class UnzerPaymentInvoiceFactoringPlugin extends Plugin {
         const resourceIdElement = document.getElementById('unzerCustomerId');
         resourceIdElement.value = b2bCustomerId;
 
-        this.invoiceFactoring.createResource()
+        this.invoiceSecured.createResource()
             .then((resource) => this._submitPayment(resource))
             .catch((error) => this._handleError(error));
-    }
-
-    /**
-     * @param {Object} event
-     *
-     * @private
-     */
-    _onValidateB2bForm(event) {
-        this._unzerPaymentPlugin.setSubmitButtonActive(event.success);
     }
 
     /**

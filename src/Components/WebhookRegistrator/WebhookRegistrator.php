@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\WebhookRegistrator;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -18,6 +17,7 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
 use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerSDK\Exceptions\UnzerApiException;
 
 class WebhookRegistrator implements WebhookRegistratorInterface
 {
@@ -77,7 +77,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                     'message' => 'unzer-payment-settings.webhook.register.done',
                 ];
                 $this->logger->info('Webhooks registered!');
-            } catch (HeidelpayApiException | Throwable $exception) {
+            } catch (UnzerApiException | Throwable $exception) {
                 $returnData[$salesChannelDomain->get('url', '')] = [
                     'success' => false,
                     'message' => 'unzer-payment-settings.webhook.register.error',
@@ -118,7 +118,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                     'message' => 'unzer-payment-settings.webhook.clear.done',
                 ];
                 $this->logger->info('Webhooks registered!');
-            } catch (HeidelpayApiException | Throwable $exception) {
+            } catch (UnzerApiException | Throwable $exception) {
                 $returnData[$salesChannelDomain->get('url', '')] = [
                     'success' => false,
                     'message' => 'unzer-payment-settings.webhook.clear.error',

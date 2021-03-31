@@ -6,8 +6,10 @@ namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
 use Shopware\Core\Framework\Struct\Struct;
 
-class HirePurchasePageExtension extends Struct
+class InstallmentSecuredPageExtension extends Struct
 {
+    public const EXTENSION_NAME = 'unzerInstallmentSecured';
+
     /** @var float */
     private $amount = 0.0;
 

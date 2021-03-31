@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use stdClass;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 
 /**
  * @property BasePaymentType $paymentType

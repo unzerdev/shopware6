@@ -15,8 +15,8 @@ Module.register('unzer-payment-configuration', {
     name: 'UnzerPayment',
     title: 'unzer-payment-settings.module.title',
     description: 'unzer-payment-settings.module.description',
-    version: '1.0.3',
-    targetVersion: '1.0.3',
+    version: '1.1.0',
+    targetVersion: '1.1.0',
 
     snippets: {
         'de-DE': deDE,

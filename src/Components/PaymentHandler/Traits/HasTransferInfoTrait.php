@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use heidelpayPHP\Resources\TransactionTypes\Charge;
 use RuntimeException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use UnzerPayment6\Components\Struct\TransferInformation\TransferInformation;
 use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepositoryInterface;
+use UnzerSDK\Resources\TransactionTypes\Charge;
 
 trait HasTransferInfoTrait
 {
     /** @var UnzerPaymentTransferInfoRepositoryInterface */
     protected $transferInfoRepository;
 
-    private function saveTransferInfo(string $transactionId, Context $context): EntityWrittenContainerEvent
+    private function saveTransferInfo(string $transactionId, ?string $transactionVersionId, Context $context): EntityWrittenContainerEvent
     {
         if (!isset($this->transferInfoRepository)) {
             throw new RuntimeException('TransferInfoRepository can not be null');
@@ -33,8 +33,8 @@ trait HasTransferInfoTrait
             throw new RuntimeException('Payment has not been charged');
         }
 
-        $transferInfo = (new TransferInformation())->fromCharge($charge);
+        $transferInfo = (new TransferInformation($transactionId, $transactionVersionId))->fromCharge($charge);
 
-        return $this->transferInfoRepository->create($transactionId, $transferInfo, $context);
+        return $this->transferInfoRepository->create($transferInfo, $context);
     }
 }

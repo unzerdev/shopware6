@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Commands;
 
-use heidelpayPHP\Constants\ApiResponseCodes;
-use heidelpayPHP\Exceptions\HeidelpayApiException;
 use RuntimeException;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeEntity;
 use Shopware\Core\Checkout\Document\DocumentCollection;
@@ -27,6 +25,8 @@ use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
+use UnzerSDK\Constants\ApiResponseCodes;
+use UnzerSDK\Exceptions\UnzerApiException;
 
 class SendShippingNotificationCommand extends Command
 {
@@ -117,7 +117,7 @@ class SendShippingNotificationCommand extends Command
                 $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $this->context));
 
                 $output->writeln("\t<info>OK</info>");
-            } catch (HeidelpayApiException $apiException) {
+            } catch (UnzerApiException $apiException) {
                 $output->writeln(sprintf("\t<error>%s</error>", $apiException->getMerchantMessage()));
 
                 //Already insured but flag in DB missing!

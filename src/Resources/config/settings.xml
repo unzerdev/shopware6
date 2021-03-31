@@ -90,9 +90,9 @@
         </input-field>
 
         <input-field type="float">
-            <name>hirePurchaseEffectiveInterest</name>
-            <label>Hire purchase effective interest</label>
-            <label lang="de-DE">effektive Verzinsung</label>
+            <name>installmentSecuredEffectiveInterest</name>
+            <label>Installment secured: effective interest</label>
+            <label lang="de-DE">Ratenzahlung: effektive Verzinsung</label>
             <defaultValue>4.5</defaultValue>
         </input-field>
 

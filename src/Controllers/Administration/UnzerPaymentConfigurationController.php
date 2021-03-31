@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
@@ -16,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistratorInterface;
+use UnzerSDK\Exceptions\UnzerApiException;
 
 /**
  * @RouteScope(scopes={"api"})
@@ -61,7 +61,7 @@ class UnzerPaymentConfigurationController extends AbstractController
             if ($remoteKeypair->getPublicKey() !== $publicKey) {
                 $responseCode = Response::HTTP_BAD_REQUEST;
             }
-        } catch (HeidelpayApiException $apiException) {
+        } catch (UnzerApiException $apiException) {
             $responseCode = Response::HTTP_BAD_REQUEST;
         } catch (RuntimeException $ex) {
             $responseCode = Response::HTTP_BAD_REQUEST;

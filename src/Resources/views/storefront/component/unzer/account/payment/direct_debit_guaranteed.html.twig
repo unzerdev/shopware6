@@ -1,6 +1,6 @@
 {# @var device \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
 
-{% block page_account_payment_main_unzer_paymentdirect_debit_guaranteed %}
+{% block page_account_payment_main_unzer_paymentdirect_debit_secured %}
     <div class="unzer-payment-device sepa-direct-debit-card">
         {% block page_account_payment_main_unzer_paymentdevice_title %}
             <div class="card-title">
@@ -8,7 +8,7 @@
             </div>
         {% endblock %}
 
-        {% block page_account_payment_main_unzer_paymentdirect_debit_guaranteed_number %}
+        {% block page_account_payment_main_unzer_paymentdirect_debit_secured_number %}
             <div id="number">
                 <strong>{{ device.data.iban }}</strong>
             </div>

@@ -1,7 +1,7 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import DomAccess from 'src/helper/dom-access.helper';
 
-export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin {
+export default class UnzerPaymentSepaDirectDebitSecuredPlugin extends Plugin {
     static options = {
         birthDateFieldId: 'unzerPaymentBirthday',
         acceptMandateId: 'acceptSepaMandate',
@@ -29,7 +29,7 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
     init() {
         const birthDate = document.getElementById(this.options.birthDateFieldId);
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.sepa = this._unzerPaymentPlugin.unzerInstance.SepaDirectDebitGuaranteed();
+        this.sepa = this._unzerPaymentPlugin.unzerInstance.SepaDirectDebitSecured();
 
         this._createForm();
         this._registerEvents();
@@ -49,7 +49,7 @@ export default class UnzerPaymentSepaDirectDebitGuaranteedPlugin extends Plugin 
      * @private
      */
     _createForm() {
-        this.sepa.create('sepa-direct-debit-guaranteed', {
+        this.sepa.create('sepa-direct-debit-secured', {
             containerId: 'unzer-payment-sepa-container'
         });
     }

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace UnzerPayment6\Components\Struct\HirePurchase;
+namespace UnzerPayment6\Components\Struct\InstallmentSecured;
 
-use heidelpayPHP\Resources\InstalmentPlan;
 use Shopware\Core\Framework\Struct\Struct;
 use stdClass;
+use UnzerSDK\Resources\InstalmentPlan;
 
 class InstallmentInfo extends Struct
 {

@@ -9,7 +9,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Uuid\Uuid;
 use UnzerPayment6\Components\Struct\TransferInformation\TransferInformation;
 use UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo\UnzerPaymentTransferInfoEntity;
 
@@ -27,23 +26,10 @@ class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransferInfoRepo
      * {@inheritdoc}
      */
     public function create(
-        string $transactionId,
-        TransferInformation $data,
+        TransferInformation $transferInformation,
         Context $context
     ): EntityWrittenContainerEvent {
-        $transferInfoData = [
-            'transactionId' => $transactionId,
-            'descriptor'    => $data->getDescriptor(),
-            'holder'        => $data->getHolder(),
-            'amount'        => $data->getAmount(),
-            'iban'          => $data->getIban(),
-            'bic'           => $data->getBic(),
-            'id'            => Uuid::randomHex(),
-        ];
-
-        return $this->entityRepository->create([
-            $transferInfoData,
-        ], $context);
+        return $this->entityRepository->create([$transferInformation->getEntityData()], $context);
     }
 
     /**

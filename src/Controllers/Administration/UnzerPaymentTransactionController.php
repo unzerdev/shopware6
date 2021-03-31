@@ -7,10 +7,6 @@ namespace UnzerPayment6\Controllers\Administration;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Heidelpay;
-use heidelpayPHP\Resources\Payment;
-use heidelpayPHP\Resources\PaymentTypes\HirePurchaseDirectDebit;
 use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
@@ -27,6 +23,10 @@ use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\Payment;
+use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
+use UnzerSDK\Unzer;
 
 /**
  * @RouteScope(scopes={"api"})
@@ -81,7 +81,7 @@ class UnzerPaymentTransactionController extends AbstractController
             $orderTransaction = $this->getOrderTransaction($orderTransactionId, $context);
 
             $data = $this->hydrator->hydrateArray($payment, $orderTransaction);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -116,7 +116,7 @@ class UnzerPaymentTransactionController extends AbstractController
 
         try {
             $client->chargeAuthorization($orderTransactionId, $amount);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -143,7 +143,7 @@ class UnzerPaymentTransactionController extends AbstractController
     {
         try {
             $this->cancelService->cancelChargeById($orderTransactionId, $chargeId, $amount, $context);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -211,7 +211,7 @@ class UnzerPaymentTransactionController extends AbstractController
             $client->ship($payment, $invoiceNumber, $orderTransactionId);
 
             $this->transactionStateHandler->transformTransactionState($orderTransactionId, $payment, $context);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -244,26 +244,30 @@ class UnzerPaymentTransactionController extends AbstractController
         return $this->orderTransactionRepository->search($criteria, $context)->first();
     }
 
-    protected function getPayment(string $orderTransactionId, DateTimeInterface $documentDate, Heidelpay $client): ?Payment
+    protected function getPayment(string $orderTransactionId, DateTimeInterface $documentDate, Unzer $client): ?Payment
     {
         try {
             $payment = $client->fetchPaymentByOrderId($orderTransactionId);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
             return null;
         }
 
         $paymentType = $payment->getPaymentType();
 
-        if ($paymentType !== null && $documentDate !== null && $paymentType instanceof HirePurchaseDirectDebit) {
+        if ($paymentType !== null && $documentDate !== null && $paymentType instanceof InstallmentSecured) {
             $invoiceDueDate = new DateTime($documentDate->format('c'));
-            date_add($invoiceDueDate, date_interval_create_from_date_string(sprintf('%s months', $paymentType->getNumberOfRates())));
+            $invoiceDueDate = date_add($invoiceDueDate, date_interval_create_from_date_string(sprintf('%s months', $paymentType->getNumberOfRates())));
+
+            if (!$invoiceDueDate) {
+                return null;
+            }
 
             $paymentType->setInvoiceDate($documentDate->format('Y-m-d'));
             $paymentType->setInvoiceDueDate($invoiceDueDate->format('Y-m-d'));
 
             try {
                 $payment->setPaymentType($client->updatePaymentType($paymentType));
-            } catch (HeidelpayApiException $exception) {
+            } catch (UnzerApiException $exception) {
                 return null;
             }
         }
