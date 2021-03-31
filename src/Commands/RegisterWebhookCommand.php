@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Commands;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -19,6 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistratorInterface;
+use UnzerSDK\Exceptions\UnzerApiException;
 
 class RegisterWebhookCommand extends Command
 {
@@ -75,7 +75,7 @@ class RegisterWebhookCommand extends Command
 
             $this->webhookRegistrator->clearWebhooks($domainDataBag);
             $result = $this->webhookRegistrator->registerWebhook($domainDataBag);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
             $style->error($exception->getMerchantMessage());
 
             return WebhookRegistrator::EXIT_CODE_API_ERROR;

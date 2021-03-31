@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\EventListeners\Checkout;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Heidelpay;
-use heidelpayPHP\Resources\InstalmentPlan;
-use heidelpayPHP\Resources\Payment;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
-use UnzerPayment6\Components\Struct\HirePurchase\InstallmentInfo;
+use UnzerPayment6\Components\Struct\InstallmentSecured\InstallmentInfo;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
 use UnzerPayment6\Installer\PaymentInstaller;
+use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\InstalmentPlan;
+use UnzerSDK\Resources\Payment;
+use UnzerSDK\Unzer;
 
 class FinishPageEventListener implements EventSubscriberInterface
 {
@@ -75,14 +75,14 @@ class FinishPageEventListener implements EventSubscriberInterface
             }
         }
 
-        $event->getPage()->addExtension('unzer', $extension);
+        $event->getPage()->addExtension(FinishPageExtension::EXTENSION_NAME, $extension);
     }
 
-    private function getPaymentByOrderId(Heidelpay $unzerClient, string $orderId): ?Payment
+    private function getPaymentByOrderId(Unzer $unzerClient, string $orderId): ?Payment
     {
         try {
             return $unzerClient->fetchPaymentByOrderId($orderId);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
             //catch payment not found exception so that shopware can handle its own errors
             $this->logger->error($exception->getMessage(), [
                 'code'          => $exception->getCode(),

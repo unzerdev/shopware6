@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\DependencyInjection\Factory;
 
-use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
 use UnzerPayment6\Components\PaymentTransitionMapper\AbstractTransitionMapper;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\NoTransitionMapperFoundException;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 
 class PaymentTransitionMapperFactory
 {

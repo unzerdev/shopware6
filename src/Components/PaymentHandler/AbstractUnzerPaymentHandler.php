@@ -4,15 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Heidelpay;
-use heidelpayPHP\Resources\AbstractHeidelpayResource;
-use heidelpayPHP\Resources\Basket;
-use heidelpayPHP\Resources\Customer;
-use heidelpayPHP\Resources\Metadata;
-use heidelpayPHP\Resources\Payment;
-use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
-use heidelpayPHP\Resources\Recurring;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -35,10 +26,19 @@ use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
+use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\AbstractUnzerResource;
+use UnzerSDK\Resources\Basket;
+use UnzerSDK\Resources\Customer;
+use UnzerSDK\Resources\Metadata;
+use UnzerSDK\Resources\Payment;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
+use UnzerSDK\Resources\Recurring;
+use UnzerSDK\Unzer;
 
 abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var AbstractHeidelpayResource|BasePaymentType */
+    /** @var AbstractUnzerResource|BasePaymentType */
     protected $paymentType;
 
     /** @var Payment */
@@ -47,7 +47,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var Recurring */
     protected $recurring;
 
-    /** @var Heidelpay */
+    /** @var Unzer */
     protected $unzerClient;
 
     /** @var Customer */
@@ -135,7 +135,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             }
 
             return new RedirectResponse($transaction->getReturnUrl());
-        } catch (HeidelpayApiException $apiException) {
+        } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
@@ -189,7 +189,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             );
 
             $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
-        } catch (HeidelpayApiException $apiException) {
+        } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
@@ -252,7 +252,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         );
     }
 
-    protected function getUnzerCustomer(string $unzerCustomerId, string $paymentMethodId, SalesChannelContext $salesChannelContext): AbstractHeidelpayResource
+    protected function getUnzerCustomer(string $unzerCustomerId, string $paymentMethodId, SalesChannelContext $salesChannelContext): AbstractUnzerResource
     {
         $customer        = $salesChannelContext->getCustomer();
         $fetchedCustomer = null;
@@ -266,8 +266,15 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         }
 
         if ($customer && !$fetchedCustomer) {
+            $customerNumber = $customer->getCustomerNumber();
+            $billingAddress = $customer->getActiveBillingAddress();
+
+            if ($billingAddress !== null && !empty($billingAddress->getCompany())) {
+                $customerNumber .= '_b';
+            }
+
             try {
-                $fetchedCustomer = $this->unzerClient->fetchCustomerByExtCustomerId($customer->getCustomerNumber());
+                $fetchedCustomer = $this->unzerClient->fetchCustomerByExtCustomerId($customerNumber);
             } catch (Throwable $t) {
                 // silentfail
             }

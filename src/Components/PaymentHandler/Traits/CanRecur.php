@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Heidelpay;
-use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -14,6 +11,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler;
+use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\AbstractUnzerResource;
+use UnzerSDK\Unzer;
 
 trait CanRecur
 {
@@ -27,7 +27,7 @@ trait CanRecur
     protected $sessionCustomerIdKey = 'UnzerPaymentCustomerId';
 
     /**
-     * @throws HeidelpayApiException
+     * @throws UnzerApiException
      */
     public function activateRecurring(string $returnUrl): string
     {
@@ -56,11 +56,11 @@ trait CanRecur
     }
 
     /**
-     * @throws HeidelpayApiException
+     * @throws UnzerApiException
      */
-    public function fetchPaymentByTypeId(string $paymentTypeId): ?AbstractHeidelpayResource
+    public function fetchPaymentByTypeId(string $paymentTypeId): ?AbstractUnzerResource
     {
-        if ($this->unzerClient === null || !($this->unzerClient instanceof Heidelpay)) {
+        if ($this->unzerClient === null || !($this->unzerClient instanceof Unzer)) {
             return null;
         }
 

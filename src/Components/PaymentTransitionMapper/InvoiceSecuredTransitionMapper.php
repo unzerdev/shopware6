@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
-use heidelpayPHP\Resources\Payment;
-use heidelpayPHP\Resources\PaymentTypes\BasePaymentType;
-use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
+use UnzerSDK\Resources\Payment;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
+use UnzerSDK\Resources\PaymentTypes\InvoiceSecured;
 
-class InvoiceGuaranteedTransitionMapper extends AbstractTransitionMapper
+class InvoiceSecuredTransitionMapper extends AbstractTransitionMapper
 {
     /** @var bool */
     protected $isShipmentAllowed = true;
 
     public function supports(BasePaymentType $paymentType): bool
     {
-        return $paymentType instanceof InvoiceGuaranteed;
+        return $paymentType instanceof InvoiceSecured;
     }
 
     public function getTargetPaymentStatus(Payment $paymentObject): string
@@ -42,6 +42,6 @@ class InvoiceGuaranteedTransitionMapper extends AbstractTransitionMapper
 
     protected function getResourceName(): string
     {
-        return InvoiceGuaranteed::getResourceName();
+        return InvoiceSecured::getResourceName();
     }
 }

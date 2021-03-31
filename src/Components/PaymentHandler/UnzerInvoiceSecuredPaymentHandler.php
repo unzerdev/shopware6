@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -23,8 +22,9 @@ use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerR
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepositoryInterface;
+use UnzerSDK\Exceptions\UnzerApiException;
 
-class UnzerInvoiceGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
+class UnzerInvoiceSecuredPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use HasTransferInfoTrait;
     use CanCharge;
@@ -69,9 +69,8 @@ class UnzerInvoiceGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
         $birthday       = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {
-            if (empty($currentRequest->get('unzerCustomerId', ''))
-                && empty($this->unzerCustomer->getBirthDate())
-                && !empty($birthday)) {
+            if (!empty($birthday)
+                && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
                 $this->unzerCustomer->setBirthDate($birthday);
                 $this->unzerCustomer = $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
             }
@@ -80,7 +79,7 @@ class UnzerInvoiceGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
             $this->saveTransferInfo($transaction->getOrderTransaction()->getId(), $salesChannelContext->getContext());
 
             return new RedirectResponse($returnUrl);
-        } catch (HeidelpayApiException $apiException) {
+        } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [

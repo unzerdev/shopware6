@@ -9,7 +9,7 @@ use Composer\Autoload\ClassLoader;
 final class UnzerPaymentClassLoader extends ClassLoader
 {
     private const VENDOR_DEPENDENCIES_PSR4 = [
-        'heidelpayPHP\\' => 'heidelpay/heidelpay-php/src/',
+        'UnzerSDK\\' => 'unzerdev/php-sdk/src/',
     ];
 
     public function __construct()

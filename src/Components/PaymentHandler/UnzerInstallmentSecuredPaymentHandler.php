@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -13,8 +12,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
+use UnzerSDK\Exceptions\UnzerApiException;
 
-class UnzerHirePurchasePaymentHandler extends AbstractUnzerPaymentHandler
+class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use CanAuthorize;
 
@@ -30,16 +30,19 @@ class UnzerHirePurchasePaymentHandler extends AbstractUnzerPaymentHandler
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
         $birthday = $currentRequest->get('unzerPaymentBirthday', '');
-        $this->unzerCustomer->setBirthDate($birthday);
 
         try {
-            $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
+            if (!empty($birthday)
+                && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
+                $this->unzerCustomer->setBirthDate($birthday);
+                $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
+            }
 
             $returnUrl = $this->authorize($transaction->getReturnUrl());
             $this->payment->charge();
 
             return new RedirectResponse($returnUrl);
-        } catch (HeidelpayApiException $apiException) {
+        } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
@@ -47,11 +50,6 @@ class UnzerHirePurchasePaymentHandler extends AbstractUnzerPaymentHandler
                     'transaction' => $transaction,
                     'exception'   => $apiException,
                 ]
-            );
-
-            $this->executeFailTransition(
-                $transaction->getOrderTransaction()->getId(),
-                $salesChannelContext->getContext()
             );
 
             $this->executeFailTransition(
