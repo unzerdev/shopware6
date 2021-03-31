@@ -7,6 +7,7 @@
         <service id="UnzerPayment6\EventListeners\Checkout\FinishPageEventListener">
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelper" />
 
             <tag name="kernel.event_subscriber"/>
         </service>
