@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\Checkout;
 
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\InstallmentSecured\InstallmentInfo;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
 use UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelperInterface;
-use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\InstalmentPlan;
 use UnzerSDK\Resources\Payment;
@@ -31,8 +29,8 @@ class FinishPageEventListener implements EventSubscriberInterface
 
     public function __construct(ClientFactoryInterface $clientFactory, LoggerInterface $logger, TransactionSelectionHelperInterface $transactionSelectionHelper)
     {
-        $this->clientFactory = $clientFactory;
-        $this->logger        = $logger;
+        $this->clientFactory              = $clientFactory;
+        $this->logger                     = $logger;
         $this->transactionSelectionHelper = $transactionSelectionHelper;
     }
 
@@ -47,7 +45,7 @@ class FinishPageEventListener implements EventSubscriberInterface
     {
         $salesChannelContext = $event->getSalesChannelContext();
         $page                = $event->getPage();
-        $unzerTransaction = $this->transactionSelectionHelper->getBestUnzerTransaction($page->getOrder());
+        $unzerTransaction    = $this->transactionSelectionHelper->getBestUnzerTransaction($page->getOrder());
 
         if (!$unzerTransaction) {
             return;
