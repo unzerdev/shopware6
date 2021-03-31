@@ -38,6 +38,7 @@ class UnzerPaymentTransactionController extends AbstractController
     /** @var CancelServiceInterface */
     private $cancelService;
 
+    /** @var ShipServiceInterface */
     private $shipService;
 
     public function __construct(
