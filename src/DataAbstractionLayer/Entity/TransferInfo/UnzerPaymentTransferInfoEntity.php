@@ -14,6 +14,9 @@ class UnzerPaymentTransferInfoEntity extends Entity
     /** @var string */
     protected $transactionId;
 
+    /** @var null|string */
+    protected $transactionVersionId;
+
     /** @var string */
     protected $iban;
 
@@ -37,6 +40,18 @@ class UnzerPaymentTransferInfoEntity extends Entity
     public function setTransactionId(string $transactionId): self
     {
         $this->transactionId = $transactionId;
+
+        return $this;
+    }
+
+    public function getTransactionVersionId(): ?string
+    {
+        return $this->transactionVersionId;
+    }
+
+    public function setTransactionVersionId(?string $transactionVersionId): self
+    {
+        $this->transactionVersionId = $transactionVersionId;
 
         return $this;
     }
