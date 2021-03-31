@@ -1,4 +1,5 @@
 import './component/register-webhook';
+import './component/unzer-entity-single-select-delivery-status';
 
 import './extension/sw-settings-index';
 

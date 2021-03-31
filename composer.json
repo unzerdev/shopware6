@@ -1,14 +1,14 @@
 {
     "name": "unzerdev/shopware6",
     "description": "Unzer payment integration for Shopware 6",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [
         {
-            "name": "Unzer GmbH, Kellerkinder Pluginwerk GmbH",
+            "name": "Unzer GmbH, Kellerkinder GmbH",
             "email": "info@unzer.com",
             "homepage": "https://www.unzer.com"
         }

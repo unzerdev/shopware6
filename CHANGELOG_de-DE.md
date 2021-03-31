@@ -1,7 +1,12 @@
+# 1.0.5
+* Fehler bei der Darstellung der vererbten Plugineinstellungen behoben
+
 # 1.0.4
 * Fehler in Invoice (guaranteed/factoring) für B2B-Kunden korrigiert
 * Fehler in der Nachkommastellen-Anzeige in der Administration behoben
 * Korrektur der fehlenden Anzeige der Gesamtsumme im Checkout
+* Korrektur eines Fehlers in der Administration bei der Bearbeitung einer Bestellung
+* Kompatibilität mit shopware 6.3.5.1 hergestellt
 
 # 1.0.3
 * Anpassungen des Codestyles und erhöhen der Codequalität
