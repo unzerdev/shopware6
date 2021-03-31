@@ -24,6 +24,12 @@
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
         </service>
 
+        <service id="UnzerPayment6\Components\ShipService\ShipService">
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler" />
+            <argument type="service" id="order_transaction.repository"/>
+        </service>
+
         <service id="UnzerPayment6\Components\ClientFactory\ClientFactory">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="UnzerPayment6\Components\UnzerPaymentDebugHandler"/>

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\StateMachine;
 
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Shopware\Core\Checkout\Document\DocumentCollection;
 use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
@@ -18,10 +17,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Event\StateMachineTransitionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use Throwable;
 use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
+use UnzerPayment6\Components\ShipService\ShipServiceInterface;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
+use UnzerSDK\Exceptions\UnzerApiException;
 
 class TransitionEventListener implements EventSubscriberInterface
 {
@@ -34,9 +35,6 @@ class TransitionEventListener implements EventSubscriberInterface
     /** @var EntityRepositoryInterface */
     private $transactionRepository;
 
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
-
     /** @var LoggerInterface */
     private $logger;
 
@@ -46,22 +44,25 @@ class TransitionEventListener implements EventSubscriberInterface
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
+    /** @var ShipServiceInterface */
+    private $shipService;
+
     public function __construct(
         EntityRepositoryInterface $orderRepository,
         EntityRepositoryInterface $orderDeliveryRepository,
         EntityRepositoryInterface $transactionRepository,
         AutomaticShippingValidatorInterface $automaticShippingValidator,
-        ClientFactoryInterface $clientFactory,
         LoggerInterface $logger,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        ShipServiceInterface $shipService
     ) {
         $this->orderRepository            = $orderRepository;
         $this->orderDeliveryRepository    = $orderDeliveryRepository;
-        $this->clientFactory              = $clientFactory;
         $this->transactionRepository      = $transactionRepository;
         $this->logger                     = $logger;
         $this->automaticShippingValidator = $automaticShippingValidator;
         $this->eventDispatcher            = $eventDispatcher;
+        $this->shipService                = $shipService;
     }
 
     /**
@@ -111,13 +112,16 @@ class TransitionEventListener implements EventSubscriberInterface
         }
 
         try {
-            $client = $this->clientFactory->createClient($order->getSalesChannelId());
-            $client->ship($firstTransaction->getId(), $invoiceNumber);
+            $this->shipService->shipTransaction($firstTransaction->getId(), $event->getContext());
             $this->setCustomFields($event->getContext(), $firstTransaction);
 
             $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceNumber, $event->getContext()));
             $this->logger->info(sprintf('The automatic shipping notification for order [%s] was executed with invoice [%s]', $order->getOrderNumber(), $invoiceNumber));
-        } catch (RuntimeException $exception) {
+        } catch (UnzerApiException $exception) {
+            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
+                'trace' => $exception->getTrace(),
+            ]);
+        } catch (Throwable $exception) {
             $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                 'trace' => $exception->getTrace(),
             ]);

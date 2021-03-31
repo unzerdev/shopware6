@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
-use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
-use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
@@ -22,11 +18,8 @@ use Throwable;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydratorInterface;
-use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerPayment6\Components\ShipService\ShipServiceInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
-use UnzerSDK\Resources\Payment;
-use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
-use UnzerSDK\Unzer;
 
 /**
  * @RouteScope(scopes={"api"})
@@ -42,24 +35,23 @@ class UnzerPaymentTransactionController extends AbstractController
     /** @var PaymentResourceHydratorInterface */
     private $hydrator;
 
-    /** @var TransactionStateHandlerInterface */
-    private $transactionStateHandler;
-
     /** @var CancelServiceInterface */
     private $cancelService;
+
+    private $shipService;
 
     public function __construct(
         ClientFactoryInterface $clientFactory,
         EntityRepositoryInterface $orderTransactionRepository,
         PaymentResourceHydratorInterface $hydrator,
-        TransactionStateHandlerInterface $transactionStateHandler,
-        CancelServiceInterface $cancelService
+        CancelServiceInterface $cancelService,
+        ShipServiceInterface $shipService
     ) {
         $this->clientFactory              = $clientFactory;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->hydrator                   = $hydrator;
-        $this->transactionStateHandler    = $transactionStateHandler;
         $this->cancelService              = $cancelService;
+        $this->shipService                = $shipService;
     }
 
     /**
@@ -168,67 +160,25 @@ class UnzerPaymentTransactionController extends AbstractController
      */
     public function shipTransaction(string $orderTransactionId, Context $context): JsonResponse
     {
-        $transaction = $this->getOrderTransaction($orderTransactionId, $context);
-
-        if ($transaction === null || $transaction->getOrder() === null || $transaction->getOrder()->getDocuments() === null) {
-            throw new InvalidTransactionException($orderTransactionId);
-        }
-
-        $documents     = $transaction->getOrder()->getDocuments()->getElements();
-        $invoiceNumber = null;
-        $documentDate  = null;
-
-        foreach ($documents as $document) {
-            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
-                $documentDate  = new DateTimeImmutable($document->getConfig()['documentDate']);
-                $invoiceNumber = $document->getConfig()['documentNumber'];
-            }
-        }
-
-        if (!$invoiceNumber) {
-            return new JsonResponse(
-                [
-                    'status'  => false,
-                    'message' => 'invoice-missing-error',
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        $client  = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
-        $payment = $this->getPayment($orderTransactionId, $documentDate, $client);
-
-        if ($payment === null) {
-            return new JsonResponse(
-                [
-                    'status'  => false,
-                    'message' => 'Payment could not be fetched',
-                ],
-                Response::HTTP_BAD_REQUEST);
-        }
-
         try {
-            $client->ship($payment, $invoiceNumber, $orderTransactionId);
-
-            $this->transactionStateHandler->transformTransactionState($orderTransactionId, $payment, $context);
+            $result = $this->shipService->shipTransaction($orderTransactionId, $context);
         } catch (UnzerApiException $exception) {
-            return new JsonResponse(
-                [
+            $result = [
                     'status'  => false,
                     'message' => $exception->getMerchantMessage(),
-                ],
-                Response::HTTP_BAD_REQUEST);
+                ];
         } catch (Throwable $exception) {
-            return new JsonResponse(
-                [
+            $result = [
                     'status'  => false,
                     'message' => 'generic-error',
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+                ];
         }
 
-        return new JsonResponse(['status' => true]);
+        if ($result['status'] === false) {
+            return new JsonResponse($result, Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse($result);
     }
 
     protected function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
@@ -242,36 +192,5 @@ class UnzerPaymentTransactionController extends AbstractController
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();
-    }
-
-    protected function getPayment(string $orderTransactionId, DateTimeInterface $documentDate, Unzer $client): ?Payment
-    {
-        try {
-            $payment = $client->fetchPaymentByOrderId($orderTransactionId);
-        } catch (UnzerApiException $exception) {
-            return null;
-        }
-
-        $paymentType = $payment->getPaymentType();
-
-        if ($paymentType !== null && $documentDate !== null && $paymentType instanceof InstallmentSecured) {
-            $invoiceDueDate = new DateTime($documentDate->format('c'));
-            $invoiceDueDate = date_add($invoiceDueDate, date_interval_create_from_date_string(sprintf('%s months', $paymentType->getNumberOfRates())));
-
-            if (!$invoiceDueDate) {
-                return null;
-            }
-
-            $paymentType->setInvoiceDate($documentDate->format('Y-m-d'));
-            $paymentType->setInvoiceDueDate($invoiceDueDate->format('Y-m-d'));
-
-            try {
-                $payment->setPaymentType($client->updatePaymentType($paymentType));
-            } catch (UnzerApiException $exception) {
-                return null;
-            }
-        }
-
-        return $payment;
     }
 }
