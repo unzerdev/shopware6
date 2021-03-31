@@ -58,7 +58,7 @@ class UnzerPaymentTransactionController extends AbstractController
         $this->hydrator                   = $hydrator;
         $this->cancelService              = $cancelService;
         $this->shipService                = $shipService;
-        $this->logger = $logger;
+        $this->logger                     = $logger;
     }
 
     /**

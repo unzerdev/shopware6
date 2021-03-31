@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ShipService;
 
+use DateInterval;
 use DateTime;
-use DateTimeImmutable;
 use DateTimeInterface;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
@@ -40,7 +40,7 @@ class ShipService implements ShipServiceInterface
         $this->clientFactory              = $clientFactory;
         $this->transactionStateHandler    = $transactionStateHandler;
         $this->orderTransactionRepository = $orderTransactionRepository;
-        $this->logger = $logger;
+        $this->logger                     = $logger;
     }
 
     /**
@@ -54,20 +54,21 @@ class ShipService implements ShipServiceInterface
             throw new InvalidTransactionException($orderTransactionId);
         }
 
-        $order = $transaction->getOrder();
+        $order         = $transaction->getOrder();
         $documents     = $order->getDocuments()->getElements();
         $invoiceNumber = null;
         $documentDate  = null;
 
         foreach ($documents as $document) {
             if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
-                $documentDate  = new DateTimeImmutable($document->getConfig()['documentDate']);
+                $documentDate  = new DateTime($document->getConfig()['documentDate']);
                 $invoiceNumber = $document->getConfig()['documentNumber'];
             }
         }
 
         if (!$documentDate) {
             $this->logger->error(sprintf('Error while sending shipping notification for order [%s]: No DocumentDate for invoice found', $order->getOrderNumber()));
+
             return
                 [
                     'status'  => false,
@@ -77,6 +78,7 @@ class ShipService implements ShipServiceInterface
 
         if (!$invoiceNumber) {
             $this->logger->error(sprintf('Error while sending shipping notification for order [%s]: No invoiceNumber found', $order->getOrderNumber()));
+
             return
                 [
                     'status'  => false,
@@ -89,6 +91,7 @@ class ShipService implements ShipServiceInterface
 
         if ($payment === null) {
             $this->logger->error(sprintf('Error while sending shipping notification for order [%s]: Payment could not be fetched', $order->getOrderNumber()));
+
             return
                 [
                     'status'  => false,
@@ -125,15 +128,11 @@ class ShipService implements ShipServiceInterface
 
         $paymentType = $payment->getPaymentType();
 
-        if ($paymentType !== null && $documentDate !== null && $paymentType instanceof InstallmentSecured) {
-
+        if ($paymentType !== null && $paymentType instanceof InstallmentSecured) {
+            /** @var DateTime $invoiceDueDate */
             $invoiceDueDate = clone $documentDate;
-            $dateInterval = date_interval_create_from_date_string(sprintf('%s months', $paymentType->getNumberOfRates()));
+            $dateInterval   = DateInterval::createFromDateString(sprintf('%s months', $paymentType->getNumberOfRates()));
             $invoiceDueDate->add($dateInterval);
-
-            if (!$invoiceDueDate) {
-                return null;
-            }
 
             $paymentType->setInvoiceDate($documentDate->format('Y-m-d'));
             $paymentType->setInvoiceDueDate($invoiceDueDate->format('Y-m-d'));
