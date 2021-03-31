@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\Struct\TransferInformation;
 
-use heidelpayPHP\Resources\TransactionTypes\Charge;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Uuid\Uuid;
+use UnzerSDK\Resources\TransactionTypes\Charge;
 
 class TransferInformation extends Struct
 {

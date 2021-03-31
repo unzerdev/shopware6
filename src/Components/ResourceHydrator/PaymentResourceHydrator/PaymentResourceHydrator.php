@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator;
 
 use DateTimeImmutable;
-use heidelpayPHP\Resources\EmbeddedResources\Amount;
-use heidelpayPHP\Resources\Payment;
-use heidelpayPHP\Resources\PaymentTypes\HirePurchaseDirectDebit;
-use heidelpayPHP\Resources\PaymentTypes\InvoiceGuaranteed;
-use heidelpayPHP\Resources\TransactionTypes\AbstractTransactionType;
-use heidelpayPHP\Resources\TransactionTypes\Authorization;
-use heidelpayPHP\Resources\TransactionTypes\Cancellation;
-use heidelpayPHP\Resources\TransactionTypes\Charge;
-use heidelpayPHP\Resources\TransactionTypes\Shipment;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use stdClass;
 use Throwable;
 use UnzerPayment6\UnzerPayment6;
+use UnzerSDK\Resources\EmbeddedResources\Amount;
+use UnzerSDK\Resources\Payment;
+use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
+use UnzerSDK\Resources\PaymentTypes\InvoiceSecured;
+use UnzerSDK\Resources\TransactionTypes\AbstractTransactionType;
+use UnzerSDK\Resources\TransactionTypes\Authorization;
+use UnzerSDK\Resources\TransactionTypes\Cancellation;
+use UnzerSDK\Resources\TransactionTypes\Charge;
+use UnzerSDK\Resources\TransactionTypes\Shipment;
 
 class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 {
@@ -103,7 +103,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 'basket'            => $payment->getBasket() ? $payment->getBasket()->expose() : null,
                 'customer'          => $payment->getCustomer() ? $payment->getCustomer()->expose() : null,
                 'metadata'          => [],
-                'isShipmentAllowed' => $paymentType instanceof InvoiceGuaranteed || $paymentType instanceof HirePurchaseDirectDebit,
+                'isShipmentAllowed' => $paymentType instanceof InvoiceSecured || $paymentType instanceof InstallmentSecured,
                 'type'              => $paymentType ? $paymentType->expose() : null,
                 'amount'            => $this->hydrateAmount($payment->getAmount(), $decimalPrecision),
                 'transactions'      => [],

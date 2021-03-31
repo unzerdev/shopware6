@@ -11,6 +11,10 @@
             <tag name="unzer.transition_mapper"/>
         </service>
 
+        <service id="UnzerPayment6\Components\PaymentTransitionMapper\BankTransferTransitionMapper">
+            <tag name="unzer.transition_mapper"/>
+        </service>
+
         <service id="UnzerPayment6\Components\PaymentTransitionMapper\CreditCardTransitionMapper">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="order_transaction.repository" />
@@ -22,14 +26,6 @@
             <tag name="unzer.transition_mapper"/>
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentTransitionMapper\BankTransferTransitionMapper">
-            <tag name="unzer.transition_mapper"/>
-        </service>
-
-        <service id="UnzerPayment6\Components\PaymentTransitionMapper\HirePurchaseTransitionMapper">
-            <tag name="unzer.transition_mapper"/>
-        </service>
-
         <service id="UnzerPayment6\Components\PaymentTransitionMapper\GiropayTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>
@@ -38,11 +34,11 @@
             <tag name="unzer.transition_mapper"/>
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentTransitionMapper\InvoiceFactoringTransitionMapper">
+        <service id="UnzerPayment6\Components\PaymentTransitionMapper\InstallmentSecuredTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentTransitionMapper\InvoiceGuaranteedTransitionMapper">
+        <service id="UnzerPayment6\Components\PaymentTransitionMapper\InvoiceSecuredTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>
 
@@ -65,7 +61,7 @@
             <tag name="unzer.transition_mapper"/>
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentTransitionMapper\SepaDirectDebitGuaranteedTransitionMapper">
+        <service id="UnzerPayment6\Components\PaymentTransitionMapper\SepaDirectDebitSecuredTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>
 

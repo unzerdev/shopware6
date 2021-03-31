@@ -40,9 +40,9 @@
                     "new": "Register a new account"
                 }
             },
-            "hirePurchase": {
+            "installmentSecured": {
                 "totalAmount": "Total incl. interest",
-                "totalInterest": "Interest on hire purchase",
+                "totalInterest": "Interest on installment",
                 "testData": {
                     "accountHolder": "Account holder",
                     "iban": "IBAN",

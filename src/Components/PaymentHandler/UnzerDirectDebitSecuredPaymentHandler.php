@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -15,19 +14,22 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
-use UnzerPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
+use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
 use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepositoryInterface;
+use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
+use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
+use UnzerSDK\Exceptions\UnzerApiException;
 
-class UnzerInvoiceGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
+class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
 {
-    use HasTransferInfoTrait;
     use CanCharge;
+    use HasDeviceVault;
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
@@ -39,7 +41,7 @@ class UnzerInvoiceGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
         LoggerInterface $logger,
-        UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository
+        UnzerPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
             $basketHydrator,
@@ -53,7 +55,7 @@ class UnzerInvoiceGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
             $logger
         );
 
-        $this->transferInfoRepository = $transferInfoRepository;
+        $this->deviceRepository = $deviceRepository;
     }
 
     /**
@@ -66,22 +68,47 @@ class UnzerInvoiceGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
-        $birthday       = $currentRequest->get('unzerPaymentBirthday', '');
+
+        if (!$this->isPaymentAllowed($transaction->getOrderTransaction()->getId())) {
+            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
+        }
+
+        $registerDirectDebit = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
+        $birthday            = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {
-            if (empty($currentRequest->get('unzerCustomerId', ''))
-                && empty($this->unzerCustomer->getBirthDate())
-                && !empty($birthday)) {
+            if (!empty($birthday)
+                && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
                 $this->unzerCustomer->setBirthDate($birthday);
-                $this->unzerCustomer = $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
+            } else {
+                $paymentDevice = $this->deviceRepository->getByPaymentTypeId($this->paymentType->getId(), $salesChannelContext->getContext());
+
+                if ($paymentDevice && array_key_exists('birthDate', $paymentDevice->getData())) {
+                    $birthDate = $paymentDevice->getData()['birthDate'];
+
+                    if (!empty($birthDate)) {
+                        $this->unzerCustomer->setBirthDate($birthDate);
+                    }
+                }
             }
 
-            $returnUrl        = $this->charge($transaction->getReturnUrl());
-            $orderTransaction = $transaction->getOrderTransaction();
-            $this->saveTransferInfo($orderTransaction->getId(), $orderTransaction->getVersionId(), $salesChannelContext->getContext());
+            $this->unzerCustomer = $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
+
+            $returnUrl = $this->charge($transaction->getReturnUrl());
+
+            if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null) {
+                $this->saveToDeviceVault(
+                    $salesChannelContext->getCustomer(),
+                    UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_SECURED,
+                    $salesChannelContext->getContext(),
+                    [
+                        'birthDate' => $this->unzerCustomer->getBirthDate(),
+                    ]
+                );
+            }
 
             return new RedirectResponse($returnUrl);
-        } catch (HeidelpayApiException $apiException) {
+        } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
@@ -109,5 +136,15 @@ class UnzerInvoiceGuaranteedPaymentHandler extends AbstractUnzerPaymentHandler
 
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
+    }
+
+    private function isPaymentAllowed(string $transactionId): bool
+    {
+        $currentRequest = $this->getCurrentRequestFromStack($transactionId);
+
+        $isSepaAccepted = ((string) $currentRequest->get('acceptSepaMandate', 'off')) === 'on';
+        $isNewAccount   = ((string) $currentRequest->get('savedDirectDebitDevice', 'new')) === 'new';
+
+        return ($isSepaAccepted && $isNewAccount) || !$isNewAccount;
     }
 }

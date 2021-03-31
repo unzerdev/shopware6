@@ -23,14 +23,14 @@
             {% block unzer_payment_checkout_confirm_frame_card %}
                 {% if 'paypal' in page.extensions.unzerPaymentFrame.paymentFrame and page.extensions.unzerPayPal.displayPayPalAccountSelection
                     or 'paypal' not in page.extensions.unzerPaymentFrame.paymentFrame %}
-                    <div class="unzer-payment-card"
-                         id="unzer-payment-card"
+                    <div class="unzer-payment-base"
+                         id="unzer-payment-base"
                          data-unzer-payment-base="true"
                          data-unzer-payment-base-options='{
                          "publicKey": "{{ shopware.config.UnzerPayment6.settings.publicKey }}",
                          "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
                      }'>
-                        <div class="card-body">
+                        <div class="unzer-payment-base-body">
                             {% block unzer_payment_checkout_confirm_frame_card_body %}
                                 {% block unzer_payment_checkout_confirm_frame_card_body_frame %}
                                     <div class="unzer-payment-frame">

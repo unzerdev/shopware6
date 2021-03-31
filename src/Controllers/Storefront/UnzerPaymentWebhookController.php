@@ -57,9 +57,9 @@ class UnzerPaymentWebhookController extends StorefrontController
         $config  = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
         if ($webhook->getPublicKey() !== $config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY)) {
-            $this->logger->error('The webhook was not executed due to wrong publicKey.');
+            $this->logger->error('The provided public key does not match the configured public key');
 
-            return new Response('The webhook was not executed due to wrong publicKey.', Response::HTTP_FORBIDDEN);
+            return new Response('The provided public key does not match the configured public key.', Response::HTTP_FORBIDDEN);
         }
 
         foreach ($this->handlers as $handler) {
