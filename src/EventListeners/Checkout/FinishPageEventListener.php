@@ -60,8 +60,7 @@ class FinishPageEventListener implements EventSubscriberInterface
         }
 
         $extension = new FinishPageExtension();
-
-        $payment = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getId());
+        $payment   = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getId());
 
         if (!$payment) {
             $payment = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getOrderId());
