@@ -73,21 +73,19 @@ class ShipService implements ShipServiceInterface
         if (!$documentDate) {
             $this->logger->error(sprintf('Error while sending shipping notification for order [%s]: No DocumentDate for invoice found', $order->getOrderNumber()));
 
-            return
-                [
-                    'status'  => false,
-                    'message' => 'documentdate-missing-error',
-                ];
+            return [
+                'status'  => false,
+                'message' => 'documentdate-missing-error',
+            ];
         }
 
         if (!$invoiceNumber) {
             $this->logger->error(sprintf('Error while sending shipping notification for order [%s]: No invoiceNumber found', $order->getOrderNumber()));
 
-            return
-                [
-                    'status'  => false,
-                    'message' => 'invoice-missing-error',
-                ];
+            return [
+                'status'  => false,
+                'message' => 'invoice-missing-error',
+            ];
         }
 
         $client  = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
@@ -96,11 +94,10 @@ class ShipService implements ShipServiceInterface
         if ($payment === null) {
             $this->logger->error(sprintf('Error while sending shipping notification for order [%s]: Payment could not be fetched', $order->getOrderNumber()));
 
-            return
-                [
-                    'status'  => false,
-                    'message' => 'Payment could not be fetched',
-                ];
+            return [
+                'status'  => false,
+                'message' => 'Payment could not be fetched',
+            ];
         }
 
         $client->ship($payment, $invoiceNumber, $orderTransactionId);
