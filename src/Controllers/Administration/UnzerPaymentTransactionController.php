@@ -187,11 +187,7 @@ class UnzerPaymentTransactionController extends AbstractController
                 ];
         }
 
-        if ($result['status'] === false) {
-            return new JsonResponse($result, Response::HTTP_BAD_REQUEST);
-        }
-
-        return new JsonResponse($result);
+        return new JsonResponse($result, $result['status'] === false ? Response::HTTP_BAD_REQUEST : Response::HTTP_OK);
     }
 
     protected function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity

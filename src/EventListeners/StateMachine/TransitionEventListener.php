@@ -22,7 +22,6 @@ use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
 use UnzerPayment6\Components\ShipService\ShipServiceInterface;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
-use UnzerSDK\Exceptions\UnzerApiException;
 
 class TransitionEventListener implements EventSubscriberInterface
 {
