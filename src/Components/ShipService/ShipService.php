@@ -96,7 +96,7 @@ class ShipService implements ShipServiceInterface
 
             return [
                 'status'  => false,
-                'message' => 'Payment could not be fetched',
+                'message' => 'payment-missing-error',
             ];
         }
 
