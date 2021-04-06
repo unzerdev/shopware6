@@ -35,8 +35,12 @@ class ShipService implements ShipServiceInterface
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(ClientFactoryInterface $clientFactory, TransactionStateHandlerInterface $transactionStateHandler, EntityRepositoryInterface $orderTransactionRepository, LoggerInterface $logger)
-    {
+    public function __construct(
+        ClientFactoryInterface $clientFactory,
+        TransactionStateHandlerInterface $transactionStateHandler,
+        EntityRepositoryInterface $orderTransactionRepository,
+        LoggerInterface $logger
+    ) {
         $this->clientFactory              = $clientFactory;
         $this->transactionStateHandler    = $transactionStateHandler;
         $this->orderTransactionRepository = $orderTransactionRepository;
