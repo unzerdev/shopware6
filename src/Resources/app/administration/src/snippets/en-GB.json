@@ -61,7 +61,7 @@
                 "shipErrorTitle": "Shipping notice",
                 "invoiceNotFoundMessage": "No invoice was found for this order.",
                 "couldNotRetrieveMessage": "The payment details could not be retrieved, please check the log files for more information.",
-                "documentDateMissingError": "Document Date for invoice is empty."
+                "documentDateMissingError": "Document date for invoice is empty."
             }
         },
         "order-list": {

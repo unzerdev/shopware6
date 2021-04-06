@@ -61,7 +61,7 @@
                 "shipErrorTitle": "Versandmitteilung",
                 "invoiceNotFoundMessage": "Zu dieser Bestellung wurde keine Rechnung gefunden",
                 "couldNotRetrieveMessage": "Die Zahlungsdetails konnten nicht abgerufen werden, bitte prüfen Sie die Logdateien für weitere Informationen.",
-                "documentDateMissingError": "Datum der Rechnung ist leer."
+                "documentDateMissingError": "Das Datum der Rechnung ist leer."
             }
         },
         "order-list": {
