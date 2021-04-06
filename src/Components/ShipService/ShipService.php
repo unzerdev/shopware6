@@ -65,8 +65,12 @@ class ShipService implements ShipServiceInterface
 
         foreach ($documents as $document) {
             if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
-                $documentDate  = new DateTime($document->getConfig()['documentDate']);
-                $invoiceNumber = $document->getConfig()['documentNumber'];
+                $newDocumentDate = new DateTime($document->getConfig()['documentDate']);
+
+                if ($documentDate === null || $newDocumentDate > $documentDate) {
+                    $documentDate  = $newDocumentDate;
+                    $invoiceNumber = $document->getConfig()['documentNumber'];
+                }
             }
         }
 
