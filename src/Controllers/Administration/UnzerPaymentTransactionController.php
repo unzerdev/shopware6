@@ -82,7 +82,7 @@ class UnzerPaymentTransactionController extends AbstractController
             $data = $this->hydrator->hydrateArray($payment, $orderTransaction);
         } catch (UnzerApiException $exception) {
             $this->logger->error(sprintf('Error while executing fetching transaction details for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTrace(),
+                'trace' => $exception->getTraceAsString(),
             ]);
 
             return new JsonResponse(
@@ -93,7 +93,7 @@ class UnzerPaymentTransactionController extends AbstractController
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
             $this->logger->error(sprintf('Error while executing fetching transaction details for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTrace(),
+                'trace' => $exception->getTraceAsString(),
             ]);
 
             return new JsonResponse(
@@ -125,7 +125,7 @@ class UnzerPaymentTransactionController extends AbstractController
             $client->chargeAuthorization($orderTransactionId, $amount);
         } catch (UnzerApiException $exception) {
             $this->logger->error(sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTrace(),
+                'trace' => $exception->getTraceAsString(),
             ]);
 
             return new JsonResponse(
@@ -136,7 +136,7 @@ class UnzerPaymentTransactionController extends AbstractController
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
             $this->logger->error(sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTrace(),
+                'trace' => $exception->getTraceAsString(),
             ]);
 
             return new JsonResponse(
@@ -160,7 +160,7 @@ class UnzerPaymentTransactionController extends AbstractController
             $this->cancelService->cancelChargeById($orderTransactionId, $chargeId, $amount, $context);
         } catch (UnzerApiException $exception) {
             $this->logger->error(sprintf('Error while executing refund transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTrace(),
+                'trace' => $exception->getTraceAsString(),
             ]);
 
             return new JsonResponse(
@@ -171,7 +171,7 @@ class UnzerPaymentTransactionController extends AbstractController
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
             $this->logger->error(sprintf('Error while executing refund transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTrace(),
+                'trace' => $exception->getTraceAsString(),
             ]);
 
             return new JsonResponse(
@@ -195,7 +195,7 @@ class UnzerPaymentTransactionController extends AbstractController
             $result = $this->shipService->shipTransaction($orderTransactionId, $context);
         } catch (UnzerApiException $exception) {
             $this->logger->error(sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTrace(),
+                'trace' => $exception->getTraceAsString(),
             ]);
             $result = [
                     'status'  => false,
@@ -203,7 +203,7 @@ class UnzerPaymentTransactionController extends AbstractController
                 ];
         } catch (Throwable $exception) {
             $this->logger->error(sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTrace(),
+                'trace' => $exception->getTraceAsString(),
             ]);
             $result = [
                     'status'  => false,

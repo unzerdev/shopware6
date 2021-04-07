@@ -118,7 +118,7 @@ class TransitionEventListener implements EventSubscriberInterface
             $this->logger->info(sprintf('The automatic shipping notification for order [%s] was executed with invoice [%s]', $order->getOrderNumber(), $invoiceNumber));
         } catch (Throwable $exception) {
             $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
-                'trace' => $exception->getTrace(),
+                'trace' => $exception->getTraceAsString(),
             ]);
         }
     }
