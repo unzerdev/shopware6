@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Commands;
 
-use RuntimeException;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeEntity;
 use Shopware\Core\Checkout\Document\DocumentCollection;
 use Shopware\Core\Checkout\Document\DocumentEntity;
@@ -19,10 +18,11 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use Throwable;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
+use UnzerPayment6\Components\ShipService\ShipServiceInterface;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Constants\ApiResponseCodes;
@@ -39,9 +39,6 @@ class SendShippingNotificationCommand extends Command
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
-
     /** @var EntityRepositoryInterface */
     private $transactionRepository;
 
@@ -51,17 +48,20 @@ class SendShippingNotificationCommand extends Command
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
+    /** @var ShipServiceInterface */
+    private $shipService;
+
     public function __construct(
         ConfigReaderInterface $configReader,
-        ClientFactoryInterface $clientFactory,
         EntityRepositoryInterface $transactionRepository,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        ShipServiceInterface $shipService
     ) {
         $this->configReader          = $configReader;
-        $this->clientFactory         = $clientFactory;
         $this->transactionRepository = $transactionRepository;
         $this->context               = Context::createDefaultContext();
         $this->eventDispatcher       = $eventDispatcher;
+        $this->shipService           = $shipService;
 
         parent::__construct();
     }
@@ -111,8 +111,7 @@ class SendShippingNotificationCommand extends Command
             $invoiceId = $this->getInvoiceDocumentId($order->getDocuments());
 
             try {
-                $client = $this->clientFactory->createClient($order->getSalesChannelId());
-                $client->ship($transaction->getId(), $invoiceId);
+                $this->shipService->shipTransaction($transaction->getId(), $this->context);
                 $this->setCustomFields($transaction);
                 $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $this->context));
 
@@ -129,7 +128,7 @@ class SendShippingNotificationCommand extends Command
                 }
 
                 return self::EXIT_CODE_API_ERROR;
-            } catch (RuntimeException $exception) {
+            } catch (Throwable $exception) {
                 $output->writeln(sprintf("\t<error>%s</error>", $exception->getMessage()));
 
                 return self::EXIT_CODE_UNKNOWN_ERROR;
