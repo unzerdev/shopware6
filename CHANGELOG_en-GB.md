@@ -1,7 +1,5 @@
 # 1.1.0
 * Switch to the new unzer SDK (https://packagist.org/packages/unzerdev/php-sdk)
-
-# 1.0.5
 * Error in plugin configuration for inherited settings corrected
 
 # 1.0.4
