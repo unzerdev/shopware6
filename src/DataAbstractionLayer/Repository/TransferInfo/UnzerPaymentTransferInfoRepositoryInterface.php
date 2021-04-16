@@ -11,7 +11,7 @@ use UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo\UnzerPaymentTransferI
 
 interface UnzerPaymentTransferInfoRepositoryInterface
 {
-    public function create(string $transactionId, TransferInformation $data, Context $context): EntityWrittenContainerEvent;
+    public function create(TransferInformation $transferInformation, Context $context): EntityWrittenContainerEvent;
 
     public function remove(string $id, Context $context): EntityWrittenContainerEvent;
 

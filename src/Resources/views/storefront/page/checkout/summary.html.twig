@@ -1,18 +1,18 @@
 {% sw_extends '@Storefront/storefront/page/checkout/summary.html.twig' %}
 
-{# Extension for the cart summary should only apply to HirePurchase since it modifies the prices accordingly to the selected rate! #}
+{# Extension for the cart summary should only apply to InstallmentSecured since it modifies the prices accordingly to the selected rate! #}
 {% block page_checkout_summary_total %}
-    {% if context.paymentMethod.id is constant("UnzerPayment6\\Installer\\PaymentInstaller::PAYMENT_ID_HIRE_PURCHASE") %}
+    {% if context.paymentMethod.id is constant("UnzerPayment6\\Installer\\PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED") %}
         {% block page_checkout_summary_unzer_paymentinstallment_interest_label %}
             <dt class="col-7 checkout-aside-summary-label">
-                {{ "UnzerPayment.frame.hirePurchase.totalInterest"|trans|sw_sanitize }}
+                {{ "UnzerPayment.frame.installmentSecured.totalInterest"|trans|sw_sanitize }}
             </dt>
         {% endblock %}
 
         {% block page_checkout_summary_unzer_paymentinstallment_interest_value %}
             <dd class="col-5 checkout-aside-summary-value" id="unzer-payment-installments-interest">
-                {% if page.extensions.unzer and (page.extensions.unzer.installmentInformation|length > 0) %}
-                    {{ page.extensions.unzer.installmentInformation[0].totalInterestAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
+                {% if page.extensions.unzerFinishPage and (page.extensions.unzerFinishPage.installmentInformation|length > 0) %}
+                    {{ page.extensions.unzerFinishPage.installmentInformation[0].totalInterestAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% else %}
                     {{ 0|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% endif %}
@@ -33,15 +33,15 @@
 
         {% block page_checkout_summary_unzer_paymentinstallment_total_label %}
             <dt class="col-7 checkout-aside-summary-label checkout-aside-summary-total">
-                {{ "UnzerPayment.frame.hirePurchase.totalAmount"|trans }}
+                {{ "UnzerPayment.frame.installmentSecured.totalAmount"|trans }}
             </dt>
         {% endblock %}
 
         {% block page_checkout_summary_unzer_paymentinstallment_total_value %}
-            <dd class="col-5 checkout-aside-summary-value checkout-aside-summary-total"
-                id="unzer-payment-installments-total">
-                {% if page.extensions.unzer and (page.extensions.unzer.installmentInformation|length > 0) %}
-                    {{ page.extensions.unzer.installmentInformation[0].totalAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
+            <dd id="unzer-payment-installments-total"
+                class="col-5 checkout-aside-summary-value checkout-aside-summary-total">
+                {% if page.extensions.unzerFinishPage and (page.extensions.unzerFinishPage.installmentInformation|length > 0) %}
+                    {{ page.extensions.unzerFinishPage.installmentInformation[0].totalAmount|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% else %}
                     {{ summary.price.totalPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
                 {% endif %}

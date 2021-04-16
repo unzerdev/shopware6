@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\TransactionStateHandler;
 
-use heidelpayPHP\Resources\Payment;
 use RuntimeException;
 use Shopware\Core\Framework\Context;
+use UnzerSDK\Resources\Payment;
 
 interface TransactionStateHandlerInterface
 {

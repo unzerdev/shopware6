@@ -11,8 +11,8 @@ use UnzerPayment6\Installer\PaymentInstaller;
 interface AutomaticShippingValidatorInterface
 {
     public const HANDLED_PAYMENT_METHODS = [
-        PaymentInstaller::PAYMENT_ID_INVOICE_FACTORING,
-        PaymentInstaller::PAYMENT_ID_INVOICE_GUARANTEED,
+        PaymentInstaller::PAYMENT_ID_INVOICE_SECURED,
+        PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED,
     ];
 
     /**

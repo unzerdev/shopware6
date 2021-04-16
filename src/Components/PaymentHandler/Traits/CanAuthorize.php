@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
 use RuntimeException;
 use UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler;
+use UnzerSDK\Exceptions\UnzerApiException;
 
 trait CanAuthorize
 {
     /**
-     * @throws HeidelpayApiException
+     * @throws UnzerApiException
      */
     public function authorize(string $returnUrl): string
     {

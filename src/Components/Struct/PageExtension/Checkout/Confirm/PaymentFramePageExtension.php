@@ -8,6 +8,8 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class PaymentFramePageExtension extends Struct
 {
+    public const EXTENSION_NAME = 'unzerPaymentFrame';
+
     /** @var string */
     private $paymentFrame;
 

@@ -9,6 +9,8 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 
 class DirectDebitPageExtension extends Struct
 {
+    public const EXTENSION_NAME = 'unzerDirectDebit';
+
     /** @var UnzerPaymentDeviceEntity[] */
     protected $directDebitDevices = [];
 

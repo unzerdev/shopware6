@@ -1,4 +1,5 @@
-# 1.0.5
+# 1.1.0
+* Wechsel auf das neue unzer SDK (https://packagist.org/packages/unzerdev/php-sdk)
 * Fehler bei der Darstellung der vererbten Plugineinstellungen behoben
 
 # 1.0.4

@@ -41,7 +41,7 @@
                     "new": "Neues Konto registrieren"
                 }
             },
-            "hirePurchase": {
+            "installmentSecured": {
                 "totalAmount": "Gesamtsumme inkl. Zinsen",
                 "totalInterest": "Zinsen für Ratenkauf",
                 "testData": {

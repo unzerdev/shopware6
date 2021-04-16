@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ResourceHydrator;
 
-use heidelpayPHP\Resources\AbstractHeidelpayResource;
-use heidelpayPHP\Resources\Metadata;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\PluginEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use UnzerSDK\Resources\AbstractUnzerResource;
+use UnzerSDK\Resources\Metadata;
 
 class MetadataResourceHydrator implements ResourceHydratorInterface
 {
@@ -32,7 +32,7 @@ class MetadataResourceHydrator implements ResourceHydratorInterface
     public function hydrateObject(
         SalesChannelContext $channelContext,
         $transaction = null
-    ): AbstractHeidelpayResource {
+    ): AbstractUnzerResource {
         $pluginData = $this->getPluginData($channelContext->getContext());
 
         $unzerMetadata = new Metadata();

@@ -9,6 +9,8 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 
 class CreditCardPageExtension extends Struct
 {
+    public const EXTENSION_NAME = 'unzerCreditCard';
+
     /** @var UnzerPaymentDeviceEntity[] */
     protected $creditCards = [];
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\WebhookHandler;
 
-use heidelpayPHP\Resources\Payment;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -15,6 +14,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\Webhook;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerSDK\Resources\Payment;
 
 /**
  * @property Payment $resource
@@ -72,7 +72,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
             return;
         }
 
-        $transaction = $this->getOrderTransaction($payment, $context->getContext());
+        $transaction = $this->getOrderTransaction($payment->getOrderId(), $context->getContext());
 
         if ($transaction === null) {
             $this->logger->error(
@@ -92,9 +92,13 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
         );
     }
 
-    private function getOrderTransaction(Payment $payment, Context $context): ?OrderTransactionEntity
+    private function getOrderTransaction(?string $orderId, Context $context): ?OrderTransactionEntity
     {
-        $criteria = new Criteria([$payment->getOrderId()]);
+        if (empty($orderId)) {
+            return null;
+        }
+
+        $criteria = new Criteria([$orderId]);
 
         try {
             $orderTransactions = $this->orderTransactionRepository->search($criteria, $context);

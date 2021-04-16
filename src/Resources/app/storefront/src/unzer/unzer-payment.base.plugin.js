@@ -21,7 +21,7 @@ export default class UnzerPaymentBasePlugin extends Plugin {
     static unzerInstance = null;
 
     init() {
-        this.unzerInstance = new window.heidelpay(this.options.publicKey);
+        this.unzerInstance = new window.unzer(this.options.publicKey);
 
         if (this.options.isOrderEdit) {
             this.submitButton = document.getElementById(this.options.confirmFormId).getElementsByTagName('button')[0];

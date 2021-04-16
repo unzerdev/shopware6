@@ -1,7 +1,7 @@
 {% sw_extends '@Storefront/storefront/page/account/payment/index.html.twig' %}
 
 {% block page_account_payment_main %}
-    {% if page.extensions.unzer.deviceRemoved %}
+    {% if page.extensions.unzerPaymentMethod.deviceRemoved %}
         {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
             type: "success",
             content:  "UnzerPayment.accountPayment.deviceDeleted"|trans
@@ -10,7 +10,7 @@
 
     {{ parent() }}
 
-    {% if page.extensions.unzer.savedDevices|length > 0 %}
+    {% if page.extensions.unzerPaymentMethod.savedDevices|length > 0 %}
         {% block page_account_payment_main_unzer_paymentwrapper %}
             <div class="unzer-payment-card has-margin-top">
                 {% block page_account_payment_main_unzer_paymentwrapper_title %}
@@ -21,7 +21,7 @@
 
                 {% block page_account_payment_main_unzer_paymentwrapper_body %}
                     <div class="unzer-payment-card-body">
-                        {% for paymentDevice in page.extensions.unzer.savedDevices %}
+                        {% for paymentDevice in page.extensions.unzerPaymentMethod.savedDevices %}
                             {% sw_include '@Storefront/storefront/component/unzer/account/payment/' ~ paymentDevice.deviceType  ~ '.html.twig' ignore missing with {
                                 'device': paymentDevice
                             }  %}

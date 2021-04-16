@@ -11,9 +11,10 @@ Unzer payment integration for Shopware 6 including the following payment methods
 * Prepayment
 * SEPA direct debit
 * SOFORT
-* Unzer Invoice B2C / B2B (secured, factoring)
 * Unzer Direct
 * Unzer direct debit (secured)
+* Unzer Invoice B2C / B2B (secured)
+* Unzer Installment (secured)
 * WeChat Pay
 
 Regarding plugin compatibility, please take a look at the [Shopware store page](https://store.shopware.com/en/unzer48059319318f/unzer-payments-for-shopware-6.html).
