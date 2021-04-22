@@ -31,5 +31,12 @@ Module.register('unzer-payment-configuration', {
                 parentPath: 'sw.settings.index'
             }
         }
-    }
+    },
+    settingsItem: [{
+        name:   'unzer-payment-configuration',
+        to:     'unzer.payment.configuration.settings',
+        label:  'unzer-payment-settings.module.title',
+        group:  'plugins',
+        iconComponent: 'unzer-payment-plugin-icon'
+    }]
 });

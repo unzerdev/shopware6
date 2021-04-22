@@ -79,7 +79,7 @@ class UnzerCheckoutController extends StorefrontController
         }
     }
 
-    public function finishPage(Request $request, SalesChannelContext $context): Response
+    public function finishPage(Request $request, SalesChannelContext $context, RequestDataBag $dataBag): Response
     {
         if (!$context->getCustomer()) {
             return $this->redirectToRoute('frontend.checkout.register.page');
@@ -113,6 +113,6 @@ class UnzerCheckoutController extends StorefrontController
             );
         }
 
-        return $this->innerService->finishPage($request, $context);
+        return $this->innerService->finishPage($request, $context, $dataBag);
     }
 }
