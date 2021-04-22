@@ -69,7 +69,7 @@ class CancelService implements CancelServiceInterface
             $orderTransactionId,
             $chargeId,
             $amountGross,
-            $this->getCancelReasonCode($transaction),
+            $this->getCancelReasonCode($transaction->getPaymentMethodId()),
             '',
             $amountNet,
             $amountVat
@@ -87,9 +87,9 @@ class CancelService implements CancelServiceInterface
         return $this->orderTransactionRepository->search($criteria, $context)->first();
     }
 
-    protected function getCancelReasonCode(OrderTransactionEntity $transaction): string
+    protected function getCancelReasonCode(string $paymentMethodId): string
     {
-        if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_INVOICE_SECURED) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_INVOICE_SECURED) {
             return CancelReasonCodes::REASON_CODE_CANCEL;
         }
 
