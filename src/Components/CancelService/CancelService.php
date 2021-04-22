@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\CancelService;
 
-use JetBrains\PhpStorm\Pure;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
@@ -93,6 +92,7 @@ class CancelService implements CancelServiceInterface
         if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_INVOICE_SECURED) {
             return CancelReasonCodes::REASON_CODE_CANCEL;
         }
+
         return '';
     }
 }
