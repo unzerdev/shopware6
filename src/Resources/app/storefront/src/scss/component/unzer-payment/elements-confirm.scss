@@ -47,3 +47,23 @@
 .unzerUI.left.icon.input {
     height: unset;
 }
+
+.unzer-payment-birthdate-error {
+    display: none;
+}
+
+.unzer-payment-birthdate.error {
+    .unzer-payment-label {
+        color: #d0021b;
+    }
+
+    .unzer-payment-date-input {
+        border-color: #d0021b;
+        background: #fff6f6;
+    }
+
+    .unzer-payment-birthdate-error {
+        color: #d0021b;
+        display: inline-block;
+    }
+}
