@@ -33,7 +33,7 @@
         {% endblock %}
 
         {% block unzer_payment_frame_installment_secured_birthday %}
-            <div id="unzerPaymentBirthdateContainer" class="unzer-payment-birthdate">
+            <div id="unzerPaymentBirthdayContainer" class="unzer-payment-birthday">
                 <label for="unzerPaymentBirthday" class="unzer-payment-label">
                     {{ "account.personalBirthdayLabel"|trans }}
                 </label>
@@ -46,8 +46,8 @@
                        required="required"
                        {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
 
-                <div id="unzerPaymentBirthdateError" class="unzer-payment-birthdate-error">
-                    {{ "UnzerPayment.birthdateInvalid"|trans }}
+                <div id="unzerPaymentBirthdayError" class="unzer-payment-birthday-error">
+                    {{ "UnzerPayment.birthdayInvalid"|trans }}
                 </div>
             </div>
         {% endblock %}

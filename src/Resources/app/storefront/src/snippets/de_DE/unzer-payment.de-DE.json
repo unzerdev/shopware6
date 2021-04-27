@@ -64,6 +64,6 @@
             "title": "Ihre gespeicherten Zahlungsmittel"
         },
         "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Zahlung ändern</a>",
-        "birthdateInvalid": "Geburtsdatum ungültig"
+        "birthdayInvalid": "Geburtsdatum ungültig"
     }
 }

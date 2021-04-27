@@ -48,11 +48,11 @@
     height: unset;
 }
 
-.unzer-payment-birthdate-error {
+.unzer-payment-birthday-error {
     display: none;
 }
 
-.unzer-payment-birthdate.error {
+.unzer-payment-birthday.error {
     .unzer-payment-label {
         color: #d0021b;
     }
@@ -62,7 +62,7 @@
         background: #fff6f6;
     }
 
-    .unzer-payment-birthdate-error {
+    .unzer-payment-birthday-error {
         color: #d0021b;
         display: inline-block;
     }

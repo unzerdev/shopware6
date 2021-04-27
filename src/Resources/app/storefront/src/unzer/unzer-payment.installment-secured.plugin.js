@@ -14,7 +14,7 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
         currencyFormatLocale: 'en-GB',
         starSymbol: '*',
         birthdateInputSelector: 'unzerPaymentBirthday',
-        birthdateContainerSelector: 'unzerPaymentBirthdateContainer'
+        birthdateContainerSelector: 'unzerPaymentBirthdayContainer'
     };
 
     /**
@@ -152,6 +152,10 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
     }
 
     _validateBirthdate() {
+        if (this.birthdateInput.value === '') {
+            return false;
+        }
+
         const birthdate = new Date(this.birthdateInput.value),
             maxDate = new Date(),
             minAge = new Date()
