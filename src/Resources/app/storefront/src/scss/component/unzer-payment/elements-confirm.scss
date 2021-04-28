@@ -48,22 +48,25 @@
     height: unset;
 }
 
-.unzer-payment-birthday-error {
+.unzer-payment-birthday {
+  .unzer-payment-birthday-error {
     display: none;
-}
+  }
 
-.unzer-payment-birthday.error {
+  &.error {
     .unzer-payment-label {
-        color: #d0021b;
+      color: #d0021b;
     }
 
     .unzer-payment-date-input {
-        border-color: #d0021b;
-        background: #fff6f6;
+      border-color: #d0021b;
+      background: #fff6f6;
     }
 
     .unzer-payment-birthday-error {
-        color: #d0021b;
-        display: inline-block;
+      color: #d0021b;
+      display: inline-block;
     }
+  }
 }
+
