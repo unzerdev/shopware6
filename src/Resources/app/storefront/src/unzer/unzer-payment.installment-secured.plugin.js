@@ -13,8 +13,8 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
         currencyIso: 'EUR',
         currencyFormatLocale: 'en-GB',
         starSymbol: '*',
-        birthdateInputSelector: 'unzerPaymentBirthday',
-        birthdateContainerSelector: 'unzerPaymentBirthdayContainer'
+        birthdateInputIdSelector: 'unzerPaymentBirthday',
+        birthdateContainerIdSelector: 'unzerPaymentBirthdayContainer'
     };
 
     /**
@@ -56,8 +56,8 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
         this.installmentSecured = this._unzerPaymentPlugin.unzerInstance.InstallmentSecured();
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
-        this.birthdateContainer = document.getElementById(this.options.birthdateContainerSelector);
-        this.birthdateInput = document.getElementById(this.options.birthdateInputSelector);
+        this.birthdateContainer = document.getElementById(this.options.birthdateContainerIdSelector);
+        this.birthdateInput = document.getElementById(this.options.birthdateInputIdSelector);
         this.unzerInputsValid = false;
 
         this._createForm();
