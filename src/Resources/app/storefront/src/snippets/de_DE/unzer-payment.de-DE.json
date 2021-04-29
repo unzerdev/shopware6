@@ -64,6 +64,6 @@
             "title": "Ihre gespeicherten Zahlungsmittel"
         },
         "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Zahlung ändern</a>",
-        "birthdayInvalid": "Geburtsdatum ungültig"
+        "birthdayInvalid": "Du musst mindestens 18 Jahre alt sein"
     }
 }
