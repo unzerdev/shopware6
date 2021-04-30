@@ -1,4 +1,5 @@
-# 1.1.0
+# 2.0.0
+* Validierung des Geburtsdatums für Unzer Ratenzahlung im Checkout hinzugefügt
 * Wechsel auf das neue unzer SDK (https://packagist.org/packages/unzerdev/php-sdk)
 * Fehler bei der Darstellung der vererbten Plugineinstellungen behoben
 

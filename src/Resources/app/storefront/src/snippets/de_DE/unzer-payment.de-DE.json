@@ -63,6 +63,7 @@
             "deviceDeleted": "Das Zahlungsmittel wurde erfolgreich entfernt.",
             "title": "Ihre gespeicherten Zahlungsmittel"
         },
-        "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Zahlung ändern</a>"
+        "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Zahlung ändern</a>",
+        "birthdayInvalid": "Sie müssen mindestens 18 Jahre alt sein."
     }
 }

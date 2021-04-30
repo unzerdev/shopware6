@@ -12,7 +12,9 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
         formLoadingIndicatorElementId: 'element-loader',
         currencyIso: 'EUR',
         currencyFormatLocale: 'en-GB',
-        starSymbol: '*'
+        starSymbol: '*',
+        birthdateInputIdSelector: 'unzerPaymentBirthday',
+        birthdateContainerIdSelector: 'unzerPaymentBirthdayContainer'
     };
 
     /**
@@ -21,6 +23,27 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
      * @public
      */
     static installmentSecured;
+
+    /**
+     * @type {Object}
+     *
+     * @public
+     */
+    static birthdateContainer;
+
+    /**
+     * @type {Object}
+     *
+     * @public
+     */
+    static birthdateInput;
+
+    /**
+     * @type {boolean}
+     *
+     * @public
+     */
+    static unzerInputsValid;
 
     /**
      * @type {UnzerPaymentBasePlugin}
@@ -33,6 +56,9 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
         this.installmentSecured = this._unzerPaymentPlugin.unzerInstance.InstallmentSecured();
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
+        this.birthdateContainer = document.getElementById(this.options.birthdateContainerIdSelector);
+        this.birthdateInput = document.getElementById(this.options.birthdateInputIdSelector);
+        this.unzerInputsValid = false;
 
         this._createForm();
         this._registerEvents();
@@ -72,6 +98,7 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
         });
 
         this.installmentSecured.addEventListener('installmentSecuredEvent', (event) => this._onChangeInstallmentSecuredForm(event));
+        this.birthdateInput.addEventListener('change', this._onBirthdateInputChange.bind(this))
     }
 
     /**
@@ -92,7 +119,8 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
      */
     _onChangeInstallmentSecuredForm(event) {
         if (event.action === 'validate') {
-            if (event.success) {
+            this.unzerInputsValid = event.success;
+            if (event.success && this._validateBirthdate()) {
                 this._unzerPaymentPlugin.setSubmitButtonActive(true);
             } else {
                 this._unzerPaymentPlugin.setSubmitButtonActive(false);
@@ -113,5 +141,43 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
             style: 'currency',
             currency: this.options.currencyIso
         });
+    }
+
+    _onBirthdateInputChange() {
+        if (this._validateBirthdate() && this.unzerInputsValid) {
+            this._unzerPaymentPlugin.setSubmitButtonActive(true);
+        } else {
+            this._unzerPaymentPlugin.setSubmitButtonActive(false);
+        }
+    }
+
+    _validateBirthdate() {
+        if (this.birthdateInput.value === '') {
+            return false;
+        }
+
+        const birthdate = new Date(this.birthdateInput.value),
+            maxDate = new Date(),
+            minAge = new Date()
+        ;
+
+        //normalize times
+        birthdate.setHours(0,0,0,0);
+        maxDate.setHours(0,0,0,0);
+        minAge.setHours(0,0,0,0);
+
+        //update maxDate and minAge to relevant values
+        maxDate.setDate(maxDate.getDate() + 1);
+        minAge.setFullYear(minAge.getFullYear() - 18);
+
+        let isValid = birthdate <= minAge && birthdate < maxDate;
+
+        if (isValid) {
+            this.birthdateContainer.classList.remove('error');
+        } else {
+            this.birthdateContainer.classList.add('error');
+        }
+
+        return isValid;
     }
 }
