@@ -15,7 +15,7 @@ class SnippetFile_en_GB implements SnippetFileInterface
 
     public function getPath(): string
     {
-        return __DIR__ . '/unzer-payment.en_GB.json';
+        return __DIR__ . '/unzer-payment.en-GB.json';
     }
 
     public function getIso(): string
