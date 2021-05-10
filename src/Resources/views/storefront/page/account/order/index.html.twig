@@ -7,7 +7,7 @@
              id="unzer-payment-card"
              data-unzer-payment-base="true"
              data-unzer-payment-base-options='{
-                     "publicKey": "{{ shopware.config.UnzerPayment6.settings.publicKey }}",
+                     "publicKey": "{{ page.extensions.unzerPaymentData.publicKey }}",
                      "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}",
                      "isOrderEdit": true
                  }'>

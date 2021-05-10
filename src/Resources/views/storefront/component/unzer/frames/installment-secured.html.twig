@@ -22,8 +22,7 @@
         </div>
 
         {% block unzer_payment_frame_installment_secured_test_data %}
-            {% set testDataConst = constant('UnzerPayment6\\Components\\ConfigReader\\ConfigReader::CONFIG_KEY_TEST_DATA') %}
-            {% if shopware.config.UnzerPayment6.settings[testDataConst] %}
+            {% if page.extensions.unzerPaymentData and page.extensions.unzerPaymentData.showTestData %}
                 {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/installment-secured.html.twig' %}
             {% endif %}
         {% endblock %}

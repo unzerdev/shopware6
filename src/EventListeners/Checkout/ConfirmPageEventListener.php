@@ -18,6 +18,7 @@ use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSe
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\InstallmentSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\UnzerDataPageExtension;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerPayment6\Installer\PaymentInstaller;
@@ -97,6 +98,16 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $this->addPaymentFrameExtension($event);
+        $this->addUnzerDataExtension($event);
+    }
+
+    private function addUnzerDataExtension(PageLoadedEvent $event): void
+    {
+        $extension = new UnzerDataPageExtension();
+        $extension->setPublicKey($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY));
+        $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
+
+        $event->getPage()->addExtension(UnzerDataPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addPaymentFrameExtension(PageLoadedEvent $event): void

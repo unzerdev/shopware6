@@ -1,6 +1,6 @@
 {% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
 
-{% block page_checkout_confirm_errors %}
+{% block page_checkout_confirm_alerts %}
     {{ parent() }}
 
     <div class="unzer-payment--error-wrapper" hidden="hidden">
@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block page_checkout_confirm_product_table %}
-    {% if page.extensions.unzerPaymentFrame.paymentFrame %}
+    {% if page.extensions.unzerPaymentFrame.paymentFrame and page.extensions.unzerPaymentData %}
         {% block unzer_payment_checkout_confirm_frame %}
             {% sw_include '@Storefront/storefront/component/unzer/base/unzer-library.html.twig' %}
 
@@ -27,7 +27,7 @@
                          id="unzer-payment-base"
                          data-unzer-payment-base="true"
                          data-unzer-payment-base-options='{
-                         "publicKey": "{{ shopware.config.UnzerPayment6.settings.publicKey }}",
+                         "publicKey": "{{ page.extensions.unzerPaymentData.publicKey }}",
                          "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
                      }'>
                         <div class="unzer-payment-base-body">
