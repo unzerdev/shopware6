@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace UnzerPayment6\Resources\app\storefront\src\snippets\de_DE;
+namespace UnzerPayment6\Resources\snippet\de_DE;
 
 use Shopware\Core\System\Snippet\Files\SnippetFileInterface;
 
