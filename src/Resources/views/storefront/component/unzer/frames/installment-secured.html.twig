@@ -31,18 +31,26 @@
             <div id="unzer-payment-installment-secured-container"></div>
         {% endblock %}
 
-        {% block unzer_payment_frame_installment_secured_birthday %}
-            <label for="unzerPaymentBirthday" class="unzer-payment-label">
-                {{ "account.personalBirthdayLabel"|trans }}
-            </label>
+        {% block unzer_payment_frame_installment_secured_birthday_container %}
+            <div id="unzerPaymentBirthdayContainer" class="unzer-payment-birthday">
+                {% block unzer_payment_frame_installment_secured_birthday %}
+                    <label for="unzerPaymentBirthday" class="unzer-payment-label">
+                        {{ "account.personalBirthdayLabel"|trans }}
+                    </label>
 
-            <input type="date"
-                   id="unzerPaymentBirthday"
-                   name="unzerPaymentBirthday"
-                   class="form-control unzer-payment-date-input"
-                   form="confirmOrderForm"
-                   required="required"
-                   {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+                    <input type="date"
+                           id="unzerPaymentBirthday"
+                           name="unzerPaymentBirthday"
+                           class="form-control unzer-payment-date-input"
+                           form="confirmOrderForm"
+                           required="required"
+                           {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+                {% endblock %}
+
+                <div id="unzerPaymentBirthdayError" class="unzer-payment-birthday-error">
+                    {{ "UnzerPayment.birthdayInvalid"|trans }}
+                </div>
+            </div>
         {% endblock %}
     </div>
 {% endblock %}

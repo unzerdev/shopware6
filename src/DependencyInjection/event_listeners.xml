@@ -7,6 +7,7 @@
         <service id="UnzerPayment6\EventListeners\Checkout\FinishPageEventListener">
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelper" />
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -37,9 +38,9 @@
             <argument type="service" id="order_delivery.repository" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\Validator\AutomaticShippingValidator"/>
-            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="unzer_payment.logger"/>
             <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="UnzerPayment6\Components\ShipService\ShipService" />
 
             <tag name="kernel.event_subscriber"/>
         </service>

@@ -12,6 +12,7 @@ interface AutomaticShippingValidatorInterface
 {
     public const HANDLED_PAYMENT_METHODS = [
         PaymentInstaller::PAYMENT_ID_INVOICE_SECURED,
+        PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED,
     ];
 
     /**
