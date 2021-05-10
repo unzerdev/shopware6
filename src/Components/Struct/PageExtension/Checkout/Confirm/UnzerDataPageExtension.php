@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
-
 
 use Shopware\Core\Framework\Struct\Struct;
 
