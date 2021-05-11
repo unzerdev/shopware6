@@ -80,7 +80,7 @@ class UnzerCheckoutController extends StorefrontController
         }
     }
 
-    public function finishPage(Request $request, SalesChannelContext $context, RequestDataBag $dataBag = null): Response
+    public function finishPage(Request $request, SalesChannelContext $context, ?RequestDataBag $dataBag = null): Response
     {
         if (!$context->getCustomer()) {
             return $this->redirectToRoute('frontend.checkout.register.page');
