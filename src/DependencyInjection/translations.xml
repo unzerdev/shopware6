@@ -7,7 +7,7 @@
             <tag name="shopware.snippet.file"/>
         </service>
 
-        <service id="UnzerPayment6\Resources\snippet\en_EN\SnippetFile_en_GB">
+        <service id="UnzerPayment6\Resources\snippet\en_GB\SnippetFile_en_GB">
             <tag name="shopware.snippet.file"/>
         </service>
     </services>
