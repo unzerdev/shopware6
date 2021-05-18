@@ -49,9 +49,9 @@ k10r-phpstan:
         - chmod +x /var/www/html/composer
         - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update --2; else /var/www/html/composer global require hirak/prestissimo; fi
         - ${COMPOSER_COMMAND}
-        - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
+        - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
     script:
-        - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan.neon src tests
+        - cd /var/www/html/custom/plugins/${PLUGIN_NAME} && vendor/bin/phpstan analyse -c phpstan.neon src tests
     cache:
         key: global
         paths:
