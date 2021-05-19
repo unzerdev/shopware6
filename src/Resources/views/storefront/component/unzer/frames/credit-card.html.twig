@@ -13,7 +13,8 @@
 
 
         {% block unzer_payment_frame_credit_card_test_data %}
-            {% if page.extensions.unzerPaymentData and page.extensions.unzerPaymentData.showTestData %}
+            {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
+            {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
                 {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/credit-card.html.twig' %}
             {% endif %}
         {% endblock %}

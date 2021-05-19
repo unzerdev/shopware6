@@ -23,11 +23,12 @@
             {% block unzer_payment_checkout_confirm_frame_card %}
                 {% if 'paypal' in page.extensions.unzerPaymentFrame.paymentFrame and page.extensions.unzerPayPal.displayPayPalAccountSelection
                     or 'paypal' not in page.extensions.unzerPaymentFrame.paymentFrame %}
+                    {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
                     <div class="unzer-payment-base"
                          id="unzer-payment-base"
                          data-unzer-payment-base="true"
                          data-unzer-payment-base-options='{
-                         "publicKey": "{{ page.extensions.unzerPaymentData.publicKey }}",
+                         "publicKey": "{{ page.extensions[paymentDataExtensionName].publicKey }}",
                          "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
                      }'>
                         <div class="unzer-payment-base-body">
