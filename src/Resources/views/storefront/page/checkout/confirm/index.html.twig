@@ -12,7 +12,8 @@
 {% endblock %}
 
 {% block page_checkout_confirm_product_table %}
-    {% if page.extensions.unzerPaymentFrame.paymentFrame and page.extensions.unzerPaymentData %}
+    {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
+    {% if page.extensions.unzerPaymentFrame.paymentFrame and page.extensions[paymentDataExtensionName] %}
         {% block unzer_payment_checkout_confirm_frame %}
             {% sw_include '@Storefront/storefront/component/unzer/base/unzer-library.html.twig' %}
 
@@ -23,7 +24,6 @@
             {% block unzer_payment_checkout_confirm_frame_card %}
                 {% if 'paypal' in page.extensions.unzerPaymentFrame.paymentFrame and page.extensions.unzerPayPal.displayPayPalAccountSelection
                     or 'paypal' not in page.extensions.unzerPaymentFrame.paymentFrame %}
-                    {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
                     <div class="unzer-payment-base"
                          id="unzer-payment-base"
                          data-unzer-payment-base="true"
