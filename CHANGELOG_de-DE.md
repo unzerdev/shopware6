@@ -1,3 +1,6 @@
+# 2.0.1
+* Kompatibilität mit shopware 6.4.0.0 hergestellt
+
 # 2.0.0
 * Validierung des Geburtsdatums für Unzer Ratenzahlung im Checkout hinzugefügt
 * Wechsel auf das neue unzer SDK (https://packagist.org/packages/unzerdev/php-sdk)
