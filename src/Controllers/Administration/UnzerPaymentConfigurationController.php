@@ -42,7 +42,8 @@ class UnzerPaymentConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer-payment/validate-credentials", name="api.action.unzer.validate.credentials", methods={"POST"})
+     * @Route("/api/_action/unzer-payment/validate-credentials", name="api.action.unzer.validate.credentials", methods={"POST"})
+     * @Route("/api/v{version}/_action/unzer-payment/validate-credentials", name="api.action.unzer.validate.credentials.version", methods={"POST"})
      */
     public function validateCredentials(RequestDataBag $dataBag): JsonResponse
     {
@@ -77,7 +78,8 @@ class UnzerPaymentConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer-payment/register-webhooks", name="api.action.unzer.webhooks.register", methods={"POST"})
+     * @Route("/api/_action/unzer-payment/register-webhooks", name="api.action.unzer.webhooks.register", methods={"POST"})
+     * @Route("/api/v{version}/_action/unzer-payment/register-webhooks", name="api.action.unzer.webhooks.register.version", methods={"POST"})
      */
     public function registerWebhooks(RequestDataBag $dataBag): JsonResponse
     {
@@ -100,7 +102,8 @@ class UnzerPaymentConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer-payment/clear-webhooks", name="api.action.unzer.webhooks.clear", methods={"POST"})
+     * @Route("/api/_action/unzer-payment/clear-webhooks", name="api.action.unzer.webhooks.clear", methods={"POST"})
+     * @Route("/api/v{version}/_action/unzer-payment/clear-webhooks", name="api.action.unzer.webhooks.clear.version", methods={"POST"})
      */
     public function clearWebhooks(RequestDataBag $dataBag): JsonResponse
     {
