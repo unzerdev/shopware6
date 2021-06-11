@@ -59,9 +59,9 @@ class WebhookRegistrator implements WebhookRegistratorInterface
 
         /** @var RequestDataBag $salesChannelDomain */
         foreach ($salesChannelDomains as $salesChannelDomain) {
-            $salesChannelId = $salesChannelDomain->get('salesChannelId');
+            $salesChannelId    = $salesChannelDomain->get('salesChannelId');
             $preparationResult = $this->prepare($salesChannelDomain);
-            $domainUrl = $salesChannelDomain->get('url', '');
+            $domainUrl         = $salesChannelDomain->get('url', '');
 
             if (!empty($preparationResult)) {
                 $returnData[$preparationResult['key']] = $preparationResult['value'];
@@ -106,9 +106,9 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         $returnData = [];
 
         foreach ($salesChannelDomains as $salesChannelDomain) {
-            $salesChannelId = $salesChannelDomain->get('salesChannelId');
+            $salesChannelId    = $salesChannelDomain->get('salesChannelId');
             $preparationResult = $this->prepare($salesChannelDomain);
-            $domainUrl = $salesChannelDomain->get('url', '');
+            $domainUrl         = $salesChannelDomain->get('url', '');
 
             if (!empty($preparationResult)) {
                 $returnData[$preparationResult['key']] = $preparationResult['value'];
