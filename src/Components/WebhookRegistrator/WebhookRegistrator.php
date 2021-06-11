@@ -59,7 +59,9 @@ class WebhookRegistrator implements WebhookRegistratorInterface
 
         /** @var RequestDataBag $salesChannelDomain */
         foreach ($salesChannelDomains as $salesChannelDomain) {
+            $salesChannelId = $salesChannelDomain->get('salesChannelId');
             $preparationResult = $this->prepare($salesChannelDomain);
+            $domainUrl = $salesChannelDomain->get('url', '');
 
             if (!empty($preparationResult)) {
                 $returnData[$preparationResult['key']] = $preparationResult['value'];
@@ -69,21 +71,23 @@ class WebhookRegistrator implements WebhookRegistratorInterface
 
             try {
                 $url    = $this->router->generate('unzer.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_URL);
-                $result = $this->clientFactory->createClient()->createWebhook($url, 'all');
+                $result = $this->clientFactory->createClient($salesChannelId)->createWebhook($url, 'all');
 
-                $returnData[$salesChannelDomain->get('url', '')] = [
+                $returnData[$domainUrl] = [
                     'success' => true,
                     'data'    => $result ?? null,
                     'message' => 'unzer-payment-settings.webhook.register.done',
                 ];
-                $this->logger->info('Webhooks registered!');
+
+                $this->logger->info(sprintf('Webhooks registered for domain %s', $domainUrl));
             } catch (UnzerApiException | Throwable $exception) {
-                $returnData[$salesChannelDomain->get('url', '')] = [
+                $returnData[$domainUrl] = [
                     'success' => false,
                     'message' => 'unzer-payment-settings.webhook.register.error',
                 ];
+
                 $this->logger->error(
-                    'Webhook registration failed!',
+                    sprintf('Webhook registration failed for domain %s', $domainUrl),
                     [
                         'message' => $exception->getMessage(),
                         'code'    => $exception->getCode(),
@@ -102,7 +106,9 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         $returnData = [];
 
         foreach ($salesChannelDomains as $salesChannelDomain) {
+            $salesChannelId = $salesChannelDomain->get('salesChannelId');
             $preparationResult = $this->prepare($salesChannelDomain);
+            $domainUrl = $salesChannelDomain->get('url', '');
 
             if (!empty($preparationResult)) {
                 $returnData[$preparationResult['key']] = $preparationResult['value'];
@@ -111,20 +117,22 @@ class WebhookRegistrator implements WebhookRegistratorInterface
             }
 
             try {
-                $this->clientFactory->createClient()->deleteAllWebhooks();
+                $this->clientFactory->createClient($salesChannelId)->deleteAllWebhooks();
 
-                $returnData[$salesChannelDomain->get('url', '')] = [
+                $returnData[$domainUrl] = [
                     'success' => true,
                     'message' => 'unzer-payment-settings.webhook.clear.done',
                 ];
-                $this->logger->info('Webhooks registered!');
+
+                $this->logger->info(sprintf('Webhooks for domain %s deleted!', $domainUrl));
             } catch (UnzerApiException | Throwable $exception) {
-                $returnData[$salesChannelDomain->get('url', '')] = [
+                $returnData[$domainUrl] = [
                     'success' => false,
                     'message' => 'unzer-payment-settings.webhook.clear.error',
                 ];
+
                 $this->logger->error(
-                    'Webhook registration failed!',
+                    sprintf('Webhook deletion failed for domain %s!', $domainUrl),
                     [
                         'message' => $exception->getMessage(),
                         'code'    => $exception->getCode(),
