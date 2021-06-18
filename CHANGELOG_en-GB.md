@@ -1,6 +1,5 @@
 # 2.0.1
 * Compatibility with shopware 6.4.0.0 ensured
-* Fixed SEPA-Mandate text in checkout
 
 # 2.0.0
 * Added birthdate validation to payment method Unzer installment in checkout
