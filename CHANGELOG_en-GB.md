@@ -1,3 +1,12 @@
+# 2.0.1
+* Compatibility with shopware 6.4.0.0 ensured
+* Fixed SEPA-Mandate text in checkout
+
+# 2.0.0
+* Added birthdate validation to payment method Unzer installment in checkout
+* Switch to the new unzer SDK (https://packagist.org/packages/unzerdev/php-sdk)
+* Error in plugin configuration for inherited settings corrected
+
 # 1.0.4
 * Error in Invoice (guaranteed/factoring) for B2B customers corrected
 * Error in the decimal place display in the administration fixed

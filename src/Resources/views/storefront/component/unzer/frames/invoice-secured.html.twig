@@ -1,0 +1,40 @@
+{% block unzer_payment_frame_invoice_secured %}
+    {% block unzer_payment_checkout_confirm_frame_card_body_title %}
+        <div class="card-title">
+            {{ context.paymentMethod.translated.name }}
+        </div>
+    {% endblock %}
+
+    <div class="unzer-payment-invoice-secured-wrapper"
+         data-unzer-payment-invoice-secured="true"
+         data-unzer-payment-invoice-secured-options='{
+            "isB2BCustomer": "{{ context.customer.activeBillingAddress.company is not empty }}",
+            "customerInfo": {{ context.customer|json_encode }}
+         }'>
+
+        <div class="unzer-payment-frame-row">
+            {% if context.customer.activeBillingAddress.company is not empty %}
+                {% block unzer_payment_frame_invoice_secured_b2b_form %}
+                    <div id="unzer-payment-b2b-form" class="field"></div>
+
+                    <input type="hidden" id="unzerCustomerId" name="unzerCustomerId" form="confirmOrderForm">
+                {% endblock %}
+            {% else %}
+                {% block unzer_payment_frame_invoice_secured_birthday %}
+                    <div id="unzer-payment-b2c-form">
+                        <label for="unzerPaymentBirthday" class="unzer-payment-label">
+                            {{ "account.personalBirthdayLabel"|trans }}
+                        </label>
+                        <input type="date"
+                               id="unzerPaymentBirthday"
+                               name="unzerPaymentBirthday"
+                               class="form-control unzer-payment-date-input"
+                               form="confirmOrderForm"
+                               required="required"
+                               {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+                    </div>
+                {% endblock %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

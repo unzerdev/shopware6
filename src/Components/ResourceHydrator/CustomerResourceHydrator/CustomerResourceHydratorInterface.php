@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator;
 
-use heidelpayPHP\Resources\AbstractHeidelpayResource;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use UnzerSDK\Resources\AbstractUnzerResource;
 
 interface CustomerResourceHydratorInterface
 {
-    public function hydrateObject(string $paymentMethodId, SalesChannelContext $channelContext): AbstractHeidelpayResource;
+    public function hydrateObject(string $paymentMethodId, SalesChannelContext $channelContext): AbstractUnzerResource;
 
-    public function hydrateExistingCustomer(AbstractHeidelpayResource $unzerCustomer, SalesChannelContext $salesChannelContext): AbstractHeidelpayResource;
+    public function hydrateExistingCustomer(AbstractUnzerResource $unzerCustomer, SalesChannelContext $salesChannelContext): AbstractUnzerResource;
 }

@@ -9,6 +9,8 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 
 class PayPalPageExtension extends Struct
 {
+    public const EXTENSION_NAME = 'unzerPayPal';
+
     /** @var UnzerPaymentDeviceEntity[] */
     protected $payPalAccounts = [];
 

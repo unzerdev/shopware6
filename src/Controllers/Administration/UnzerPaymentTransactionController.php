@@ -4,14 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
-use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
-use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Heidelpay;
-use heidelpayPHP\Resources\Payment;
-use heidelpayPHP\Resources\PaymentTypes\HirePurchaseDirectDebit;
-use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
@@ -26,7 +19,8 @@ use Throwable;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydratorInterface;
-use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerPayment6\Components\ShipService\ShipServiceInterface;
+use UnzerSDK\Exceptions\UnzerApiException;
 
 /**
  * @RouteScope(scopes={"api"})
@@ -42,28 +36,34 @@ class UnzerPaymentTransactionController extends AbstractController
     /** @var PaymentResourceHydratorInterface */
     private $hydrator;
 
-    /** @var TransactionStateHandlerInterface */
-    private $transactionStateHandler;
-
     /** @var CancelServiceInterface */
     private $cancelService;
+
+    /** @var ShipServiceInterface */
+    private $shipService;
+
+    /** @var LoggerInterface */
+    private $logger;
 
     public function __construct(
         ClientFactoryInterface $clientFactory,
         EntityRepositoryInterface $orderTransactionRepository,
         PaymentResourceHydratorInterface $hydrator,
-        TransactionStateHandlerInterface $transactionStateHandler,
-        CancelServiceInterface $cancelService
+        CancelServiceInterface $cancelService,
+        ShipServiceInterface $shipService,
+        LoggerInterface $logger
     ) {
         $this->clientFactory              = $clientFactory;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->hydrator                   = $hydrator;
-        $this->transactionStateHandler    = $transactionStateHandler;
         $this->cancelService              = $cancelService;
+        $this->shipService                = $shipService;
+        $this->logger                     = $logger;
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/details", name="api.action.unzer.transaction.details", methods={"GET"})
+     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/details", name="api.action.unzer.transaction.details", methods={"GET"})
+     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/details", name="api.action.unzer.transaction.details.version", methods={"GET"})
      */
     public function fetchTransactionDetails(string $orderTransactionId, Context $context): JsonResponse
     {
@@ -81,7 +81,11 @@ class UnzerPaymentTransactionController extends AbstractController
             $orderTransaction = $this->getOrderTransaction($orderTransactionId, $context);
 
             $data = $this->hydrator->hydrateArray($payment, $orderTransaction);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
+            $this->logger->error(sprintf('Error while executing fetching transaction details for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -89,6 +93,10 @@ class UnzerPaymentTransactionController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
+            $this->logger->error(sprintf('Error while executing fetching transaction details for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -102,7 +110,8 @@ class UnzerPaymentTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/charge/{amount}", name="api.action.unzer.transaction.charge", methods={"GET"})
+     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/charge/{amount}", name="api.action.unzer.transaction.charge", methods={"GET"})
+     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/charge/{amount}", name="api.action.unzer.transaction.charge.version", methods={"GET"})
      */
     public function chargeTransaction(string $orderTransactionId, float $amount, Context $context): JsonResponse
     {
@@ -116,7 +125,11 @@ class UnzerPaymentTransactionController extends AbstractController
 
         try {
             $client->chargeAuthorization($orderTransactionId, $amount);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
+            $this->logger->error(sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -124,6 +137,10 @@ class UnzerPaymentTransactionController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
+            $this->logger->error(sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -137,13 +154,18 @@ class UnzerPaymentTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund", methods={"GET"})
+     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund", methods={"GET"})
+     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund.version", methods={"GET"})
      */
     public function refundTransaction(string $orderTransactionId, string $chargeId, float $amount, Context $context): JsonResponse
     {
         try {
             $this->cancelService->cancelChargeById($orderTransactionId, $chargeId, $amount, $context);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
+            $this->logger->error(sprintf('Error while executing refund transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -151,6 +173,10 @@ class UnzerPaymentTransactionController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
+            $this->logger->error(sprintf('Error while executing refund transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
             return new JsonResponse(
                 [
                     'status'  => false,
@@ -164,71 +190,32 @@ class UnzerPaymentTransactionController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/ship", name="api.action.unzer.transaction.ship", methods={"GET"})
+     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/ship", name="api.action.unzer.transaction.ship", methods={"GET"})
+     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/ship", name="api.action.unzer.transaction.ship.version", methods={"GET"})
      */
     public function shipTransaction(string $orderTransactionId, Context $context): JsonResponse
     {
-        $transaction = $this->getOrderTransaction($orderTransactionId, $context);
-
-        if ($transaction === null || $transaction->getOrder() === null || $transaction->getOrder()->getDocuments() === null) {
-            throw new InvalidTransactionException($orderTransactionId);
-        }
-
-        $documents     = $transaction->getOrder()->getDocuments()->getElements();
-        $invoiceNumber = null;
-        $documentDate  = null;
-
-        foreach ($documents as $document) {
-            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
-                $documentDate  = new DateTimeImmutable($document->getConfig()['documentDate']);
-                $invoiceNumber = $document->getConfig()['documentNumber'];
-            }
-        }
-
-        if (!$invoiceNumber) {
-            return new JsonResponse(
-                [
-                    'status'  => false,
-                    'message' => 'invoice-missing-error',
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        $client  = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
-        $payment = $this->getPayment($orderTransactionId, $documentDate, $client);
-
-        if ($payment === null) {
-            return new JsonResponse(
-                [
-                    'status'  => false,
-                    'message' => 'Payment could not be fetched',
-                ],
-                Response::HTTP_BAD_REQUEST);
-        }
-
         try {
-            $client->ship($payment, $invoiceNumber, $orderTransactionId);
-
-            $this->transactionStateHandler->transformTransactionState($orderTransactionId, $payment, $context);
-        } catch (HeidelpayApiException $exception) {
-            return new JsonResponse(
-                [
+            $result = $this->shipService->shipTransaction($orderTransactionId, $context);
+        } catch (UnzerApiException $exception) {
+            $this->logger->error(sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+            $result = [
                     'status'  => false,
                     'message' => $exception->getMerchantMessage(),
-                ],
-                Response::HTTP_BAD_REQUEST);
+                ];
         } catch (Throwable $exception) {
-            return new JsonResponse(
-                [
+            $this->logger->error(sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+            $result = [
                     'status'  => false,
                     'message' => 'generic-error',
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+                ];
         }
 
-        return new JsonResponse(['status' => true]);
+        return new JsonResponse($result, $result['status'] === false ? Response::HTTP_BAD_REQUEST : Response::HTTP_OK);
     }
 
     protected function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
@@ -242,32 +229,5 @@ class UnzerPaymentTransactionController extends AbstractController
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();
-    }
-
-    protected function getPayment(string $orderTransactionId, DateTimeInterface $documentDate, Heidelpay $client): ?Payment
-    {
-        try {
-            $payment = $client->fetchPaymentByOrderId($orderTransactionId);
-        } catch (HeidelpayApiException $exception) {
-            return null;
-        }
-
-        $paymentType = $payment->getPaymentType();
-
-        if ($paymentType !== null && $documentDate !== null && $paymentType instanceof HirePurchaseDirectDebit) {
-            $invoiceDueDate = new DateTime($documentDate->format('c'));
-            date_add($invoiceDueDate, date_interval_create_from_date_string(sprintf('%s months', $paymentType->getNumberOfRates())));
-
-            $paymentType->setInvoiceDate($documentDate->format('Y-m-d'));
-            $paymentType->setInvoiceDueDate($invoiceDueDate->format('Y-m-d'));
-
-            try {
-                $payment->setPaymentType($client->updatePaymentType($paymentType));
-            } catch (HeidelpayApiException $exception) {
-                return null;
-            }
-        }
-
-        return $payment;
     }
 }

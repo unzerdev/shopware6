@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\CancelService;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
 use RuntimeException;
 use Shopware\Core\Framework\Context;
+use UnzerSDK\Exceptions\UnzerApiException;
 
 interface CancelServiceInterface
 {
     /**
-     * @throws HeidelpayApiException
+     * @throws UnzerApiException
      * @throws RuntimeException
      */
     public function cancelChargeById(

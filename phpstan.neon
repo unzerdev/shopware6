@@ -2,6 +2,8 @@ parameters:
     level: 7
     reportUnmatchedIgnoredErrors: false
     checkMissingIterableValueType: false
+    bootstrapFiles:
+        - ../../../vendor/autoload.php
     ignoreErrors:
         - '#UnzerPayment6\\Components\\Struct\\Configuration::get\(\)#'
-        - '#does not accept heidelpayPHP\\Resources\\AbstractHeidelpayResource#'
+        - '#does not accept UnzerSDK\\Resources\\AbstractUnzerResource.#'

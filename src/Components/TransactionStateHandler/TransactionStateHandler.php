@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\TransactionStateHandler;
 
-use heidelpayPHP\Resources\Payment;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
@@ -16,6 +15,7 @@ use Shopware\Core\System\StateMachine\Transition;
 use UnzerPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\NoTransitionMapperFoundException;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
+use UnzerSDK\Resources\Payment;
 
 class TransactionStateHandler implements TransactionStateHandlerInterface
 {

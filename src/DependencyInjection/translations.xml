@@ -3,11 +3,11 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="UnzerPayment6\Resources\app\storefront\src\snippets\de_DE\SnippetFile_de_DE">
+        <service id="UnzerPayment6\Resources\snippet\de_DE\SnippetFile_de_DE">
             <tag name="shopware.snippet.file"/>
         </service>
 
-        <service id="UnzerPayment6\Resources\app\storefront\src\snippets\en_GB\SnippetFile_en_GB">
+        <service id="UnzerPayment6\Resources\snippet\en_GB\SnippetFile_en_GB">
             <tag name="shopware.snippet.file"/>
         </service>
     </services>

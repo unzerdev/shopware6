@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Storefront;
 
+use ArgumentCountError;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -79,7 +80,7 @@ class UnzerCheckoutController extends StorefrontController
         }
     }
 
-    public function finishPage(Request $request, SalesChannelContext $context): Response
+    public function finishPage(Request $request, SalesChannelContext $context, ?RequestDataBag $dataBag = null): Response
     {
         if (!$context->getCustomer()) {
             return $this->redirectToRoute('frontend.checkout.register.page');
@@ -113,6 +114,13 @@ class UnzerCheckoutController extends StorefrontController
             );
         }
 
-        return $this->innerService->finishPage($request, $context);
+        try {
+            /** @phpstan-ignore-next-line */
+            return $this->innerService->finishPage($request, $context, $dataBag);
+        } catch (ArgumentCountError $exception) {
+            // signature changed with v6.4, this is the old version without dataBag Parameter
+            /** @phpstan-ignore-next-line */
+            return $this->innerService->finishPage($request, $context);
+        }
     }
 }

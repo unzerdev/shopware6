@@ -1,3 +1,12 @@
+# 2.0.1
+* Kompatibilität mit shopware 6.4.0.0 hergestellt
+* Korrektur des SEPA-Mandat Textes im Checkout
+
+# 2.0.0
+* Validierung des Geburtsdatums für Unzer Ratenzahlung im Checkout hinzugefügt
+* Wechsel auf das neue unzer SDK (https://packagist.org/packages/unzerdev/php-sdk)
+* Fehler bei der Darstellung der vererbten Plugineinstellungen behoben
+
 # 1.0.4
 * Fehler in Invoice (guaranteed/factoring) für B2B-Kunden korrigiert
 * Fehler in der Nachkommastellen-Anzeige in der Administration behoben

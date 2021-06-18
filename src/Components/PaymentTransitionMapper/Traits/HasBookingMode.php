@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentTransitionMapper\Traits;
 
-use heidelpayPHP\Resources\Payment;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerSDK\Resources\Payment;
 
 /**
  * @property ConfigReaderInterface     $configReader

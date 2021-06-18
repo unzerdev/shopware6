@@ -1,4 +1,4 @@
-.unzer-payment-card {
+.unzer-payment-base {
     &.has-margin-top {
         margin-top: 32px;
     }
@@ -44,6 +44,29 @@
     padding: 10px;
 }
 
-.heidelpayUI.left.icon.input {
+.unzerUI.left.icon.input {
     height: unset;
 }
+
+.unzer-payment-birthday {
+  .unzer-payment-birthday-error {
+    display: none;
+  }
+
+  &.error {
+    .unzer-payment-label {
+      color: #d0021b;
+    }
+
+    .unzer-payment-date-input {
+      border-color: #d0021b;
+      background: #fff6f6;
+    }
+
+    .unzer-payment-birthday-error {
+      color: #d0021b;
+      display: inline-block;
+    }
+  }
+}
+

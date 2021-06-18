@@ -13,8 +13,8 @@
          }'>
 
         {% block unzer_payment_frame_sepa_direct_debit_test_data %}
-            {% set testDataConst = constant('UnzerPayment6\\Components\\ConfigReader\\ConfigReader::CONFIG_KEY_TEST_DATA') %}
-            {% if shopware.config.UnzerPayment6.settings[testDataConst] %}
+            {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
+            {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
                 {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/sepa.html.twig' %}
             {% endif %}
         {% endblock %}

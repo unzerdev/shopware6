@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\EventListeners\Checkout;
 
-use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Heidelpay;
-use heidelpayPHP\Resources\InstalmentPlan;
-use heidelpayPHP\Resources\Payment;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
-use UnzerPayment6\Components\Struct\HirePurchase\InstallmentInfo;
+use UnzerPayment6\Components\Struct\InstallmentSecured\InstallmentInfo;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
-use UnzerPayment6\Installer\PaymentInstaller;
+use UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelperInterface;
+use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\InstalmentPlan;
+use UnzerSDK\Resources\Payment;
+use UnzerSDK\Unzer;
 
 class FinishPageEventListener implements EventSubscriberInterface
 {
@@ -25,10 +24,14 @@ class FinishPageEventListener implements EventSubscriberInterface
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(ClientFactoryInterface $clientFactory, LoggerInterface $logger)
+    /** @var TransactionSelectionHelperInterface */
+    private $transactionSelectionHelper;
+
+    public function __construct(ClientFactoryInterface $clientFactory, LoggerInterface $logger, TransactionSelectionHelperInterface $transactionSelectionHelper)
     {
-        $this->clientFactory = $clientFactory;
-        $this->logger        = $logger;
+        $this->clientFactory              = $clientFactory;
+        $this->logger                     = $logger;
+        $this->transactionSelectionHelper = $transactionSelectionHelper;
     }
 
     public static function getSubscribedEvents(): array
@@ -42,47 +45,46 @@ class FinishPageEventListener implements EventSubscriberInterface
     {
         $salesChannelContext = $event->getSalesChannelContext();
         $page                = $event->getPage();
-        $orderTransactions   = $page->getOrder()->getTransactions();
+        $unzerTransaction    = $this->transactionSelectionHelper->getBestUnzerTransaction($page->getOrder());
 
-        if (!$orderTransactions) {
+        if (!$unzerTransaction) {
             return;
         }
 
-        $unzerClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
-        $extension   = new FinishPageExtension();
+        try {
+            $unzerClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
+        } catch (\RuntimeException $ex) {
+            $this->logger->error($ex->getMessage());
 
-        /** @var OrderTransactionEntity $transaction */
-        foreach ($orderTransactions as $transaction) {
-            if (!in_array($transaction->getPaymentMethodId(), PaymentInstaller::getPaymentIds(), false)) {
-                continue;
-            }
+            return;
+        }
 
-            $payment = $this->getPaymentByOrderId($unzerClient, $transaction->getId());
+        $extension = new FinishPageExtension();
+        $payment   = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getId());
+
+        if (!$payment) {
+            $payment = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getOrderId());
 
             if (!$payment) {
-                $payment = $this->getPaymentByOrderId($unzerClient, $transaction->getOrderId());
-
-                if (!$payment) {
-                    return;
-                }
-            }
-
-            $paymentType = $payment->getPaymentType();
-
-            if ($paymentType instanceof InstalmentPlan) {
-                $installmentInfo = (new InstallmentInfo())->fromInstalmentPlan($paymentType);
-                $extension->addInstallmentInfo($installmentInfo);
+                return;
             }
         }
 
-        $event->getPage()->addExtension('unzer', $extension);
+        $paymentType = $payment->getPaymentType();
+
+        if ($paymentType instanceof InstalmentPlan) {
+            $installmentInfo = (new InstallmentInfo())->fromInstalmentPlan($paymentType);
+            $extension->addInstallmentInfo($installmentInfo);
+        }
+
+        $event->getPage()->addExtension(FinishPageExtension::EXTENSION_NAME, $extension);
     }
 
-    private function getPaymentByOrderId(Heidelpay $unzerClient, string $orderId): ?Payment
+    private function getPaymentByOrderId(Unzer $unzerClient, string $orderId): ?Payment
     {
         try {
             return $unzerClient->fetchPaymentByOrderId($orderId);
-        } catch (HeidelpayApiException $exception) {
+        } catch (UnzerApiException $exception) {
             //catch payment not found exception so that shopware can handle its own errors
             $this->logger->error($exception->getMessage(), [
                 'code'          => $exception->getCode(),

@@ -13,18 +13,19 @@ use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
-use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitGuaranteedPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
-use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\HirePurchasePageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSecuredPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\InstallmentSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\UnzerDataPageExtension;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerPayment6\Installer\PaymentInstaller;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
 {
-    private const HIRE_PURCHASE_EFFECTIVE_INTEREST_DEFAULT = 4.5;
+    private const INSTALLMENT_SECURED_EFFECTIVE_INTEREST_DEFAULT = 4.5;
 
     /** @var Configuration */
     protected $configData;
@@ -87,16 +88,26 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         if ($registerDirectDebit &&
-            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_GUARANTEED
+            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED
         ) {
-            $this->addDirectDebitGuaranteedExtension($event);
+            $this->addDirectDebitSecuredExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_HIRE_PURCHASE) {
-            $this->addHirePurchaseExtension($event);
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED) {
+            $this->addInstallmentSecuredExtension($event);
         }
 
         $this->addPaymentFrameExtension($event);
+        $this->addUnzerDataExtension($event);
+    }
+
+    private function addUnzerDataExtension(PageLoadedEvent $event): void
+    {
+        $extension = new UnzerDataPageExtension();
+        $extension->setPublicKey($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY));
+        $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
+
+        $event->getPage()->addExtension(UnzerDataPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addPaymentFrameExtension(PageLoadedEvent $event): void
@@ -108,7 +119,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $event->getPage()->addExtension('unzerPaymentFrame', (new PaymentFramePageExtension())->setPaymentFrame($mappedFrameTemplate));
+        $event->getPage()->addExtension(PaymentFramePageExtension::EXTENSION_NAME, (new PaymentFramePageExtension())->setPaymentFrame($mappedFrameTemplate));
     }
 
     private function addCreditCardExtension(PageLoadedEvent $event): void
@@ -127,7 +138,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $extension->addCreditCard($creditCard);
         }
 
-        $event->getPage()->addExtension('unzerCreditCard', $extension);
+        $event->getPage()->addExtension(CreditCardPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addPayPalExtension(PageLoadedEvent $event): void
@@ -146,7 +157,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $extension->addPayPalAccount($payPalAccount);
         }
 
-        $event->getPage()->addExtension('unzerPayPal', $extension);
+        $event->getPage()->addExtension(PayPalPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addDirectDebitExtension(PageLoadedEvent $event): void
@@ -165,10 +176,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $extension->addDirectDebitDevice($directDebitDevice);
         }
 
-        $event->getPage()->addExtension('unzerDirectDebit', $extension);
+        $event->getPage()->addExtension(DirectDebitPageExtension::EXTENSION_NAME, $extension);
     }
 
-    private function addDirectDebitGuaranteedExtension(PageLoadedEvent $event): void
+    private function addDirectDebitSecuredExtension(PageLoadedEvent $event): void
     {
         $customer = $event->getSalesChannelContext()->getCustomer();
 
@@ -176,22 +187,22 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_GUARANTEED);
-        $extension          = (new DirectDebitGuaranteedPageExtension())->setDisplayDirectDebitDeviceSelection(true);
+        $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_SECURED);
+        $extension          = (new DirectDebitSecuredPageExtension())->setDisplayDirectDebitDeviceSelection(true);
 
         /** @var UnzerPaymentDeviceEntity $directDebitDevice */
         foreach ($directDebitDevices as $directDebitDevice) {
             $extension->addDirectDebitDevice($directDebitDevice);
         }
 
-        $event->getPage()->addExtension('unzerDirectDebitGuaranteed', $extension);
+        $event->getPage()->addExtension(DirectDebitSecuredPageExtension::EXTENSION_NAME, $extension);
     }
 
-    private function addHirePurchaseExtension(PageLoadedEvent $event): void
+    private function addInstallmentSecuredExtension(PageLoadedEvent $event): void
     {
-        $extension = new HirePurchasePageExtension();
+        $extension = new InstallmentSecuredPageExtension();
         $extension->setCurrency($event->getSalesChannelContext()->getCurrency()->getIsoCode());
-        $extension->setEffectiveInterest((float) $this->configData->get(ConfigReader::CONFIG_KEY_HIRE_PURCHASE_INTEREST, self::HIRE_PURCHASE_EFFECTIVE_INTEREST_DEFAULT));
+        $extension->setEffectiveInterest((float) $this->configData->get(ConfigReader::CONFIG_KEY_INSTALLMENT_SECURED_INTEREST, self::INSTALLMENT_SECURED_EFFECTIVE_INTEREST_DEFAULT));
 
         if ($event instanceof CheckoutConfirmPageLoadedEvent) {
             $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());
@@ -200,6 +211,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
         $extension->setOrderDate(date('Y-m-d'));
 
-        $event->getPage()->addExtension('unzerHirePurchase', $extension);
+        $event->getPage()->addExtension(InstallmentSecuredPageExtension::EXTENSION_NAME, $extension);
     }
 }

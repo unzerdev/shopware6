@@ -1,0 +1,79 @@
+{% block unzer_payment_frame_sepa_direct_debit_secured %}
+    {% block unzer_payment_checkout_confirm_frame_card_body_title %}
+        <div class="card-title">
+            {{ context.paymentMethod.translated.name }}
+        </div>
+    {% endblock %}
+
+    <div class="unzer-payment-sepa-wrapper"
+         data-unzer-payment-sepa-direct-debit-secured="true"
+         data-unzer-payment-sepa-direct-debit-secured-options='{
+            "mandateNotAcceptedError": "{{ "UnzerPayment.frame.sepa.mandate.error" | trans }}",
+            "hasSepaDevices": {% if page.extensions.unzerDirectDebitSecured.directDebitDevices|length > 0 %}true{% else %}false{% endif %}
+         }'>
+
+        {% block unzer_payment_frame_sepa_direct_debit_secured_test_data %}
+            {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
+            {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
+                {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/sepa.html.twig' %}
+            {% endif %}
+        {% endblock %}
+
+        {% if page.extensions.unzerDirectDebitSecured.displayDirectDebitDeviceSelection and page.extensions.unzerDirectDebitSecured.directDebitDevices|length > 0 %}
+            <div class="unzer-payment-saved-sepa-wrapper">
+                <div class="unzer-payment-saved-sepa--message">
+                    {{ "UnzerPayment.frame.sepa.device.choose"|trans }}
+                </div>
+                {% block unzer_payment_frame_direct_debit_secured_device_saved %}
+                    {# @var sepaDevice \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
+                    {% for sepaDevice in page.extensions.unzerDirectDebitSecured.directDebitDevices %}
+                        <div class="custom-control custom-radio payment-control">
+                            <input type="radio" value="{{ sepaDevice.typeId }}" name="savedDirectDebitDevice"
+                                   form="confirmOrderForm" id="device-{{ sepaDevice.id }}"
+                                   class="custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
+                            <label for="device-{{ sepaDevice.id }}" class="custom-control-label payment-method-label">
+                                <strong>{{ sepaDevice.data['iban'] }}</strong>
+                            </label>
+                        </div>
+                    {% endfor %}
+                {% endblock %}
+
+                {% block unzer_payment_frame_direct_debit_secured_device_new %}
+                    <div class="custom-control custom-radio payment-control">
+                        <input type="radio" value="new" name="savedDirectDebitDevice" form="confirmOrderForm"
+                               id="device-new" class="custom-control-input payment-method-input">
+                        <label for="device-new" class="custom-control-label payment-method-label">
+                            {{ "UnzerPayment.frame.sepa.device.new"|trans }}
+                        </label>
+                    </div>
+                {% endblock %}
+            </div>
+        {% endif %}
+
+        <div class="unzer-payment-sepa-wrapper-elements">
+            {% block unzer_payment_frame_sepa_direct_debit_secured_iban %}
+                <div id="unzer-payment-sepa-container"></div>
+            {% endblock %}
+
+            {% block unzer_payment_frame_sepa_direct_debit_secured_mandate %}
+                {% sw_include '@Storefront/storefront/component/unzer/frames/sepa/mandate.html.twig' %}
+            {% endblock %}
+
+            {% block unzer_payment_frame_sepa_direct_debit_secured_birthday %}
+                <div class="unzer-payment-frame-row">
+                    <label for="unzerPaymentBirthday">
+                        {{ "account.personalBirthdayLabel"|trans }}
+                    </label>
+
+                    <input type="date"
+                           id="unzerPaymentBirthday"
+                           name="unzerPaymentBirthday"
+                           class="form-control unzer-payment-date-input"
+                           form="confirmOrderForm"
+                           {% if page.extensions.unzerDirectDebitSecured.directDebitDevices|length > 0 %}required="required"{% endif %}
+                            {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

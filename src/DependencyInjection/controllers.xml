@@ -19,8 +19,9 @@
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydrator" />
-            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler" />
             <argument type="service" id="UnzerPayment6\Components\CancelService\CancelService" />
+            <argument type="service" id="UnzerPayment6\Components\ShipService\ShipService" />
+            <argument type="service" id="unzer_payment.logger" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -50,6 +51,10 @@
             <argument type="service" id="UnzerPayment6\Controllers\Storefront\UnzerCheckoutController.inner"/>
             <argument type="service" id="unzer_payment.logger"/>
             <argument type="service" id="Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoader"/>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
     </services>
 </container>
