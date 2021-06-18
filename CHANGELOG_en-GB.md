@@ -1,3 +1,6 @@
+# 2.0.2
+* Correction of the webhook registration for multiple sales channels with different credentials
+
 # 2.0.1
 * Compatibility with shopware 6.4.0.0 ensured
 
