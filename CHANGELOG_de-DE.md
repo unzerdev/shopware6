@@ -1,6 +1,5 @@
 # 2.0.1
 * Kompatibilität mit shopware 6.4.0.0 hergestellt
-* Korrektur des SEPA-Mandat Textes im Checkout
 
 # 2.0.0
 * Validierung des Geburtsdatums für Unzer Ratenzahlung im Checkout hinzugefügt
