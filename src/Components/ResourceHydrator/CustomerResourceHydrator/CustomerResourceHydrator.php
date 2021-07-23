@@ -117,18 +117,13 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 
     /**
      * @deprecated this function will be removed in a future update. Please use \UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator::updateAdditionalDataToCustomer instead
-     *
-     * @param Customer              $unzerCustomer
-     * @param CustomerEntity        $customer
-     * @param CustomerAddressEntity $billingAddress
-     * @return Customer
      */
     protected function addAdditionalDataToCustomer(
         Customer $unzerCustomer,
         CustomerEntity $customer,
         CustomerAddressEntity $billingAddress
     ): Customer {
-        $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
+        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
     }
 
     protected function updateAdditionalDataToCustomer(
@@ -137,6 +132,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         CustomerAddressEntity $billingAddress
     ): Customer {
         $unzerBillingAddress = $unzerCustomer->getBillingAddress();
+
         if ($unzerCustomer->getFirstname() !== $customer->getFirstName()) {
             $unzerCustomer->setFirstname($customer->getFirstName());
             $unzerBillingAddress->setName($customer->getFirstName() . ' ' . $customer->getLastName());
@@ -158,6 +154,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         }
 
         $birthdate = $this->getBirthDate($customer);
+
         if ($unzerCustomer->getBirthDate() !== $birthdate) {
             $unzerCustomer->setBirthDate($birthdate);
         }
