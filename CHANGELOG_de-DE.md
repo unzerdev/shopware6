@@ -1,3 +1,6 @@
+# 2.0.2
+* Der Kunde wird nun auch im Unzer Insights Board aktualisiert.
+
 # 2.0.1
 * Kompatibilität mit shopware 6.4.0.0 hergestellt
 * Korrektur des SEPA-Mandat Textes im Checkout
