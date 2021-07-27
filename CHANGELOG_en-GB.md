@@ -1,3 +1,6 @@
+# 2.0.2
+* Customers are now being updated in the Unzer Insight Board
+
 # 2.0.1
 * Compatibility with shopware 6.4.0.0 ensured
 * Fixed SEPA-Mandate text in checkout

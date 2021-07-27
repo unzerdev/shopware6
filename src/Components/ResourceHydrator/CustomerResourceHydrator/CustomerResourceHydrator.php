@@ -74,7 +74,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 
         $unzerCustomer->setCustomerId($customerNumber);
 
-        return $this->addAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
+        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
     }
 
     public function hydrateExistingCustomer(
@@ -97,7 +97,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
             throw new RuntimeException(sprintf('Could not determine the address for customer with number %s', $customer->getCustomerNumber()));
         }
 
-        return $this->addAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
+        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
     }
 
     protected function getUnzerAddress(CustomerAddressEntity $shopwareAddress): Address
@@ -115,36 +115,71 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         return $address;
     }
 
+    /**
+     * @deprecated this function will be removed in a future update. Please use \UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator::updateAdditionalDataToCustomer instead
+     */
     protected function addAdditionalDataToCustomer(
         Customer $unzerCustomer,
         CustomerEntity $customer,
         CustomerAddressEntity $billingAddress
     ): Customer {
-        if (empty($unzerCustomer->getFirstname())) {
+        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
+    }
+
+    protected function updateAdditionalDataToCustomer(
+        Customer $unzerCustomer,
+        CustomerEntity $customer,
+        CustomerAddressEntity $billingAddress
+    ): Customer {
+        $unzerBillingAddress = $unzerCustomer->getBillingAddress();
+
+        if ($unzerCustomer->getFirstname() !== $customer->getFirstName()) {
             $unzerCustomer->setFirstname($customer->getFirstName());
+            $unzerBillingAddress->setName($customer->getFirstName() . ' ' . $customer->getLastName());
         }
 
-        if (empty($unzerCustomer->getLastname())) {
+        if ($unzerCustomer->getLastname() !== $customer->getLastName()) {
             $unzerCustomer->setLastname($customer->getLastName());
+            $unzerBillingAddress->setName($customer->getFirstName() . ' ' . $customer->getLastName());
         }
 
-        if (empty($unzerCustomer->getEmail())) {
+        if ($unzerCustomer->getEmail() !== $customer->getEmail()) {
             $unzerCustomer->setEmail($customer->getEmail());
         }
 
-        if (empty($unzerCustomer->getSalutation())) {
+        if ($customer->getSalutation() !== null && $unzerCustomer->getSalutation() !== $customer->getSalutation()->getSalutationKey()) {
             $unzerCustomer->setSalutation(
-                $customer->getSalutation() !== null ? $customer->getSalutation()->getSalutationKey() : null
+                $customer->getSalutation()->getSalutationKey()
             );
         }
 
-        if (empty($unzerCustomer->getBirthDate())) {
-            $unzerCustomer->setBirthDate($this->getBirthDate($customer));
+        $birthdate = $this->getBirthDate($customer);
+
+        if ($unzerCustomer->getBirthDate() !== $birthdate) {
+            $unzerCustomer->setBirthDate($birthdate);
         }
 
-        if (empty($unzerCustomer->getCompany()) && !empty($billingAddress->getCompany())) {
+        if ($unzerCustomer->getCompany() !== $billingAddress->getCompany()) {
             $unzerCustomer->setCompany($billingAddress->getCompany());
         }
+
+        if ($unzerBillingAddress->getStreet() !== $billingAddress->getStreet()) {
+            $unzerBillingAddress->setStreet($billingAddress->getStreet());
+        }
+
+        if ($unzerBillingAddress->getCity() !== $billingAddress->getCity()) {
+            $unzerBillingAddress->setCity($billingAddress->getCity());
+        }
+
+        if ($unzerBillingAddress->getZip() !== $billingAddress->getZipcode()) {
+            $unzerBillingAddress->setZip($billingAddress->getZipcode());
+        }
+
+        if ($billingAddress->getCountry() !== null && $unzerBillingAddress->getCountry() !== $billingAddress->getCountry()->getIso()) {
+            $unzerBillingAddress->setCountry($billingAddress->getCountry()->getIso());
+        }
+
+        $unzerCustomer->setBillingAddress($unzerBillingAddress);
 
         return $unzerCustomer;
     }
