@@ -48,8 +48,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         ConfigReaderInterface $configReader,
         PaymentFrameFactoryInterface $paymentFrameFactory,
         SystemConfigService $systemConfigReader
-    )
-    {
+    ) {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
         $this->paymentFrameFactory = $paymentFrameFactory;
@@ -129,16 +128,17 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
+        /** @var string $shopName */
+        $shopName = $this->systemConfigReader->get(
+            'core.basicInformation.shopName',
+            $event->getSalesChannelContext()->getSalesChannelId()
+        );
+
         $event->getPage()->addExtension(
             PaymentFramePageExtension::EXTENSION_NAME,
             (new PaymentFramePageExtension())
                 ->setPaymentFrame($mappedFrameTemplate)
-                ->setShopName(
-                    $this->systemConfigReader->get(
-                        'core.basicInformation.shopName',
-                        $event->getSalesChannelContext()->getSalesChannelId()
-                    )
-                )
+                ->setShopName($shopName)
         );
     }
 
