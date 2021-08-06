@@ -45,6 +45,7 @@
                            class="form-control unzer-payment-date-input"
                            form="confirmOrderForm"
                            required="required"
+                           max="9999-12-31"
                            {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
                 {% endblock %}
 
