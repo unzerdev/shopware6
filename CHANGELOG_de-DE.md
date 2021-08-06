@@ -1,5 +1,6 @@
 # 2.0.2
 * Der Kunde wird nun auch im Unzer Insights Board aktualisiert.
+* Korrektur der Abwärtskompatibilität zu Shopware 6.3 und tiefer für SEPA Zahlungsarten
 * Korrektur der Längenbegrenzung für das Geburtsjahr
 
 # 2.0.1

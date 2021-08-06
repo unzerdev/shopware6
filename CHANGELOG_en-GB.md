@@ -1,5 +1,6 @@
 # 2.0.2
 * Customers are now being updated in the Unzer Insight Board
+* Fixed backwards compatibility to Shopware 6.3 and lower for SEPA payment methods
 * Fixed the maximum birthday year
 
 # 2.0.1
