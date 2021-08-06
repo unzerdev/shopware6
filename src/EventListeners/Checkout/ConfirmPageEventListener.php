@@ -128,17 +128,16 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        /** @var string $shopName */
         $shopName = $this->systemConfigReader->get(
             'core.basicInformation.shopName',
-            $event->getSalesChannelContext()->getSalesChannelId()
+            $event->getSalesChannelContext()->getSalesChannel()->getId()
         );
 
         $event->getPage()->addExtension(
             PaymentFramePageExtension::EXTENSION_NAME,
             (new PaymentFramePageExtension())
                 ->setPaymentFrame($mappedFrameTemplate)
-                ->setShopName($shopName)
+                ->setShopName(is_string($shopName) ? $shopName : '')
         );
     }
 
