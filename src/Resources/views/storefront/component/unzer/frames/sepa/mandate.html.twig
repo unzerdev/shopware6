@@ -5,14 +5,7 @@
         </div>
 
         <div class="unzer-payment-sepa-mandate-content">
-            {# Added for v6.4 compatiblity #}
-            {% if shopware.config.core.basicInformation.shopName is defined %}
-                {% set company = shopware.config.core.basicInformation.shopName %}
-            {% else %}
-                {% set company = config('core.basicInformation.shopName') %}
-            {% endif %}
-            {# TODO: Maybe replace the %company% parameter to the actual company as soon as it's available in the core config #}
-            {{ "UnzerPayment.frame.sepa.mandate.content" | trans({'%company%': company})  }}
+            {{ "UnzerPayment.frame.sepa.mandate.content" | trans({'%company%': page.extensions.unzerPaymentFrame.shopName})  }}
         </div>
 
         <div class="custom-control custom-checkbox">

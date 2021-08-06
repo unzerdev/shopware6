@@ -1,5 +1,6 @@
 # 2.0.2
 * Der Kunde wird nun auch im Unzer Insights Board aktualisiert.
+* Korrektur der Abwärtskompatibilität zu Shopware 6.3 und tiefer für SEPA Zahlungsarten
 
 # 2.0.1
 * Kompatibilität mit shopware 6.4.0.0 hergestellt

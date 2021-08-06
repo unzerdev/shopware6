@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\EventListeners\Checkout;
 
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
@@ -39,11 +40,20 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var PaymentFrameFactoryInterface */
     private $paymentFrameFactory;
 
-    public function __construct(UnzerPaymentDeviceRepositoryInterface $deviceRepository, ConfigReaderInterface $configReader, PaymentFrameFactoryInterface $paymentFrameFactory)
+    /** @var SystemConfigService */
+    private $systemConfigReader;
+
+    public function __construct(
+        UnzerPaymentDeviceRepositoryInterface $deviceRepository,
+        ConfigReaderInterface $configReader,
+        PaymentFrameFactoryInterface $paymentFrameFactory,
+        SystemConfigService $systemConfigReader
+    )
     {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
         $this->paymentFrameFactory = $paymentFrameFactory;
+        $this->systemConfigReader  = $systemConfigReader;
     }
 
     /**
@@ -119,7 +129,17 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $event->getPage()->addExtension(PaymentFramePageExtension::EXTENSION_NAME, (new PaymentFramePageExtension())->setPaymentFrame($mappedFrameTemplate));
+        $event->getPage()->addExtension(
+            PaymentFramePageExtension::EXTENSION_NAME,
+            (new PaymentFramePageExtension())
+                ->setPaymentFrame($mappedFrameTemplate)
+                ->setShopName(
+                    $this->systemConfigReader->get(
+                        'core.basicInformation.shopName',
+                        $event->getSalesChannelContext()->getSalesChannelId()
+                    )
+                )
+        );
     }
 
     private function addCreditCardExtension(PageLoadedEvent $event): void

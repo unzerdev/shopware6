@@ -13,6 +13,9 @@ class PaymentFramePageExtension extends Struct
     /** @var string */
     private $paymentFrame;
 
+    /** @var string */
+    private $shopName;
+
     public function getPaymentFrame(): string
     {
         return $this->paymentFrame;
@@ -21,6 +24,18 @@ class PaymentFramePageExtension extends Struct
     public function setPaymentFrame(string $paymentFrame): self
     {
         $this->paymentFrame = $paymentFrame;
+
+        return $this;
+    }
+
+    public function getShopName(): string
+    {
+        return $this->shopName;
+    }
+
+    public function setShopName(string $shopName): self
+    {
+        $this->shopName = $shopName;
 
         return $this;
     }
