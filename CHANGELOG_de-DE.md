@@ -1,5 +1,6 @@
 # 2.0.2
 * Der Kunde wird nun auch im Unzer Insights Board aktualisiert.
+* Korrektur der Längenbegrenzung für das Geburtsjahr
 
 # 2.0.1
 * Kompatibilität mit shopware 6.4.0.0 hergestellt
