@@ -58,7 +58,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
      */
     public function execute(Webhook $webhook, SalesChannelContext $context): void
     {
-        $client  = $this->clientFactory->createClient();
+        $client  = $this->clientFactory->createClient($context->getSalesChannel()->getId());
         $payment = $client->getResourceService()->fetchResourceByUrl($webhook->getRetrieveUrl());
 
         if (!$payment instanceof Payment) {
