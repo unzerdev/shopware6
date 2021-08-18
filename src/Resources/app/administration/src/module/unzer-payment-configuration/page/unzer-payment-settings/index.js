@@ -81,9 +81,15 @@ Component.register('unzer-payment-settings', {
         onSave() {
             this.isLoading = true;
             this.$refs.systemConfig.saveAll().then(() => {
+                let messageSaveSuccess = this.$tc('sw-plugin-config.messageSaveSuccess');
+
+                if (messageSaveSuccess === 'sw-plugin-config.messageSaveSuccess') {
+                    messageSaveSuccess = this.$tc('sw-extension-store.component.sw-extension-config.messageSaveSuccess');
+                }
+
                 this.createNotificationSuccess({
                     title: this.$tc('global.default.success'),
-                    message: this.$tc('sw-plugin-config.messageSaveSuccess')
+                    message: messageSaveSuccess
                 });
 
                 this.isLoading = false;
