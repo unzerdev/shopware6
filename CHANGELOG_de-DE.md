@@ -1,3 +1,6 @@
+# 2.1.0
+* Bancontact als weitere Zahlungsart hinzugefügt
+
 # 2.0.2
 * Der Kunde wird nun auch im Unzer Insights Board aktualisiert.
 * Korrektur der Abwärtskompatibilität zu Shopware 6.3 und tiefer für SEPA Zahlungsarten
