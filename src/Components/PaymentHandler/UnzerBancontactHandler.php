@@ -14,8 +14,6 @@ use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessExcepti
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\PaymentTypes\Bancontact;
-use UnzerSDK\Resources\PaymentTypes\Przelewy24;
-use UnzerSDK\Resources\PaymentTypes\Sofort;
 
 class UnzerBancontactHandler extends AbstractUnzerPaymentHandler
 {
