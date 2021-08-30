@@ -180,6 +180,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         }
 
         $unzerCustomer->setBillingAddress($unzerBillingAddress);
+        $this->updateShippingAddress($unzerCustomer, $customer->getActiveShippingAddress(), $customer);
 
         return $unzerCustomer;
     }
@@ -197,5 +198,40 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         }
 
         return $customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null;
+    }
+
+    private function updateShippingAddress(Customer $unzerCustomer, ?CustomerAddressEntity $shippingAddress, CustomerEntity $customer): void
+    {
+        $unzerShippingAddress = $unzerCustomer->getShippingAddress();
+
+        if($shippingAddress === null) {
+            return;
+        }
+
+        if ($unzerCustomer->getFirstname() !== $customer->getFirstName()) {
+            $unzerShippingAddress->setName($shippingAddress->getFirstName() . ' ' . $shippingAddress->getLastName());
+        }
+
+        if ($unzerCustomer->getLastname() !== $customer->getLastname()) {
+            $unzerShippingAddress->setName($shippingAddress->getFirstName() . ' ' . $shippingAddress->getLastName());
+        }
+
+        if ($unzerShippingAddress->getStreet() !== $shippingAddress->getStreet()) {
+            $unzerShippingAddress->setStreet($shippingAddress->getStreet());
+        }
+
+        if ($unzerShippingAddress->getCity() !== $shippingAddress->getCity()) {
+            $unzerShippingAddress->setCity($shippingAddress->getCity());
+        }
+
+        if ($unzerShippingAddress->getZip() !== $shippingAddress->getZipcode()) {
+            $unzerShippingAddress->setZip($shippingAddress->getZipcode());
+        }
+
+        if ($shippingAddress->getCountry() !== null && $unzerShippingAddress->getCountry() !== $shippingAddress->getCountry()->getIso()) {
+            $unzerShippingAddress->setCountry($shippingAddress->getCountry()->getIso());
+        }
+
+        $unzerCustomer->setShippingAddress($unzerShippingAddress);
     }
 }
