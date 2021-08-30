@@ -204,7 +204,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
     {
         $unzerShippingAddress = $unzerCustomer->getShippingAddress();
 
-        if($shippingAddress === null) {
+        if ($shippingAddress === null) {
             return;
         }
 
