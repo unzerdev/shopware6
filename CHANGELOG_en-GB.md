@@ -1,3 +1,8 @@
+# 3.0.0
+* Add Administration UI for refund reason codes
+* Add additional routes for passing reason codes
+* Change Cancel Order Interface to pass reason code
+
 # 2.1.0
 * Added Bancontact as a new payment method
 
