@@ -34,5 +34,19 @@
 
             {% block unzer_payment_actions_button_container_inner %}{% endblock %}
         </div>
+
+        <template v-if="isRefundPossible">
+            <div class="unzer-payment-actions--reason-code">
+                {% block unzer_payment_actions_reason_field %}
+                    <sw-single-select :options="reasonCodeSelection"
+                                      :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0"
+                                      v-model="reasonCode"
+                                      :placeholder="$tc('unzer-payment.paymentDetails.actions.reason.placeholder')"
+                                      :popoverClasses="['unzer-payment-actions--popover-options']"
+                    >
+                    </sw-single-select>
+                {% endblock %}
+            </div>
+        </template>
     </sw-container>
 {% endblock %}

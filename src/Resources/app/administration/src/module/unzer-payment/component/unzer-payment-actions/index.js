@@ -2,6 +2,11 @@ import template from './unzer-payment-actions.html.twig';
 import './unzer-payment-actions.scss';
 
 const { Component, Mixin } = Shopware;
+const reasonCodes = {
+    CANCEL: 'CANCEL',
+    RETURN: 'RETURN',
+    CREDIT: 'CREDIT',
+}
 
 Component.register('unzer-payment-actions', {
     template,
@@ -16,8 +21,9 @@ Component.register('unzer-payment-actions', {
         return {
             isLoading: false,
             isSuccessful: false,
-            transactionAmount: 0.00
-        };
+            transactionAmount: 0.00,
+            reasonCode: null
+        }
     },
 
     props: {
@@ -63,6 +69,24 @@ Component.register('unzer-payment-actions', {
             }
 
             return amount / (10 ** this.paymentResource.amount.decimalPrecision);
+        },
+
+
+        reasonCodeSelection() {
+            return [
+                {
+                    label: this.$tc('unzer-payment.paymentDetails.actions.reason.cancel'),
+                    value: reasonCodes.CANCEL,
+                },
+                {
+                    label: this.$tc('unzer-payment.paymentDetails.actions.reason.credit'),
+                    value: reasonCodes.CREDIT,
+                },
+                {
+                    label: this.$tc('unzer-payment.paymentDetails.actions.reason.return'),
+                    value: reasonCodes.RETURN,
+                }
+            ]
         }
     },
 
@@ -109,7 +133,8 @@ Component.register('unzer-payment-actions', {
             this.UnzerPaymentService.refundTransaction(
                 this.paymentResource.orderId,
                 this.transactionResource.id,
-                this.transactionAmount
+                this.transactionAmount,
+                this.reasonCode
             ).then(() => {
                 this.createNotificationSuccess({
                     title: this.$tc('unzer-payment.paymentDetails.notifications.refundSuccessTitle'),

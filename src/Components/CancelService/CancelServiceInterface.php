@@ -18,6 +18,7 @@ interface CancelServiceInterface
         string $orderTransactionId,
         string $chargeId,
         float $amountGross,
+        ?string $reasonCode,
         Context $context
     ): void;
 }

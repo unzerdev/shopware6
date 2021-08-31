@@ -18,6 +18,12 @@
                 }
             },
             "actions": {
+                "reason": {
+                    "placeholder": "Grund",
+                    "cancel": "Abgebrochen",
+                    "credit": "Gutschrift",
+                    "return": "Rückgabe"
+                },
                 "chargeButton": "Einziehen",
                 "shipButton": "Versandmitteilung",
                 "refundButton": "Rückerstatten",
