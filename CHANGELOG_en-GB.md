@@ -1,3 +1,14 @@
+# 2.1.0
+* Added Bancontact as a new payment method
+
+# 2.0.2
+* Customers are now being updated in the Unzer Insight Board
+* Fixed backwards compatibility to Shopware 6.3 and lower for SEPA payment methods
+* Fixed the maximum birthday year
+* Fixed the order list override so other plugins are also able to manipulate the list
+* Compatibility with shopware 6.4.3.0 ensured
+* Correction of the webhook registration for multiple sales channels with different credentials
+
 # 2.0.1
 * Compatibility with shopware 6.4.0.0 ensured
 * Fixed SEPA-Mandate text in checkout
