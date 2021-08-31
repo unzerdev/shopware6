@@ -1,5 +1,6 @@
 # 2.1.0
 * Bancontact als weitere Zahlungsart hinzugefügt
+* Korrektur der Bezahlung mit Installment und Gutscheinen
 
 # 2.0.2
 * Der Kunde wird nun auch im Unzer Insights Board aktualisiert.
