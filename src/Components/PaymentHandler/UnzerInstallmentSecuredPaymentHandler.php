@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
+use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Exceptions\UnzerApiException;
 
 class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
@@ -27,6 +28,9 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
+
+        $this->unzerBasket->setAmountTotalGross($this->unzerBasket->getAmountTotalGross() + $this->unzerBasket->getAmountTotalDiscount());
+
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
         $birthday = $currentRequest->get('unzerPaymentBirthday', '');
@@ -38,8 +42,16 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
                 $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
             }
 
-            $returnUrl = $this->authorize($transaction->getReturnUrl());
-            $this->payment->charge();
+            /** @var int $currencyPrecision */
+            $currencyPrecision = $transaction->getOrder()->getCurrency() !== null ? min(
+                $transaction->getOrder()->getCurrency()->getDecimalPrecision(),
+                UnzerPayment6::MAX_DECIMAL_PRECISION
+            ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
+
+            $returnUrl = $this->authorize($transaction->getReturnUrl(), round($transaction->getOrder()->getAmountTotal(), $currencyPrecision));
+
+            /** @phpstan-ignore-next-line */
+            $this->payment->charge(round($transaction->getOrder()->getAmountTotal(), $currencyPrecision));
 
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {

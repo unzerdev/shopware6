@@ -13,7 +13,7 @@ trait CanAuthorize
     /**
      * @throws UnzerApiException
      */
-    public function authorize(string $returnUrl): string
+    public function authorize(string $returnUrl, ?float $amount = null): string
     {
         if (!$this instanceof AbstractUnzerPaymentHandler) {
             throw new RuntimeException('Trait can only be used in a payment handler context which extends the AbstractUnzerPaymentHandler class');
@@ -28,7 +28,7 @@ trait CanAuthorize
         }
 
         $paymentResult = $this->paymentType->authorize(
-            $this->unzerBasket->getAmountTotalGross(),
+            $amount ?? $this->unzerBasket->getAmountTotalGross(),
             $this->unzerBasket->getCurrencyCode(),
             $returnUrl,
             $this->unzerCustomer,
