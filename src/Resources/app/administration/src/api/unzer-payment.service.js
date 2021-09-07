@@ -32,8 +32,12 @@ class UnzerPaymentService extends ApiService {
         });
     }
 
-    refundTransaction(transaction, charge, amount) {
-        const apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/refund/${charge}/${amount}`;
+    refundTransaction(transaction, charge, amount, reasonCode = null) {
+        let apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/refund/${charge}/${amount}`;
+
+        if (reasonCode !== null) {
+            apiRoute = `${apiRoute}/${reasonCode}`;
+        }
 
         return this.httpClient.get(
             apiRoute,

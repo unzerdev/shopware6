@@ -1,4 +1,7 @@
-# 2.1.0
+# 3.0.0
+* Hinzufügen der Administrations UI zum Angeben von Rückgabe Gründen
+* Erweitern der Routen um Rückgabe Gründe zu übergeben
+* Anpassungen am CancelOrderInterface zum übergeben von Rückgabe Gründen
 * Bancontact als weitere Zahlungsart hinzugefügt
 * Korrektur der Bezahlung mit Installment und Gutscheinen
 
