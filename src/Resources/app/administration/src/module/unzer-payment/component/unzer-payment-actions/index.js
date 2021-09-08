@@ -86,7 +86,7 @@ Component.register('unzer-payment-actions', {
                     label: this.$tc('unzer-payment.paymentDetails.actions.reason.return'),
                     value: reasonCodes.RETURN,
                 }
-            ]
+            ];
         }
     },
 
