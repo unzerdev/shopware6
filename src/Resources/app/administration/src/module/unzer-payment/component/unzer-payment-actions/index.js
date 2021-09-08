@@ -23,7 +23,7 @@ Component.register('unzer-payment-actions', {
             isSuccessful: false,
             transactionAmount: 0.00,
             reasonCode: null
-        }
+        };
     },
 
     props: {
