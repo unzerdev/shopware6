@@ -49,13 +49,13 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 
         if (empty($billingAddress->getCompany()) || !in_array($paymentMethodId, self::B2B_CUSTOMERS_ALLOWED, true)) {
             $unzerCustomer = CustomerFactory::createCustomer(
-                $customer->getFirstName(),
-                $customer->getLastName()
+                $billingAddress->getFirstName(),
+                $billingAddress->getLastName()
             );
         } else {
             $unzerCustomer = CustomerFactory::createNotRegisteredB2bCustomer(
-                $customer->getFirstName(),
-                $customer->getLastName(),
+                $billingAddress->getFirstName(),
+                $billingAddress->getLastName(),
                 $this->getBirthDate($customer),
                 $this->getUnzerAddress($billingAddress),
                 $customer->getEmail(),
@@ -133,23 +133,23 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
     ): Customer {
         $unzerBillingAddress = $unzerCustomer->getBillingAddress();
 
-        if ($unzerCustomer->getFirstname() !== $customer->getFirstName()) {
-            $unzerCustomer->setFirstname($customer->getFirstName());
-            $unzerBillingAddress->setName($customer->getFirstName() . ' ' . $customer->getLastName());
+        if ($unzerCustomer->getFirstname() !== $billingAddress->getFirstName()) {
+            $unzerCustomer->setFirstname($billingAddress->getFirstName());
+            $unzerBillingAddress->setName($billingAddress->getFirstName() . ' ' . $billingAddress->getLastName());
         }
 
-        if ($unzerCustomer->getLastname() !== $customer->getLastName()) {
-            $unzerCustomer->setLastname($customer->getLastName());
-            $unzerBillingAddress->setName($customer->getFirstName() . ' ' . $customer->getLastName());
+        if ($unzerCustomer->getLastname() !== $billingAddress->getLastName()) {
+            $unzerCustomer->setLastname($billingAddress->getLastName());
+            $unzerBillingAddress->setName($billingAddress->getFirstName() . ' ' . $billingAddress->getLastName());
         }
 
         if ($unzerCustomer->getEmail() !== $customer->getEmail()) {
             $unzerCustomer->setEmail($customer->getEmail());
         }
 
-        if ($customer->getSalutation() !== null && $unzerCustomer->getSalutation() !== $customer->getSalutation()->getSalutationKey()) {
+        if ($billingAddress->getSalutation() !== null && $unzerCustomer->getSalutation() !== $billingAddress->getSalutation()->getSalutationKey()) {
             $unzerCustomer->setSalutation(
-                $customer->getSalutation()->getSalutationKey()
+                $billingAddress->getSalutation()->getSalutationKey()
             );
         }
 
@@ -180,7 +180,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         }
 
         $unzerCustomer->setBillingAddress($unzerBillingAddress);
-        $this->updateShippingAddress($unzerCustomer, $customer->getActiveShippingAddress(), $customer);
+        $this->updateShippingAddress($unzerCustomer, $customer->getActiveShippingAddress());
 
         return $unzerCustomer;
     }
@@ -200,7 +200,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         return $customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null;
     }
 
-    private function updateShippingAddress(Customer $unzerCustomer, ?CustomerAddressEntity $shippingAddress, CustomerEntity $customer): void
+    private function updateShippingAddress(Customer $unzerCustomer, ?CustomerAddressEntity $shippingAddress): void
     {
         $unzerShippingAddress = $unzerCustomer->getShippingAddress();
 
@@ -208,11 +208,11 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
             return;
         }
 
-        if ($unzerCustomer->getFirstname() !== $customer->getFirstName()) {
+        if ($unzerCustomer->getFirstname() !== $shippingAddress->getFirstName()) {
             $unzerShippingAddress->setName($shippingAddress->getFirstName() . ' ' . $shippingAddress->getLastName());
         }
 
-        if ($unzerCustomer->getLastname() !== $customer->getLastname()) {
+        if ($unzerCustomer->getLastname() !== $shippingAddress->getLastname()) {
             $unzerShippingAddress->setName($shippingAddress->getFirstName() . ' ' . $shippingAddress->getLastName());
         }
 
