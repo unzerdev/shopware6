@@ -5,8 +5,6 @@
 * Added Bancontact as a new payment method
 * Fixed payment with installment and discounts
 * Fixed an error that occured when switching the shipping address
-
-# 2.0.2
 * Customers are now being updated in the Unzer Insight Board
 * Fixed backwards compatibility to Shopware 6.3 and lower for SEPA payment methods
 * Fixed the maximum birthday year

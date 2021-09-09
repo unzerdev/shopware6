@@ -5,9 +5,7 @@
 * Bancontact als weitere Zahlungsart hinzugefügt
 * Korrektur der Bezahlung mit Installment und Gutscheinen
 * Korrektur eines Fehlers der beim Wechseln der Lieferadresse auftritt
-
-# 2.0.2
-* Der Kunde wird nun auch im Unzer Insights Board aktualisiert.
+* Der Kunde wird nun auch im Unzer Insights Board aktualisiert
 * Korrektur der Abwärtskompatibilität zu Shopware 6.3 und tiefer für SEPA Zahlungsarten
 * Korrektur der Längenbegrenzung für das Geburtsjahr
 + Korrektur der Überschreibung der Bestellübersicht, damit andere Plugins diese auch modifizieren können
