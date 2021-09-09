@@ -4,7 +4,7 @@
 * Anpassungen am CancelOrderInterface zum übergeben von Rückgabe Gründen
 * Bancontact als weitere Zahlungsart hinzugefügt
 * Korrektur der Bezahlung mit Installment und Gutscheinen
-* Korrektur eines Fehlers der beim Wechseln der Lieferadresse auftritt.
+* Korrektur eines Fehlers der beim Wechseln der Lieferadresse auftritt
 
 # 2.0.2
 * Der Kunde wird nun auch im Unzer Insights Board aktualisiert.
