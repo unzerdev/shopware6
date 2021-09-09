@@ -4,6 +4,7 @@
 * Change Cancel Order Interface to pass reason code
 * Added Bancontact as a new payment method
 * Fixed payment with installment and discounts
+* Fixed an error that occured when switching the shipping address
 
 # 2.0.2
 * Customers are now being updated in the Unzer Insight Board
