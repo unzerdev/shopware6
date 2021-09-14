@@ -235,14 +235,12 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
     protected function persistPaymentInformation(array $information, string $transactionId, Context $context): void
     {
-        $paymentId = $this->payment->getId();
-
         $this->transactionRepository->update(
             [
                 [
-                    'id' => $transactionId,
-                    'customFields' => \array_merge($information, ['crefoPayPaymentId' => $paymentId])
-                ]
+                    'id'           => $transactionId,
+                    'customFields' => $information,
+                ],
             ],
             $context
         );
