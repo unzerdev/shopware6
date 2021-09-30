@@ -233,6 +233,19 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         $this->transactionRepository->update([$update], $salesChannelContext->getContext());
     }
 
+    protected function persistPaymentInformation(array $information, string $transactionId, Context $context): void
+    {
+        $this->transactionRepository->update(
+            [
+                [
+                    'id'           => $transactionId,
+                    'customFields' => $information,
+                ],
+            ],
+            $context
+        );
+    }
+
     protected function getCurrentRequestFromStack(string $orderTransactionId): Request
     {
         $currentRequest = $this->requestStack->getCurrentRequest();

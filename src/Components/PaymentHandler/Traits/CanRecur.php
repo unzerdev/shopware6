@@ -46,9 +46,6 @@ trait CanRecur
         $this->recurring = $this->paymentType->activateRecurring($returnUrl);
 
         if ($this->recurring !== null && !empty($this->recurring->getRedirectUrl())) {
-            $this->session->set($this->sessionPaymentTypeKey, $this->recurring->getPaymentTypeId());
-            $this->session->set($this->sessionCustomerIdKey, $this->unzerCustomer->getId());
-
             return $this->recurring->getRedirectUrl();
         }
 
@@ -75,7 +72,7 @@ trait CanRecur
 
         $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
         $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
-        $this->unzerCustomer = $this->getUnzerCustomer($this->session->get($this->sessionCustomerIdKey, '') ?? '', $transaction->getOrderTransaction()->getPaymentMethodId(), $salesChannelContext);
+        $this->unzerCustomer = $this->getUnzerCustomer($transaction->getOrderTransaction()->getCustomFields()[$this->sessionCustomerIdKey] ?? '', $transaction->getOrderTransaction()->getPaymentMethodId(), $salesChannelContext);
     }
 
     protected function fetchTransactionById(string $transactionId, Context $context): ?OrderTransactionEntity
