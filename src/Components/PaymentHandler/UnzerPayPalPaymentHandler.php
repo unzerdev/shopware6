@@ -31,6 +31,7 @@ use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInte
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
+use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
@@ -42,8 +43,6 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
     use CanAuthorize;
     use CanRecur;
     use HasDeviceVault;
-
-    public const UNZER_PAY_PAYMENT_ID_KEY = 'unzerPayPaymentId';
 
     /** @var null|AbstractUnzerResource|BasePaymentType|Paypal */
     protected $paymentType;
@@ -116,9 +115,9 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                     if ($this->recurring !== null && !empty($this->recurring->getRedirectUrl())) {
                         $this->persistPaymentInformation(
                             [
-                                self::UNZER_PAY_PAYMENT_ID_KEY => $this->paymentType->getId(),
-                                $this->sessionPaymentTypeKey   => $this->paymentType->getId(),
-                                $this->sessionCustomerIdKey    => $this->unzerCustomer->getId(),
+                                CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY => $this->paymentType->getId(),
+                                $this->sessionPaymentTypeKey                       => $this->paymentType->getId(),
+                                $this->sessionCustomerIdKey                        => $this->unzerCustomer->getId(),
                             ],
                             $transaction->getOrderTransaction()->getId(),
                             $salesChannelContext->getContext()
@@ -135,9 +134,9 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
             $this->persistPaymentInformation(
                 [
-                    $this->sessionIsRecurring      => true,
-                    $this->sessionPaymentTypeKey   => $this->payment->getId(),
-                    self::UNZER_PAY_PAYMENT_ID_KEY => $this->payment->getId(),
+                    $this->sessionIsRecurring                          => true,
+                    $this->sessionPaymentTypeKey                       => $this->payment->getId(),
+                    CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY => $this->payment->getId(),
                 ],
                 $transaction->getOrderTransaction()->getId(),
                 $salesChannelContext->getContext()
@@ -191,7 +190,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             parent::finalize($transaction, $request, $salesChannelContext);
         }
 
-        if ($transactionCustomFields === null || !array_key_exists(self::UNZER_PAY_PAYMENT_ID_KEY, $transactionCustomFields)) {
+        if ($transactionCustomFields === null || !array_key_exists(CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY, $transactionCustomFields)) {
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), 'missing payment id');
         }
 
@@ -218,7 +217,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                     );
                 }
             } else {
-                $this->payment = $this->unzerClient->fetchPayment($transactionCustomFields[self::UNZER_PAY_PAYMENT_ID_KEY]);
+                $this->payment = $this->unzerClient->fetchPayment($transactionCustomFields[CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY]);
             }
 
             $this->transactionStateHandler->transformTransactionState(
@@ -270,9 +269,9 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
             $this->persistPaymentInformation(
                 [
-                    $this->sessionIsRecurring      => true,
-                    $this->sessionPaymentTypeKey   => $this->payment->getId(),
-                    self::UNZER_PAY_PAYMENT_ID_KEY => $this->payment->getId(),
+                    $this->sessionIsRecurring                          => true,
+                    $this->sessionPaymentTypeKey                       => $this->payment->getId(),
+                    CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY => $this->payment->getId(),
                 ],
                 $transaction->getOrderTransaction()->getId(),
                 $salesChannelContext->getContext()
