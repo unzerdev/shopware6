@@ -11,6 +11,7 @@
 + Korrektur der Überschreibung der Bestellübersicht, damit andere Plugins diese auch modifizieren können
 * Herstellung der Kompatibilität zu Shopware 6.4.3.0
 * Korrektur der Webhook-Registrierung für mehrere Saleschannels mit unterschiedlichen Zugangsdaten
+* Korrektur eines Fehlers bei der Registierung eines PayPal Accounts falls keine EMail Adresse übergeben wurde
 
 # 2.0.1
 * Kompatibilität mit shopware 6.4.0.0 hergestellt
