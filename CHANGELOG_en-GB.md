@@ -11,6 +11,7 @@
 * Fixed the order list override so other plugins are also able to manipulate the list
 * Compatibility with shopware 6.4.3.0 ensured
 * Correction of the webhook registration for multiple sales channels with different credentials
+* Fixed an error that saved PayPal accounts although no email was provided by the API
 
 # 2.0.1
 * Compatibility with shopware 6.4.0.0 ensured

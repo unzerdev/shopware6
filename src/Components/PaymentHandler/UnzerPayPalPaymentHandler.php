@@ -209,7 +209,11 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                     ? $this->charge('https://not.needed')
                     : $this->authorize('https://not.needed');
 
-                if ($registerAccounts && $salesChannelContext->getCustomer() !== null) {
+                if ($registerAccounts
+                    && $salesChannelContext->getCustomer() !== null
+                    && $this->paymentType instanceof PayPal
+                    && $this->paymentType->getEmail() !== null
+                ) {
                     $this->saveToDeviceVault(
                         $salesChannelContext->getCustomer(),
                         UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL,
