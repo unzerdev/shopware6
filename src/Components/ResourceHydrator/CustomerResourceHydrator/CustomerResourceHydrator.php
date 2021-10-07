@@ -208,12 +208,10 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
             return;
         }
 
-        if ($unzerCustomer->getFirstname() !== $shippingAddress->getFirstName()) {
-            $unzerShippingAddress->setName($shippingAddress->getFirstName() . ' ' . $shippingAddress->getLastName());
-        }
+        $name = $shippingAddress->getFirstName() . ' ' . $shippingAddress->getLastName();
 
-        if ($unzerCustomer->getLastname() !== $shippingAddress->getLastname()) {
-            $unzerShippingAddress->setName($shippingAddress->getFirstName() . ' ' . $shippingAddress->getLastName());
+        if ($unzerShippingAddress->getName() !== $name) {
+            $unzerShippingAddress->setName($name);
         }
 
         if ($unzerShippingAddress->getStreet() !== $shippingAddress->getStreet()) {
