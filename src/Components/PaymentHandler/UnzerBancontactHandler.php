@@ -11,13 +11,13 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
-use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
-use UnzerPayment6\UnzerPayment6;
+use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\PaymentTypes\Bancontact;
 
-class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
+class UnzerBancontactHandler extends AbstractUnzerPaymentHandler
 {
-    use CanAuthorize;
+    use CanCharge;
 
     /**
      * {@inheritdoc}
@@ -29,36 +29,17 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $this->unzerBasket->setAmountTotalGross($this->unzerBasket->getAmountTotalGross() + $this->unzerBasket->getAmountTotalDiscount());
-
-        $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
-
-        $birthday = $currentRequest->get('unzerPaymentBirthday', '');
-
         try {
-            if (!empty($birthday)
-                && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
-                $this->unzerCustomer->setBirthDate($birthday);
-                $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
-            }
+            $this->paymentType = $this->unzerClient->createPaymentType(new Bancontact());
 
-            /** @var int $currencyPrecision */
-            $currencyPrecision = $transaction->getOrder()->getCurrency() !== null ? min(
-                $transaction->getOrder()->getCurrency()->getDecimalPrecision(),
-                UnzerPayment6::MAX_DECIMAL_PRECISION
-            ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
-
-            $returnUrl = $this->authorize($transaction->getReturnUrl(), round($transaction->getOrder()->getAmountTotal(), $currencyPrecision));
-
-            /** @phpstan-ignore-next-line */
-            $this->payment->charge(round($transaction->getOrder()->getAmountTotal(), $currencyPrecision));
+            $returnUrl = $this->charge($transaction->getReturnUrl());
 
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => $this->getLoggableRequest($currentRequest),
+                    'dataBag'     => $dataBag,
                     'transaction' => $transaction,
                     'exception'   => $apiException,
                 ]
@@ -74,7 +55,7 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => $this->getLoggableRequest($currentRequest),
+                    'dataBag'     => $dataBag,
                     'transaction' => $transaction,
                     'exception'   => $exception,
                 ]

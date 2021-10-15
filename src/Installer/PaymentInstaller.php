@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerBancontactHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerCreditCardPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitSecuredPaymentHandler;
@@ -46,6 +47,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_PRZELEWY24           = 'cd6f59d572e6c90dff77a48ce16b44db';
     public const PAYMENT_ID_SOFORT               = '95aa098aac8f11e9a2a32a2ae2dbcce4';
     public const PAYMENT_ID_WE_CHAT              = 'fd96d03535a46d197f5adac17c9f8bac';
+    public const PAYMENT_ID_BANCONTACT           = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -64,6 +66,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_PRZELEWY24,
         self::PAYMENT_ID_SOFORT,
         self::PAYMENT_ID_WE_CHAT,
+        self::PAYMENT_ID_BANCONTACT,
     ];
 
     public const PAYMENT_METHODS = [
@@ -304,6 +307,21 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name'        => 'WeChat (Unzer payments)',
                     'description' => 'WeChat payments with Unzer payments',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_BANCONTACT,
+            'handlerIdentifier' => UnzerBancontactHandler::class,
+            'name'              => 'Bancontact (Unzer payments)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Bancontact (Unzer payments)',
+                    'description' => 'Bancontact Zahlungen mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'Bancontact (Unzer payments)',
+                    'description' => 'Bancontact payments with Unzer payments',
                 ],
             ],
         ],

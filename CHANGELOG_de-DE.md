@@ -1,3 +1,18 @@
+# 3.0.0
+* Hinzufügen der Administrations UI zum Angeben von Rückgabe Gründen
+* Erweitern der Routen um Rückgabe Gründe zu übergeben
+* Anpassungen am CancelOrderInterface zum übergeben von Rückgabe Gründen
+* Bancontact als weitere Zahlungsart hinzugefügt
+* Korrektur der Bezahlung mit Installment und Gutscheinen
+* Korrektur eines Fehlers der beim Wechseln der Lieferadresse auftritt
+* Der Kunde wird nun auch im Unzer Insights Board aktualisiert
+* Korrektur der Abwärtskompatibilität zu Shopware 6.3 und tiefer für SEPA Zahlungsarten
+* Korrektur der Längenbegrenzung für das Geburtsjahr
++ Korrektur der Überschreibung der Bestellübersicht, damit andere Plugins diese auch modifizieren können
+* Herstellung der Kompatibilität zu Shopware 6.4.3.0
+* Korrektur der Webhook-Registrierung für mehrere Saleschannels mit unterschiedlichen Zugangsdaten
+* Korrektur eines Fehlers bei der Registierung eines PayPal Accounts falls keine E-Mail Adresse übergeben wurde
+
 # 2.0.1
 * Kompatibilität mit shopware 6.4.0.0 hergestellt
 * Korrektur des SEPA-Mandat Textes im Checkout

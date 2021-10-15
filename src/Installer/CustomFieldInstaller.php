@@ -16,6 +16,7 @@ class CustomFieldInstaller implements InstallerInterface
 {
     public const UNZER_PAYMENT_IS_TRANSACTION = 'unzer_payment_is_transaction';
     public const UNZER_PAYMENT_IS_SHIPPED     = 'unzer_payment_is_shipped';
+    public const UNZER_PAYMENT_PAYMENT_ID_KEY = 'unzer_pay_payment_id';
 
     public const CUSTOM_FIELDS = [
         [
@@ -32,6 +33,11 @@ class CustomFieldInstaller implements InstallerInterface
                     'id'   => '4962176184c25acbd46f60a15c24b334',
                     'name' => self::UNZER_PAYMENT_IS_SHIPPED,
                     'type' => CustomFieldTypes::BOOL,
+                ],
+                [
+                    'id'   => 'ce3728a208204885a74552548147e985',
+                    'name' => self::UNZER_PAYMENT_PAYMENT_ID_KEY,
+                    'type' => CustomFieldTypes::TEXT,
                 ],
             ],
         ],

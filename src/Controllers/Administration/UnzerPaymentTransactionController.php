@@ -155,12 +155,14 @@ class UnzerPaymentTransactionController extends AbstractController
 
     /**
      * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund", methods={"GET"})
+     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}/{reasonCode}", name="api.action.unzer.transaction.refund.reason", methods={"GET"})
      * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund.version", methods={"GET"})
+     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}/{reasonCode}", name="api.action.unzer.transaction.refund.version.reason", methods={"GET"})
      */
-    public function refundTransaction(string $orderTransactionId, string $chargeId, float $amount, Context $context): JsonResponse
+    public function refundTransaction(string $orderTransactionId, string $chargeId, float $amount, ?string $reasonCode, Context $context): JsonResponse
     {
         try {
-            $this->cancelService->cancelChargeById($orderTransactionId, $chargeId, $amount, $context);
+            $this->cancelService->cancelChargeById($orderTransactionId, $chargeId, $amount, $reasonCode, $context);
         } catch (UnzerApiException $exception) {
             $this->logger->error(sprintf('Error while executing refund transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
                 'trace' => $exception->getTraceAsString(),

@@ -49,13 +49,13 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 
         if (empty($billingAddress->getCompany()) || !in_array($paymentMethodId, self::B2B_CUSTOMERS_ALLOWED, true)) {
             $unzerCustomer = CustomerFactory::createCustomer(
-                $customer->getFirstName(),
-                $customer->getLastName()
+                $billingAddress->getFirstName(),
+                $billingAddress->getLastName()
             );
         } else {
             $unzerCustomer = CustomerFactory::createNotRegisteredB2bCustomer(
-                $customer->getFirstName(),
-                $customer->getLastName(),
+                $billingAddress->getFirstName(),
+                $billingAddress->getLastName(),
                 $this->getBirthDate($customer),
                 $this->getUnzerAddress($billingAddress),
                 $customer->getEmail(),
@@ -74,7 +74,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 
         $unzerCustomer->setCustomerId($customerNumber);
 
-        return $this->addAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
+        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
     }
 
     public function hydrateExistingCustomer(
@@ -97,7 +97,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
             throw new RuntimeException(sprintf('Could not determine the address for customer with number %s', $customer->getCustomerNumber()));
         }
 
-        return $this->addAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
+        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
     }
 
     protected function getUnzerAddress(CustomerAddressEntity $shopwareAddress): Address
@@ -115,36 +115,72 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         return $address;
     }
 
+    /**
+     * @deprecated this function will be removed in a future update. Please use \UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator::updateAdditionalDataToCustomer instead
+     */
     protected function addAdditionalDataToCustomer(
         Customer $unzerCustomer,
         CustomerEntity $customer,
         CustomerAddressEntity $billingAddress
     ): Customer {
-        if (empty($unzerCustomer->getFirstname())) {
-            $unzerCustomer->setFirstname($customer->getFirstName());
+        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
+    }
+
+    protected function updateAdditionalDataToCustomer(
+        Customer $unzerCustomer,
+        CustomerEntity $customer,
+        CustomerAddressEntity $billingAddress
+    ): Customer {
+        $unzerBillingAddress = $unzerCustomer->getBillingAddress();
+
+        if ($unzerCustomer->getFirstname() !== $billingAddress->getFirstName()) {
+            $unzerCustomer->setFirstname($billingAddress->getFirstName());
+            $unzerBillingAddress->setName($billingAddress->getFirstName() . ' ' . $billingAddress->getLastName());
         }
 
-        if (empty($unzerCustomer->getLastname())) {
-            $unzerCustomer->setLastname($customer->getLastName());
+        if ($unzerCustomer->getLastname() !== $billingAddress->getLastName()) {
+            $unzerCustomer->setLastname($billingAddress->getLastName());
+            $unzerBillingAddress->setName($billingAddress->getFirstName() . ' ' . $billingAddress->getLastName());
         }
 
-        if (empty($unzerCustomer->getEmail())) {
+        if ($unzerCustomer->getEmail() !== $customer->getEmail()) {
             $unzerCustomer->setEmail($customer->getEmail());
         }
 
-        if (empty($unzerCustomer->getSalutation())) {
+        if ($billingAddress->getSalutation() !== null && $unzerCustomer->getSalutation() !== $billingAddress->getSalutation()->getSalutationKey()) {
             $unzerCustomer->setSalutation(
-                $customer->getSalutation() !== null ? $customer->getSalutation()->getSalutationKey() : null
+                $billingAddress->getSalutation()->getSalutationKey()
             );
         }
 
-        if (empty($unzerCustomer->getBirthDate())) {
-            $unzerCustomer->setBirthDate($this->getBirthDate($customer));
+        $birthdate = $this->getBirthDate($customer);
+
+        if ($unzerCustomer->getBirthDate() !== $birthdate) {
+            $unzerCustomer->setBirthDate($birthdate);
         }
 
-        if (empty($unzerCustomer->getCompany()) && !empty($billingAddress->getCompany())) {
+        if ($unzerCustomer->getCompany() !== $billingAddress->getCompany()) {
             $unzerCustomer->setCompany($billingAddress->getCompany());
         }
+
+        if ($unzerBillingAddress->getStreet() !== $billingAddress->getStreet()) {
+            $unzerBillingAddress->setStreet($billingAddress->getStreet());
+        }
+
+        if ($unzerBillingAddress->getCity() !== $billingAddress->getCity()) {
+            $unzerBillingAddress->setCity($billingAddress->getCity());
+        }
+
+        if ($unzerBillingAddress->getZip() !== $billingAddress->getZipcode()) {
+            $unzerBillingAddress->setZip($billingAddress->getZipcode());
+        }
+
+        if ($billingAddress->getCountry() !== null && $unzerBillingAddress->getCountry() !== $billingAddress->getCountry()->getIso()) {
+            $unzerBillingAddress->setCountry($billingAddress->getCountry()->getIso());
+        }
+
+        $unzerCustomer->setBillingAddress($unzerBillingAddress);
+        $this->updateShippingAddress($unzerCustomer, $customer->getActiveShippingAddress());
 
         return $unzerCustomer;
     }
@@ -162,5 +198,38 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         }
 
         return $customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null;
+    }
+
+    private function updateShippingAddress(Customer $unzerCustomer, ?CustomerAddressEntity $shippingAddress): void
+    {
+        $unzerShippingAddress = $unzerCustomer->getShippingAddress();
+
+        if ($shippingAddress === null) {
+            return;
+        }
+
+        $name = $shippingAddress->getFirstName() . ' ' . $shippingAddress->getLastName();
+
+        if ($unzerShippingAddress->getName() !== $name) {
+            $unzerShippingAddress->setName($name);
+        }
+
+        if ($unzerShippingAddress->getStreet() !== $shippingAddress->getStreet()) {
+            $unzerShippingAddress->setStreet($shippingAddress->getStreet());
+        }
+
+        if ($unzerShippingAddress->getCity() !== $shippingAddress->getCity()) {
+            $unzerShippingAddress->setCity($shippingAddress->getCity());
+        }
+
+        if ($unzerShippingAddress->getZip() !== $shippingAddress->getZipcode()) {
+            $unzerShippingAddress->setZip($shippingAddress->getZipcode());
+        }
+
+        if ($shippingAddress->getCountry() !== null && $unzerShippingAddress->getCountry() !== $shippingAddress->getCountry()->getIso()) {
+            $unzerShippingAddress->setCountry($shippingAddress->getCountry()->getIso());
+        }
+
+        $unzerCustomer->setShippingAddress($unzerShippingAddress);
     }
 }
