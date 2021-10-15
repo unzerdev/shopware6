@@ -18,6 +18,12 @@
                 }
             },
             "actions": {
+                "reason": {
+                    "placeholder": "reason",
+                    "cancel": "cancel",
+                    "credit": "credit",
+                    "return": "return"
+                },
                 "chargeButton": "Charge",
                 "shipButton": "Shipping notice",
                 "refundButton": "Refund",

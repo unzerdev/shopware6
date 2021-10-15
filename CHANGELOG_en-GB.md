@@ -1,3 +1,18 @@
+# 3.0.0
+* Add Administration UI for refund reason codes
+* Add additional routes for passing reason codes
+* Change Cancel Order Interface to pass reason code
+* Added Bancontact as a new payment method
+* Fixed payment with installment and discounts
+* Fixed an error that occured when switching the shipping address
+* Customers are now being updated in the Unzer Insight Board
+* Fixed backwards compatibility to Shopware 6.3 and lower for SEPA payment methods
+* Fixed the maximum birthday year
+* Fixed the order list override so other plugins are also able to manipulate the list
+* Compatibility with shopware 6.4.3.0 ensured
+* Correction of the webhook registration for multiple sales channels with different credentials
+* Fixed an error that saved PayPal accounts although no email was provided by the API
+
 # 2.0.1
 * Compatibility with shopware 6.4.0.0 ensured
 * Fixed SEPA-Mandate text in checkout

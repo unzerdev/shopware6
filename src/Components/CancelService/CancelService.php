@@ -11,7 +11,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
-use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Constants\CancelReasonCodes;
 
@@ -34,7 +33,7 @@ class CancelService implements CancelServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function cancelChargeById(string $orderTransactionId, string $chargeId, float $amountGross, Context $context): void
+    public function cancelChargeById(string $orderTransactionId, string $chargeId, float $amountGross, ?string $reasonCode, Context $context): void
     {
         $decimalPrecision = UnzerPayment6::MAX_DECIMAL_PRECISION;
 
@@ -69,7 +68,7 @@ class CancelService implements CancelServiceInterface
             $orderTransactionId,
             $chargeId,
             $amountGross,
-            $this->getCancelReasonCode($transaction->getPaymentMethodId()),
+            $this->getCancelReasonCode($reasonCode),
             '',
             $amountNet,
             $amountVat
@@ -87,12 +86,8 @@ class CancelService implements CancelServiceInterface
         return $this->orderTransactionRepository->search($criteria, $context)->first();
     }
 
-    protected function getCancelReasonCode(string $paymentMethodId): string
+    protected function getCancelReasonCode(?string $reasonCode): string
     {
-        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_INVOICE_SECURED) {
-            return CancelReasonCodes::REASON_CODE_CANCEL;
-        }
-
-        return '';
+        return $reasonCode ?? CancelReasonCodes::REASON_CODE_CANCEL;
     }
 }
