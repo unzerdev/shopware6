@@ -1,3 +1,7 @@
+# 3.0.1
+* Fix redirect in case of an error when deleting a payment device
+* Fix display of the devices for SEPA secured
+
 # 3.0.0
 * Add Administration UI for refund reason codes
 * Add additional routes for passing reason codes
