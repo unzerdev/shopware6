@@ -17,7 +17,7 @@
         "sort-packages": true
     },
     "require": {
-        "php": "^7.2",
+        "php": ">=7.2 || <=8.1",
         "unzerdev/php-sdk": "^1.1.1",
         "shopware/core": "^6.2 || ^6.3 || ^6.4",
         "shopware/administration": "^6.2 || ^6.3 || ^6.4",
