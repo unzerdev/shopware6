@@ -31,7 +31,7 @@ class UnzerPaymentDeviceController extends StorefrontController
     public function deleteDevice(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {
         if (!$salesChannelContext->getCustomer()) {
-            $this->generateUrl('frontend.account.payment.page');
+            return new RedirectResponse($this->generateUrl('frontend.account.payment.page'));
         }
 
         $context  = $salesChannelContext->getContext();
@@ -39,7 +39,7 @@ class UnzerPaymentDeviceController extends StorefrontController
         $device   = $this->deviceRepository->read($deviceId, $context);
 
         if ($device === null || $device->getCustomerId() !== $salesChannelContext->getCustomer()->getId()) {
-            $this->generateUrl('frontend.account.payment.page');
+            return new RedirectResponse($this->generateUrl('frontend.account.payment.page'));
         }
 
         $this->deviceRepository->remove($deviceId, $context);
