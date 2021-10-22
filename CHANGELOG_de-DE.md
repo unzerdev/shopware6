@@ -1,6 +1,8 @@
 # 3.0.1
 * Korrektur der Weiterleitung beim Löschen der gespeicherten Zahlungsmittel im Fall eines Fehlers
 * Korrektur der Darstellung der gespeicherten Zahlungsmittel für SEPA gesichert
+* Aktualisierung des Unzer PHP SDK zu Version 1.1.4.0
+* Kompatibilität zu PHP 8 hergestellt
 
 # 3.0.0
 * Hinzufügen der Administrations UI zum Angeben von Rückgabe Gründen
