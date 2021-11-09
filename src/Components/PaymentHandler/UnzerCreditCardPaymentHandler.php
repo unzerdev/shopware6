@@ -26,6 +26,7 @@ use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
+use UnzerSDK\Constants\RecurrenceTypes;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\PaymentTypes\Card;
 
@@ -84,8 +85,8 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
 
         try {
             $returnUrl = $bookingMode === BookingMode::CHARGE
-                ? $this->charge($transaction->getReturnUrl())
-                : $this->authorize($transaction->getReturnUrl());
+                ? $this->charge($transaction->getReturnUrl(), RecurrenceTypes::ONE_CLICK)
+                : $this->authorize($transaction->getReturnUrl(), $this->unzerBasket->getAmountTotalGross(), RecurrenceTypes::ONE_CLICK);
 
             if ($registerCreditCards && $salesChannelContext->getCustomer() !== null) {
                 $this->saveToDeviceVault(
