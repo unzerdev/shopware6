@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\ResourceHydrator;
 
 use InvalidArgumentException;
+use NetInventors\NetiNextEasyCoupon\Core\Checkout\Cart\AbstractCartProcessor;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
@@ -273,6 +274,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function isPromotionLineItemType(string $type): bool
     {
+        if (class_exists(AbstractCartProcessor::class)) {
+            return $type === AbstractCartProcessor::EASY_COUPON_LINE_ITEM_TYPE;
+        }
+
         return $type === PromotionProcessor::LINE_ITEM_TYPE;
     }
 
