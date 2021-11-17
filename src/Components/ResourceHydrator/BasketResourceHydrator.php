@@ -274,11 +274,13 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function isPromotionLineItemType(string $type): bool
     {
+        $promotionTypes = [PromotionProcessor::LINE_ITEM_TYPE];
+
         if (class_exists(AbstractCartProcessor::class)) {
-            return $type === AbstractCartProcessor::EASY_COUPON_LINE_ITEM_TYPE;
+            $promotionTypes[] = AbstractCartProcessor::EASY_COUPON_LINE_ITEM_TYPE;
         }
 
-        return $type === PromotionProcessor::LINE_ITEM_TYPE;
+        return in_array($type, $promotionTypes, true);
     }
 
     protected function isCustomProduct(
