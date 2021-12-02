@@ -13,7 +13,7 @@ trait CanCharge
     /**
      * @throws UnzerApiException
      */
-    public function charge(string $returnUrl): string
+    public function charge(string $returnUrl, ?string $recurrenceType = null): string
     {
         if (!$this instanceof AbstractUnzerPaymentHandler) {
             throw new RuntimeException('Trait can only be used in a payment handler context which extends the AbstractUnzerPaymentHandler class');
@@ -35,7 +35,10 @@ trait CanCharge
             $this->unzerBasket->getOrderId(),
             $this->unzerMetadata,
             $this->unzerBasket,
-            true
+            true,
+            null,
+            null,
+            $recurrenceType
         );
 
         $this->payment = $paymentResult->getPayment();
