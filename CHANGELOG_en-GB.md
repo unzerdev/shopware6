@@ -1,10 +1,12 @@
+# 3.0.2
+* Add compatibility to EasyCoupon plugin
+
 # 3.0.1
 * Fix redirect in case of an error when deleting a payment device
 * Fix display of the devices for SEPA secured
 * Updated Unzer PHP SDK to version 1.1.4.0
 * Add compatibility to PHP 8
 * Add recurrence type for payments with credit card
-* Add compatibility to EasyCoupon plugin
 
 # 3.0.0
 * Add Administration UI for refund reason codes
