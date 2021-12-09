@@ -1,4 +1,4 @@
-# 3.0.2
+# 3.0.2-beta
 * Add compatibility to EasyCoupon plugin
 
 # 3.0.1
