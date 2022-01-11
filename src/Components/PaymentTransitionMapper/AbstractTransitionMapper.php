@@ -30,7 +30,7 @@ abstract class AbstractTransitionMapper
     public function getTargetPaymentStatus(Payment $paymentObject): string
     {
         if ($paymentObject->isPending()) {
-            return StateMachineTransitionActions::ACTION_REOPEN;
+            throw new TransitionMapperException($this->getResourceName());
         }
 
         if ($paymentObject->isCanceled()) {
