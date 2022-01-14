@@ -1,5 +1,7 @@
-# 3.0.2-beta
+# 3.0.2
 * Kompatibilität zu EasyCoupon Plugin hergestellt
+* Korrektur der Möglichkeit um Kunden zu löschen, die eine gespeicherte Zahlungsart haben
+* Korrektur des Zahlungsstatus für Sofort und Giropay bei der Weiterleitung zur externen Zahlung
 
 # 3.0.1
 * Korrektur der Weiterleitung beim Löschen der gespeicherten Zahlungsmittel im Fall eines Fehlers
