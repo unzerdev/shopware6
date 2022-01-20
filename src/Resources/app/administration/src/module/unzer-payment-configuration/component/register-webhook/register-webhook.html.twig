@@ -27,6 +27,7 @@
 
                     <sw-data-grid
                         v-on:select-item="onSelectItem"
+                        :isRecordSelectable="isRecordSelectable"
                         :dataSource="salesChannelDomains"
                         :columns="salesChannelDomainColumns"
                         :showActions="false"
@@ -38,14 +39,6 @@
                     <sw-button :disabled="isLoading" @click="closeModal">
                         {{ $tc('unzer-payment-settings.modal.close') }}
                     </sw-button>
-
-                    <sw-button-process
-                        @click="clearWebhooks"
-                        @process-finish="onClearingFinished()"
-                        :isLoading="isLoading" :processSuccess="isClearingSuccessful" :disabled="isLoading"
-                        variant="primary">
-                        {{ $tc('unzer-payment-settings.modal.webhook.submit.clear') }}
-                    </sw-button-process>
 
                     <sw-button-process
                         @click="registerWebhooks"

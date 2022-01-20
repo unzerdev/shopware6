@@ -101,7 +101,7 @@
                 "httpsInfo": "Webhooks can only be registered for HTTPS domains.",
                 "submit": {
                     "register": "Register webhooks",
-                    "clear": "Clear webhooks"
+                    "clear": "Select items to clear | Clear selected webhook | Clear {count} webhooks"
                 }
             }
         },

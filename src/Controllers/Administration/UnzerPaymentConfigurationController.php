@@ -110,7 +110,7 @@ class UnzerPaymentConfigurationController extends AbstractController
         /** @var DataBag $selection */
         $selection = $dataBag->get('selection', new DataBag());
 
-        if ($selection->count() < 1) {
+        if ($selection->count() < 1 || !$dataBag->has('privateKey')) {
             return new JsonResponse([
                 'missing' => [
                     'success' => false,
@@ -120,7 +120,19 @@ class UnzerPaymentConfigurationController extends AbstractController
         }
 
         return new JsonResponse(
-            $this->webhookRegistrator->clearWebhooks($dataBag->get('selection', [])),
+            $this->webhookRegistrator->clearWebhooks($dataBag->get('privateKey'), $selection->all()),
+            200
+        );
+    }
+
+    /**
+     * @Route("/api/_action/unzer-payment/get-webhooks", name="api.action.unzer.webhooks.get", methods={"POST"})
+     * @Route("/api/v{version}/_action/unzer-payment/get-webhooks", name="api.action.unzer.webhooks.get.version", methods={"POST"})
+     */
+    public function getWebhooks(RequestDataBag $dataBag): JsonResponse
+    {
+        return new JsonResponse(
+            $this->webhookRegistrator->getWebhooks($dataBag->get('privateKey')),
             200
         );
     }

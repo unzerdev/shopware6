@@ -56,6 +56,8 @@
             <argument type="service" id="router.default"/>
             <argument type="service" id="sales_channel_domain.repository"/>
             <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
         </service>
     </services>
 </container>

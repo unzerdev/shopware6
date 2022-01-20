@@ -36,7 +36,10 @@
                 {% endblock %}
 
                 {% block unzer_payment_settings_actions_register_webhooks %}
-                    <unzer-payment-register-webhook></unzer-payment-register-webhook>
+                    <unzer-payment-register-webhook
+                        :privateKey="getConfigValue('privateKey')"
+                        @webhook-registered="onWebhookRegistered">
+                    </unzer-payment-register-webhook>
                 {% endblock %}
 
             </template>
@@ -52,6 +55,28 @@
                         @config-changed="onConfigChange"
                         domain="UnzerPayment6.settings">
                     </sw-system-config>
+
+                    <sw-card :title="$tc(`unzer-payment-settings.modal.webhook.title`)" class="unzer--webhook-card">
+                        <sw-data-grid
+                            v-on:select-item="onSelectWebhook"
+                            :showActions="false"
+                            :showSelection="true"
+                            :dataSource="webhooks"
+                            :isLoading="isLoadingWebhooks"
+                            :columns="webhookColumns">
+                        </sw-data-grid>
+
+                        <sw-button-process
+                            @click="clearWebhooks"
+                            @process-finish="onClearingFinished()"
+                            :isLoading="isLoadingWebhooks"
+                            :processSuccess="isClearingSuccessful"
+                            :disabled="isLoading || webhookSelectionLength == 0"
+                            variant="danger">
+                            {{ $tc('unzer-payment-settings.modal.webhook.submit.clear', webhookSelectionLength, {count: webhookSelectionLength}) }}
+                        </sw-button-process>
+
+                    </sw-card>
                 </sw-card-view>
             </template>
         {% endblock %}

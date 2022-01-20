@@ -1,3 +1,9 @@
 .unzer-payment-icon {
     height: 100%;
 }
+
+.unzer--webhook-card {
+    .sw-data-grid__bulk {
+        display: none;
+    }
+}

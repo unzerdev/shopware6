@@ -1,6 +1,8 @@
 import template from './register-webhook.html.twig';
 import './style.scss';
 
+const Criteria = Shopware.Data.Criteria;
+
 Shopware.Component.register('unzer-payment-register-webhook', {
     template,
 
@@ -13,14 +15,17 @@ Shopware.Component.register('unzer-payment-register-webhook', {
         'UnzerPaymentConfigurationService'
     ],
 
+
+    props: {
+        privateKey: {
+            type: String,
+            required: true,
+        }
+    },
+
     computed: {
         salesChannelDomainColumns() {
             return [
-                {
-                    property: 'id',
-                    dataIndex: 'id',
-                    label: 'ID'
-                },
                 {
                     property: 'url',
                     dataIndex: 'url',
@@ -43,18 +48,36 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             isClearing: false,
             isClearingSuccessful: false,
             salesChannelDomains: [],
-            selection: []
+            selection: [],
+            webhooks: []
         };
     },
 
-    created() {
-        this.salesChannelDomainRepository.search(new Shopware.Data.Criteria(), Shopware.Context.api)
-            .then((result) => {
-                this.salesChannelDomains = result;
-            });
+    watch: {
+        privateKey() {
+            this.loadData();
+        }
     },
 
     methods: {
+        loadData() {
+            let criteria = new Criteria();
+
+            criteria.addFilter(
+                Criteria.prefix('url', 'https://')
+            );
+
+            this.UnzerPaymentConfigurationService.getWebhooks(this.privateKey)
+                .then((result) => {
+                    this.webhooks = result;
+
+                    this.salesChannelDomainRepository.search(criteria, Shopware.Context.api)
+                        .then((result) => {
+                            this.salesChannelDomains = result;
+                        });
+                });
+        },
+
         openModal() {
             this.isModalActive = true;
         },
@@ -78,6 +101,8 @@ Shopware.Component.register('unzer-payment-register-webhook', {
                     if (undefined !== response) {
                         me.messageGeneration(response);
                     }
+
+                    this.$emit('webhook-registered', response);
                 })
                 .catch(() => {
                     this.createNotificationError({
@@ -91,41 +116,10 @@ Shopware.Component.register('unzer-payment-register-webhook', {
                 });
         },
 
-        clearWebhooks() {
-            const me = this;
-            this.isClearingSuccessful = false;
-            this.isClearing = true;
-            this.isLoading = true;
-
-            this.UnzerPaymentConfigurationService.clearWebhooks({
-                selection: this.selection
-            })
-                .then((response) => {
-                    me.isClearingSuccessful = true;
-
-                    if (undefined !== response) {
-                        me.messageGeneration(response);
-                    }
-                })
-                .catch(() => {
-                    this.createNotificationError({
-                        title: this.$tc('unzer-payment-settings.webhook.globalError.title'),
-                        message: this.$tc('unzer-payment-settings.webhook.globalError.message')
-                    });
-                })
-                .finally(() => {
-                    me.isLoading = false;
-                    me.isClearing = false;
-                });
-        },
-
         onRegistrationFinished() {
             this.isRegistrationSuccessful = false;
         },
 
-        onClearingFinished() {
-            this.isClearingSuccessful = false;
-        },
 
         onSelectItem(selectedItems) {
             this.selection = selectedItems;
@@ -147,6 +141,18 @@ Shopware.Component.register('unzer-payment-register-webhook', {
                     });
                 }
             });
+        },
+
+        isRecordSelectable(item) {
+            let isSelectable = true;
+
+            this.webhooks.forEach((webhook) => {
+                if (webhook.url.indexOf(item.url) > -1) {
+                    isSelectable = false;
+                }
+            });
+
+            return isSelectable;
         }
     }
 });
