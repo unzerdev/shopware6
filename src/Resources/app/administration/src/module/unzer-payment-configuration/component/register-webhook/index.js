@@ -1,7 +1,6 @@
 import template from './register-webhook.html.twig';
 import './style.scss';
 
-const Criteria = Shopware.Data.Criteria;
 
 Shopware.Component.register('unzer-payment-register-webhook', {
     template,
@@ -20,6 +19,14 @@ Shopware.Component.register('unzer-payment-register-webhook', {
         privateKey: {
             type: String,
             required: true,
+        },
+        salesChannelDomains: {
+            type: Array,
+            required: true,
+        },
+        webhooks: {
+            type: Array,
+            required: true
         }
     },
 
@@ -32,10 +39,6 @@ Shopware.Component.register('unzer-payment-register-webhook', {
                     label: 'URL'
                 }
             ];
-        },
-
-        salesChannelDomainRepository() {
-            return this.repositoryFactory.create('sales_channel_domain');
         }
     },
 
@@ -47,36 +50,11 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             isRegistrationSuccessful: false,
             isClearing: false,
             isClearingSuccessful: false,
-            salesChannelDomains: [],
-            selection: [],
-            webhooks: []
+            selection: []
         };
     },
 
-    watch: {
-        privateKey() {
-            this.loadData();
-        }
-    },
-
     methods: {
-        loadData() {
-            let criteria = new Criteria();
-
-            criteria.addFilter(
-                Criteria.prefix('url', 'https://')
-            );
-
-            this.UnzerPaymentConfigurationService.getWebhooks(this.privateKey)
-                .then((result) => {
-                    this.webhooks = result;
-
-                    this.salesChannelDomainRepository.search(criteria, Shopware.Context.api)
-                        .then((result) => {
-                            this.salesChannelDomains = result;
-                        });
-                });
-        },
 
         openModal() {
             this.isModalActive = true;

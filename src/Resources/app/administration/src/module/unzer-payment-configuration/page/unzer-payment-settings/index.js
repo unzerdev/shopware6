@@ -2,6 +2,8 @@ import template from './unzer-payment-settings.html.twig';
 import './unzer-payment-settings.scss';
 
 const { Component, Mixin } = Shopware;
+const Criteria = Shopware.Data.Criteria;
+
 
 Component.register('unzer-payment-settings', {
     template,
@@ -29,6 +31,7 @@ Component.register('unzer-payment-settings', {
             webhookSelection: null,
             webhookSelectionLength: 0,
             isClearing: false,
+            salesChannelDomains: [],
             isClearingSuccessful: false
         };
     },
@@ -42,6 +45,10 @@ Component.register('unzer-payment-settings', {
     computed: {
         paymentMethodRepository() {
             return this.repositoryFactory.create('payment_method');
+        },
+
+        salesChannelDomainRepository() {
+            return this.repositoryFactory.create('sales_channel_domain');
         },
 
         webhookColumns() {
@@ -139,9 +146,20 @@ Component.register('unzer-payment-settings', {
         },
 
         loadWebhooks() {
+            let criteria = new Criteria();
+
+            criteria.addFilter(
+                Criteria.prefix('url', 'https://')
+            );
+
             this.UnzerPaymentConfigurationService.getWebhooks(this.getConfigValue('privateKey')).then((response) => {
                 this.webhooks = response;
                 this.isLoadingWebhooks = false;
+
+                this.salesChannelDomainRepository.search(criteria, Shopware.Context.api)
+                    .then((result) => {
+                        this.salesChannelDomains = result;
+                    });
             });
         },
 
@@ -163,8 +181,11 @@ Component.register('unzer-payment-settings', {
                 .then((response) => {
                     me.isClearingSuccessful = true;
                     me.isLoadingWebhooks = true;
-                    me.webhookSelection = null;
+                    me.webhookSelection = [];
                     me.webhookSelectionLength = 0;
+
+                    me.$refs.webhookDataGrid.resetSelection();
+
                     this.loadWebhooks();
                     if (undefined !== response) {
                         me.messageGeneration(response);

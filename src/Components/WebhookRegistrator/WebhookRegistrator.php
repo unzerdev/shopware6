@@ -87,7 +87,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                 $relativePath = $this->router->generate('unzer.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_PATH);
                 $url          = $domainUrl . $relativePath;
 
-                $result = $this->clientFactory->createClient($salesChannelId)->createWebhook($url, 'all');
+                $result = $this->clientFactory->createClient($salesChannelId)->createWebhook($url, 'payment');
 
                 $returnData[$domainUrl] = [
                     'success' => true,

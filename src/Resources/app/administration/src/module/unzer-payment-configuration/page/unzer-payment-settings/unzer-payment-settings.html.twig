@@ -38,6 +38,8 @@
                 {% block unzer_payment_settings_actions_register_webhooks %}
                     <unzer-payment-register-webhook
                         :privateKey="getConfigValue('privateKey')"
+                        :salesChannelDomains="salesChannelDomains"
+                        :webhooks="webhooks"
                         @webhook-registered="onWebhookRegistered">
                     </unzer-payment-register-webhook>
                 {% endblock %}
@@ -58,6 +60,7 @@
 
                     <sw-card :title="$tc(`unzer-payment-settings.modal.webhook.title`)" class="unzer--webhook-card">
                         <sw-data-grid
+                            ref="webhookDataGrid"
                             v-on:select-item="onSelectWebhook"
                             :showActions="false"
                             :showSelection="true"
