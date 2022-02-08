@@ -3,6 +3,7 @@ import './component/unzer-entity-single-select-delivery-status';
 import './component/unzer-payment-plugin-icon';
 
 import './extension/sw-settings-index';
+import './extension/sw-system-config';
 
 import './page/unzer-payment-settings';
 

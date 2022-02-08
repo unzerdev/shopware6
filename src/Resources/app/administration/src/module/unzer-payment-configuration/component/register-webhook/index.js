@@ -1,6 +1,7 @@
 import template from './register-webhook.html.twig';
 import './style.scss';
 
+const Criteria = Shopware.Data.Criteria;
 
 Shopware.Component.register('unzer-payment-register-webhook', {
     template,
@@ -20,10 +21,6 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             type: String,
             required: true,
         },
-        salesChannelDomains: {
-            type: Array,
-            required: true,
-        },
         webhooks: {
             type: Array,
             required: true
@@ -31,6 +28,14 @@ Shopware.Component.register('unzer-payment-register-webhook', {
     },
 
     computed: {
+        salesChannelRepository() {
+            return this.repositoryFactory.create('sales_channel');
+        },
+
+        salesChannelDomainRepository() {
+            return this.repositoryFactory.create('sales_channel_domain');
+        },
+
         salesChannelDomainColumns() {
             return [
                 {
@@ -48,13 +53,37 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             isLoading: false,
             isRegistering: false,
             isRegistrationSuccessful: false,
-            isClearing: false,
-            isClearingSuccessful: false,
-            selection: []
+            selection: {},
+            salesChannels: [],
+            salesChannelDomains: {}
         };
     },
 
+    created() {
+        this.createdComponent();
+    },
+
     methods: {
+        createdComponent() {
+            let me = this;
+
+            me.salesChannelRepository.search(new Criteria(), Shopware.Context.Api)
+                .then((result) => {
+                    me.salesChannels = result;
+
+                    me.salesChannels.forEach((salesChannel) => {
+                        let criteria = new Criteria();
+                        criteria.addFilter(Criteria.prefix('url', 'https://'));
+                        criteria.addFilter(Criteria.equals('salesChannelId', salesChannel.id));
+
+                        me.salesChannelDomainRepository.search(criteria, Shopware.Context.Api)
+                            .then((result) => {
+                                me.salesChannelDomains[salesChannel.id] = result;
+                            });
+                    });
+
+                });
+        },
 
         openModal() {
             this.isModalActive = true;
@@ -99,8 +128,12 @@ Shopware.Component.register('unzer-payment-register-webhook', {
         },
 
 
-        onSelectItem(selectedItems) {
-            this.selection = selectedItems;
+        onSelectItem(selectedItems, selectedItem, selected) {
+            if (selected) {
+                this.$set(this.selection, selectedItem.id, selectedItem);
+            } else if (!selected && this.selection[selectedItem.id]) {
+                this.$delete(this.selection, selectedItem.id);
+            }
         },
 
         messageGeneration(data) {
@@ -121,16 +154,18 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             });
         },
 
-        isRecordSelectable(item) {
-            let isSelectable = true;
+        isWebhookRegisteredForSalesChannel(salesChannelId) {
+            let result = false;
 
-            this.webhooks.forEach((webhook) => {
-                if (webhook.url.indexOf(item.url) > -1) {
-                    isSelectable = false;
-                }
+            this.salesChannelDomains[salesChannelId].forEach((domain) => {
+                this.webhooks.forEach((webhook) => {
+                    if (webhook.url.indexOf(domain.url) > -1) {
+                        result = true;
+                    }
+                });
             });
 
-            return isSelectable;
+            return result;
         }
     }
 });

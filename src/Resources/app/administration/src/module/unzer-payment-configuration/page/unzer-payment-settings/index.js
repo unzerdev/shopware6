@@ -136,6 +136,10 @@ Component.register('unzer-payment-settings', {
         },
 
         onConfigChange(config) {
+            if (!config) {
+                return;
+            }
+
             this.config = config;
             this.isLoading = false;
             this.loadWebhooks();
@@ -145,22 +149,17 @@ Component.register('unzer-payment-settings', {
             this.loadWebhooks();
         },
 
+
         loadWebhooks() {
-            let criteria = new Criteria();
+            this.isLoadingWebhooks = true;
 
-            criteria.addFilter(
-                Criteria.prefix('url', 'https://')
-            );
-
-            this.UnzerPaymentConfigurationService.getWebhooks(this.getConfigValue('privateKey')).then((response) => {
-                this.webhooks = response;
-                this.isLoadingWebhooks = false;
-
-                this.salesChannelDomainRepository.search(criteria, Shopware.Context.api)
-                    .then((result) => {
-                        this.salesChannelDomains = result;
-                    });
-            });
+            this.UnzerPaymentConfigurationService.getWebhooks(this.getConfigValue('privateKey'))
+                .then((response) => {
+                    this.webhooks = response;
+                })
+                .finally(() => {
+                    this.isLoadingWebhooks = false;
+                });
         },
 
         onSelectWebhook(selectedItems) {

@@ -38,7 +38,6 @@
                 {% block unzer_payment_settings_actions_register_webhooks %}
                     <unzer-payment-register-webhook
                         :privateKey="getConfigValue('privateKey')"
-                        :salesChannelDomains="salesChannelDomains"
                         :webhooks="webhooks"
                         @webhook-registered="onWebhookRegistered">
                     </unzer-payment-register-webhook>
@@ -55,29 +54,44 @@
                         salesChannelSwitchable
                         inherit
                         @config-changed="onConfigChange"
+                        @sales-channel-changed="onConfigChange"
                         domain="UnzerPayment6.settings">
                     </sw-system-config>
 
                     <sw-card :title="$tc(`unzer-payment-settings.modal.webhook.title`)" class="unzer--webhook-card">
-                        <sw-data-grid
-                            ref="webhookDataGrid"
-                            v-on:select-item="onSelectWebhook"
-                            :showActions="false"
-                            :showSelection="true"
-                            :dataSource="webhooks"
-                            :isLoading="isLoadingWebhooks"
-                            :columns="webhookColumns">
-                        </sw-data-grid>
 
-                        <sw-button-process
-                            @click="clearWebhooks"
-                            @process-finish="onClearingFinished()"
-                            :isLoading="isLoadingWebhooks"
-                            :processSuccess="isClearingSuccessful"
-                            :disabled="isLoading || webhookSelectionLength == 0"
-                            variant="danger">
-                            {{ $tc('unzer-payment-settings.modal.webhook.submit.clear', webhookSelectionLength, {count: webhookSelectionLength}) }}
-                        </sw-button-process>
+                        <sw-alert
+                            v-if="!isLoadingWebhooks && webhooks.length === 0"
+                            variant="warning"
+                            appearance="default"
+                            :showIcon="true"
+                            :closable="false">
+                            {{ $tc('unzer-payment-settings.webhook.empty') }}
+                        </sw-alert>
+
+                        <div v-else>
+
+                            <sw-data-grid
+                                ref="webhookDataGrid"
+                                v-on:select-item="onSelectWebhook"
+                                :showActions="false"
+                                :showSelection="true"
+                                :dataSource="webhooks"
+                                :isLoading="isLoadingWebhooks"
+                                :columns="webhookColumns">
+                            </sw-data-grid>
+
+                            <sw-button-process
+                                @click="clearWebhooks"
+                                @process-finish="onClearingFinished()"
+                                :isLoading="isLoadingWebhooks"
+                                :processSuccess="isClearingSuccessful"
+                                :disabled="isLoading || webhookSelectionLength == 0"
+                                variant="danger">
+                                {{ $tc('unzer-payment-settings.modal.webhook.submit.clear', webhookSelectionLength, {count: webhookSelectionLength}) }}
+                            </sw-button-process>
+
+                        </div>
 
                     </sw-card>
                 </sw-card-view>

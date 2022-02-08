@@ -25,14 +25,34 @@
                         {{ $tc('unzer-payment-settings.modal.webhook.httpsInfo') }}
                     </sw-alert>
 
-                    <sw-data-grid
-                        v-on:select-item="onSelectItem"
-                        :isRecordSelectable="isRecordSelectable"
-                        :dataSource="salesChannelDomains"
-                        :columns="salesChannelDomainColumns"
-                        :showActions="false"
-                        :showSelection="true">
-                    </sw-data-grid>
+                    <sw-card
+                        v-for="salesChannel in salesChannels"
+                        :title="salesChannel.translated.name"
+                        :large="true"
+                        >
+
+                        <sw-data-grid
+                            v-if="!isWebhookRegisteredForSalesChannel(salesChannel.id)"
+                            v-on:select-item="onSelectItem"
+                            :maximumSelectItems="1"
+                            :dataSource="salesChannelDomains[salesChannel.id]"
+                            :columns="salesChannelDomainColumns"
+                            :showActions="false"
+                            :showSelection="true">
+                        </sw-data-grid>
+
+                        <sw-alert
+                            v-else
+                            variant="success"
+                            appearance="default"
+                            :showIcon="true"
+                            :closable="false">
+                            {{ $tc('unzer-payment-settings.modal.webhook.registered') }}
+                        </sw-alert>
+
+                    </sw-card>
+
+
                 </template>
 
                 <template #modal-footer>

@@ -99,6 +99,7 @@
             "webhook": {
                 "title": "Webhooks",
                 "httpsInfo": "Webhooks can only be registered for HTTPS domains.",
+                "registered": "Webhook is already registered",
                 "submit": {
                     "register": "Register webhooks",
                     "clear": "Select items to clear | Clear selected webhook | Clear {count} webhooks"
@@ -126,7 +127,8 @@
             "globalError": {
                 "title": "An error has occurred!",
                 "message": "Please contact us for more information"
-            }
+            },
+            "empty": "There are no webhooks registered for this private key. Make sure the private key is valid and check for other specific sales channel configurations."
         }
     }
 }

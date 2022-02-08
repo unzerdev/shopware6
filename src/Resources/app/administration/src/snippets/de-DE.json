@@ -99,6 +99,7 @@
             "webhook": {
                 "title": "Webhooks",
                 "httpsInfo": "Webhooks können nur für HTTPS-Domains registriert werden.",
+                "registered": "Webhook ist bereits registriert",
                 "submit": {
                     "register": "Webhooks registrieren",
                     "clear": "Webhooks entfernen"
@@ -126,7 +127,8 @@
             "globalError": {
                 "title": "Ein Fehler ist aufgetreten",
                 "message": "Bitte kontaktieren sie uns für mehr Informationen"
-            }
+            },
+            "empty": "Für diesen Private Key sind keine Webhooks registriert. Bitte prüfen Sie ob dieser valide ist und ob Konfigurationen für dedizierte Verkaufskanäle vorgenommen wurden."
         }
     }
 }

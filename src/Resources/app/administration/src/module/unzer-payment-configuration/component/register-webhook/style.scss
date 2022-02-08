@@ -5,10 +5,6 @@
 }
 
 .unzer-payment-detail--webhook-modal {
-  .sw-modal__body {
-    padding: 0;
-  }
-
   .sw-modal__footer {
     border-top: 1px solid $color-gray-300;
   }
@@ -23,8 +19,4 @@
   .sw-data-grid__bulk {
     display: none;
   }
-
-    .sw-alert {
-        margin: 10px 32px;
-    }
 }

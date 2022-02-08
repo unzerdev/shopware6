@@ -3,7 +3,11 @@
 }
 
 .unzer--webhook-card {
-    .sw-data-grid__bulk {
-        display: none;
+    .sw-data-grid {
+        margin-bottom: 22px;
+
+        .sw-data-grid__bulk {
+            display: none;
+        }
     }
 }
