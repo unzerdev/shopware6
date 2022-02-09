@@ -130,6 +130,7 @@ Shopware.Component.register('unzer-payment-register-webhook', {
 
         onRegistrationFinished() {
             this.isRegistrationSuccessful = false;
+            this.selection = {};
         },
 
 

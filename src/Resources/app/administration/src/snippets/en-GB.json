@@ -98,7 +98,7 @@
             "close": "Close",
             "webhook": {
                 "title": "Webhooks",
-                "httpsInfo": "Webhooks can only be registered for HTTPS domains.",
+                "httpsInfo": "Only one HTTPS domain per sales channel can be registered.",
                 "registered": "Webhook is already registered",
                 "submit": {
                     "register": "Register webhooks",
