@@ -12,8 +12,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelDomain\SalesChannelDomainEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelEntity;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
@@ -21,7 +19,6 @@ use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
-use UnzerSDK\Resources\Webhook;
 
 class WebhookRegistrator implements WebhookRegistratorInterface
 {
@@ -59,12 +56,12 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         EntityRepositoryInterface $salesChannelRepository,
         ConfigReaderInterface $configReader
     ) {
-        $this->clientFactory          = $clientFactory;
-        $this->router                 = $router;
+        $this->clientFactory                = $clientFactory;
+        $this->router                       = $router;
         $this->salesChannelDomainRepository = $salesChannelDomainRepository;
-        $this->logger                 = $logger;
-        $this->salesChannelRepository = $salesChannelRepository;
-        $this->configReader           = $configReader;
+        $this->logger                       = $logger;
+        $this->salesChannelRepository       = $salesChannelRepository;
+        $this->configReader                 = $configReader;
     }
 
     public function registerWebhook(RequestDataBag $salesChannelDomains): array
@@ -131,7 +128,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                 ];
 
                 $this->logger->info(sprintf('Webhooks %s (%s) deleted!', $webhookId, $data['url']));
-            }  catch (UnzerApiException | Throwable $exception) {
+            } catch (UnzerApiException | Throwable $exception) {
                 $returnData[$data['url']] = [
                     'success' => false,
                     'message' => 'unzer-payment-settings.webhook.clear.error',
@@ -155,13 +152,13 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     public function getWebhooks(string $privateKey): array
     {
         $webhooks = $this->clientFactory->createClientFromPrivateKey($privateKey)->fetchAllWebhooks();
-        $data = [];
+        $data     = [];
 
         foreach ($webhooks as $webhook) {
             $data[] = [
-                'id' => $webhook->getId(),
+                'id'    => $webhook->getId(),
                 'event' => $webhook->getEvent(),
-                'url' => $webhook->getUrl(),
+                'url'   => $webhook->getUrl(),
             ];
         }
 
