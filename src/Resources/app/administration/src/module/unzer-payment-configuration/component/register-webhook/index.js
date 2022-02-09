@@ -24,6 +24,14 @@ Shopware.Component.register('unzer-payment-register-webhook', {
         webhooks: {
             type: Array,
             required: true
+        },
+        isLoading: {
+            type: Boolean,
+            required: false
+        },
+        selectedSalesChannelId: {
+            type: String,
+            required: false
         }
     },
 
@@ -50,7 +58,6 @@ Shopware.Component.register('unzer-payment-register-webhook', {
     data() {
         return {
             isModalActive: false,
-            isLoading: false,
             isRegistering: false,
             isRegistrationSuccessful: false,
             selection: {},
@@ -97,7 +104,6 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             const me = this;
             this.isRegistrationSuccessful = false;
             this.isRegistering = true;
-            this.isLoading = true;
 
             this.UnzerPaymentConfigurationService.registerWebhooks({
                 selection: this.selection
@@ -118,7 +124,6 @@ Shopware.Component.register('unzer-payment-register-webhook', {
                     });
                 })
                 .finally(() => {
-                    me.isLoading = false;
                     me.isRegistering = false;
                 });
         },

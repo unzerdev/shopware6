@@ -31,8 +31,8 @@ Component.register('unzer-payment-settings', {
             webhookSelection: null,
             webhookSelectionLength: 0,
             isClearing: false,
-            salesChannelDomains: [],
-            isClearingSuccessful: false
+            isClearingSuccessful: false,
+            selectedSalesChannelId: null
         };
     },
 
@@ -45,10 +45,6 @@ Component.register('unzer-payment-settings', {
     computed: {
         paymentMethodRepository() {
             return this.repositoryFactory.create('payment_method');
-        },
-
-        salesChannelDomainRepository() {
-            return this.repositoryFactory.create('sales_channel_domain');
         },
 
         webhookColumns() {
@@ -136,13 +132,17 @@ Component.register('unzer-payment-settings', {
         },
 
         onConfigChange(config) {
-            if (!config) {
-                return;
-            }
-
             this.config = config;
             this.isLoading = false;
             this.loadWebhooks();
+        },
+
+        onSalesChannelChanged(config, salesChannelId) {
+            if (config) {
+                this.onConfigChange(config);
+            }
+
+            this.selectedSalesChannelId = salesChannelId;
         },
 
         onWebhookRegistered() {
@@ -159,6 +159,7 @@ Component.register('unzer-payment-settings', {
                 })
                 .finally(() => {
                     this.isLoadingWebhooks = false;
+                    this.isClearingSuccessful = false;
                 });
         },
 
@@ -222,6 +223,7 @@ Component.register('unzer-payment-settings', {
 
         onClearingFinished() {
             this.isClearingSuccessful = false;
+            this.isClearing = false;
         },
 
         getBind(element, config) {

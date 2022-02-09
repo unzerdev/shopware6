@@ -37,8 +37,10 @@
 
                 {% block unzer_payment_settings_actions_register_webhooks %}
                     <unzer-payment-register-webhook
+                        :isLoading="isLoading"
                         :privateKey="getConfigValue('privateKey')"
                         :webhooks="webhooks"
+                        :selectedSalesChannelId="selectedSalesChannelId"
                         @webhook-registered="onWebhookRegistered">
                     </unzer-payment-register-webhook>
                 {% endblock %}
@@ -54,7 +56,7 @@
                         salesChannelSwitchable
                         inherit
                         @config-changed="onConfigChange"
-                        @sales-channel-changed="onConfigChange"
+                        @sales-channel-changed="onSalesChannelChanged"
                         domain="UnzerPayment6.settings">
                     </sw-system-config>
 
@@ -84,9 +86,9 @@
                             <sw-button-process
                                 @click="clearWebhooks"
                                 @process-finish="onClearingFinished()"
-                                :isLoading="isLoadingWebhooks"
+                                :isLoading="isLoadingWebhooks || isClearing"
                                 :processSuccess="isClearingSuccessful"
-                                :disabled="isLoading || webhookSelectionLength == 0"
+                                :disabled="isLoadingWebhooks || isClearing || webhookSelectionLength == 0"
                                 variant="danger">
                                 {{ $tc('unzer-payment-settings.modal.webhook.submit.clear', webhookSelectionLength, {count: webhookSelectionLength}) }}
                             </sw-button-process>

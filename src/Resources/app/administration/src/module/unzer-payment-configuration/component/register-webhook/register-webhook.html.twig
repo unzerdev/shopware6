@@ -2,7 +2,7 @@
     <div class="register-webhook--container">
         {% block unzer_payment_payment_register_webhook_button %}
             <sw-button-process
-                :isLoading="isRegistering"
+                :isLoading="isRegistering || isLoading"
                 :disabled="isLoading"
                 :processSuccess="isRegistrationSuccessful"
                 @process-finish="onRegistrationFinished()"
@@ -27,6 +27,8 @@
 
                     <sw-card
                         v-for="salesChannel in salesChannels"
+                        v-if="!selectedSalesChannelId || selectedSalesChannelId === salesChannel.id"
+                        :key="salesChannel.id"
                         :title="salesChannel.translated.name"
                         :large="true"
                         >
