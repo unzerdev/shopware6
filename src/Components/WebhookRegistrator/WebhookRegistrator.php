@@ -42,26 +42,16 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     /** @var LoggerInterface */
     private $logger;
 
-    /** @var EntityRepositoryInterface */
-    private $salesChannelRepository;
-
-    /** @var ConfigReaderInterface */
-    private $configReader;
-
     public function __construct(
         ClientFactoryInterface $clientFactory,
         Router $router,
         EntityRepositoryInterface $salesChannelDomainRepository,
-        LoggerInterface $logger,
-        EntityRepositoryInterface $salesChannelRepository,
-        ConfigReaderInterface $configReader
+        LoggerInterface $logger
     ) {
         $this->clientFactory                = $clientFactory;
         $this->router                       = $router;
         $this->salesChannelDomainRepository = $salesChannelDomainRepository;
         $this->logger                       = $logger;
-        $this->salesChannelRepository       = $salesChannelRepository;
-        $this->configReader                 = $configReader;
     }
 
     public function registerWebhook(RequestDataBag $salesChannelDomains): array
@@ -88,7 +78,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
 
                 $returnData[$domainUrl] = [
                     'success' => true,
-                    'data'    => $result ?? null,
+                    'data'    => $result,
                     'message' => 'unzer-payment-settings.webhook.register.done',
                 ];
 
@@ -127,7 +117,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                     'message' => 'unzer-payment-settings.webhook.clear.done',
                 ];
 
-                $this->logger->info(sprintf('Webhooks %s (%s) deleted!', $webhookId, $data['url']));
+                $this->logger->info(sprintf('Webhook %s (%s) deleted!', $webhookId, $data['url']));
             } catch (UnzerApiException | Throwable $exception) {
                 $returnData[$data['url']] = [
                     'success' => false,

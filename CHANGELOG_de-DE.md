@@ -3,6 +3,7 @@
 * Korrektur der Möglichkeit um Kunden zu löschen, die eine gespeicherte Zahlungsart haben
 * Korrektur des Zahlungsstatus für Sofort und Giropay bei der Weiterleitung zur externen Zahlung
 * Verwaltung der Webhooks ergänzt
+  * **Bitte beachten,** dass Webhooks ggf. neu registriert werden sollten
 
 # 3.0.1
 * Korrektur der Weiterleitung beim Löschen der gespeicherten Zahlungsmittel im Fall eines Fehlers

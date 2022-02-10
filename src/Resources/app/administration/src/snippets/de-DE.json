@@ -102,7 +102,7 @@
                 "registered": "Webhook ist bereits registriert",
                 "submit": {
                     "register": "Webhooks registrieren",
-                    "clear": "Webhooks entfernen"
+                    "clear": "Webhooks auswählen | Ausgewählten Webhook entfernen | Entferne {count} Webhooks"
                 }
             }
         },

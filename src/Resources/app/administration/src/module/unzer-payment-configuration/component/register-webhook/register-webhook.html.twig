@@ -37,7 +37,7 @@
                             v-if="!isWebhookRegisteredForSalesChannel(salesChannel.id)"
                             v-on:select-item="onSelectItem"
                             :maximumSelectItems="1"
-                            :dataSource="salesChannelDomains[salesChannel.id]"
+                            :dataSource="salesChannel.domains"
                             :columns="salesChannelDomainColumns"
                             :showActions="false"
                             :showSelection="true">
@@ -51,9 +51,7 @@
                             :closable="false">
                             {{ $tc('unzer-payment-settings.modal.webhook.registered') }}
                         </sw-alert>
-
                     </sw-card>
-
 
                 </template>
 
