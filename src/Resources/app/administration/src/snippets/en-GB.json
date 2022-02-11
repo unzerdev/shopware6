@@ -100,6 +100,7 @@
                 "title": "Webhooks",
                 "httpsInfo": "Only one HTTPS domain per sales channel can be registered.",
                 "registered": "Webhook is already registered",
+                "placeholder": "Please select a domain",
                 "submit": {
                     "register": "Register webhooks",
                     "clear": "Select items to clear | Clear selected webhook | Clear {count} webhooks"
