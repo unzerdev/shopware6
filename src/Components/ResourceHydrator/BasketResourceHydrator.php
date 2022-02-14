@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ResourceHydrator;
 
-use NetInventors\NetiNextEasyCoupon\Core\Checkout\Cart\AbstractCartProcessor;
 use InvalidArgumentException;
+use NetInventors\NetiNextEasyCoupon\Core\Checkout\Cart\AbstractCartProcessor;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;

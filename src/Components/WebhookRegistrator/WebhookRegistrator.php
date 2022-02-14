@@ -17,7 +17,6 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
 use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
-use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 
 class WebhookRegistrator implements WebhookRegistratorInterface
