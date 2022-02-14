@@ -47,6 +47,20 @@ class UnzerPaymentConfigurationService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    getWebhooks(privateKey) {
+        return this.httpClient
+            .post(
+                `_action/${this.getApiBasePath()}/get-webhooks`,
+                {'privateKey': privateKey},
+                {
+                    headers: this.getBasicHeaders()
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 Application.addServiceProvider('UnzerPaymentConfigurationService', (container) => {

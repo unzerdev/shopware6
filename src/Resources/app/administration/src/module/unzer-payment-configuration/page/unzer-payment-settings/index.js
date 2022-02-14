@@ -2,6 +2,8 @@ import template from './unzer-payment-settings.html.twig';
 import './unzer-payment-settings.scss';
 
 const { Component, Mixin } = Shopware;
+const Criteria = Shopware.Data.Criteria;
+
 
 Component.register('unzer-payment-settings', {
     template,
@@ -18,12 +20,19 @@ Component.register('unzer-payment-settings', {
 
     data() {
         return {
-            isLoading: false,
+            isLoading: true,
+            isLoadingWebhooks: true,
             isTesting: false,
             isTestSuccessful: false,
             isSaveSuccessful: false,
             config: {},
-            showWebhookModal: false
+            showWebhookModal: false,
+            webhooks: [],
+            webhookSelection: null,
+            webhookSelectionLength: 0,
+            isClearing: false,
+            isClearingSuccessful: false,
+            selectedSalesChannelId: null
         };
     },
 
@@ -36,11 +45,30 @@ Component.register('unzer-payment-settings', {
     computed: {
         paymentMethodRepository() {
             return this.repositoryFactory.create('payment_method');
+        },
+
+        webhookColumns() {
+            return [
+                {
+                    property: 'event',
+                    dataIndex: 'event',
+                    label: 'Event'
+                },
+                {
+                    property: 'url',
+                    dataIndex: 'url',
+                    label: 'URL'
+                }
+            ];
         }
     },
 
     methods: {
         getConfigValue(field) {
+            if (!this.config || !this.$refs.systemConfig  || !this.$refs.systemConfig.actualConfigData || !this.$refs.systemConfig.actualConfigData.null) {
+                return '';
+            }
+
             const defaultConfig = this.$refs.systemConfig.actualConfigData.null;
 
             return this.config[`UnzerPayment6.settings.${field}`]
@@ -105,6 +133,97 @@ Component.register('unzer-payment-settings', {
 
         onConfigChange(config) {
             this.config = config;
+            this.isLoading = false;
+            this.loadWebhooks();
+        },
+
+        onSalesChannelChanged(config, salesChannelId) {
+            if (config) {
+                this.onConfigChange(config);
+            }
+
+            this.selectedSalesChannelId = salesChannelId;
+        },
+
+        onWebhookRegistered() {
+            this.loadWebhooks();
+        },
+
+
+        loadWebhooks() {
+            this.isLoadingWebhooks = true;
+
+            this.UnzerPaymentConfigurationService.getWebhooks(this.getConfigValue('privateKey'))
+                .then((response) => {
+                    this.webhooks = response;
+                })
+                .finally(() => {
+                    this.isLoadingWebhooks = false;
+                    this.isClearingSuccessful = false;
+                });
+        },
+
+        onSelectWebhook(selectedItems) {
+            this.webhookSelectionLength = Object.keys(selectedItems).length;
+            this.webhookSelection = selectedItems;
+        },
+
+        clearWebhooks() {
+            const me = this;
+            this.isClearingSuccessful = false;
+            this.isClearing = true;
+            this.isLoading = true;
+
+            this.UnzerPaymentConfigurationService.clearWebhooks({
+                privateKey: this.getConfigValue('privateKey'),
+                selection: this.webhookSelection
+            })
+                .then((response) => {
+                    me.isClearingSuccessful = true;
+                    me.isLoadingWebhooks = true;
+                    me.webhookSelection = [];
+                    me.webhookSelectionLength = 0;
+
+                    me.$refs.webhookDataGrid.resetSelection();
+
+                    this.loadWebhooks();
+                    if (undefined !== response) {
+                        me.messageGeneration(response);
+                    }
+                })
+                .catch(() => {
+                    this.createNotificationError({
+                        title: this.$tc('unzer-payment-settings.webhook.globalError.title'),
+                        message: this.$tc('unzer-payment-settings.webhook.globalError.message')
+                    });
+                })
+                .finally(() => {
+                    me.isLoading = false;
+                    me.isClearing = false;
+                });
+        },
+
+        messageGeneration(data) {
+            const domainAmount = data.length;
+
+            Object.keys(data).forEach((url) => {
+                if (data[url].success) {
+                    this.createNotificationSuccess({
+                        title: this.$tc(data[url].message, domainAmount),
+                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + url
+                    });
+                } else {
+                    this.createNotificationError({
+                        title: this.$tc(data[url].message, domainAmount),
+                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + url
+                    });
+                }
+            });
+        },
+
+        onClearingFinished() {
+            this.isClearingSuccessful = false;
+            this.isClearing = false;
         },
 
         getBind(element, config) {

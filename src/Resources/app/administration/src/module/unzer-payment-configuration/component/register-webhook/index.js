@@ -1,6 +1,8 @@
 import template from './register-webhook.html.twig';
 import './style.scss';
 
+const Criteria = Shopware.Data.Criteria;
+
 Shopware.Component.register('unzer-payment-register-webhook', {
     template,
 
@@ -13,48 +15,56 @@ Shopware.Component.register('unzer-payment-register-webhook', {
         'UnzerPaymentConfigurationService'
     ],
 
-    computed: {
-        salesChannelDomainColumns() {
-            return [
-                {
-                    property: 'id',
-                    dataIndex: 'id',
-                    label: 'ID'
-                },
-                {
-                    property: 'url',
-                    dataIndex: 'url',
-                    label: 'URL'
-                }
-            ];
+    props: {
+        webhooks: {
+            type: Array,
+            required: true
         },
+        isLoading: {
+            type: Boolean,
+            required: false
+        },
+        selectedSalesChannelId: {
+            type: String,
+            required: false
+        }
+    },
 
-        salesChannelDomainRepository() {
-            return this.repositoryFactory.create('sales_channel_domain');
+    computed: {
+        salesChannelRepository() {
+            return this.repositoryFactory.create('sales_channel');
         }
     },
 
     data() {
         return {
             isModalActive: false,
-            isLoading: false,
             isRegistering: false,
             isRegistrationSuccessful: false,
-            isClearing: false,
-            isClearingSuccessful: false,
-            salesChannelDomains: [],
-            selection: []
+            selection: {},
+            entitySelection: {},
+            salesChannels: {}
         };
     },
 
     created() {
-        this.salesChannelDomainRepository.search(new Shopware.Data.Criteria(), Shopware.Context.api)
-            .then((result) => {
-                this.salesChannelDomains = result;
-            });
+        this.createdComponent();
     },
 
     methods: {
+        createdComponent() {
+            let me = this;
+
+            let criteria = new Criteria();
+
+            criteria.addAssociation('domains');
+
+            me.salesChannelRepository.search(criteria, Shopware.Context.Api)
+                .then((result) => {
+                    me.salesChannels = result;
+                });
+        },
+
         openModal() {
             this.isModalActive = true;
         },
@@ -67,10 +77,9 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             const me = this;
             this.isRegistrationSuccessful = false;
             this.isRegistering = true;
-            this.isLoading = true;
 
             this.UnzerPaymentConfigurationService.registerWebhooks({
-                selection: this.selection
+                selection: this.entitySelection
             })
                 .then((response) => {
                     me.isRegistrationSuccessful = true;
@@ -78,6 +87,8 @@ Shopware.Component.register('unzer-payment-register-webhook', {
                     if (undefined !== response) {
                         me.messageGeneration(response);
                     }
+
+                    this.$emit('webhook-registered', response);
                 })
                 .catch(() => {
                     this.createNotificationError({
@@ -86,49 +97,18 @@ Shopware.Component.register('unzer-payment-register-webhook', {
                     });
                 })
                 .finally(() => {
-                    me.isLoading = false;
                     me.isRegistering = false;
-                });
-        },
-
-        clearWebhooks() {
-            const me = this;
-            this.isClearingSuccessful = false;
-            this.isClearing = true;
-            this.isLoading = true;
-
-            this.UnzerPaymentConfigurationService.clearWebhooks({
-                selection: this.selection
-            })
-                .then((response) => {
-                    me.isClearingSuccessful = true;
-
-                    if (undefined !== response) {
-                        me.messageGeneration(response);
-                    }
-                })
-                .catch(() => {
-                    this.createNotificationError({
-                        title: this.$tc('unzer-payment-settings.webhook.globalError.title'),
-                        message: this.$tc('unzer-payment-settings.webhook.globalError.message')
-                    });
-                })
-                .finally(() => {
-                    me.isLoading = false;
-                    me.isClearing = false;
                 });
         },
 
         onRegistrationFinished() {
             this.isRegistrationSuccessful = false;
+            this.selection = {};
         },
 
-        onClearingFinished() {
-            this.isClearingSuccessful = false;
-        },
 
-        onSelectItem(selectedItems) {
-            this.selection = selectedItems;
+        onSelectItem(domainId, domain) {
+            this.entitySelection[domain.salesChannelId] = domain;
         },
 
         messageGeneration(data) {
@@ -147,6 +127,45 @@ Shopware.Component.register('unzer-payment-register-webhook', {
                     });
                 }
             });
+        },
+
+        isWebhookRegisteredForSalesChannel(salesChannelId) {
+            let result = false;
+
+            const salesChannel = this.getSalesChannelById(salesChannelId);
+
+            salesChannel.domains.forEach((domain) => {
+                this.webhooks.forEach((webhook) => {
+                    if (webhook.url.indexOf(domain.url) > -1) {
+                        result = true;
+                        return true;
+                    }
+                });
+            });
+
+            return result;
+        },
+
+        getSalesChannelById(salesChannelId) {
+            let result = null;
+
+            this.salesChannels.forEach((salesChannel) => {
+                if (salesChannel.id === salesChannelId) {
+                    result = salesChannel;
+                    return true;
+                }
+            });
+
+            return result;
+        },
+
+        getSalesChannelDomainCriteria(salesChannelId) {
+            let criteria = new Criteria();
+
+            criteria.addFilter(Criteria.prefix('url', 'https://'));
+            criteria.addFilter(Criteria.equals('salesChannelId', salesChannelId));
+
+            return criteria;
         }
     }
 });
