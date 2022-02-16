@@ -1,9 +1,9 @@
-# 3.0.2
+# 3.1.0
 * Add compatibility to EasyCoupon plugin
 * Fix deletion of customer with saved payment
 * Fix payment status for Sofort and Giropay when redirected to external payment page
 * Add webhook management
-  * * **Please note,** that webhooks should be re-registered if necessary
+  * **Please note,** that webhooks should be re-registered if necessary
 
 # 3.0.1
 * Fix redirect in case of an error when deleting a payment device
