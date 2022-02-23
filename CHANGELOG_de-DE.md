@@ -1,7 +1,7 @@
 # 3.1.0
 * Kompatibilität zu EasyCoupon Plugin hergestellt
 * Korrektur der Möglichkeit um Kunden zu löschen, die eine gespeicherte Zahlungsart haben
-* Korrektur des Zahlungsstatus für Sofort und Giropay bei der Weiterleitung zur externen Zahlung
+* Korrektur des Zahlungsstatus bei der Weiterleitung zur externen Zahlung
 * Verwaltung der Webhooks ergänzt
   * **Bitte beachten,** dass Webhooks neu registriert werden sollten
 
