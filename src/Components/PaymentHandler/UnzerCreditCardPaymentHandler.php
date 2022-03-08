@@ -74,7 +74,6 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
-        throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), new UnzerApiException('test1', 'test2'));
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         if ($this->paymentType === null) {
