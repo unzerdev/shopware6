@@ -74,6 +74,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
         RequestDataBag $dataBag,
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
+        throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), new UnzerApiException('test1', 'test2'));
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         if ($this->paymentType === null) {
@@ -116,7 +117,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
                 $salesChannelContext->getContext()
             );
 
-            throw new UnzerPaymentProcessException($transaction->getOrderTransaction()->getId(), $apiException);
+            throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
