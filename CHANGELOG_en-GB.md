@@ -1,3 +1,6 @@
+# unreleased
+* Correction of the error logic within the payment types to pick up the Shopware standard handling
+
 # 3.0.2-beta
 * Add compatibility to EasyCoupon plugin
 
