@@ -36,7 +36,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     private $router;
 
     /** @var EntityRepositoryInterface */
-    private $salesChannelRepository;
+    private $salesChannelDomainRepository;
 
     /** @var LoggerInterface */
     private $logger;
@@ -44,13 +44,13 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     public function __construct(
         ClientFactoryInterface $clientFactory,
         Router $router,
-        EntityRepositoryInterface $salesChannelRepository,
+        EntityRepositoryInterface $salesChannelDomainRepository,
         LoggerInterface $logger
     ) {
-        $this->clientFactory          = $clientFactory;
-        $this->router                 = $router;
-        $this->salesChannelRepository = $salesChannelRepository;
-        $this->logger                 = $logger;
+        $this->clientFactory                = $clientFactory;
+        $this->router                       = $router;
+        $this->salesChannelDomainRepository = $salesChannelDomainRepository;
+        $this->logger                       = $logger;
     }
 
     public function registerWebhook(RequestDataBag $salesChannelDomains): array
@@ -73,11 +73,11 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                 $relativePath = $this->router->generate('unzer.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_PATH);
                 $url          = $domainUrl . $relativePath;
 
-                $result = $this->clientFactory->createClient($salesChannelId)->createWebhook($url, 'all');
+                $result = $this->clientFactory->createClient($salesChannelId)->createWebhook($url, 'payment');
 
                 $returnData[$domainUrl] = [
                     'success' => true,
-                    'data'    => $result ?? null,
+                    'data'    => $result,
                     'message' => 'unzer-payment-settings.webhook.register.done',
                 ];
 
@@ -103,38 +103,28 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         return $returnData;
     }
 
-    public function clearWebhooks(RequestDataBag $salesChannelDomains): array
+    public function clearWebhooks(string $privateKey, array $webhookIds): array
     {
         $returnData = [];
 
-        foreach ($salesChannelDomains as $salesChannelDomain) {
-            $salesChannelId    = $salesChannelDomain->get('salesChannelId');
-            $preparationResult = $this->prepare($salesChannelDomain);
-            $domainUrl         = $salesChannelDomain->get('url', '');
-
-            if (!empty($preparationResult)) {
-                $returnData[$preparationResult['key']] = $preparationResult['value'];
-
-                continue;
-            }
-
+        foreach ($webhookIds as $webhookId => $data) {
             try {
-                $this->clientFactory->createClient($salesChannelId)->deleteAllWebhooks();
+                $this->clientFactory->createClientFromPrivateKey($privateKey)->deleteWebhook($webhookId);
 
-                $returnData[$domainUrl] = [
+                $returnData[$data['url']] = [
                     'success' => true,
                     'message' => 'unzer-payment-settings.webhook.clear.done',
                 ];
 
-                $this->logger->info(sprintf('Webhooks for domain %s deleted!', $domainUrl));
+                $this->logger->info(sprintf('Webhook %s (%s) deleted!', $webhookId, $data['url']));
             } catch (UnzerApiException | Throwable $exception) {
-                $returnData[$domainUrl] = [
+                $returnData[$data['url']] = [
                     'success' => false,
                     'message' => 'unzer-payment-settings.webhook.clear.error',
                 ];
 
                 $this->logger->error(
-                    sprintf('Webhook deletion failed for domain %s!', $domainUrl),
+                    sprintf('Webhook deletion failed for %s (%s)!', $webhookId, $data['url']),
                     [
                         'message' => $exception->getMessage(),
                         'code'    => $exception->getCode(),
@@ -146,6 +136,22 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         }
 
         return $returnData;
+    }
+
+    public function getWebhooks(string $privateKey): array
+    {
+        $webhooks = $this->clientFactory->createClientFromPrivateKey($privateKey)->fetchAllWebhooks();
+        $data     = [];
+
+        foreach ($webhooks as $webhook) {
+            $data[] = [
+                'id'    => $webhook->getId(),
+                'event' => $webhook->getEvent(),
+                'url'   => $webhook->getUrl(),
+            ];
+        }
+
+        return $data;
     }
 
     protected function prepare(DataBag $salesChannelDomain): array
@@ -215,7 +221,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         $criteria->addFilter(new EqualsFilter('id', $salesChannelId));
         $criteria->addFilter(new EqualsFilter('url', $url));
 
-        $searchResult = $this->salesChannelRepository->search($criteria, Context::createDefaultContext());
+        $searchResult = $this->salesChannelDomainRepository->search($criteria, Context::createDefaultContext());
 
         return $searchResult->first();
     }
