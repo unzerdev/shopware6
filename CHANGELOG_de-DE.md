@@ -1,5 +1,9 @@
-# 3.0.2-beta
+# 3.1.0
 * Kompatibilität zu EasyCoupon Plugin hergestellt
+* Korrektur der Möglichkeit um Kunden zu löschen, die eine gespeicherte Zahlungsart haben
+* Korrektur des Zahlungsstatus bei der Weiterleitung zur externen Zahlung
+* Verwaltung der Webhooks ergänzt
+  * **Bitte beachten,** dass Webhooks neu registriert werden sollten
 
 # 3.0.1
 * Korrektur der Weiterleitung beim Löschen der gespeicherten Zahlungsmittel im Fall eines Fehlers

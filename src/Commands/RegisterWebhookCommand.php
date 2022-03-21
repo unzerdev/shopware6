@@ -73,7 +73,6 @@ class RegisterWebhookCommand extends Command
                 ]),
             ]);
 
-            $this->webhookRegistrator->clearWebhooks($domainDataBag);
             $result = $this->webhookRegistrator->registerWebhook($domainDataBag);
         } catch (UnzerApiException $exception) {
             $style->error($exception->getMerchantMessage());
