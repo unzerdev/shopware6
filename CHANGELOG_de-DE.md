@@ -1,3 +1,6 @@
+# Unveröffentlicht
+* Korrektur der Validierung der AGB-Checkbox im Checkout mit Unzer Zahlungsarten
+
 # 3.1.0
 * Kompatibilität zu EasyCoupon Plugin hergestellt
 * Korrektur der Möglichkeit um Kunden zu löschen, die eine gespeicherte Zahlungsart haben

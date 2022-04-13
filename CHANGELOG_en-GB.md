@@ -1,3 +1,6 @@
+# Unreleased
+* Fix validation of tos checkbox in checkout with Unzer payment methods
+
 # 3.1.0
 * Add compatibility to EasyCoupon plugin
 * Fix deletion of customer with saved payment
