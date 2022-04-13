@@ -98,10 +98,12 @@
             "close": "Schließen",
             "webhook": {
                 "title": "Webhooks",
-                "httpsInfo": "Webhooks können nur für HTTPS-Domains registriert werden.",
+                "httpsInfo": "Es kann nur eine HTTPS-Domain pro Verkaufskanal registriert werden.",
+                "registered": "Webhook ist bereits registriert",
+                "placeholder": "Bitte wählen Sie eine Domain aus",
                 "submit": {
                     "register": "Webhooks registrieren",
-                    "clear": "Webhooks entfernen"
+                    "clear": "Webhooks auswählen | Ausgewählten Webhook entfernen | Entferne {count} Webhooks"
                 }
             }
         },
@@ -126,7 +128,8 @@
             "globalError": {
                 "title": "Ein Fehler ist aufgetreten",
                 "message": "Bitte kontaktieren sie uns für mehr Informationen"
-            }
+            },
+            "empty": "Für diesen Private Key sind keine Webhooks registriert. Bitte prüfen Sie ob dieser valide ist und ob Konfigurationen für dedizierte Verkaufskanäle vorgenommen wurden."
         }
     }
 }
