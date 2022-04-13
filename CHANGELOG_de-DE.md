@@ -1,5 +1,6 @@
 # Unveröffentlicht
 * Korrektur der Validierung der AGB-Checkbox im Checkout mit Unzer Zahlungsarten
+* Korrektur der Fehler-Logik innerhalb der Zahlungsarten, um das Shopware-Standard-Handling aufzugreifen 
 
 # 3.1.0
 * Kompatibilität zu EasyCoupon Plugin hergestellt

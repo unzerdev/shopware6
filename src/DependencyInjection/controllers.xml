@@ -49,7 +49,6 @@
         <service id="UnzerPayment6\Controllers\Storefront\UnzerCheckoutController"
                  decorates="Shopware\Storefront\Controller\CheckoutController">
             <argument type="service" id="UnzerPayment6\Controllers\Storefront\UnzerCheckoutController.inner"/>
-            <argument type="service" id="unzer_payment.logger"/>
             <argument type="service" id="Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoader"/>
 
             <call method="setContainer">

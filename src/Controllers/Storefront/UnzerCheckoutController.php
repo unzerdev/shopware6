@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Controllers\Storefront;
 
 use ArgumentCountError;
-use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -24,19 +23,14 @@ class UnzerCheckoutController extends StorefrontController
     /** @var CheckoutController */
     protected $innerService;
 
-    /** @var LoggerInterface */
-    protected $logger;
-
     /** @var CheckoutFinishPageLoader */
     private $finishPageLoader;
 
     public function __construct(
         CheckoutController $innerService,
-        LoggerInterface $logger,
         CheckoutFinishPageLoader $finishPageLoader
     ) {
         $this->innerService     = $innerService;
-        $this->logger           = $logger;
         $this->finishPageLoader = $finishPageLoader;
     }
 
