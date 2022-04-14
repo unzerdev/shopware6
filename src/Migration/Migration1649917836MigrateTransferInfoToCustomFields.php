@@ -43,7 +43,7 @@ class Migration1649917836MigrateTransferInfoToCustomFields extends MigrationStep
             $connection->executeStatement('DELETE FROM unzer_payment_transfer_info WHERE id = ?', [$infoId]);
         }
 
-        if ($connection->executeQuery('SELECT COUNT(*) FROM unzer_payment_transfer_info')->fetchOne() !== 0) {
+        if ($connection->executeQuery('SELECT COUNT(*) FROM unzer_payment_transfer_info')->fetchOne() !== '0') {
             throw new \RuntimeException('Database table "unzer_payment_transfer_info" is not empty');
         }
 
