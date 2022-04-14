@@ -39,12 +39,12 @@ class Migration1649917836MigrateTransferInfoToCustomFields extends MigrationStep
 
                 $customFields = array_merge($customFields, [CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO => $transferInfo]);
 
-                if ($connection->exec('UPDATE order_transaction SET custom_fields = ? WHERE id = ?', [json_encode($customFields), $transactionId]) !== 1) {
+                if ($connection->update('order_transaction', ['custom_fields' => json_encode($customFields)], ['id' => $transactionId]) !== 1) {
                     throw new \RuntimeException(sprintf('Can not migrate transfer info %s', Uuid::fromBytesToHex($infoId)));
                 }
             }
 
-            $connection->exec('DELETE FROM unzer_payment_transfer_info WHERE id = ?', [$infoId]);
+            $connection->delete('unzer_payment_transfer_info', ['id' => $infoId]);
         }
 
         if ($connection->executeQuery('SELECT COUNT(*) FROM unzer_payment_transfer_info')->fetchColumn() !== '0') {
