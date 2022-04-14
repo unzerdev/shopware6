@@ -11,17 +11,5 @@
            <argument type="service" id="unzer_payment_payment_device.repository"/>
            <argument type="service" id="UnzerPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
         </service>
-
-        <service id="UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo\UnzerPaymentTransferInfoEntityDefinition">
-            <tag name="shopware.entity.definition" entity="unzer_payment_transfer_info"/>
-        </service>
-
-        <service id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepository">
-            <argument type="service" id="unzer_payment_transfer_info.repository"/>
-        </service>
-
-        <service id="UnzerPayment6\DataAbstractionLayer\Extension\OrderTransactionExtension">
-            <tag name="shopware.entity.extension"/>
-        </service>
     </services>
 </container>
