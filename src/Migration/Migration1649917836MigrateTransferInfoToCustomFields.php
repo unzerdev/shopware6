@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace UnzerPayment6\Migration;
 
@@ -19,7 +21,7 @@ class Migration1649917836MigrateTransferInfoToCustomFields extends MigrationStep
         $transferInfos = $connection->executeQuery('SELECT * FROM unzer_payment_transfer_info')->fetchAllAssociative();
 
         foreach ($transferInfos as $transferInfo) {
-            $infoId = $transferInfo['id'];
+            $infoId        = $transferInfo['id'];
             $transactionId = $transferInfo['transaction_id'];
 
             unset(
