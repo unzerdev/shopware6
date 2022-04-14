@@ -24,17 +24,19 @@ class Migration1649917836MigrateTransferInfoToCustomFields extends MigrationStep
             $infoId        = $transferInfo['id'];
             $transactionId = $transferInfo['transaction_id'];
 
-            unset(
-                $transferInfo['id'],
-                $transferInfo['transaction_id'],
-                $transferInfo['transaction_version_id'],
-                $transferInfo['created_at'],
-                $transferInfo['updated_at']
-            );
-
             $customFields = json_decode($connection->executeQuery('SELECT custom_fields FROM order_transaction WHERE id = ?', [$transactionId])->fetchOne(), true);
 
             if (!array_key_exists(CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO, $customFields)) {
+                unset(
+                    $transferInfo['id'],
+                    $transferInfo['transaction_id'],
+                    $transferInfo['transaction_version_id'],
+                    $transferInfo['created_at'],
+                    $transferInfo['updated_at']
+                );
+
+                $transferInfo['amount'] = (float) $transferInfo['amount'];
+
                 $customFields = array_merge($customFields, [CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO => $transferInfo]);
 
                 if ($connection->executeStatement('UPDATE order_transaction SET custom_fields = ? WHERE id = ?', [json_encode($customFields), $transactionId]) !== 1) {
