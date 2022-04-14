@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
+use ECSPrefix20211002\Nette\Neon\Entity;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -39,11 +40,8 @@ class UnzerPrePaymentPaymentHandler extends AbstractUnzerPaymentHandler
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
-        LoggerInterface $logger,
-        UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository
+        LoggerInterface $logger
     ) {
-        $this->transferInfoRepository = $transferInfoRepository;
-
         parent::__construct(
             $basketHydrator,
             $customerHydrator,
@@ -73,7 +71,7 @@ class UnzerPrePaymentPaymentHandler extends AbstractUnzerPaymentHandler
             $returnUrl = $this->charge($transaction->getReturnUrl());
 
             $orderTransaction = $transaction->getOrderTransaction();
-            $this->saveTransferInfo($orderTransaction->getId(), $orderTransaction->getVersionId(), $salesChannelContext->getContext());
+            $this->saveTransferInfo($orderTransaction, $salesChannelContext->getContext());
 
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {

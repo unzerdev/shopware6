@@ -38,8 +38,7 @@ class UnzerInvoiceSecuredPaymentHandler extends AbstractUnzerPaymentHandler
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
-        LoggerInterface $logger,
-        UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository
+        LoggerInterface $logger
     ) {
         parent::__construct(
             $basketHydrator,
@@ -52,8 +51,6 @@ class UnzerInvoiceSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             $requestStack,
             $logger
         );
-
-        $this->transferInfoRepository = $transferInfoRepository;
     }
 
     /**
@@ -77,7 +74,7 @@ class UnzerInvoiceSecuredPaymentHandler extends AbstractUnzerPaymentHandler
 
             $returnUrl        = $this->charge($transaction->getReturnUrl());
             $orderTransaction = $transaction->getOrderTransaction();
-            $this->saveTransferInfo($orderTransaction->getId(), $orderTransaction->getVersionId(), $salesChannelContext->getContext());
+            $this->saveTransferInfo($orderTransaction, $salesChannelContext->getContext());
 
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
