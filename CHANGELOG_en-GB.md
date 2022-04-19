@@ -1,5 +1,7 @@
 # unreleased
 * Correction of the error logic within the payment types to pick up the Shopware standard handling
+* Transfer information is now stored in the custom fields instead of a separate table.
+    * **Please note,** that existing data will be migrated during plugin update. We therefore recommend that you perform the plugin update via the console.
 
 # 3.1.0
 * Add compatibility to EasyCoupon plugin
