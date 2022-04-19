@@ -5,17 +5,10 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\Struct\TransferInformation;
 
 use Shopware\Core\Framework\Struct\Struct;
-use Shopware\Core\Framework\Uuid\Uuid;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
 class TransferInformation extends Struct
 {
-    /** @var string */
-    protected $transactionId;
-
-    /** @var string */
-    protected $transactionVersionId;
-
     /** @var null|string */
     protected $iban;
 
@@ -31,44 +24,24 @@ class TransferInformation extends Struct
     /** @var null|float */
     protected $amount;
 
-    public function __construct(string $transactionId, ?string $transactionVersionId)
+    public function __construct(Charge $charge)
     {
-        $this->transactionId        = $transactionId;
-        $this->transactionVersionId = $transactionVersionId;
+        $this->iban       = $charge->getIban();
+        $this->bic        = $charge->getBic();
+        $this->holder     = $charge->getHolder();
+        $this->descriptor = $charge->getDescriptor();
+        $this->amount     = round($charge->getAmount(), 2);
     }
 
     public function getEntityData(): array
     {
         return [
-            'transactionId'        => $this->getTransactionId(),
-            'transactionVersionId' => $this->getTransactionVersionId(),
-            'descriptor'           => $this->getDescriptor(),
-            'holder'               => $this->getHolder(),
-            'amount'               => $this->getAmount(),
-            'iban'                 => $this->getIban(),
-            'bic'                  => $this->getBic(),
-            'id'                   => Uuid::randomHex(),
+            'iban'       => $this->getIban(),
+            'bic'        => $this->getBic(),
+            'holder'     => $this->getHolder(),
+            'descriptor' => $this->getDescriptor(),
+            'amount'     => $this->getAmount(),
         ];
-    }
-
-    public function getTransactionId(): string
-    {
-        return $this->transactionId;
-    }
-
-    public function setTransactionId(string $transactionId): void
-    {
-        $this->transactionId = $transactionId;
-    }
-
-    public function getTransactionVersionId(): string
-    {
-        return $this->transactionVersionId;
-    }
-
-    public function setTransactionVersionId(string $transactionVersionId): void
-    {
-        $this->transactionVersionId = $transactionVersionId;
     }
 
     public function getIban(): ?string
@@ -127,17 +100,6 @@ class TransferInformation extends Struct
     public function setAmount(?float $amount): self
     {
         $this->amount = $amount;
-
-        return $this;
-    }
-
-    public function fromCharge(Charge $charge): self
-    {
-        $this->bic        = $charge->getBic();
-        $this->iban       = $charge->getIban();
-        $this->descriptor = $charge->getDescriptor();
-        $this->holder     = $charge->getHolder();
-        $this->amount     = round($charge->getAmount(), 2);
 
         return $this;
     }

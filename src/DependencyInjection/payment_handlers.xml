@@ -28,7 +28,6 @@
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="unzer_payment.logger"/>
-            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -43,7 +42,6 @@
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="unzer_payment.logger"/>
-            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
         </service>
@@ -174,7 +172,6 @@
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="unzer_payment.logger"/>
-            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepository"/>
 
             <tag name="shopware.payment.method.async" />
         </service>

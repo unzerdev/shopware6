@@ -21,7 +21,6 @@ use UnzerPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
 use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepositoryInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\PaymentTypes\Prepayment;
 
@@ -39,11 +38,8 @@ class UnzerPrePaymentPaymentHandler extends AbstractUnzerPaymentHandler
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
-        LoggerInterface $logger,
-        UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository
+        LoggerInterface $logger
     ) {
-        $this->transferInfoRepository = $transferInfoRepository;
-
         parent::__construct(
             $basketHydrator,
             $customerHydrator,
@@ -73,7 +69,7 @@ class UnzerPrePaymentPaymentHandler extends AbstractUnzerPaymentHandler
             $returnUrl = $this->charge($transaction->getReturnUrl());
 
             $orderTransaction = $transaction->getOrderTransaction();
-            $this->saveTransferInfo($orderTransaction->getId(), $orderTransaction->getVersionId(), $salesChannelContext->getContext());
+            $this->saveTransferInfo($orderTransaction, $salesChannelContext->getContext());
 
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
