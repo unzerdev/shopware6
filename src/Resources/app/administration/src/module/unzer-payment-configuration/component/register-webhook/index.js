@@ -55,7 +55,7 @@ Shopware.Component.register('unzer-payment-register-webhook', {
         createdComponent() {
             let me = this;
 
-            let criteria = new Criteria();
+            let criteria = new Criteria(1, 500);
 
             criteria.addAssociation('domains');
 
