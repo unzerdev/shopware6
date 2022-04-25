@@ -1,9 +1,14 @@
 # Unveröffentlicht
+* Korrektur der Registrierung von Webhooks wenn mehr als 25 Verkaufskanälen existieren
+
+# 4.0.0
+* Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert
+    * **Bitte beachten,** dass bestehende Daten beim Plugin-Update migriert werden. Wir empfehlen daher, dass Plugin-Update über die Konsole auszuführen.
+
+# 3.2.0
 * Korrektur der Validierung der AGB-Checkbox im Checkout mit Unzer Zahlungsarten
 * Korrektur der Fehler-Logik innerhalb der Zahlungsarten, um das Shopware-Standard-Handling aufzugreifen 
-* Korrektur der Registrierung von Webhooks wenn mehr als 25 Verkaufskanälen existieren
-* Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert
-  * **Bitte beachten,** dass bestehende Daten beim Plugin-Update migriert werden. Wir empfehlen daher, dass Plugin-Update über die Konsole auszuführen.
+* Kompatibilität zu Shopware 6.4.10.0 hergestellt
 
 # 3.1.0
 * Kompatibilität zu EasyCoupon Plugin hergestellt

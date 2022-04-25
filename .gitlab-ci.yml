@@ -116,7 +116,7 @@ phpunit:
 
 package:
     image:
-        name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.3.1
+        name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.9
         entrypoint: [""]
     stage: package
     only:

@@ -1,9 +1,14 @@
 # Unreleased
-* Fix validation of tos checkbox in checkout with Unzer payment methods
-* Correction of the error logic within the payment types to pick up the Shopware standard handling
 * Correction of webhooks registration if more than 25 sales channels exists
+
+# 4.0.0
 * Transfer information is now stored in the custom fields instead of a separate table.
     * **Please note,** that existing data will be migrated during plugin update. We therefore recommend that you perform the plugin update via the console.
+
+# 3.2.0
+* Fix validation of tos checkbox in checkout with Unzer payment methods
+* Correction of the error logic within the payment types to pick up the Shopware standard handling
+* Add compatibility to Shopware 6.4.10.0
 
 # 3.1.0
 * Add compatibility to EasyCoupon plugin
