@@ -10,7 +10,7 @@
     {{ parent() }}
 
     {% for transaction in order.transactions %}
-        {% if transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')] %}
+        {% if transaction.extensions.unzerTransferInfo is not null %}
             <div class="page_break"></div>
             <div class="unzer-payment-document">
                 <div>
@@ -22,7 +22,7 @@
 
                     {% block document_payment_shipping_unzer_paymenttransfer_info_message %}
                         <h4 class="unzer-payment-document--message">
-                            {{ "UnzerPayment.transferInformation.message"|trans({'%amount%': (transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].amount|currency(currencyIsoCode))})  }}
+                            {{ "UnzerPayment.transferInformation.message"|trans({'%amount%': (transaction.extensions.unzerTransferInfo.amount|currency(currencyIsoCode))})  }}
                         </h4>
                     {% endblock %}
 
@@ -31,23 +31,23 @@
                             <tbody>
                             <tr>
                                 <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.iban" | trans  }}</td>
-                                <td>{{ transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].iban }}</td>
+                                <td>{{ transaction.extensions.unzerTransferInfo.iban }}</td>
                             </tr>
                             <tr>
                                 <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.bic" | trans  }}</td>
-                                <td>{{ transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].bic }}</td>
+                                <td>{{ transaction.extensions.unzerTransferInfo.bic }}</td>
                             </tr>
                             <tr>
                                 <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.holder" | trans  }}</td>
-                                <td>{{ transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].holder }}</td>
+                                <td>{{ transaction.extensions.unzerTransferInfo.holder }}</td>
                             </tr>
                             <tr>
                                 <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.descriptor" | trans  }}</td>
-                                <td>{{ transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].descriptor }}</td>
+                                <td>{{ transaction.extensions.unzerTransferInfo.descriptor }}</td>
                             </tr>
                             <tr>
                                 <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.amount" | trans  }}</td>
-                                <td>{{ transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].amount|currency(currencyIsoCode) }}</td>
+                                <td>{{ transaction.extensions.unzerTransferInfo.amount|currency(currencyIsoCode) }}</td>
                             </tr>
                             </tbody>
                         </table>
