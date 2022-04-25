@@ -1,6 +1,7 @@
-# Unreleased
+# 3.2.0
 * Fix validation of tos checkbox in checkout with Unzer payment methods
 * Correction of the error logic within the payment types to pick up the Shopware standard handling
+* Add compatibility to Shopware 6.4.10.0
 
 # 3.1.0
 * Add compatibility to EasyCoupon plugin
