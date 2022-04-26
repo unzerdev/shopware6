@@ -229,14 +229,6 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 $this->payment,
                 $salesChannelContext->getContext()
             );
-
-            $shipmentExecuted = !in_array(
-                $transaction->getOrderTransaction()->getPaymentMethodId(),
-                AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
-                false
-            );
-
-            $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),

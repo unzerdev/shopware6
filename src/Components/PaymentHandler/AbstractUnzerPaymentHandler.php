@@ -181,14 +181,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 $this->payment,
                 $salesChannelContext->getContext()
             );
-
-            $shipmentExecuted = !in_array(
-                $transaction->getOrderTransaction()->getPaymentMethodId(),
-                AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
-                false
-            );
-
-            $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
@@ -212,25 +204,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
-    }
-
-    protected function setCustomFields(
-        AsyncPaymentTransactionStruct $transaction,
-        SalesChannelContext $salesChannelContext,
-        bool $shipmentExcecuted
-    ): void {
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
-        $customFields = array_merge($customFields, [
-            CustomFieldInstaller::UNZER_PAYMENT_IS_TRANSACTION => true,
-            CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED     => $shipmentExcecuted,
-        ]);
-
-        $update = [
-            'id'           => $transaction->getOrderTransaction()->getId(),
-            'customFields' => $customFields,
-        ];
-
-        $this->transactionRepository->update([$update], $salesChannelContext->getContext());
     }
 
     protected function persistPaymentInformation(array $information, string $transactionId, Context $context): void

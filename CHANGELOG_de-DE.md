@@ -1,3 +1,6 @@
+# Unveröffentlicht
+* Anpassung des Speicherns von Zusatzfeldern für eine Unzer-Transaktion vom Payment-Handler zum Webhook-Handler
+
 # 4.0.0
 * Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert
     * **Bitte beachten,** dass bestehende Daten beim Plugin-Update migriert werden. Wir empfehlen daher, dass Plugin-Update über die Konsole auszuführen.

@@ -14,6 +14,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\Webhook;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
+use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Resources\Payment;
 
 /**
@@ -85,6 +87,8 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
             return;
         }
 
+        $this->setCustomFields($transaction, $context->getContext());
+
         $this->transactionStateHandler->transformTransactionState(
             $transaction->getId(),
             $payment,
@@ -113,5 +117,29 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
 
             return null;
         }
+    }
+
+    private function setCustomFields(
+        OrderTransactionEntity $transaction,
+        Context $context
+    ): void {
+        $shipmentExecuted = !in_array(
+            $transaction->getPaymentMethodId(),
+            AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
+            false
+        );
+
+        $customFields = $transaction->getCustomFields() ?? [];
+        $customFields = array_merge($customFields, [
+            CustomFieldInstaller::UNZER_PAYMENT_IS_TRANSACTION => true,
+            CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED     => $shipmentExecuted,
+        ]);
+
+        $update = [
+            'id'           => $transaction->getId(),
+            'customFields' => $customFields,
+        ];
+
+        $this->orderTransactionRepository->update([$update], $context);
     }
 }
