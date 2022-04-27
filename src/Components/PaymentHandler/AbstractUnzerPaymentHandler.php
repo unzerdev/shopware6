@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
@@ -89,6 +90,9 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var RequestStack */
     protected $requestStack;
 
+    /** @var CustomFieldsHelperInterface */
+    protected $customFieldsHelper;
+
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
         CustomerResourceHydratorInterface $customerHydrator,
@@ -98,7 +102,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        CustomFieldsHelperInterface $customFieldsHelper
     ) {
         $this->basketHydrator          = $basketHydrator;
         $this->customerHydrator        = $customerHydrator;
@@ -109,6 +114,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         $this->clientFactory           = $clientFactory;
         $this->requestStack            = $requestStack;
         $this->logger                  = $logger;
+        $this->customFieldsHelper      = $customFieldsHelper;
     }
 
     public function pay(
@@ -181,6 +187,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 $this->payment,
                 $salesChannelContext->getContext()
             );
+
+            $this->customFieldsHelper->setOrderTransactionCustomFields($transaction->getOrderTransaction(), $salesChannelContext->getContext());
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),

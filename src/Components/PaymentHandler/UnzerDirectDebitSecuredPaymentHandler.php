@@ -16,6 +16,7 @@ use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
@@ -41,6 +42,7 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
         LoggerInterface $logger,
+        CustomFieldsHelperInterface $customFieldsHelper,
         UnzerPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
@@ -52,7 +54,8 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             $transactionStateHandler,
             $clientFactory,
             $requestStack,
-            $logger
+            $logger,
+            $customFieldsHelper
         );
 
         $this->deviceRepository = $deviceRepository;

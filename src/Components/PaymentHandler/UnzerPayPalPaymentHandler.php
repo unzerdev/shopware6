@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
+use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use function array_key_exists;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -57,6 +58,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
         LoggerInterface $logger,
+        CustomFieldsHelperInterface $customFieldsHelper,
         UnzerPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
@@ -68,17 +70,11 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $transactionStateHandler,
             $clientFactory,
             $requestStack,
-            $logger
+            $logger,
+            $customFieldsHelper
         );
 
         $this->deviceRepository        = $deviceRepository;
-        $this->configReader            = $configReader;
-        $this->clientFactory           = $clientFactory;
-        $this->basketHydrator          = $basketHydrator;
-        $this->customerHydrator        = $customerHydrator;
-        $this->metadataHydrator        = $metadataHydrator;
-        $this->transactionRepository   = $transactionRepository;
-        $this->transactionStateHandler = $transactionStateHandler;
     }
 
     /**
@@ -229,6 +225,8 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 $this->payment,
                 $salesChannelContext->getContext()
             );
+
+            $this->customFieldsHelper->setOrderTransactionCustomFields($transaction->getOrderTransaction(), $salesChannelContext->getContext());
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),

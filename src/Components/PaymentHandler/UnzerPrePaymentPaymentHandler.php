@@ -29,30 +29,6 @@ class UnzerPrePaymentPaymentHandler extends AbstractUnzerPaymentHandler
     use CanCharge;
     use HasTransferInfoTrait;
 
-    public function __construct(
-        ResourceHydratorInterface $basketHydrator,
-        CustomerResourceHydratorInterface $customerHydrator,
-        ResourceHydratorInterface $metadataHydrator,
-        EntityRepositoryInterface $transactionRepository,
-        ConfigReaderInterface $configReader,
-        TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactoryInterface $clientFactory,
-        RequestStack $requestStack,
-        LoggerInterface $logger
-    ) {
-        parent::__construct(
-            $basketHydrator,
-            $customerHydrator,
-            $metadataHydrator,
-            $transactionRepository,
-            $configReader,
-            $transactionStateHandler,
-            $clientFactory,
-            $requestStack,
-            $logger
-        );
-    }
-
     /**
      * {@inheritdoc}
      */
