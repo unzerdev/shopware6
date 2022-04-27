@@ -1,5 +1,5 @@
 # Unveröffentlicht
-* Korrektur der Registrierung von Webhooks wenn mehr als 25 Verkaufskanälen existieren
+* Ergänzung einer Paginierung für die Registrierung von Webhooks
 
 # 4.0.0
 * Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert

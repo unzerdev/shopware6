@@ -1,5 +1,5 @@
 # Unreleased
-* Correction of webhooks registration if more than 25 sales channels exists
+* Added a pagination for the webhook registration
 
 # 4.0.0
 * Transfer information is now stored in the custom fields instead of a separate table.

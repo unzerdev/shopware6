@@ -41,6 +41,7 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             isModalActive: false,
             isRegistering: false,
             isRegistrationSuccessful: false,
+            isDataLoading: false,
             selection: {},
             entitySelection: {},
             salesChannels: {}
@@ -53,16 +54,26 @@ Shopware.Component.register('unzer-payment-register-webhook', {
 
     methods: {
         createdComponent() {
+            this.loadData();
+        },
+
+        loadData(page, limit) {
             let me = this;
 
-            let criteria = new Criteria(1, 500);
+            me.isDataLoading = true;
 
+            let criteria = new Criteria(page, limit);
             criteria.addAssociation('domains');
 
-            me.salesChannelRepository.search(criteria, Shopware.Context.Api)
+            this.salesChannelRepository.search(criteria, Shopware.Context.Api)
                 .then((result) => {
                     me.salesChannels = result;
+                    me.isDataLoading = false;
                 });
+        },
+
+        onPageChange(args) {
+            this.loadData(args.page, args.limit);
         },
 
         openModal() {
