@@ -25,8 +25,6 @@ use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerR
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
-use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Basket;

@@ -15,8 +15,6 @@ use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use UnzerPayment6\Components\Struct\Webhook;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
-use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Resources\Payment;
 
 /**

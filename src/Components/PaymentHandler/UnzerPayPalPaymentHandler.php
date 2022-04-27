@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
-use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use function array_key_exists;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -21,6 +20,7 @@ use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
@@ -29,7 +29,6 @@ use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
 use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
@@ -74,7 +73,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $customFieldsHelper
         );
 
-        $this->deviceRepository        = $deviceRepository;
+        $this->deviceRepository = $deviceRepository;
     }
 
     /**

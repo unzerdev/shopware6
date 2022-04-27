@@ -1,8 +1,8 @@
-<?php declare(strict_types = 1);
+<?php
 
+declare(strict_types=1);
 
 namespace UnzerPayment6\Components\CustomFieldsHelper;
-
 
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -12,7 +12,6 @@ use UnzerPayment6\Installer\CustomFieldInstaller;
 
 class CustomFieldsHelper implements CustomFieldsHelperInterface
 {
-
     /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
 
@@ -44,5 +43,4 @@ class CustomFieldsHelper implements CustomFieldsHelperInterface
 
         $this->orderTransactionRepository->update([$update], $context);
     }
-
 }
