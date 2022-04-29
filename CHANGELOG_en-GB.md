@@ -1,3 +1,6 @@
+# Unreleased
+* Add additional saving of custom fields for an Unzer transaction in the webhook handler 
+
 # 4.0.0
 * Transfer information is now stored in the custom fields instead of a separate table.
     * **Please note,** that existing data will be migrated during plugin update. We therefore recommend that you perform the plugin update via the console.
