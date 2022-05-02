@@ -24,7 +24,7 @@ class UnzerPaymentProcessException extends AsyncPaymentProcessException
 
         parent::__construct(
             $orderId,
-            $apiException->getMerchantMessage(),
+            $apiException->getMerchantMessage()
         );
     }
 
