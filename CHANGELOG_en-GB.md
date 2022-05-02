@@ -1,4 +1,5 @@
 # Unreleased
+* Added a pagination for the webhook registration
 * Add additional saving of custom fields for an Unzer transaction in the webhook handler 
 
 # 4.0.0

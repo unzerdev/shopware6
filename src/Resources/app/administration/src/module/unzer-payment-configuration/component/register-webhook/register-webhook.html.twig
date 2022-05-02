@@ -28,6 +28,7 @@
                     <sw-card
                         v-for="salesChannel in salesChannels"
                         v-if="!selectedSalesChannelId || selectedSalesChannelId === salesChannel.id"
+                        :isLoading="isDataLoading"
                         :key="salesChannel.id"
                         :title="salesChannel.translated.name"
                         :large="true"
@@ -54,9 +55,18 @@
                         </sw-alert>
                     </sw-card>
 
+                    <sw-pagination
+                        :total="salesChannels.total"
+                        :limit="salesChannels.criteria.limit"
+                        :page="salesChannels.criteria.page"
+                        :steps="[2,10,25,100]"
+                        @page-change="onPageChange">
+                    </sw-pagination>
+
                 </template>
 
                 <template #modal-footer>
+
                     <sw-button :disabled="isLoading" @click="closeModal">
                         {{ $tc('unzer-payment-settings.modal.close') }}
                     </sw-button>
