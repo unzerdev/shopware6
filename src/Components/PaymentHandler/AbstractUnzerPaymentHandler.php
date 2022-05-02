@@ -19,13 +19,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
-use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Basket;
@@ -89,6 +88,9 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var RequestStack */
     protected $requestStack;
 
+    /** @var CustomFieldsHelperInterface */
+    protected $customFieldsHelper;
+
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
         CustomerResourceHydratorInterface $customerHydrator,
@@ -98,7 +100,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        CustomFieldsHelperInterface $customFieldsHelper
     ) {
         $this->basketHydrator          = $basketHydrator;
         $this->customerHydrator        = $customerHydrator;
@@ -109,6 +112,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         $this->clientFactory           = $clientFactory;
         $this->requestStack            = $requestStack;
         $this->logger                  = $logger;
+        $this->customFieldsHelper      = $customFieldsHelper;
     }
 
     public function pay(
@@ -182,13 +186,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 $salesChannelContext->getContext()
             );
 
-            $shipmentExecuted = !in_array(
-                $transaction->getOrderTransaction()->getPaymentMethodId(),
-                AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
-                false
-            );
-
-            $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
+            $this->customFieldsHelper->setOrderTransactionCustomFields($transaction->getOrderTransaction(), $salesChannelContext->getContext());
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
@@ -212,25 +210,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
-    }
-
-    protected function setCustomFields(
-        AsyncPaymentTransactionStruct $transaction,
-        SalesChannelContext $salesChannelContext,
-        bool $shipmentExcecuted
-    ): void {
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
-        $customFields = array_merge($customFields, [
-            CustomFieldInstaller::UNZER_PAYMENT_IS_TRANSACTION => true,
-            CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED     => $shipmentExcecuted,
-        ]);
-
-        $update = [
-            'id'           => $transaction->getOrderTransaction()->getId(),
-            'customFields' => $customFields,
-        ];
-
-        $this->transactionRepository->update([$update], $salesChannelContext->getContext());
     }
 
     protected function persistPaymentInformation(array $information, string $transactionId, Context $context): void

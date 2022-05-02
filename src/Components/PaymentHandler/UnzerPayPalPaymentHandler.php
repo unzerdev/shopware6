@@ -20,6 +20,7 @@ use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
@@ -28,7 +29,6 @@ use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
 use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
@@ -57,6 +57,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
         LoggerInterface $logger,
+        CustomFieldsHelperInterface $customFieldsHelper,
         UnzerPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
@@ -68,17 +69,11 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $transactionStateHandler,
             $clientFactory,
             $requestStack,
-            $logger
+            $logger,
+            $customFieldsHelper
         );
 
-        $this->deviceRepository        = $deviceRepository;
-        $this->configReader            = $configReader;
-        $this->clientFactory           = $clientFactory;
-        $this->basketHydrator          = $basketHydrator;
-        $this->customerHydrator        = $customerHydrator;
-        $this->metadataHydrator        = $metadataHydrator;
-        $this->transactionRepository   = $transactionRepository;
-        $this->transactionStateHandler = $transactionStateHandler;
+        $this->deviceRepository = $deviceRepository;
     }
 
     /**
@@ -230,13 +225,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 $salesChannelContext->getContext()
             );
 
-            $shipmentExecuted = !in_array(
-                $transaction->getOrderTransaction()->getPaymentMethodId(),
-                AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
-                false
-            );
-
-            $this->setCustomFields($transaction, $salesChannelContext, $shipmentExecuted);
+            $this->customFieldsHelper->setOrderTransactionCustomFields($transaction->getOrderTransaction(), $salesChannelContext->getContext());
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),

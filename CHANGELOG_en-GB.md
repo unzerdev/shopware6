@@ -1,5 +1,6 @@
 # Unreleased
 * Added a pagination for the webhook registration
+* Add additional saving of custom fields for an Unzer transaction in the webhook handler 
 
 # 4.0.0
 * Transfer information is now stored in the custom fields instead of a separate table.

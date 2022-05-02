@@ -1,5 +1,6 @@
 # Unveröffentlicht
 * Ergänzung einer Paginierung für die Registrierung von Webhooks
+* Ergänzung der Speicherung von Zusatzfeldern für eine Unzer-Transaktion im Webhook-Handler
 
 # 4.0.0
 * Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert

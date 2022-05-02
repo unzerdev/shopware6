@@ -57,5 +57,9 @@
             <argument type="service" id="sales_channel_domain.repository"/>
             <argument type="service" id="unzer_payment.logger"/>
         </service>
+
+        <service id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper">
+            <argument type="service" id="order_transaction.repository"/>
+        </service>
     </services>
 </container>
