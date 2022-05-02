@@ -1,3 +1,8 @@
+# 3.2.0
+* Korrektur der Validierung der AGB-Checkbox im Checkout mit Unzer Zahlungsarten
+* Korrektur der Fehler-Logik innerhalb der Zahlungsarten, um das Shopware-Standard-Handling aufzugreifen 
+* Kompatibilität zu Shopware 6.4.10.0 hergestellt
+
 # 3.1.0
 * Kompatibilität zu EasyCoupon Plugin hergestellt
 * Korrektur der Möglichkeit um Kunden zu löschen, die eine gespeicherte Zahlungsart haben
