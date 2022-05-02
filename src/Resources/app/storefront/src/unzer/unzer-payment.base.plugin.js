@@ -143,6 +143,10 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         for (let i = 0; i < form.length; i++) {
             const element = form[i];
 
+            if (!element.checkValidity()) {
+                return false;
+            }
+
             if (element.required && element.value === '') {
                 element.classList.add('is-invalid');
 
