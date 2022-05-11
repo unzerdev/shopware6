@@ -1,6 +1,7 @@
 # 4.0.0
 * Transfer information is now stored in the custom fields instead of a separate table.
     * **Please note,** that existing data will be migrated during plugin update. We therefore recommend that you perform the plugin update via the console.
+* The Unzer client is now initialized with the current language of the store
 
 # 3.2.0
 * Fix validation of tos checkbox in checkout with Unzer payment methods
