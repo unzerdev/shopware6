@@ -3,6 +3,7 @@ import Plugin from 'src/plugin-system/plugin.class';
 export default class UnzerPaymentBasePlugin extends Plugin {
     static options = {
         publicKey: null,
+        shopLocale: null,
         submitButtonId: 'confirmFormSubmit',
         disabledClass: 'disabled',
         resourceIdElementId: 'unzerResourceId',
@@ -21,7 +22,21 @@ export default class UnzerPaymentBasePlugin extends Plugin {
     static unzerInstance = null;
 
     init() {
-        this.unzerInstance = new window.unzer(this.options.publicKey);
+        this._registerElements()
+        this._registerEvents();
+    }
+
+    /**
+     * @private
+     */
+    _registerElements() {
+        let unzerInstanceOptions = null;
+
+        if(this.options.shopLocale !== null) {
+            unzerInstanceOptions = {locale: this.options.shopLocale}
+        }
+
+        this.unzerInstance = new window.unzer(this.options.publicKey, unzerInstanceOptions);
 
         if (this.options.isOrderEdit) {
             this.submitButton = document.getElementById(this.options.confirmFormId).getElementsByTagName('button')[0];
@@ -29,8 +44,13 @@ export default class UnzerPaymentBasePlugin extends Plugin {
             this.submitButton = document.getElementById(this.options.submitButtonId);
         }
         this.confirmForm = document.getElementById(this.options.confirmFormId);
+    }
 
-        this._registerEvents();
+    /**
+     * @private
+     */
+    _registerEvents() {
+        this.submitButton.addEventListener('click', this._onSubmitButtonClick.bind(this));
     }
 
     /**
@@ -100,13 +120,6 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         errorContent.innerText = error.message;
 
         el.appendChild(errorWrapper);
-    }
-
-    /**
-     * @private
-     */
-    _registerEvents() {
-        this.submitButton.addEventListener('click', this._onSubmitButtonClick.bind(this));
     }
 
     /**
@@ -209,7 +222,7 @@ export default class UnzerPaymentBasePlugin extends Plugin {
 
         if(birthDate) {
             // @see https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
-            customerObject.birthDate = birthDate.getFullYear() + '-' + (birthDate.getMonth() + 1).toString().padStart(2, "0") + '-' + (birthDate.getDay()).toString().padStart(2, "0");
+            customerObject.birthDate = birthDate.getFullYear() + '-' + (birthDate.getMonth() + 1).toString().padStart(2, '0') + '-' + (birthDate.getDay()).toString().padStart(2, '0')
         }
 
         return customerObject;
