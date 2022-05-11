@@ -121,9 +121,11 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     private function addUnzerDataExtension(PageLoadedEvent $event): void
     {
+        $context = $event->getSalesChannelContext()->getContext();
+
         $extension = new UnzerDataPageExtension();
         $extension->setPublicKey($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY));
-        $extension->setLocale($this->getLocaleByLanguageId($event->getSalesChannelContext()->getLanguageId(), $event->getContext()));
+        $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
         $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
 
         $event->getPage()->addExtension(UnzerDataPageExtension::EXTENSION_NAME, $extension);

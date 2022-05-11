@@ -22,7 +22,7 @@ export default class UnzerPaymentBasePlugin extends Plugin {
     static unzerInstance = null;
 
     init() {
-        this._registerElements()
+        this._registerElements();
         this._registerEvents();
     }
 
