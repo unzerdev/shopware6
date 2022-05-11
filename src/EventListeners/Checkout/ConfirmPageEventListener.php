@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\EventListeners\Checkout;
 
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
@@ -43,16 +47,21 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var SystemConfigService */
     private $systemConfigReader;
 
+    /** @var EntityRepositoryInterface */
+    private $languageRepository;
+
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
         ConfigReaderInterface $configReader,
         PaymentFrameFactoryInterface $paymentFrameFactory,
-        SystemConfigService $systemConfigReader
+        SystemConfigService $systemConfigReader,
+        EntityRepositoryInterface $languageRepository
     ) {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
         $this->paymentFrameFactory = $paymentFrameFactory;
         $this->systemConfigReader  = $systemConfigReader;
+        $this->languageRepository  = $languageRepository;
     }
 
     /**
@@ -112,8 +121,11 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     private function addUnzerDataExtension(PageLoadedEvent $event): void
     {
+        $context = $event->getSalesChannelContext()->getContext();
+
         $extension = new UnzerDataPageExtension();
         $extension->setPublicKey($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY));
+        $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
         $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
 
         $event->getPage()->addExtension(UnzerDataPageExtension::EXTENSION_NAME, $extension);
@@ -231,5 +243,20 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension->setOrderDate(date('Y-m-d'));
 
         $event->getPage()->addExtension(InstallmentSecuredPageExtension::EXTENSION_NAME, $extension);
+    }
+
+    private function getLocaleByLanguageId(string $languageId, Context $context): string
+    {
+        $critera = new Criteria([$languageId]);
+        $critera->addAssociation('locale');
+
+        /** @var null|\Shopware\Core\System\Language\LanguageEntity $searchResult */
+        $searchResult = $this->languageRepository->search($critera, $context)->first();
+
+        if ($searchResult === null || $searchResult->getLocale() === null) {
+            return ClientFactoryInterface::DEFAULT_LOCALE;
+        }
+
+        return $searchResult->getLocale()->getCode();
     }
 }

@@ -5,6 +5,7 @@
 # 4.0.0
 * Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert
     * **Bitte beachten,** dass bestehende Daten beim Plugin-Update migriert werden. Wir empfehlen daher, dass Plugin-Update über die Konsole auszuführen.
+* Der Unzer-Client wird nun mit der aktuellen Sprache des Shops initialisiert
 
 # 3.2.0
 * Korrektur der Validierung der AGB-Checkbox im Checkout mit Unzer Zahlungsarten
