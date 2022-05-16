@@ -98,8 +98,6 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
-            $type = $lineItem->getType();
-
             if ($this->isCustomProduct($lineItemCollection, $lineItem)) {
                 continue;
             }
@@ -108,8 +106,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 $unzerBasket->addBasketItem(
                     new BasketItem(
                         $lineItem->getLabel(),
-                        round($this->getAmountByType($type, $lineItem->getTotalPrice()), $currencyPrecision),
-                        round($this->getAmountByType($type, $lineItem->getUnitPrice()), $currencyPrecision),
+                        round($this->getAmount($lineItem, $lineItem->getTotalPrice()), $currencyPrecision),
+                        round($this->getAmount($lineItem, $lineItem->getUnitPrice()), $currencyPrecision),
                         $lineItem->getQuantity()
                     )
                 );
@@ -122,7 +120,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $taxCounter = 0;
             /** @var CalculatedTax $tax */
             foreach ($lineItem->getPrice()->getCalculatedTaxes() as $tax) {
-                $amountTax += round($this->getAmountByType($type, $tax->getTax()), $currencyPrecision);
+                $amountTax += round($this->getAmount($lineItem, $tax->getTax()), $currencyPrecision);
                 $taxRate += $tax->getTaxRate();
                 ++$taxCounter;
             }
@@ -132,7 +130,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 $amountGross    = 0;
                 $amountNet      = 0;
                 $amountDiscount = round(
-                    $this->getAmountByType($type, $lineItem->getTotalPrice()),
+                    $this->getAmount($lineItem, $lineItem->getTotalPrice()),
                     $currencyPrecision
                 );
 
@@ -140,8 +138,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                     $amountDiscount += $amountTax;
                 }
             } else {
-                $unitPrice      = round($this->getAmountByType($type, $lineItem->getUnitPrice()), $currencyPrecision);
-                $amountGross    = round($this->getAmountByType($type, $lineItem->getTotalPrice()), $currencyPrecision);
+                $unitPrice      = round($this->getAmount($lineItem, $lineItem->getUnitPrice()), $currencyPrecision);
+                $amountGross    = round($this->getAmount($lineItem, $lineItem->getTotalPrice()), $currencyPrecision);
                 $amountNet      = round($amountGross - $amountTax, $currencyPrecision);
                 $amountDiscount = 0;
 
@@ -170,7 +168,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             );
 
             $basketItem->setVat($taxCounter === 0 ? 0 : $taxRate / $taxCounter);
-            $basketItem->setType($this->getLineItemType($type));
+            $basketItem->setType($this->getLineItemType($lineItem));
             $basketItem->setAmountVat(round($amountTax, $currencyPrecision));
             $basketItem->setAmountGross(round($amountGross, $currencyPrecision));
             $basketItem->setAmountDiscount(round($amountDiscount, $currencyPrecision));
@@ -230,16 +228,22 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         $basket->addBasketItem($dispatchBasketItem);
     }
 
-    protected function getAmountByType(LineItem $lineItem, float $price): float
+    /**
+     * @param LineItem|OrderLineItemEntity $lineItem
+     */
+    protected function getAmount($lineItem, float $price): float
     {
-        if ($this->isPromotionLineItem($lineItem) && $price < 0) {
+        if ($price < 0 && $this->isPromotionLineItem($lineItem)) {
             return $price * -1;
         }
 
         return $price;
     }
 
-    protected function getLineItemType(LineItem $lineItem): string
+    /**
+     * @param LineItem|OrderLineItemEntity $lineItem
+     */
+    protected function getLineItemType($lineItem): string
     {
         if ($this->isPromotionLineItem($lineItem)) {
             return BasketItemTypes::VOUCHER;
@@ -270,8 +274,15 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         return $customProductsLabel;
     }
 
-    protected function isPromotionLineItem(LineItem $lineItem): bool
+    /**
+     * @param LineItem|OrderLineItemEntity $lineItem
+     */
+    protected function isPromotionLineItem($lineItem): bool
     {
+        if ($lineItem instanceof OrderLineItemEntity) {
+            return !$lineItem->getGood();
+        }
+
         return !$lineItem->isGood();
     }
 
