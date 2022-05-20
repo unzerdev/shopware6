@@ -29,16 +29,13 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
     init() {
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
         this.sepa = this._unzerPaymentPlugin.unzerInstance.SepaDirectDebit();
+        this.mandateAcceptedCheckbox = document.getElementById(this.options.acceptMandateId);
 
         this._createForm();
         this._registerEvents();
 
 
-        if (this.options.hasSepaDevices) {
-            const unzerElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
-
-            unzerElementWrapper.hidden = true;
-        } else {
+        if (!this.options.hasSepaDevices) {
             this._unzerPaymentPlugin.setSubmitButtonActive(false);
         }
     }
@@ -62,6 +59,8 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
             for (let $i = 0; $i < radioButtons.length; $i++) {
                 radioButtons[$i].addEventListener('change', (event) => this._onRadioButtonChange(event));
             }
+
+            document.querySelector(this.options.selectedRadioButtonSelector).dispatchEvent(new Event('change'));
         }
 
         this.sepa.addEventListener('change', (event) => this._onFormChange(event));
@@ -75,13 +74,14 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
         const targetElement = event.target;
         const unzerElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
 
-
         unzerElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewAccountId;
 
         if (!targetElement || targetElement.id === this.options.radioButtonNewAccountId) {
             this._unzerPaymentPlugin.setSubmitButtonActive(this.sepa.validated);
+            this.mandateAcceptedCheckbox.required = true;
         } else {
             this._unzerPaymentPlugin.setSubmitButtonActive(true);
+            this.mandateAcceptedCheckbox.required = false;
         }
     }
 
@@ -93,16 +93,15 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
      * @private
      */
     _onCreateResource() {
-        const mandateAcceptedCheckbox = document.getElementById(this.options.acceptMandateId);
         const selectedDevice = document.querySelector(this.options.selectedRadioButtonSelector);
 
         if (!this.options.hasSepaDevices || !selectedDevice || selectedDevice.id === this.options.radioButtonNewAccountId) {
-            if (!mandateAcceptedCheckbox.checked) {
+            if (!this.mandateAcceptedCheckbox.checked) {
                 this._handleError({
                     message: this.options.mandateNotAcceptedError
                 });
 
-                mandateAcceptedCheckbox.classList.add('is-invalid');
+                this.mandateAcceptedCheckbox.classList.add('is-invalid');
 
                 return;
             }
