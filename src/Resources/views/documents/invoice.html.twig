@@ -13,9 +13,8 @@
         {% set transferInfo = null %}
         {% if transaction.extensions.unzerTransferInfo is defined and transaction.extensions.unzerTransferInfo is not null %}
             {% set transferInfo = transaction.extensions.unzerTransferInfo %}
-            {{ set transferInfo =  }}
         {% elseif transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')] is defined and transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')] is not null %}
-            {{ set transferInfo = transaction.extensions.unzerTransferInfo }}
+            {% set transferInfo = transaction.extensions.unzerTransferInfo %}
         {% endif %}
 
         {% if transferInfo is defined and transferInfo is not null %}
