@@ -157,6 +157,14 @@ export default class UnzerPaymentBasePlugin extends Plugin {
             const element = form[i];
 
             if (!element.checkValidity()) {
+                if (element.dataset.customError) {
+                    this.showError({
+                        message: element.dataset.customError
+                    });
+                }
+
+                element.classList.add('is-invalid');
+
                 return false;
             }
 

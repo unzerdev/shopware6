@@ -3,6 +3,7 @@
 * Add additional saving of custom fields for an Unzer transaction in the webhook handler 
 * The Unzer client is now initialized with the current language of the store
 * Discounts are now determined on the basis of the `good` property and transferred to Unzer
+* Fixed validation of SEPA payment methods in checkout
 
 # 4.0.0
 * Transfer information is now stored in the custom fields instead of a separate table.
