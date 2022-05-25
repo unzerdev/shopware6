@@ -10,7 +10,14 @@
     {{ parent() }}
 
     {% for transaction in order.transactions %}
-        {% if transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')] %}
+        {% set transferInfo = null %}
+        {% if transaction.extensions.unzerTransferInfo is defined and transaction.extensions.unzerTransferInfo is not null %}
+            {% set transferInfo = transaction.extensions.unzerTransferInfo %}
+        {% elseif transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')] is defined and transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')] is not null %}
+            {% set transferInfo = transaction.extensions.unzerTransferInfo %}
+        {% endif %}
+
+        {% if transferInfo is defined and transferInfo is not null %}
             <div class="page_break"></div>
             <div class="unzer-payment-document">
                 <div>
@@ -22,7 +29,7 @@
 
                     {% block document_payment_shipping_unzer_paymenttransfer_info_message %}
                         <h4 class="unzer-payment-document--message">
-                            {{ "UnzerPayment.transferInformation.message"|trans({'%amount%': (transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].amount|currency(currencyIsoCode))})  }}
+                            {{ "UnzerPayment.transferInformation.message"|trans({'%amount%': (transferInfo.amount|currency(currencyIsoCode))})  }}
                         </h4>
                     {% endblock %}
 
@@ -31,23 +38,23 @@
                             <tbody>
                             <tr>
                                 <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.iban" | trans  }}</td>
-                                <td>{{ transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].iban }}</td>
+                                <td>{{ transferInfo.iban }}</td>
                             </tr>
                             <tr>
                                 <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.bic" | trans  }}</td>
-                                <td>{{ transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].bic }}</td>
+                                <td>{{ transferInfo.bic }}</td>
                             </tr>
                             <tr>
                                 <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.holder" | trans  }}</td>
-                                <td>{{ transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].holder }}</td>
+                                <td>{{ transferInfo.holder }}</td>
                             </tr>
                             <tr>
                                 <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.descriptor" | trans  }}</td>
-                                <td>{{ transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].descriptor }}</td>
+                                <td>{{ transferInfo.descriptor }}</td>
                             </tr>
                             <tr>
                                 <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.amount" | trans  }}</td>
-                                <td>{{ transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')].amount|currency(currencyIsoCode) }}</td>
+                                <td>{{ transferInfo.amount|currency(currencyIsoCode) }}</td>
                             </tr>
                             </tbody>
                         </table>
