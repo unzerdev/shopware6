@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\ResourceHydrator;
 
 use InvalidArgumentException;
-use NetInventors\NetiNextEasyCoupon\Core\Checkout\Cart\AbstractCartProcessor;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
@@ -14,7 +13,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\Checkout\Shipping\ShippingMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
@@ -100,8 +98,6 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
-            $type = $lineItem->getType();
-
             if ($this->isCustomProduct($lineItemCollection, $lineItem)) {
                 continue;
             }
@@ -110,8 +106,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 $unzerBasket->addBasketItem(
                     new BasketItem(
                         $lineItem->getLabel(),
-                        round($this->getAmountByType($type, $lineItem->getTotalPrice()), $currencyPrecision),
-                        round($this->getAmountByType($type, $lineItem->getUnitPrice()), $currencyPrecision),
+                        round($this->getAmount($lineItem, $lineItem->getTotalPrice()), $currencyPrecision),
+                        round($this->getAmount($lineItem, $lineItem->getUnitPrice()), $currencyPrecision),
                         $lineItem->getQuantity()
                     )
                 );
@@ -124,17 +120,17 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $taxCounter = 0;
             /** @var CalculatedTax $tax */
             foreach ($lineItem->getPrice()->getCalculatedTaxes() as $tax) {
-                $amountTax += round($this->getAmountByType($type, $tax->getTax()), $currencyPrecision);
+                $amountTax += round($this->getAmount($lineItem, $tax->getTax()), $currencyPrecision);
                 $taxRate += $tax->getTaxRate();
                 ++$taxCounter;
             }
 
-            if ($this->isPromotionLineItemType($type)) {
+            if ($this->isPromotionLineItem($lineItem)) {
                 $unitPrice      = 0;
                 $amountGross    = 0;
                 $amountNet      = 0;
                 $amountDiscount = round(
-                    $this->getAmountByType($type, $lineItem->getTotalPrice()),
+                    $this->getAmount($lineItem, $lineItem->getTotalPrice()),
                     $currencyPrecision
                 );
 
@@ -142,8 +138,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                     $amountDiscount += $amountTax;
                 }
             } else {
-                $unitPrice      = round($this->getAmountByType($type, $lineItem->getUnitPrice()), $currencyPrecision);
-                $amountGross    = round($this->getAmountByType($type, $lineItem->getTotalPrice()), $currencyPrecision);
+                $unitPrice      = round($this->getAmount($lineItem, $lineItem->getUnitPrice()), $currencyPrecision);
+                $amountGross    = round($this->getAmount($lineItem, $lineItem->getTotalPrice()), $currencyPrecision);
                 $amountNet      = round($amountGross - $amountTax, $currencyPrecision);
                 $amountDiscount = 0;
 
@@ -172,7 +168,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             );
 
             $basketItem->setVat($taxCounter === 0 ? 0 : $taxRate / $taxCounter);
-            $basketItem->setType($this->getLineItemType($type));
+            $basketItem->setType($this->getLineItemType($lineItem));
             $basketItem->setAmountVat(round($amountTax, $currencyPrecision));
             $basketItem->setAmountGross(round($amountGross, $currencyPrecision));
             $basketItem->setAmountDiscount(round($amountDiscount, $currencyPrecision));
@@ -232,18 +228,24 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         $basket->addBasketItem($dispatchBasketItem);
     }
 
-    protected function getAmountByType(string $type, float $price): float
+    /**
+     * @param LineItem|OrderLineItemEntity $lineItem
+     */
+    protected function getAmount($lineItem, float $price): float
     {
-        if ($this->isPromotionLineItemType($type) && $price < 0) {
+        if ($price < 0 && $this->isPromotionLineItem($lineItem)) {
             return $price * -1;
         }
 
         return $price;
     }
 
-    protected function getLineItemType(string $type): string
+    /**
+     * @param LineItem|OrderLineItemEntity $lineItem
+     */
+    protected function getLineItemType($lineItem): string
     {
-        if ($this->isPromotionLineItemType($type)) {
+        if ($this->isPromotionLineItem($lineItem)) {
             return BasketItemTypes::VOUCHER;
         }
 
@@ -272,15 +274,16 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         return $customProductsLabel;
     }
 
-    protected function isPromotionLineItemType(string $type): bool
+    /**
+     * @param LineItem|OrderLineItemEntity $lineItem
+     */
+    protected function isPromotionLineItem($lineItem): bool
     {
-        $promotionTypes = [PromotionProcessor::LINE_ITEM_TYPE];
-
-        if (class_exists(AbstractCartProcessor::class)) {
-            $promotionTypes[] = AbstractCartProcessor::EASY_COUPON_LINE_ITEM_TYPE;
+        if ($lineItem instanceof OrderLineItemEntity) {
+            return !$lineItem->getGood();
         }
 
-        return in_array($type, $promotionTypes, true);
+        return !$lineItem->isGood();
     }
 
     protected function isCustomProduct(

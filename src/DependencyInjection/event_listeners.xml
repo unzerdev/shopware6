@@ -2,7 +2,6 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-
     <services>
         <service id="UnzerPayment6\EventListeners\Checkout\FinishPageEventListener">
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
@@ -17,6 +16,7 @@
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="UnzerPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="language.repository"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

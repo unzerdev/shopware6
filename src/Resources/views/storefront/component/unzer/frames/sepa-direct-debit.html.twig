@@ -8,7 +8,6 @@
     <div class="unzer-payment-sepa-wrapper"
          data-unzer-payment-sepa-direct-debit="true"
          data-unzer-payment-sepa-direct-debit-options='{
-            "mandateNotAcceptedError": "{{ "UnzerPayment.frame.sepa.mandate.error" | trans  }}",
             "hasSepaDevices": {% if page.extensions.unzerDirectDebit.directDebitDevices|length > 0 %}true{% else %}false{% endif %}
          }'>
 
