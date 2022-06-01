@@ -1,13 +1,11 @@
-# Unveröffentlicht
+# 4.0.0
+* Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert
+    * **Bitte beachten,** dass bestehende Daten beim Plugin-Update **nicht** migriert werden.
 * Ergänzung einer Paginierung für die Registrierung von Webhooks
 * Ergänzung der Speicherung von Zusatzfeldern für eine Unzer-Transaktion im Webhook-Handler
 * Der Unzer-Client wird nun mit der aktuellen Sprache des Shops initialisiert
 * Rabatte werden nun anhand der Eigenschaft `good` ermittelt und an Unzer übertragen
 * Korrektur der Validierung für SEPA Zahlungsarten im Checkout
-
-# 4.0.0
-* Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert
-    * **Bitte beachten,** dass bestehende Daten beim Plugin-Update **nicht** migriert werden.
 
 # 3.2.0
 * Korrektur der Validierung der AGB-Checkbox im Checkout mit Unzer Zahlungsarten
