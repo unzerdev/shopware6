@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
+use UnzerPayment6\Components\BasketConverter\BasketConverterInterface;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydratorInterface;
@@ -42,6 +43,9 @@ class UnzerPaymentTransactionController extends AbstractController
     /** @var ShipServiceInterface */
     private $shipService;
 
+    /** @var BasketConverterInterface */
+    private $basketConverter;
+
     /** @var LoggerInterface */
     private $logger;
 
@@ -51,6 +55,7 @@ class UnzerPaymentTransactionController extends AbstractController
         PaymentResourceHydratorInterface $hydrator,
         CancelServiceInterface $cancelService,
         ShipServiceInterface $shipService,
+        BasketConverterInterface $basketConverter,
         LoggerInterface $logger
     ) {
         $this->clientFactory              = $clientFactory;
@@ -58,6 +63,7 @@ class UnzerPaymentTransactionController extends AbstractController
         $this->hydrator                   = $hydrator;
         $this->cancelService              = $cancelService;
         $this->shipService                = $shipService;
+        $this->basketConverter            = $basketConverter;
         $this->logger                     = $logger;
     }
 
@@ -81,6 +87,11 @@ class UnzerPaymentTransactionController extends AbstractController
             $orderTransaction = $this->getOrderTransaction($orderTransactionId, $context);
 
             $data = $this->hydrator->hydrateArray($payment, $orderTransaction);
+
+            /* Basket V2 since Version 1.1.5 */
+            if (!empty($data['basket']['totalValueGross'])) {
+                $data['basket'] = $this->basketConverter->populateDeprecatedVariables($data['basket']);
+            }
         } catch (UnzerApiException $exception) {
             $this->logger->error(sprintf('Error while executing fetching transaction details for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
                 'trace' => $exception->getTraceAsString(),
