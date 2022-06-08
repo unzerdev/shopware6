@@ -29,7 +29,7 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $this->unzerBasket->setAmountTotalGross($this->unzerBasket->getAmountTotalGross() + $this->unzerBasket->getAmountTotalDiscount());
+        $this->unzerBasket->setTotalValueGross($this->unzerBasket->getTotalValueGross());
 
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
