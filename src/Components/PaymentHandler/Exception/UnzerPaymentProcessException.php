@@ -9,11 +9,15 @@ use UnzerSDK\Exceptions\UnzerApiException;
 
 class UnzerPaymentProcessException extends AsyncPaymentProcessException
 {
+    /** @var string */
+    protected $orderId;
+
     /** @var UnzerApiException */
     protected $originalException;
 
-    public function __construct(string $orderTransactionId, UnzerApiException $apiException)
+    public function __construct(string $orderId, string $orderTransactionId, UnzerApiException $apiException)
     {
+        $this->orderId           = $orderId;
         $this->originalException = $apiException;
 
         parent::__construct(
