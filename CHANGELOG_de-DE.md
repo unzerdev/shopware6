@@ -1,3 +1,6 @@
+# 3.2.1
+* Korrektur der Fehlerbehandlung bei einem durch Unzer ausgelösten Fehler
+
 # 3.2.0
 * Korrektur der Validierung der AGB-Checkbox im Checkout mit Unzer Zahlungsarten
 * Korrektur der Fehler-Logik innerhalb der Zahlungsarten, um das Shopware-Standard-Handling aufzugreifen 

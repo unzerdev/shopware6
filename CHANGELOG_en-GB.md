@@ -1,3 +1,6 @@
+# 3.2.1
+* Fix of error handling in case of an error triggered by Unzer
+
 # 3.2.0
 * Fix validation of tos checkbox in checkout with Unzer payment methods
 * Correction of the error logic within the payment types to pick up the Shopware standard handling
