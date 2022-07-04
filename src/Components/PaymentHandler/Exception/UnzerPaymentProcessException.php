@@ -15,15 +15,13 @@ class UnzerPaymentProcessException extends AsyncPaymentProcessException
     /** @var UnzerApiException */
     protected $originalException;
 
-    public function __construct(
-        string $orderId,
-        UnzerApiException $apiException
-    ) {
+    public function __construct(string $orderId, string $orderTransactionId, UnzerApiException $apiException)
+    {
         $this->orderId           = $orderId;
         $this->originalException = $apiException;
 
         parent::__construct(
-            $orderId,
+            $orderTransactionId,
             $apiException->getMerchantMessage()
         );
     }
