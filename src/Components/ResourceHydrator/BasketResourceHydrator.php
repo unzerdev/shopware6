@@ -103,7 +103,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 $basketItem->setAmountPerUnitGross(round($this->getAmountByType($type, $lineItem->getUnitPrice()), $currencyPrecision));
                 $basketItem->setQuantity($lineItem->getQuantity());
 
-                if ($this->isFreeBasketItem($basketItem)) {
+                if ($this->isFreeBasketItem($basketItem, $currencyPrecision)) {
                     continue;
                 }
 
@@ -162,7 +162,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $basketItem->setAmountDiscountPerUnitGross(round($amountDiscount, $currencyPrecision));
             $basketItem->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
 
-            if ($this->isFreeBasketItem($basketItem)) {
+            if ($this->isFreeBasketItem($basketItem, $currencyPrecision)) {
                 continue;
             }
 
@@ -209,7 +209,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
         $dispatchBasketItem->setAmountPerUnitGross(round($amountPerUnit, $currencyPrecision));
 
-        if ($this->isFreeBasketItem($dispatchBasketItem)) {
+        if ($this->isFreeBasketItem($dispatchBasketItem, $currencyPrecision)) {
             return;
         }
 
@@ -328,9 +328,9 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         return self::UNDEFINED_SHIPPING_METHOD_NAME;
     }
 
-    protected function isFreeBasketItem(BasketItem $basketItem): bool
+    protected function isFreeBasketItem(BasketItem $basketItem, int $currencyPrecision): bool
     {
-        if ($basketItem->getAmountPerUnitGross() === 0.0 && $basketItem->getAmountDiscountPerUnitGross() === 0.0) {
+        if ((int) (round($basketItem->getAmountPerUnitGross(), $currencyPrecision) * $currencyPrecision) === 0 && (int) (round($basketItem->getAmountDiscountPerUnitGross(), $currencyPrecision) * $currencyPrecision) === 0) {
             return true;
         }
 
