@@ -103,6 +103,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 $basketItem->setAmountPerUnitGross(round($this->getAmountByType($type, $lineItem->getUnitPrice()), $currencyPrecision));
                 $basketItem->setQuantity($lineItem->getQuantity());
 
+                if ($this->isFreeBasketItem($basketItem)) {
+                    continue;
+                }
+
                 $unzerBasket->addBasketItem($basketItem);
                 continue;
             }
@@ -157,6 +161,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $basketItem->setAmountDiscountPerUnitGross(round($amountDiscount, $currencyPrecision));
             $basketItem->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
 
+            if ($this->isFreeBasketItem($basketItem)) {
+                continue;
+            }
+
             $unzerBasket->addBasketItem($basketItem);
         }
     }
@@ -199,6 +207,11 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         }
 
         $dispatchBasketItem->setAmountPerUnitGross(round($amountPerUnit, $currencyPrecision));
+
+        if ($this->isFreeBasketItem($dispatchBasketItem)) {
+            return;
+        }
+
         $basket->addBasketItem($dispatchBasketItem);
     }
 
@@ -312,5 +325,14 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         }
 
         return self::UNDEFINED_SHIPPING_METHOD_NAME;
+    }
+
+    protected function isFreeBasketItem(BasketItem $basketItem): bool
+    {
+        if ($basketItem->getAmountPerUnitGross() === 0.0 && $basketItem->getAmountDiscountPerUnitGross() === 0.0) {
+            return true;
+        }
+
+        return false;
     }
 }
