@@ -108,6 +108,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 }
 
                 $unzerBasket->addBasketItem($basketItem);
+
                 continue;
             }
 
