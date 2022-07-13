@@ -1,3 +1,7 @@
+# Unreleased
+* Aktualisierung des Unzer PHP SDK zu Version 1.1.5.0
+* Kompatibilität zu Unzer Basket V2 API hergestellt
+
 # 4.0.0
 * Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert
   * **Bitte beachten,** dass bestehende Daten beim Plugin-Update **nicht** migriert werden.
