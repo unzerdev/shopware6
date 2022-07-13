@@ -5,9 +5,13 @@
 
     {% block page_checkout_finish_details_unzer_paymenttransfer_information %}
         {% for transaction in page.order.transactions %}
-            {% if transaction.extensions.unzerTransferInfo %}
+            {% if transaction.extensions.unzerTransferInfo is defined and transaction.extensions.unzerTransferInfo is not null %}
                 {% sw_include '@Storefront/storefront/component/unzer/finish/transfer-information.html.twig' with {
                     'transferInformation': transaction.extensions.unzerTransferInfo
+                } %}
+            {% elseif transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')] is defined and transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')] is not null %}
+                {% sw_include '@Storefront/storefront/component/unzer/finish/transfer-information.html.twig' with {
+                    'transferInformation': transaction.customFields[constant('UnzerPayment6\\Installer\\CustomFieldInstaller::UNZER_PAYMENT_TRANSFER_INFO')]
                 } %}
             {% endif %}
         {% endfor %}

@@ -16,6 +16,7 @@ use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
@@ -45,6 +46,7 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
         LoggerInterface $logger,
+        CustomFieldsHelperInterface $customFieldsHelper,
         UnzerPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
@@ -56,7 +58,8 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
             $transactionStateHandler,
             $clientFactory,
             $requestStack,
-            $logger
+            $logger,
+            $customFieldsHelper
         );
 
         $this->deviceRepository = $deviceRepository;
@@ -105,7 +108,7 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
                 $salesChannelContext->getContext()
             );
 
-            throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $apiException);
+            throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
                 sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
