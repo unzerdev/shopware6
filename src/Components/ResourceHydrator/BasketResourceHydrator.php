@@ -96,7 +96,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             if ($lineItem->getPrice() === null) {
                 $basketItem = new BasketItem();
                 $basketItem->setTitle($lineItem->getLabel());
-                $basketItem->setAmountPerUnitGross(round($this->getAmountByType($type, $lineItem->getUnitPrice()), $currencyPrecision));
+                $basketItem->setAmountPerUnitGross(round($this->getAmount($lineItem, $lineItem->getUnitPrice()), $currencyPrecision));
                 $basketItem->setQuantity($lineItem->getQuantity());
 
                 if ($this->isFreeBasketItem($basketItem, $currencyPrecision)) {
@@ -130,8 +130,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                     $amountDiscount += $amountTax;
                 }
             } else {
-                $unitPrice      = round($this->getAmountByType($type, $lineItem->getUnitPrice()), $currencyPrecision);
-                $amountGross    = round($this->getAmountByType($type, $lineItem->getTotalPrice()), $currencyPrecision);
+                $unitPrice      = round($this->getAmount($lineItem, $lineItem->getUnitPrice()), $currencyPrecision);
+                $amountGross    = round($this->getAmount($lineItem, $lineItem->getTotalPrice()), $currencyPrecision);
                 $amountDiscount = 0;
 
                 if ($taxStatus === CartPrice::TAX_STATE_NET) {
