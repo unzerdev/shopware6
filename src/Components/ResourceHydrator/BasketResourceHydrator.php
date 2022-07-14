@@ -154,7 +154,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $basketItem->setAmountPerUnitGross(round($unitPrice, $currencyPrecision));
             $basketItem->setQuantity($lineItem->getQuantity());
             $basketItem->setVat($taxCounter === 0 ? 0 : $taxRate / $taxCounter);
-            $basketItem->setType($this->getLineItemType($type));
+            $basketItem->setType($this->getLineItemType($lineItem));
             $basketItem->setAmountDiscountPerUnitGross(round($amountDiscount, $currencyPrecision));
             $basketItem->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
 
