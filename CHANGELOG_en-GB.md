@@ -1,3 +1,7 @@
+# Unreleased
+* Updated Unzer PHP SDK to version 1.1.5.0
+* Add compatibility to Unzer Basket V2 API
+
 # 4.0.0
 * Transfer information is now stored in the custom fields instead of a separate table.
   * **Please note,** that existing data will **not** be migrated

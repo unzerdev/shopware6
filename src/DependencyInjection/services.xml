@@ -61,5 +61,7 @@
         <service id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper">
             <argument type="service" id="order_transaction.repository"/>
         </service>
+
+        <service id="UnzerPayment6\Components\BasketConverter\BasketConverter"/>
     </services>
 </container>
