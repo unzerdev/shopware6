@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerBancontactHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerCreditCardPaymentHandler;
@@ -28,6 +29,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerSofortPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerWeChatPaymentHandler;
+use UnzerPayment6\UnzerPayment6;
 
 class PaymentInstaller implements InstallerInterface
 {
@@ -330,19 +332,23 @@ class PaymentInstaller implements InstallerInterface
     /** @var EntityRepositoryInterface */
     private $paymentMethodRepository;
 
-    public function __construct(EntityRepositoryInterface $paymentMethodRepository)
+    /** @var PluginIdProvider */
+    private $pluginIdProvider;
+
+    public function __construct(EntityRepositoryInterface $paymentMethodRepository, PluginIdProvider $pluginIdProvider)
     {
         $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->pluginIdProvider        = $pluginIdProvider;
     }
 
     public function install(InstallContext $context): void
     {
-        $this->paymentMethodRepository->upsert(self::PAYMENT_METHODS, $context->getContext());
+        $this->upsertPaymentMethods($context);
     }
 
     public function update(UpdateContext $context): void
     {
-        $this->paymentMethodRepository->upsert(self::PAYMENT_METHODS, $context->getContext());
+        $this->upsertPaymentMethods($context);
     }
 
     public function uninstall(UninstallContext $context): void
@@ -363,6 +369,17 @@ class PaymentInstaller implements InstallerInterface
     public static function getPaymentIds(): array
     {
         return array_column(self::PAYMENT_METHODS, 'id');
+    }
+
+    private function upsertPaymentMethods(InstallContext $context): void
+    {
+        $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(UnzerPayment6::class, $context->getContext());
+
+        foreach (self::PAYMENT_METHODS as $paymentMethod) {
+            $paymentMethod['pluginId'] = $pluginId;
+
+            $this->paymentMethodRepository->upsert([$paymentMethod], $context->getContext());
+        }
     }
 
     private function setAllPaymentMethodsActive(bool $active, InstallContext $context): void
