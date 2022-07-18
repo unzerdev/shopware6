@@ -19,6 +19,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 {
     private const B2B_CUSTOMERS_ALLOWED = [
         PaymentInstaller::PAYMENT_ID_INVOICE_SECURED,
+        PaymentInstaller::PAYMENT_ID_UNZER_INVOICE,
         PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED,
     ];
 

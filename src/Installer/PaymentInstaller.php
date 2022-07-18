@@ -6,6 +6,10 @@ namespace UnzerPayment6\Installer;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -23,6 +27,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInstallmentSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceSecuredPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerNewInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPisPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler;
@@ -50,6 +55,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_SOFORT               = '95aa098aac8f11e9a2a32a2ae2dbcce4';
     public const PAYMENT_ID_WE_CHAT              = 'fd96d03535a46d197f5adac17c9f8bac';
     public const PAYMENT_ID_BANCONTACT           = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
+    public const PAYMENT_ID_UNZER_INVOICE        = '09588ffee8064f168e909ff31889dd7f';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -69,6 +75,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_SOFORT,
         self::PAYMENT_ID_WE_CHAT,
         self::PAYMENT_ID_BANCONTACT,
+        self::PAYMENT_ID_UNZER_INVOICE,
     ];
 
     public const PAYMENT_METHODS = [
@@ -165,14 +172,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE,
             'handlerIdentifier' => UnzerInvoicePaymentHandler::class,
-            'name'              => 'Invoice (Unzer payments)',
+            'name'              => 'Legacy Invoice (Unzer payments)',
+            'active'            => false, // TODO: Not yet decided
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice',
+                    'name'        => 'Unzer invoice (nicht mehr unterstützt)',
                     'description' => 'Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice',
+                    'name'        => 'Unzer invoice (unsupported)',
                     'description' => 'Invoice payments with Unzer payments',
                 ],
             ],
@@ -180,14 +188,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE_SECURED,
             'handlerIdentifier' => UnzerInvoiceSecuredPaymentHandler::class,
-            'name'              => 'Unzer invoice secured',
+            'name'              => 'Unzer invoice secured (Legacy)',
+            'active'            => false, // TODO: Not yet decided
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice secured',
+                    'name'        => 'Unzer invoice secured (nicht mehr unterstützt)',
                     'description' => 'Gesicherter Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice secured',
+                    'name'        => 'Unzer invoice secured (unsupported)',
                     'description' => 'Invoice secured payments with Unzer payments',
                 ],
             ],
@@ -327,6 +336,26 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
         ],
+        [
+            'id'                => self::PAYMENT_ID_UNZER_INVOICE,
+            'handlerIdentifier' => UnzerNewInvoicePaymentHandler::class,
+            'name'              => 'Invoice (Unzer payments)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Unzer invoice',
+                    'description' => 'Rechnungskauf mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'Unzer invoice',
+                    'description' => 'Invoice payments with Unzer payments',
+                ],
+            ],
+        ],
+    ];
+
+    private const LEGACY_PAYMENT_METHOD_IDS = [
+        self::PAYMENT_ID_INVOICE,
+        self::PAYMENT_ID_INVOICE_SECURED,
     ];
 
     /** @var EntityRepositoryInterface */
@@ -374,6 +403,8 @@ class PaymentInstaller implements InstallerInterface
     private function upsertPaymentMethods(InstallContext $context): void
     {
         $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(UnzerPayment6::class, $context->getContext());
+
+        // TODO: Filter legacy payment methods on new installs?
 
         foreach (self::PAYMENT_METHODS as $paymentMethod) {
             $paymentMethod['pluginId'] = $pluginId;
