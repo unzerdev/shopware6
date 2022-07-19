@@ -48,6 +48,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_SOFORT               = '95aa098aac8f11e9a2a32a2ae2dbcce4';
     public const PAYMENT_ID_WE_CHAT              = 'fd96d03535a46d197f5adac17c9f8bac';
     public const PAYMENT_ID_BANCONTACT           = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
+    public const PAYMENT_ID_APPLE_PAY            = '62490bda54fa48fbb29ed6b9368bafe1';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -67,6 +68,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_SOFORT,
         self::PAYMENT_ID_WE_CHAT,
         self::PAYMENT_ID_BANCONTACT,
+        self::PAYMENT_ID_APPLE_PAY,
     ];
 
     public const PAYMENT_METHODS = [
@@ -322,6 +324,21 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name'        => 'Bancontact (Unzer payments)',
                     'description' => 'Bancontact payments with Unzer payments',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_APPLE_PAY,
+            'handlerIdentifier' => UnzerBancontactHandler::class,
+            'name'              => 'Apple Pay (Unzer payments)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Apple Pay (Unzer payments)',
+                    'description' => 'Apple Pay mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'Apple Pay (Unzer payments)',
+                    'description' => 'Apple Pay with Unzer payments',
                 ],
             ],
         ],

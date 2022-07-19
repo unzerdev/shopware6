@@ -49,3 +49,27 @@
 
     {{ parent() }}
 {% endblock %}
+
+{% block page_checkout_confirm_form_submit %}
+    {{ parent() }}
+
+    {% if page.order %}
+        {% set order = page.order %}
+        {% set billingAddress = order.billingAddress %}
+        {% set summary = page.order %}
+    {% else %}
+        {% set billingAddress = context.customer.activeBillingAddress %}
+        {% set summary = page.cart %}
+    {% endif %}
+
+    {% set total = summary.price.rawTotal %}
+
+    <div data-unzer-payment-apple-pay data-unzer-payment-apple-pay-options='{
+        "countryCode": "{{ billingAddress.country.iso }}",
+        "currency": "{{ context.currency.isoCode }}",
+        "label": "{{ context.salesChannel.name|escape('js') }}",
+        "amount": "{{ total|escape('js') }}"
+    }'>
+        <apple-pay-button buttonstyle="black" type="buy" locale="{{ context.salesChannel.locale.code }}" style="--apple-pay-button-width: 100%;"></apple-pay-button>
+    </div>
+{% endblock %}

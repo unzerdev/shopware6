@@ -104,6 +104,33 @@
     </card>
 
     <card>
+        <title>Apple Pay</title>
+        <title lang="de-DE">Apple Pay</title>
+
+        <input-field type="single-select">
+            <name>bookingModeApplePay</name>
+            <label>Booking mode Apple Pay</label>
+            <label lang="de-DE">Buchungsmodus für Apple Pay</label>
+            <helpText>If you select the charge option, the amount is debited immediately; if you select the authorization option, the amount must be collected manually later.</helpText>
+            <helpText lang="de-DE">Bei der Option Direkt wird der Betrag sofort abgebucht, wählen Sie hingegen die Option Autorisierung muss der Betrag später manuell eingezogen werden.</helpText>
+            <options>
+                <option>
+                    <id>charge</id>
+                    <name>Charge</name>
+                    <name lang="de-DE">Direkt</name>
+                </option>
+                <option>
+                    <id>authorize</id>
+                    <name>Authorize</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <!-- TODO: Use custom component for certificate management -->
+    </card>
+
+    <card>
         <title>Advanced settings</title>
         <title lang="de-DE">Erweiterte Einstellungen</title>
 
