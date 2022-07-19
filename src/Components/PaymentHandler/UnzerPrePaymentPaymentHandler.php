@@ -4,24 +4,15 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
-use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Throwable;
-use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
-use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
-use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
-use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
-use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
-use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepositoryInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\PaymentTypes\Prepayment;
 
@@ -29,33 +20,6 @@ class UnzerPrePaymentPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use CanCharge;
     use HasTransferInfoTrait;
-
-    public function __construct(
-        ResourceHydratorInterface $basketHydrator,
-        CustomerResourceHydratorInterface $customerHydrator,
-        ResourceHydratorInterface $metadataHydrator,
-        EntityRepositoryInterface $transactionRepository,
-        ConfigReaderInterface $configReader,
-        TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactoryInterface $clientFactory,
-        RequestStack $requestStack,
-        LoggerInterface $logger,
-        UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository
-    ) {
-        $this->transferInfoRepository = $transferInfoRepository;
-
-        parent::__construct(
-            $basketHydrator,
-            $customerHydrator,
-            $metadataHydrator,
-            $transactionRepository,
-            $configReader,
-            $transactionStateHandler,
-            $clientFactory,
-            $requestStack,
-            $logger
-        );
-    }
 
     /**
      * {@inheritdoc}
@@ -73,7 +37,7 @@ class UnzerPrePaymentPaymentHandler extends AbstractUnzerPaymentHandler
             $returnUrl = $this->charge($transaction->getReturnUrl());
 
             $orderTransaction = $transaction->getOrderTransaction();
-            $this->saveTransferInfo($orderTransaction->getId(), $orderTransaction->getVersionId(), $salesChannelContext->getContext());
+            $this->saveTransferInfo($orderTransaction, $salesChannelContext->getContext());
 
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {

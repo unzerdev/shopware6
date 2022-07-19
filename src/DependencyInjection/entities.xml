@@ -8,8 +8,8 @@
         </service>
 
         <service id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepository">
-           <argument type="service" id="unzer_payment_payment_device.repository"/>
-           <argument type="service" id="UnzerPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
+            <argument type="service" id="unzer_payment_payment_device.repository"/>
+            <argument type="service" id="UnzerPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
         </service>
 
         <service id="UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo\UnzerPaymentTransferInfoEntityDefinition">

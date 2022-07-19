@@ -17,6 +17,7 @@ use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
@@ -49,6 +50,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
         ClientFactoryInterface $clientFactory,
         RequestStack $requestStack,
         LoggerInterface $logger,
+        CustomFieldsHelperInterface $customFieldsHelper,
         UnzerPaymentDeviceRepositoryInterface $deviceRepository
     ) {
         parent::__construct(
@@ -60,7 +62,8 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             $transactionStateHandler,
             $clientFactory,
             $requestStack,
-            $logger
+            $logger,
+            $customFieldsHelper
         );
 
         $this->deviceRepository = $deviceRepository;
