@@ -2,12 +2,11 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-
     <services>
         <service id="UnzerPayment6\EventListeners\Checkout\FinishPageEventListener">
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="unzer_payment.logger"/>
-            <argument type="service" id="UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelper" />
+            <argument type="service" id="UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelper"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -17,6 +16,7 @@
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="UnzerPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="language.repository"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -35,16 +35,17 @@
         </service>
 
         <service id="UnzerPayment6\EventListeners\StateMachine\TransitionEventListener">
-            <argument type="service" id="order.repository" />
-            <argument type="service" id="order_delivery.repository" />
-            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="order.repository"/>
+            <argument type="service" id="order_delivery.repository"/>
+            <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="UnzerPayment6\Components\Validator\AutomaticShippingValidator"/>
             <argument type="service" id="unzer_payment.logger"/>
             <argument type="service" id="event_dispatcher"/>
-            <argument type="service" id="UnzerPayment6\Components\ShipService\ShipService" />
+            <argument type="service" id="UnzerPayment6\Components\ShipService\ShipService"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
+
 
         <service id="UnzerPayment6\EventListeners\DataAbstractionLayer\OrderTransactionEventListener">
             <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepository"/>

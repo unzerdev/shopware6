@@ -29,6 +29,7 @@
                          data-unzer-payment-base="true"
                          data-unzer-payment-base-options='{
                          "publicKey": "{{ page.extensions[paymentDataExtensionName].publicKey }}",
+                         "shopLocale": "{{ page.extensions[paymentDataExtensionName].locale }}",
                          "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
                      }'>
                         <div class="unzer-payment-base-body">
@@ -48,4 +49,3 @@
 
     {{ parent() }}
 {% endblock %}
-

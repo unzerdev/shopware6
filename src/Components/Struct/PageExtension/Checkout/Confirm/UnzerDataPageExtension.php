@@ -13,6 +13,9 @@ class UnzerDataPageExtension extends Struct
     /** @var string */
     private $publicKey;
 
+    /** @var string */
+    private $locale;
+
     /** @var bool */
     private $showTestData;
 
@@ -24,6 +27,16 @@ class UnzerDataPageExtension extends Struct
     public function setPublicKey(string $publicKey): void
     {
         $this->publicKey = $publicKey;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(string $locale): void
+    {
+        $this->locale = $locale;
     }
 
     public function getShowTestData(): bool

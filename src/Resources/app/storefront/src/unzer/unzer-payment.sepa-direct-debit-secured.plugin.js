@@ -5,7 +5,6 @@ export default class UnzerPaymentSepaDirectDebitSecuredPlugin extends Plugin {
     static options = {
         birthDateFieldId: 'unzerPaymentBirthday',
         acceptMandateId: 'acceptSepaMandate',
-        mandateNotAcceptedError: 'Please accept the SEPA direct debit mandate in order to continue.',
         elementWrapperSelector: '.unzer-payment-sepa-wrapper-elements',
         radioButtonSelector: '*[name="savedDirectDebitDevice"]',
         radioButtonNewAccountId: 'device-new',
@@ -27,20 +26,15 @@ export default class UnzerPaymentSepaDirectDebitSecuredPlugin extends Plugin {
     static _unzerPaymentPlugin = null;
 
     init() {
-        const birthDate = document.getElementById(this.options.birthDateFieldId);
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
         this.sepa = this._unzerPaymentPlugin.unzerInstance.SepaDirectDebitSecured();
+        this.birthDateElement = document.getElementById(this.options.birthDateFieldId);
+        this.mandateAcceptedCheckbox = document.getElementById(this.options.acceptMandateId);
 
         this._createForm();
         this._registerEvents();
 
-        if (this.options.hasSepaDevices) {
-            const unzerElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
-
-            unzerElementWrapper.hidden = true;
-            birthDate.required = false;
-        } else {
-            birthDate.required = true;
+        if (!this.options.hasSepaDevices) {
             this._unzerPaymentPlugin.setSubmitButtonActive(false);
         }
     }
@@ -64,6 +58,8 @@ export default class UnzerPaymentSepaDirectDebitSecuredPlugin extends Plugin {
             for (let $i = 0; $i < radioButtons.length; $i++) {
                 radioButtons[$i].addEventListener('change', (event) => this._onRadioButtonChange(event));
             }
+
+            document.querySelector(this.options.selectedRadioButtonSelector).dispatchEvent(new Event('change'));
         }
 
         this.sepa.addEventListener('change', (event) => this._onFormChange(event));
@@ -76,16 +72,17 @@ export default class UnzerPaymentSepaDirectDebitSecuredPlugin extends Plugin {
     _onRadioButtonChange(event) {
         const targetElement = event.target;
         const unzerElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
-        const birthDate = document.getElementById(this.options.birthDateFieldId);
 
         unzerElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewAccountId;
 
         if (!targetElement || targetElement.id === this.options.radioButtonNewAccountId) {
             this._unzerPaymentPlugin.setSubmitButtonActive(this.sepa.validated);
-            birthDate.required = true;
+            this.birthDateElement.required = true;
+            this.mandateAcceptedCheckbox.required = true;
         } else {
             this._unzerPaymentPlugin.setSubmitButtonActive(true);
-            birthDate.required = false;
+            this.birthDateElement.required = false;
+            this.mandateAcceptedCheckbox.required = false;
         }
     }
 
@@ -97,20 +94,9 @@ export default class UnzerPaymentSepaDirectDebitSecuredPlugin extends Plugin {
      * @private
      */
     _onCreateResource() {
-        const mandateAcceptedCheckbox = document.getElementById(this.options.acceptMandateId);
         const selectedDevice = document.querySelector(this.options.selectedRadioButtonSelector);
 
         if (!this.options.hasSepaDevices || !selectedDevice || selectedDevice.id === this.options.radioButtonNewAccountId) {
-            if (!mandateAcceptedCheckbox.checked) {
-                this._handleError({
-                    message: this.options.mandateNotAcceptedError
-                });
-
-                mandateAcceptedCheckbox.classList.add('is-invalid');
-
-                return;
-            }
-
             this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
             this.sepa.createResource()
