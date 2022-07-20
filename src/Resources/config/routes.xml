@@ -9,4 +9,5 @@
 
     <import resource="@UnzerPayment6/Controllers/Administration/UnzerPaymentTransactionController.php" type="annotation" />
     <import resource="@UnzerPayment6/Controllers/Administration/UnzerPaymentConfigurationController.php" type="annotation" />
+    <import resource="@UnzerPayment6/Controllers/Administration/UnzerPaymentApplePayController.php" type="annotation" />
 </routes>

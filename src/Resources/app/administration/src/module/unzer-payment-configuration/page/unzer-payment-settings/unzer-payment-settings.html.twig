@@ -59,8 +59,13 @@
                         domain="UnzerPayment6.settings">
                     </sw-system-config>
 
-                    <sw-card :title="$tc(`unzer-payment-settings.modal.webhook.title`)" class="unzer--webhook-card">
+                    <sw-card :title="$tc(`unzer-payment-settings.apple-pay.certificates.title`)" class="unzer--apple-pay-card">
+                        <unzer-payment-apple-pay-certificates :selectedSalesChannelId="selectedSalesChannelId"
+                                                              :isLoading="isLoading">
+                        </unzer-payment-apple-pay-certificates>
+                    </sw-card>
 
+                    <sw-card :title="$tc(`unzer-payment-settings.modal.webhook.title`)" class="unzer--webhook-card">
                         <sw-alert
                             v-if="!isLoadingWebhooks && webhooks.length === 0"
                             variant="warning"

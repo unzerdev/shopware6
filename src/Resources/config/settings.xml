@@ -126,8 +126,6 @@
                 </option>
             </options>
         </input-field>
-
-        <!-- TODO: Use custom component for certificate management -->
     </card>
 
     <card>

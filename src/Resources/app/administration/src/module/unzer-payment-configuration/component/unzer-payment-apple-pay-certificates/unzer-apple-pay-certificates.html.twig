@@ -1,0 +1,24 @@
+{% block unzer_payment_apple_pay_certificates %}
+    <sw-container :title="$tc(`unzer-payment-settings.apple-pay.certificates.title`)"
+                  class="unzer-payment-settings--apple-pay-certificates">
+        <template>
+            TODO
+            <!-- TODO: Show certificate check status -->
+            <!-- TODO: Show upload form for certificates -->
+            {% block unzer_payment_apple_pay_certificates_form %}
+                <form
+                    ref="certificatesForm"
+                >
+                    <label for="paymentCertificate">
+
+                    </label>
+                    <input
+                        id="paymentCertificate"
+                        ref="paymentCertificateFileInput"
+                        type="file"
+                    >
+                </form>
+            {% endblock %}
+        </template>
+    </sw-container>
+{% endblock %}
