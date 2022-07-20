@@ -7,6 +7,7 @@ namespace UnzerPayment6\EventListeners\Checkout;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
@@ -20,6 +21,7 @@ use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSecuredPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\FraudPreventionPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\InstallmentSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
@@ -86,6 +88,8 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $registerCreditCards    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
         $registerPayPalAccounts = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
         $registerDirectDebit    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
+        $enableFraudPrevention  = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_ENABLE_FRAUD_PREVENTION, false);
+        $validPaymentMethod     = in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true);
 
         if ($registerCreditCards &&
             $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
@@ -111,12 +115,24 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addDirectDebitSecuredExtension($event);
         }
 
+        if ($enableFraudPrevention && $validPaymentMethod) {
+            $this->addFraudPreventionExtension($event);
+        }
+
         if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED) {
             $this->addInstallmentSecuredExtension($event);
         }
 
         $this->addPaymentFrameExtension($event);
         $this->addUnzerDataExtension($event);
+    }
+
+    private function addFraudPreventionExtension(PageLoadedEvent $event): void
+    {
+        $extension = new FraudPreventionPageExtension();
+        $extension->setSessionId(Uuid::randomHex());
+
+        $event->getPage()->addExtension(FraudPreventionPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addUnzerDataExtension(PageLoadedEvent $event): void

@@ -19,6 +19,8 @@ class CustomFieldInstaller implements InstallerInterface
     public const UNZER_PAYMENT_PAYMENT_ID_KEY = 'unzer_pay_payment_id';
     public const UNZER_PAYMENT_TRANSFER_INFO  = 'unzer_payment_transfer_info';
 
+    public const UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID = 'unzer_payment_fraud_prevention_session_id';
+
     public const CUSTOM_FIELDS = [
         [
             'id'           => '051351c0e4e64229a9a29b9893344d23',
@@ -44,6 +46,11 @@ class CustomFieldInstaller implements InstallerInterface
                     'id'   => 'aae342fddd464116839222049bf26fd8',
                     'name' => self::UNZER_PAYMENT_TRANSFER_INFO,
                     'type' => CustomFieldTypes::JSON,
+                ],
+                [
+                    'id'   => 'cf2ab026784943f3a3597bb008ccdf8b',
+                    'name' => self::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID,
+                    'type' => CustomFieldTypes::TEXT,
                 ],
             ],
         ],

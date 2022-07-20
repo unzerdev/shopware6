@@ -25,6 +25,7 @@ use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerR
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Basket;
@@ -137,6 +138,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             if (!empty($resourceId)) {
                 $this->paymentType = $this->unzerClient->fetchPaymentType($resourceId);
             }
+
+            $this->saveFraudPreventionData($transaction, $salesChannelContext);
 
             return new RedirectResponse($transaction->getReturnUrl());
         } catch (UnzerApiException $apiException) {
@@ -310,5 +313,26 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         }
 
         return $result;
+    }
+
+    private function saveFraudPreventionData(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $context): void
+    {
+        $orderTransaction = $transaction->getOrderTransaction();
+
+        $currentRequest = $this->getCurrentRequestFromStack($orderTransaction->getId());
+        $sessionId      = $currentRequest->get('unzerPaymentFraudPreventionSessionId', '');
+
+        if (empty($sessionId)) {
+            return;
+        }
+
+        $this->transactionRepository->upsert([
+            [
+                'id'           => $orderTransaction->getId(),
+                'customFields' => [
+                    CustomFieldInstaller::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID => $sessionId,
+                ],
+            ],
+        ], $context->getContext());
     }
 }
