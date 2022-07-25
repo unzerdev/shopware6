@@ -6,10 +6,16 @@ class UnzerPaymentApplePayService extends ApiService {
         super(httpClient, loginService, apiEndpoint);
     }
 
-    checkCertificates() {
+    checkCertificates(salesChannelId) {
+        let url =`_action/${this.getApiBasePath()}/apple-pay/certificates`;
+
+        if (salesChannelId) {
+            url =`_action/${this.getApiBasePath()}/apple-pay/certificates/${salesChannelId}`;
+        }
+
         return this.httpClient
             .get(
-                `_action/${this.getApiBasePath()}/apple-pay/certificates`,
+                url,
                 {
                     headers: this.getBasicHeaders()
                 }
