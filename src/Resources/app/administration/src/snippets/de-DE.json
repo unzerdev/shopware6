@@ -80,6 +80,33 @@
             "title": "Unzer Payment",
             "description": "Unzer Payment"
         },
+        "apple-pay": {
+            "certificates": {
+                "title": "Apple Pay Zertifikate",
+                "update": {
+                    "success": {
+                        "title": "Erfolg",
+                        "message": "Die Zertifikate wurden erfolgreich aktualisiert"
+                    },
+                    "error": {
+                        "title": "Fehler",
+                        "message": "Bei der Aktualisierung der Zertifikate trat ein Fehler auf"
+                    }
+                }
+            },
+            "paymentProcessingCertificate": {
+                "label": "Payment Processing Zertifikat"
+            },
+            "paymentProcessingKey": {
+                "label": "Payment Processing Zertifikatsschlüssel (Private Key)"
+            },
+            "merchantIdentificationCertificate": {
+                "label": "Merchant Identification Zertifikat"
+            },
+            "merchantIdentificationKey": {
+                "label": "Merchant Identification Zertifikatsschlüssel (Private Key)"
+            }
+        },
         "form": {
             "message": {
                 "success": {

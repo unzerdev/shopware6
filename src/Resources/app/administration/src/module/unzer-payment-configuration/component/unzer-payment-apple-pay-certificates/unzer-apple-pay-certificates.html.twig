@@ -2,21 +2,63 @@
     <sw-container :title="$tc(`unzer-payment-settings.apple-pay.certificates.title`)"
                   class="unzer-payment-settings--apple-pay-certificates">
         <template>
-            TODO
-            <!-- TODO: Show certificate check status -->
-            <!-- TODO: Show upload form for certificates -->
+            <!-- TODO: Show certificate check status based on configuration settings -->
             {% block unzer_payment_apple_pay_certificates_form %}
                 <form
                     ref="certificatesForm"
                 >
-                    <label for="paymentCertificate">
+                    <sw-inherit-wrapper
+                        :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingCertificate.label')"
+                        v-model="paymentProcessingCertificate"
+                        inheritedValue="paymentProcessingCertificate"
+                        >
+                        <template #content="props">
+                            <!-- TODO: Drag&Drop does not work on these sw-file-input -->
+                            <sw-file-input
+                                class="sw-field sw-block-field"
+                                v-model="paymentProcessingCertificate"
+                            ></sw-file-input>
+                        </template>
+                    </sw-inherit-wrapper>
 
-                    </label>
-                    <input
-                        id="paymentCertificate"
-                        ref="paymentCertificateFileInput"
-                        type="file"
+                    <sw-inherit-wrapper
+                        :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingKey.label')"
+                        v-model="paymentProcessingKey"
+                        inheritedValue="paymentProcessingKey"
                     >
+                        <template #content="props">
+                            <sw-file-input
+                                class="sw-field sw-block-field"
+                                v-model="paymentProcessingKey"
+                            ></sw-file-input>
+                        </template>
+                    </sw-inherit-wrapper>
+
+                    <sw-inherit-wrapper
+                        :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationCertificate.label')"
+                        v-model="merchantIdentificationCertificate"
+                        inheritedValue="merchantIdentificationCertificate"
+                    >
+                        <template #content="props">
+                            <sw-file-input
+                                class="sw-field sw-block-field"
+                                v-model="merchantIdentificationCertificate"
+                            ></sw-file-input>
+                        </template>
+                    </sw-inherit-wrapper>
+
+                    <sw-inherit-wrapper
+                        :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationKey.label')"
+                        v-model="merchantIdentificationKey"
+                        inheritedValue="merchantIdentificationKey"
+                    >
+                        <template #content="props">
+                            <sw-file-input
+                                class="sw-field sw-block-field"
+                                v-model="merchantIdentificationKey"
+                            ></sw-file-input>
+                        </template>
+                    </sw-inherit-wrapper>
                 </form>
             {% endblock %}
         </template>

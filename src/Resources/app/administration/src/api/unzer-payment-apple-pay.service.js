@@ -19,10 +19,30 @@ class UnzerPaymentApplePayService extends ApiService {
             });
     }
 
-    updateCertificates(data) {
+    async updateCertificates(salesChannelId, files) {
+        let url =`_action/${this.getApiBasePath()}/apple-pay/certificates`;
+
+        if (salesChannelId) {
+            url =`_action/${this.getApiBasePath()}/apple-pay/certificates/${salesChannelId}`;
+        }
+
+        const data = {};
+
+        for (let key in files) {
+            if (files[key]) {
+                const file = files[key];
+
+                data[key] = await file.text();
+            }
+        }
+
+        if (data.length === 0) {
+            return new Promise();
+        }
+
         return this.httpClient
             .post(
-                `_action/${this.getApiBasePath()}/apple-pay/certificates`,
+                url,
                 data,
                 {
                     headers: this.getBasicHeaders()
