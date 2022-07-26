@@ -59,7 +59,11 @@
                         domain="UnzerPayment6.settings">
                     </sw-system-config>
 
-                    <sw-card :title="$tc(`unzer-payment-settings.apple-pay.certificates.title`)" class="unzer--apple-pay-card">
+                    <sw-card
+                        :is-loading="isLoading"
+                        :title="$tc(`unzer-payment-settings.apple-pay.certificates.title`)"
+                        class="unzer--apple-pay-card"
+                    >
                         <unzer-payment-apple-pay-certificates
                             ref="applePayCertificates"
                             :selectedSalesChannelId="selectedSalesChannelId"
