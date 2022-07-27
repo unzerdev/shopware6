@@ -10,7 +10,9 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
         amount: '0.0',
         applePayButtonSelector: 'apple-pay-button',
         checkoutConfirmButtonSelector: '#confirmFormSubmit',
+        applePayMethodSelector: '.unzer-payment-apple-pay-method-wrapper',
         authorizePaymentUrl: '',
+        noApplePayMessage: '',
     };
 
     /**
@@ -43,9 +45,24 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
         this.client = new HttpClient();
 
-        this._createScript();
-        this._createForm();
-        this._registerEvents();
+        if (this._hasCapability()) {
+            this._createScript();
+            this._createForm();
+            this._registerEvents();
+        } else {
+            this._disableApplePay();
+        }
+    }
+
+    _hasCapability() {
+        return window.ApplePaySession && window.ApplePaySession.canMakePayments() && window.ApplePaySession.supportsVersion(6)
+    }
+
+    _disableApplePay() {
+        DomAccess.querySelector(document, this.options.applePayMethodSelector, false).remove();
+        DomAccess.querySelectorAll(document, '[data-unzer-payment-apple-pay]', false).forEach((pluginElement) => pluginElement.remove());
+        this._unzerPaymentPlugin.showError({ message: this.options.noApplePayMessage });
+        this._unzerPaymentPlugin.setSubmitButtonActive(false);
     }
 
     _createScript() {
@@ -63,8 +80,6 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
         this.applePay = this._unzerPaymentPlugin.unzerInstance.ApplePay();
 
         const confirmButton = DomAccess.querySelector(document, this.options.checkoutConfirmButtonSelector);
-
-        // TODO: Make sure we have Apple Pay capabilities, show error otherwise
         confirmButton.style.display = 'none';
     }
 

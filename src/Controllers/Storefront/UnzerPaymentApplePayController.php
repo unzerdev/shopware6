@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,14 +44,23 @@ class UnzerPaymentApplePayController extends StorefrontController
     private $certificateManager;
     /** @var ClientFactory */
     private $clientFactory;
+    /** @var SystemConfigService */
+    private $systemConfigService;
 
-    public function __construct(ConfigReaderInterface $configReader, FilesystemInterface $filesystem, LoggerInterface $logger, CertificateManager $certificateManager, ClientFactory $clientFactory)
-    {
-        $this->configReader       = $configReader;
-        $this->filesystem         = $filesystem;
-        $this->logger             = $logger;
-        $this->certificateManager = $certificateManager;
-        $this->clientFactory      = $clientFactory;
+    public function __construct(
+        ConfigReaderInterface $configReader,
+        FilesystemInterface $filesystem,
+        LoggerInterface $logger,
+        CertificateManager $certificateManager,
+        ClientFactory $clientFactory,
+        SystemConfigService $systemConfigService
+    ) {
+        $this->configReader        = $configReader;
+        $this->filesystem          = $filesystem;
+        $this->logger              = $logger;
+        $this->certificateManager  = $certificateManager;
+        $this->clientFactory       = $clientFactory;
+        $this->systemConfigService = $systemConfigService;
     }
 
     /**
@@ -63,7 +73,7 @@ class UnzerPaymentApplePayController extends StorefrontController
 
         $applePaySession = new ApplepaySession(
             $configuration->get(ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFIER),
-            $salesChannelContext->getSalesChannel()->getTranslation('homeMetaTitle') ?? $salesChannelContext->getSalesChannel()->getTranslation('homeName'),
+            $this->systemConfigService->getString('core.basicInformation.shopName', $salesChannelId),
             $request->getHost()
         );
         $appleAdapter = new ApplepayAdapter();
