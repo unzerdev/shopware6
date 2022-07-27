@@ -39,6 +39,10 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
     },
 
     computed: {
+        isNotDefaultSalesChannel() {
+            return this.selectedSalesChannelId !== null;
+        },
+
         now() {
             return Date.now();
         },
@@ -105,6 +109,14 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                 .finally(() => {
                     me.isUpdating = false;
                 });
+        },
+
+        getInheritedValue(element) {
+            const value = this.actualConfigData.null[element.name];
+
+            if (value) {
+                return value;
+            }
         },
     }
 });

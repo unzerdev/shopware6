@@ -137,6 +137,7 @@ Component.register('unzer-payment-settings', {
             this.config = config;
             this.isLoading = false;
             this.loadWebhooks();
+            this.$refs.applePayCertificates.loadData();
         },
 
         onSalesChannelChanged(config, salesChannelId) {
@@ -150,7 +151,6 @@ Component.register('unzer-payment-settings', {
         onWebhookRegistered() {
             this.loadWebhooks();
         },
-
 
         loadWebhooks() {
             this.isLoadingWebhooks = true;

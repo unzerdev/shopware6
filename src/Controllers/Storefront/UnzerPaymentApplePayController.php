@@ -71,9 +71,15 @@ class UnzerPaymentApplePayController extends StorefrontController
         $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
         $configuration  = $this->configReader->read($salesChannelId, true);
 
+        $displayName = $this->systemConfigService->get('core.basicInformation.shopName', $salesChannelId);
+
+        if (!is_string($displayName)) {
+            $displayName = '';
+        }
+
         $applePaySession = new ApplepaySession(
             $configuration->get(ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFIER),
-            $this->systemConfigService->get('core.basicInformation.shopName', $salesChannelId),
+            $displayName,
             $request->getHost()
         );
         $appleAdapter = new ApplepayAdapter();
@@ -82,7 +88,13 @@ class UnzerPaymentApplePayController extends StorefrontController
         $keyPath         = $this->certificateManager->getMerchantIdentificationKeyPath($salesChannelId);
 
         if (!$this->filesystem->has($certificatePath) || !$this->filesystem->has($keyPath)) {
-            throw new MissingCertificateFiles('Merchant Identification');
+            // Try for fallback configuration
+            $certificatePath = $this->certificateManager->getMerchantIdentificationCertificatePath('');
+            $keyPath         = $this->certificateManager->getMerchantIdentificationKeyPath('');
+
+            if (!$this->filesystem->has($certificatePath) || !$this->filesystem->has($keyPath)) {
+                throw new MissingCertificateFiles('Merchant Identification');
+            }
         }
 
         // ApplepayAdapter requires certificate as local files
