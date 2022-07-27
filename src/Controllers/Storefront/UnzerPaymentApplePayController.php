@@ -73,7 +73,7 @@ class UnzerPaymentApplePayController extends StorefrontController
 
         $applePaySession = new ApplepaySession(
             $configuration->get(ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFIER),
-            $this->systemConfigService->getString('core.basicInformation.shopName', $salesChannelId),
+            $this->systemConfigService->get('core.basicInformation.shopName', $salesChannelId),
             $request->getHost()
         );
         $appleAdapter = new ApplepayAdapter();
