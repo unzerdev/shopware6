@@ -139,8 +139,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 $this->paymentType = $this->unzerClient->fetchPaymentType($resourceId);
             }
 
-            $this->saveFraudPreventionData($transaction, $salesChannelContext);
-
             return new RedirectResponse($transaction->getReturnUrl());
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
@@ -313,26 +311,5 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         }
 
         return $result;
-    }
-
-    private function saveFraudPreventionData(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $context): void
-    {
-        $orderTransaction = $transaction->getOrderTransaction();
-
-        $currentRequest = $this->getCurrentRequestFromStack($orderTransaction->getId());
-        $sessionId      = $currentRequest->get('unzerPaymentFraudPreventionSessionId', '');
-
-        if (empty($sessionId)) {
-            return;
-        }
-
-        $this->transactionRepository->upsert([
-            [
-                'id'           => $orderTransaction->getId(),
-                'customFields' => [
-                    CustomFieldInstaller::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID => $sessionId,
-                ],
-            ],
-        ], $context->getContext());
     }
 }

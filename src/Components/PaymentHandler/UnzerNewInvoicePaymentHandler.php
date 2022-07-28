@@ -13,8 +13,8 @@ use Throwable;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
+use UnzerPayment6\Components\PaymentHandler\Traits\HasRiskDataTrait;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
-use UnzerSDK\Constants\RecurrenceTypes;
 use UnzerSDK\Exceptions\UnzerApiException;
 
 class UnzerNewInvoicePaymentHandler extends AbstractUnzerPaymentHandler
@@ -22,6 +22,7 @@ class UnzerNewInvoicePaymentHandler extends AbstractUnzerPaymentHandler
     use HasTransferInfoTrait;
     use CanAuthorize;
     use CanCharge;
+    use HasRiskDataTrait;
 
     /**
      * {@inheritdoc}
@@ -32,7 +33,6 @@ class UnzerNewInvoicePaymentHandler extends AbstractUnzerPaymentHandler
         SalesChannelContext $salesChannelContext
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
-        // TODO: Any additional changes?
 
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
         $birthday       = $currentRequest->get('unzerPaymentBirthday', '');
@@ -44,9 +44,20 @@ class UnzerNewInvoicePaymentHandler extends AbstractUnzerPaymentHandler
                 $this->unzerCustomer = $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
             }
 
-            $returnUrl        = $this->authorize($transaction->getReturnUrl(), $transaction->getOrderTransaction()->getAmount()->getTotalPrice(), RecurrenceTypes::ONE_CLICK);
-            $orderTransaction = $transaction->getOrderTransaction();
-            $this->saveTransferInfo($orderTransaction, $salesChannelContext->getContext());
+            $riskData = $this->generateRiskDataResource($transaction, $salesChannelContext);
+
+            if (null === $riskData) {
+                throw new \RuntimeException('fraud prevention session id is missing from the current request');
+            }
+
+            $returnUrl  = $this->authorize(
+                $transaction->getReturnUrl(),
+                $transaction->getOrderTransaction()->getAmount()->getTotalPrice(),
+                null,
+                $riskData
+            );
+
+            $this->saveTransferInfo($transaction->getOrderTransaction(), $salesChannelContext->getContext());
 
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {

@@ -31,10 +31,6 @@ trait CanRecur
      */
     public function activateRecurring(string $returnUrl, ?string $recurrenceType = null): string
     {
-        if (!$this instanceof AbstractUnzerPaymentHandler) {
-            throw new RuntimeException('Trait can only be used in a payment handler context which extends the AbstractUnzerPaymentHandler class');
-        }
-
         if ($this->paymentType === null) {
             throw new RuntimeException('PaymentType can not be null');
         }

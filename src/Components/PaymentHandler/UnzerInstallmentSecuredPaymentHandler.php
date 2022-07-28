@@ -48,7 +48,10 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
                 UnzerPayment6::MAX_DECIMAL_PRECISION
             ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
 
-            $returnUrl = $this->authorize($transaction->getReturnUrl(), round($transaction->getOrder()->getAmountTotal(), $currencyPrecision));
+            $returnUrl = $this->authorize(
+                $transaction->getReturnUrl(),
+                round($transaction->getOrder()->getAmountTotal(), $currencyPrecision)
+            );
 
             /** @phpstan-ignore-next-line */
             $this->payment->charge(round($transaction->getOrder()->getAmountTotal(), $currencyPrecision));

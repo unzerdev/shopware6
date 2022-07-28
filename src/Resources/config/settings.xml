@@ -101,12 +101,6 @@
             <label>Register direct debit accounts</label>
             <label lang="de-DE">Lastschrift-Konten registrieren</label>
         </input-field>
-
-        <input-field type="bool">
-            <name>enableFraudPrevention</name>
-            <label>Enable Fraud Prevention</label>
-            <label lang="de-DE">Betrugsprävention aktivieren</label>
-        </input-field>
     </card>
 
     <card>

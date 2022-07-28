@@ -22,6 +22,7 @@ use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydratorInterface;
 use UnzerPayment6\Components\ShipService\ShipServiceInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\TransactionTypes\Charge;
 
 /**
  * @RouteScope(scopes={"api"})
@@ -135,7 +136,9 @@ class UnzerPaymentTransactionController extends AbstractController
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $client->chargeAuthorization($orderTransactionId, $amount);
+            $charge = new Charge($amount);
+
+            $client->performChargeOnPayment($orderTransactionId, $charge);
         } catch (UnzerApiException $exception) {
             $this->logger->error(sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
                 'trace' => $exception->getTraceAsString(),

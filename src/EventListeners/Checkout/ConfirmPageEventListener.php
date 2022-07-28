@@ -88,8 +88,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $registerCreditCards    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
         $registerPayPalAccounts = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
         $registerDirectDebit    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
-        $enableFraudPrevention  = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_ENABLE_FRAUD_PREVENTION, false);
-        $validPaymentMethod     = in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true);
 
         if ($registerCreditCards &&
             $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
@@ -115,7 +113,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addDirectDebitSecuredExtension($event);
         }
 
-        if ($enableFraudPrevention && $validPaymentMethod) {
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_UNZER_INVOICE) {
             $this->addFraudPreventionExtension($event);
         }
 

@@ -173,7 +173,6 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_INVOICE,
             'handlerIdentifier' => UnzerInvoicePaymentHandler::class,
             'name'              => 'Legacy Invoice (Unzer payments)',
-            'active'            => false, // TODO: Not yet decided
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Unzer invoice (nicht mehr unterstützt)',
@@ -189,7 +188,6 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_INVOICE_SECURED,
             'handlerIdentifier' => UnzerInvoiceSecuredPaymentHandler::class,
             'name'              => 'Unzer invoice secured (Legacy)',
-            'active'            => false, // TODO: Not yet decided
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Unzer invoice secured (nicht mehr unterstützt)',
@@ -353,11 +351,6 @@ class PaymentInstaller implements InstallerInterface
         ],
     ];
 
-    private const LEGACY_PAYMENT_METHOD_IDS = [
-        self::PAYMENT_ID_INVOICE,
-        self::PAYMENT_ID_INVOICE_SECURED,
-    ];
-
     /** @var EntityRepositoryInterface */
     private $paymentMethodRepository;
 
@@ -395,16 +388,9 @@ class PaymentInstaller implements InstallerInterface
         $this->setAllPaymentMethodsActive(false, $context);
     }
 
-    public static function getPaymentIds(): array
-    {
-        return array_column(self::PAYMENT_METHODS, 'id');
-    }
-
     private function upsertPaymentMethods(InstallContext $context): void
     {
         $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(UnzerPayment6::class, $context->getContext());
-
-        // TODO: Filter legacy payment methods on new installs?
 
         foreach (self::PAYMENT_METHODS as $paymentMethod) {
             $paymentMethod['pluginId'] = $pluginId;

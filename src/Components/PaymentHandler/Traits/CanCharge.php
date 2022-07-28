@@ -7,38 +7,55 @@ namespace UnzerPayment6\Components\PaymentHandler\Traits;
 use RuntimeException;
 use UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\EmbeddedResources\RiskData;
+use UnzerSDK\Resources\TransactionTypes\Charge;
 
 trait CanCharge
 {
     /**
      * @throws UnzerApiException
      */
-    public function charge(string $returnUrl, ?string $recurrenceType = null): string
+    public function charge(
+        string $returnUrl,
+        ?string $recurrenceType = null,
+        ?RiskData $riskData = null
+    ): string
     {
-        if (!$this instanceof AbstractUnzerPaymentHandler) {
-            throw new RuntimeException('Trait can only be used in a payment handler context which extends the AbstractUnzerPaymentHandler class');
+        if ($this->unzerClient === null) {
+            throw new RuntimeException('unzerClient can not be null');
+        }
+
+        if (!method_exists($this->unzerClient, 'performAuthorization')) {
+            throw new RuntimeException('The SDK Version is older then expected');
         }
 
         if ($this->paymentType === null) {
             throw new RuntimeException('PaymentType can not be null');
         }
 
-        if (!method_exists($this->paymentType, 'charge')) {
-            throw new RuntimeException('This payment type does not support direct charge!');
-        }
-
-        $paymentResult = $this->paymentType->charge(
+        $charge = new Charge(
             $this->unzerBasket->getTotalValueGross(),
             $this->unzerBasket->getCurrencyCode(),
-            $returnUrl,
+            $returnUrl
+        );
+
+        $charge->setOrderId($this->unzerBasket->getOrderId());
+        $charge->setCard3ds(true);
+
+        if ($recurrenceType !== null) {
+            $charge->setRecurrenceType($recurrenceType);
+        }
+
+        if ($riskData !== null) {
+            $charge->setRiskData($riskData);
+        }
+
+        $paymentResult = $this->unzerClient->performCharge(
+            $charge,
+            $this->paymentType,
             $this->unzerCustomer,
-            $this->unzerBasket->getOrderId(),
             $this->unzerMetadata,
-            $this->unzerBasket,
-            true,
-            null,
-            null,
-            $recurrenceType
+            $this->unzerBasket
         );
 
         $this->payment = $paymentResult->getPayment();
