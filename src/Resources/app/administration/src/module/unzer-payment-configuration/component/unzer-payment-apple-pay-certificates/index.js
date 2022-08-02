@@ -58,6 +58,10 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
         },
 
         loadData() {
+            this.checkCertificates();
+        },
+
+        checkCertificates() {
             let me = this;
 
             me.isDataLoading = true;
@@ -93,17 +97,22 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                 .then((response) => {
                     me.isUpdateSuccessful = true;
 
-                    this.createNotificationSuccess({
-                        title: this.$tc('unzer-payment-settings.apple-pay.certificates.update.success.title'),
-                        message: this.$tc('unzer-payment-settings.apple-pay.certificates.update.success.message')
+                    me.createNotificationSuccess({
+                        title: me.$tc('unzer-payment-settings.apple-pay.certificates.update.success.title'),
+                        message: me.$tc('unzer-payment-settings.apple-pay.certificates.update.success.message')
                     });
 
-                    this.$emit('certificate-updated', response);
+                    me.$emit('certificate-updated', response);
+                    me.checkCertificates();
+                    me.$refs.paymentProcessingCertificateInput.onRemoveIconClick();
+                    me.$refs.paymentProcessingKeyInput.onRemoveIconClick();
+                    me.$refs.merchantIdentificationCertificateInput.onRemoveIconClick();
+                    me.$refs.merchantIdentificationKeyInput.onRemoveIconClick();
                 })
                 .catch(() => {
-                    this.createNotificationError({
-                        title: this.$tc('unzer-payment-settings.apple-pay.certificates.update.error.title'),
-                        message: this.$tc('unzer-payment-settings.apple-pay.certificates.update.error.message')
+                    me.createNotificationError({
+                        title: me.$tc('unzer-payment-settings.apple-pay.certificates.update.error.title'),
+                        message: me.$tc('unzer-payment-settings.apple-pay.certificates.update.error.message')
                     });
                 })
                 .finally(() => {
