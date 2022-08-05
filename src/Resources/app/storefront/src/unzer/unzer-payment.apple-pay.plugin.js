@@ -96,34 +96,33 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
         };
 
         const session = new ApplePaySession(6, applePayPaymentRequest);
-        session.onvalidatemerchant = function (event) {
+        session.onvalidatemerchant = (event) => {
             try {
-                me.client.post(me.options.merchantValidationUrl, { merchantValidationUrl: event.validationURL }, (response) => {
-                    session.completeMerchantValidation(response);
+                me.client.post(me.options.merchantValidationUrl, JSON.stringify({ merchantValidationUrl: event.validationURL }), (response) => {
+                    session.completeMerchantValidation(JSON.parse(response));
                 });
             } catch(e) {
                 session.abort();
             }
         }
 
-        session.onpaymentauthorized = function (event) {
-            // The event will contain the data you need to pass to our server-side integration to actually charge the customers card
+        session.onpaymentauthorized = (event) => {
             const paymentData = event.payment.token.paymentData;
-            // event.payment also contains contact information if needed.
 
-            // Create the payment method instance at Unzer with your public key
             me.applePay.createResource(paymentData)
-                .then(function (createdResource) {
+                .then((createdResource) => {
                     me.submitting = true;
 
                     try {
-                        me.client.post(me.options.authorizePaymentUrl, createdResource, (response) => {
-                            responseData = JSON.parse(response);
-                            if (response.transactionStatus === 'pending') {
+                        me.client.post(me.options.authorizePaymentUrl, JSON.stringify(createdResource), (response) => {
+                            const responseData = JSON.parse(response);
+                            if (responseData.transactionStatus === 'pending') {
                                 session.completePayment({status: window.ApplePaySession.STATUS_SUCCESS});
 
+                                // TODO: Show LoadingIndicator or disable Apple Pay button
+
                                 me._unzerPaymentPlugin.setSubmitButtonActive(false);
-                                me._unzerPaymentPlugin.submitResource(createdResource); // TODO: Is this right?
+                                me._unzerPaymentPlugin.submitResource(createdResource);
                             } else {
                                 session.completePayment({status: window.ApplePaySession.STATUS_FAILURE});
                                 session.abort();
@@ -134,11 +133,11 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
                         session.abort();
                     }
                 })
-                .catch(function (error) {
+                .catch((error) => {
                     session.completePayment({status: window.ApplePaySession.STATUS_FAILURE});
                     session.abort();
                 })
-                .finally(function () {
+                .finally(() => {
                     me._unzerPaymentPlugin.setSubmitButtonActive(true);
                     me.submitting = false;
                 });
