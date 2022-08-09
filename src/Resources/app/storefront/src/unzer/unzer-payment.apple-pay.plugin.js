@@ -1,6 +1,7 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import DomAccess from 'src/helper/dom-access.helper';
 import HttpClient from "src/service/http-client.service";
+import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 
 export default class UnzerPaymentApplePayPlugin extends Plugin {
     static options = {
@@ -112,6 +113,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
             me.applePay.createResource(paymentData)
                 .then((createdResource) => {
                     me.submitting = true;
+                    PageLoadingIndicatorUtil.create();
 
                     try {
                         me.client.post(me.options.authorizePaymentUrl, JSON.stringify(createdResource), (response) => {
@@ -119,21 +121,22 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
                             if (responseData.transactionStatus === 'pending') {
                                 session.completePayment({status: window.ApplePaySession.STATUS_SUCCESS});
 
-                                // TODO: Show LoadingIndicator or disable Apple Pay button
-
                                 me._unzerPaymentPlugin.setSubmitButtonActive(false);
                                 me._unzerPaymentPlugin.submitResource(createdResource);
                             } else {
+                                PageLoadingIndicatorUtil.remove();
                                 session.completePayment({status: window.ApplePaySession.STATUS_FAILURE});
                                 session.abort();
                             }
                         });
                     } catch(e) {
+                        PageLoadingIndicatorUtil.remove();
                         session.completePayment({status: window.ApplePaySession.STATUS_FAILURE});
                         session.abort();
                     }
                 })
                 .catch((error) => {
+                    PageLoadingIndicatorUtil.remove();
                     session.completePayment({status: window.ApplePaySession.STATUS_FAILURE});
                     session.abort();
                 })
