@@ -140,6 +140,10 @@ Component.register('unzer-payment-settings', {
             this.$refs.applePayCertificates.loadData();
         },
 
+        onLoadingChanged(value) {
+            this.isLoading = value;
+        },
+
         onSalesChannelChanged(config, salesChannelId) {
             if (config) {
                 this.onConfigChange(config);

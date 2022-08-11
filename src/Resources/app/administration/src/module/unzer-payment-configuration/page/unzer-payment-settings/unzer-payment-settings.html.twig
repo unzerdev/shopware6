@@ -55,6 +55,7 @@
                         salesChannelSwitchable
                         inherit
                         @config-changed="onConfigChange"
+                        @loading-changed="onLoadingChanged"
                         @sales-channel-changed="onSalesChannelChanged"
                         domain="UnzerPayment6.settings">
                     </sw-system-config>
@@ -67,6 +68,7 @@
                         <unzer-payment-apple-pay-certificates
                             ref="applePayCertificates"
                             :selectedSalesChannelId="selectedSalesChannelId"
+                            :parentRefs="$refs"
                             :isLoading="isLoading">
                         </unzer-payment-apple-pay-certificates>
                     </sw-card>

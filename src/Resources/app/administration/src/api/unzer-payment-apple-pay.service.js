@@ -25,7 +25,7 @@ class UnzerPaymentApplePayService extends ApiService {
             });
     }
 
-    async updateCertificates(salesChannelId, files) {
+    async updateCertificates(salesChannelId, files, inheritMerchantIdentification, inheritPaymentProcessing) {
         let url =`_action/${this.getApiBasePath()}/apple-pay/certificates`;
 
         if (salesChannelId) {
@@ -40,6 +40,13 @@ class UnzerPaymentApplePayService extends ApiService {
 
                 data[key] = await file.text();
             }
+        }
+
+        if (inheritMerchantIdentification) {
+            data.inheritMerchantIdentification = true;
+        }
+        if (inheritPaymentProcessing) {
+            data.inheritPaymentProcessing = true;
         }
 
         if (data.length === 0) {
