@@ -79,9 +79,9 @@
                         <sw-loader size="10px" v-else></sw-loader>
                         <sw-label
                             v-if="!isDataLoading && merchantIdentificationValidUntil !== null"
-                            :variant="merchantIdentificationValidUntil > now ? 'success' : 'warning'"
+                            :variant="(merchantIdentificationValidUntil > now) ? 'success' : 'warning'"
                             appearance="circle"
-                            v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValidUntil.' + merchantIdentificationValidUntil > now)">
+                            v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValidUntil.' + (merchantIdentificationValidUntil > now).toString())">
                             <sw-icon name="default-time-clock" :small="true"></sw-icon>
                         </sw-label>
                         <small v-html="$tc('unzer-payment-settings.apple-pay.merchantIdentificationCertificate.helpText')"></small>
