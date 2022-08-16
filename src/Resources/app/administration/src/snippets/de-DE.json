@@ -109,16 +109,18 @@
                 }
             },
             "paymentProcessingCertificate": {
-                "label": "Payment Processing Zertifikat"
+                "label": "Payment Processing Zertifikat (apple_pay.pem)",
+                "helpText": "Zertifikat und Schlüssel müssen nach den Schritten der <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">Unzer-Dokumentation</a> vorbereitet werden."
             },
             "paymentProcessingKey": {
-                "label": "Payment Processing Zertifikatsschlüssel (Private Key)"
+                "label": "Payment Processing Zertifikatsschlüssel (privatekey.key)"
             },
             "merchantIdentificationCertificate": {
-                "label": "Merchant Identification Zertifikat"
+                "label": "Merchant Identification Zertifikat (merchant_id.pem)",
+                "helpText": "Zertifikat und Schlüssel müssen nach den Schritten der <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">Unzer-Dokumentation</a> vorbereitet werden."
             },
             "merchantIdentificationKey": {
-                "label": "Merchant Identification Zertifikatsschlüssel (Private Key)"
+                "label": "Merchant Identification Zertifikatsschlüssel (merchant_id.key)"
             }
         },
         "form": {
