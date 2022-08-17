@@ -9,7 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MissingCertificateFiles extends ShopwareHttpException
 {
-    private string $certificateType;
+    /** @var string */
+    private $certificateType;
 
     public function __construct(string $certificateType)
     {

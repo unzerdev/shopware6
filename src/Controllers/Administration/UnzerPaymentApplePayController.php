@@ -72,8 +72,7 @@ class UnzerPaymentApplePayController extends AbstractController
      */
     public function updateApplePayCertificates(?string $salesChannelId, RequestDataBag $dataBag): JsonResponse
     {
-        $salesChannelId = (string) $salesChannelId;
-        $client         = $this->clientFactory->createClient($salesChannelId);
+        $client = $this->clientFactory->createClient((string) $salesChannelId);
 
         if ($dataBag->has(self::INHERIT_PAYMENT_PROCESSING_PARAMETER)) {
             $this->logger->debug(sprintf('Payment Processing reference for sales channel %s cleared', $salesChannelId));
