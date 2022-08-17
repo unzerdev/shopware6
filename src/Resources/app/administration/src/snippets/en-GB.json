@@ -111,13 +111,15 @@
                 }
             },
             "paymentProcessingCertificate": {
-                "label": "Payment Processing Certificate"
+                "label": "Payment Processing Certificate",
+                "helpText": "Certificate and Key have to be prepared as specified in <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">the Unzer documentation</a>."
             },
             "paymentProcessingKey": {
                 "label": "Payment Processing Certificate Key (Private Key)"
             },
             "merchantIdentificationCertificate": {
-                "label": "Merchant Identification Certificate"
+                "label": "Merchant Identification Certificate",
+                "helpText": "Certificate and Key have to be prepared as specified in <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">the Unzer documentation</a>."
             },
             "merchantIdentificationKey": {
                 "label": "Merchant Identification Certificate Key (Private Key)"

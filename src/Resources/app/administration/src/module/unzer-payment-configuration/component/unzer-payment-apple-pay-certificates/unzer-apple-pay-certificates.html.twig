@@ -1,7 +1,7 @@
 {% block unzer_payment_apple_pay_certificates %}
     <sw-container :title="$tc(`unzer-payment-settings.apple-pay.certificates.title`)"
                   class="unzer-payment-settings--apple-pay-certificates">
-        <template v-if="!isLoading">
+        <template v-show="!isLoading">
             {% block unzer_payment_apple_pay_certificates_form %}
                 <sw-inherit-wrapper
                     ref="inheritWrapperPaymentProcessingCertificate"

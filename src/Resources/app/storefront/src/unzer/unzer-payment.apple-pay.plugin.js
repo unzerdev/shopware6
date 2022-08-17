@@ -1,6 +1,6 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import DomAccess from 'src/helper/dom-access.helper';
-import HttpClient from "src/service/http-client.service";
+import HttpClient from 'src/service/http-client.service';
 import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 
 export default class UnzerPaymentApplePayPlugin extends Plugin {
@@ -15,7 +15,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
         authorizePaymentUrl: '',
         merchantValidationUrl: '',
         noApplePayMessage: '',
-        supportedNetworks: ['masterCard', 'visa'],
+        supportedNetworks: ['masterCard', 'visa']
     };
 
     /**
@@ -93,10 +93,14 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
             currencyCode: this.options.currency,
             supportedNetworks: this.options.supportedNetworks,
             merchantCapabilities: ['supports3DS'],
-            total: { label: this.options.shopName, amount: this.options.amount },
+            total: { label: this.options.shopName, amount: this.options.amount }
         };
 
-        const session = new ApplePaySession(6, applePayPaymentRequest);
+        if (!window.ApplePaySession) {
+            return;
+        }
+
+        const session = new window.ApplePaySession(6, applePayPaymentRequest);
         session.onvalidatemerchant = (event) => {
             try {
                 me.client.post(me.options.merchantValidationUrl, JSON.stringify({ merchantValidationUrl: event.validationURL }), (response) => {
@@ -135,7 +139,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
                         session.abort();
                     }
                 })
-                .catch((error) => {
+                .catch(() => {
                     PageLoadingIndicatorUtil.remove();
                     session.completePayment({status: window.ApplePaySession.STATUS_FAILURE});
                     session.abort();
