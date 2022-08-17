@@ -11,6 +11,8 @@
                     :has-parent="isNotDefaultSalesChannel"
                     @restore="setPaymentProcessingInheritance"
                     @remove="removePaymentProcessingInheritance"
+                    @inheritance-restore="setPaymentProcessingInheritance"
+                    @inheritance-remove="removePaymentProcessingInheritance"
                     >
                     <template #content="props">
                         <sw-label
@@ -43,6 +45,8 @@
                     :has-parent="isNotDefaultSalesChannel"
                     @restore="setPaymentProcessingInheritance"
                     @remove="removePaymentProcessingInheritance"
+                    @inheritance-restore="setPaymentProcessingInheritance"
+                    @inheritance-remove="removePaymentProcessingInheritance"
                 >
                     <template #content="props">
                         <sw-file-input
@@ -63,6 +67,8 @@
                     :has-parent="isNotDefaultSalesChannel"
                     @restore="setMerchantIdentificationInheritance"
                     @remove="removeMerchantIdentificationInheritance"
+                    @inheritance-restore="setMerchantIdentificationInheritance"
+                    @inheritance-remove="removeMerchantIdentificationInheritance"
                 >
                     <template #content="props">
                         <sw-label
@@ -104,6 +110,8 @@
                     :has-parent="isNotDefaultSalesChannel"
                     @restore="setMerchantIdentificationInheritance"
                     @remove="removeMerchantIdentificationInheritance"
+                    @inheritance-restore="setMerchantIdentificationInheritance"
+                    @inheritance-remove="removeMerchantIdentificationInheritance"
                 >
                     <template #content="props">
                         <sw-file-input
