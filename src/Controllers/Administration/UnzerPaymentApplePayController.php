@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
+use Exception;
 use League\Flysystem\FilesystemInterface;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
@@ -22,6 +23,7 @@ use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Resource\ApplePayCertificate;
 use UnzerPayment6\Components\Resource\ApplePayPrivateKey;
+use UnzerSDK\Exceptions\UnzerApiException;
 
 /**
  * @RouteScope(scopes={"api"})
@@ -68,73 +70,104 @@ class UnzerPaymentApplePayController extends AbstractController
      * @Route("/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.update-certificates", methods={"POST"}, defaults={"salesChannelId": null, "_route_scope": {"api"}})
      * @Route("/api/v{version}/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.update-certificates.version", methods={"POST"}, defaults={"salesChannelId": null, "_route_scope": {"api"}})
      */
-    public function updateApplePayCertificates(string $salesChannelId, RequestDataBag $dataBag): JsonResponse
+    public function updateApplePayCertificates(?string $salesChannelId, RequestDataBag $dataBag): JsonResponse
     {
-        $client = $this->clientFactory->createClient($salesChannelId);
+        $salesChannelId = (string) $salesChannelId;
+        $client         = $this->clientFactory->createClient($salesChannelId);
 
         if ($dataBag->has(self::INHERIT_PAYMENT_PROCESSING_PARAMETER)) {
             $this->logger->debug(sprintf('Payment Processing reference for sales channel %s cleared', $salesChannelId));
             $this->systemConfigService->delete(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID), $salesChannelId);
         }
 
-        if ($dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && $dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER)) {
-            $certificate = $dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER);
+        try {
+            if ($dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && $dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER)) {
+                $certificate = $dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER);
 
-            if (extension_loaded('openssl') && !openssl_x509_parse($certificate)) {
-                $this->logger->error('Invalid Payment Processing certificate given');
-                throw new InvalidCertificate('Payment Processing');
+                if (extension_loaded('openssl') && !openssl_x509_parse($certificate)) {
+                    $this->logger->error('Invalid Payment Processing certificate given');
+                    throw new InvalidCertificate('Payment Processing');
+                }
+
+                $privateKeyResource = new ApplePayPrivateKey();
+                $privateKeyResource->setCertificate($dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER));
+
+                $client->getResourceService()->createResource($privateKeyResource->setParentResource($client));
+                $privateKeyId = $privateKeyResource->getId();
+
+                $certificateResource = new ApplePayCertificate();
+                $certificateResource->setCertificate($certificate);
+                $certificateResource->setPrivateKey($privateKeyId);
+                $client->getResourceService()->createResource($certificateResource->setParentResource($client));
+
+                $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID), $certificateResource->getId(), $salesChannelId);
+                $this->logger->debug(sprintf('Payment Processing certificate for sales channel %s updated', $salesChannelId));
+            } elseif (($dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && !$dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER))
+                || (!$dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && $dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER))) {
+                $this->logger->error('Payment Processing certificate or key missing');
+                throw new MissingCertificateFiles('Payment Processing');
             }
 
-            $privateKeyResource = new ApplePayPrivateKey();
-            $privateKeyResource->setCertificate($dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER));
+            if ($dataBag->has(self::INHERIT_MERCHANT_IDENTIFICATION_PARAMETER)) {
+                if ($this->filesystem->has($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId))) {
+                    $this->logger->debug(sprintf('Merchant Identification certificate for sales channel %s deleted', $salesChannelId));
+                    $this->filesystem->delete($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId));
+                }
 
-            $client->getResourceService()->createResource($privateKeyResource->setParentResource($client));
-            $privateKeyId = $privateKeyResource->getId();
+                if ($this->filesystem->has($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId))) {
+                    $this->logger->debug(sprintf('Merchant Identification key for sales channel %s deleted', $salesChannelId));
+                    $this->filesystem->delete($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId));
+                }
 
-            $certificateResource = new ApplePayCertificate();
-            $certificateResource->setCertificate($certificate);
-            $certificateResource->setPrivateKey($privateKeyId);
-            $client->getResourceService()->createResource($certificateResource->setParentResource($client));
-
-            $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID), $certificateResource->getId(), $salesChannelId);
-            $this->logger->debug(sprintf('Payment Processing certificate for sales channel %s updated', $salesChannelId));
-        } elseif (($dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && !$dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER))
-            || (!$dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && $dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER))) {
-            $this->logger->error('Payment Processing certificate or key missing');
-            throw new MissingCertificateFiles('Payment Processing');
-        }
-
-        if ($dataBag->has(self::INHERIT_MERCHANT_IDENTIFICATION_PARAMETER)) {
-            if ($this->filesystem->has($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId))) {
-                $this->logger->debug(sprintf('Merchant Identification certificate for sales channel %s deleted', $salesChannelId));
-                $this->filesystem->delete($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId));
+                $this->systemConfigService->delete(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), $salesChannelId);
             }
 
-            if ($this->filesystem->has($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId))) {
-                $this->logger->debug(sprintf('Merchant Identification key for sales channel %s deleted', $salesChannelId));
-                $this->filesystem->delete($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId));
+            if ($dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && $dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER)) {
+                $certificate = $dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER);
+                $key         = $dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER);
+
+                if (extension_loaded('openssl') && !openssl_x509_parse($certificate)) {
+                    $this->logger->error('Invalid Merchant Identification certificate given');
+                    throw new InvalidCertificate('Merchant Identification');
+                }
+                $this->filesystem->put($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId), $certificate);
+                $this->filesystem->put($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId), $key);
+
+                $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), $salesChannelId, $salesChannelId);
+                $this->logger->debug(sprintf('Merchant Identification certificate for sales channel %s updated', $salesChannelId));
+            } elseif (($dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && !$dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER))
+                || (!$dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && $dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER))) {
+                $this->logger->error('Merchant Identification certificate or key missing');
+                throw new MissingCertificateFiles('Merchant Identification');
+            }
+        } catch (UnzerApiException $e) {
+            return new JsonResponse(
+                [
+                    'message'         => $e->getMerchantMessage(),
+                    'translationData' => [],
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        } catch (Exception $e) {
+            if (method_exists($e, 'getTranslationKey')) {
+                $message = $e->getTranslationKey();
+            } else {
+                $message = $e->getMessage();
             }
 
-            $this->systemConfigService->delete(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), $salesChannelId);
-        }
-
-        if ($dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && $dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER)) {
-            $certificate = $dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER);
-            $key         = $dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER);
-
-            if (extension_loaded('openssl') && !openssl_x509_parse($certificate)) {
-                $this->logger->error('Invalid Merchant Identification certificate given');
-                throw new InvalidCertificate('Merchant Identification');
+            if (method_exists($e, 'getTranslationData')) {
+                $translationData = $e->getTranslationData();
+            } else {
+                $translationData = [];
             }
-            $this->filesystem->put($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId), $certificate);
-            $this->filesystem->put($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId), $key);
 
-            $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), $salesChannelId, $salesChannelId);
-            $this->logger->debug(sprintf('Merchant Identification certificate for sales channel %s updated', $salesChannelId));
-        } elseif (($dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && !$dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER))
-            || (!$dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && $dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER))) {
-            $this->logger->error('Merchant Identification certificate or key missing');
-            throw new MissingCertificateFiles('Merchant Identification');
+            return new JsonResponse(
+                [
+                    'message'         => $message,
+                    'translationData' => $translationData,
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return new JsonResponse(

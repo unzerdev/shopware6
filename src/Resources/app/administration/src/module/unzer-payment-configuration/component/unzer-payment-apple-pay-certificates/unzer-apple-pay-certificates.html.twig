@@ -16,11 +16,13 @@
                         <sw-label
                             v-if="!isDataLoading"
                             :variant="paymentProcessingValid ? 'success' : 'danger'"
-                            appearance="circle"
+                            appearance="pill"
                             v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingValid.' + paymentProcessingValid.toString())">
                             <sw-icon :name="paymentProcessingValid ? 'default-basic-checkmark-circle' : 'default-badge-alert'" :small="true"></sw-icon>
+                            <span v-html="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingValid.' + paymentProcessingValid.toString())"></span>
                         </sw-label>
                         <sw-loader size="10px" v-else></sw-loader>
+                        <br>
                         <small v-html="$tc('unzer-payment-settings.apple-pay.paymentProcessingCertificate.helpText')"></small>
 
                         <sw-file-input
@@ -29,10 +31,6 @@
                             v-model="paymentProcessingCertificate"
                             @change="onInputChangePaymentProcessing"
                         >
-                            <template v-slot:caption-label>
-                                <span></span>
-                                <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input, so we hide the text for that -->
-                            </template>
                         </sw-file-input>
                     </template>
                 </sw-inherit-wrapper>
@@ -53,10 +51,6 @@
                             v-model="paymentProcessingKey"
                             @change="onInputChangePaymentProcessing"
                         >
-                            <template v-slot:caption-label>
-                                <span></span>
-                                <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input, so we hide the text for that -->
-                            </template>
                         </sw-file-input>
                     </template>
                 </sw-inherit-wrapper>
@@ -74,18 +68,22 @@
                         <sw-label
                             v-if="!isDataLoading"
                             :variant="merchantIdentificationValid ? 'success' : 'danger'"
-                            appearance="circle"
+                            appearance="pill"
                             v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValid.' + merchantIdentificationValid.toString())">
                             <sw-icon :name="merchantIdentificationValid ? 'default-basic-checkmark-circle' : 'default-badge-alert'" :small="true"></sw-icon>
+                            <span v-html="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValid.' + merchantIdentificationValid.toString())"></span>
                         </sw-label>
                         <sw-loader size="10px" v-else></sw-loader>
+                        <br>
                         <sw-label
                             v-if="!isDataLoading && merchantIdentificationValidUntil !== null"
                             :variant="(merchantIdentificationValidUntil > now) ? 'success' : 'warning'"
-                            appearance="circle"
+                            appearance="pill"
                             v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValidUntil.' + (merchantIdentificationValidUntil > now).toString())">
                             <sw-icon name="default-time-clock" :small="true"></sw-icon>
+                            <span v-html="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValidUntil.' + (merchantIdentificationValidUntil > now).toString())"></span>
                         </sw-label>
+                        <br>
                         <small v-html="$tc('unzer-payment-settings.apple-pay.merchantIdentificationCertificate.helpText')"></small>
 
                         <sw-file-input
@@ -94,10 +92,6 @@
                             v-model="merchantIdentificationCertificate"
                             @change="onInputChangeMerchantIdentification"
                         >
-                            <template v-slot:caption-label>
-                                <span></span>
-                                <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input, so we hide the text for that -->
-                            </template>
                         </sw-file-input>
                     </template>
                 </sw-inherit-wrapper>
@@ -118,10 +112,6 @@
                             v-model="merchantIdentificationKey"
                             @change="onInputChangeMerchantIdentification"
                         >
-                            <template v-slot:caption-label>
-                                <span></span>
-                                <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input, so we hide the text for that -->
-                            </template>
                         </sw-file-input>
                     </template>
                 </sw-inherit-wrapper>

@@ -83,6 +83,20 @@
         "apple-pay": {
             "certificates": {
                 "title": "Apple Pay Certificates",
+                "check": {
+                    "paymentProcessingValid": {
+                        "true": "The Payment Processing certificate is present and valid",
+                        "false": "The Payment Processing certificate is missing"
+                    },
+                    "merchantIdentificationValid": {
+                        "true": "The Merchant Identification certificate is present",
+                        "false": "The Merchant Identification certificate is missing"
+                    },
+                    "merchantIdentificationValidUntil": {
+                        "true": "The Merchant Identification certificate is valid",
+                        "false": "The Merchant Identification certificate is expired and must be renewed"
+                    }
+                },
                 "update": {
                     "success": {
                         "title": "Success",
@@ -90,7 +104,9 @@
                     },
                     "error": {
                         "title": "Error",
-                        "message": "An error occured during certificate update"
+                        "message": "An error occurred during certificate update",
+                        "messageInvalidCertificate": "The given certificate data for {type} is invalid",
+                        "messageMissingCertificateFiles": "The given certificate data for {type} is incomplete"
                     }
                 }
             },

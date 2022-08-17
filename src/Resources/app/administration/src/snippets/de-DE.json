@@ -104,7 +104,9 @@
                     },
                     "error": {
                         "title": "Fehler",
-                        "message": "Bei der Aktualisierung der Zertifikate trat ein Fehler auf"
+                        "message": "Bei der Aktualisierung der Zertifikate trat ein Fehler auf",
+                        "messageInvalidCertificate": "Die übergebenen Zertifikatsdaten für {type} sind ungültig",
+                        "messageMissingCertificateFiles": "Die übergebenen Zertifikatsdaten für {type} sind unvollständig"
                     }
                 }
             },
