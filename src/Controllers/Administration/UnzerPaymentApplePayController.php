@@ -132,7 +132,7 @@ class UnzerPaymentApplePayController extends AbstractController
                 $this->filesystem->put($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId), $certificate);
                 $this->filesystem->put($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId), $key);
 
-                $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), $salesChannelId, $salesChannelId);
+                $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), (string) $salesChannelId, $salesChannelId);
                 $this->logger->debug(sprintf('Merchant Identification certificate for sales channel %s updated', $salesChannelId));
             } elseif (($dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && !$dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER))
                 || (!$dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && $dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER))) {
