@@ -55,8 +55,7 @@
     {{ parent() }}
 
     {% if page.order %}
-        {% set order = page.order %}
-        {% set billingAddress = order.billingAddress %}
+        {% set billingAddress = page.order.billingAddress %}
         {% set summary = page.order %}
     {% else %}
         {% set billingAddress = context.customer.activeBillingAddress %}
