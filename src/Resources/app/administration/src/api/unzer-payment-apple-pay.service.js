@@ -7,10 +7,10 @@ class UnzerPaymentApplePayService extends ApiService {
     }
 
     checkCertificates(salesChannelId) {
-        let url =`_action/${this.getApiBasePath()}/apple-pay/certificates`;
+        let url = `_action/${this.getApiBasePath()}/apple-pay/certificates`;
 
         if (salesChannelId) {
-            url =`_action/${this.getApiBasePath()}/apple-pay/certificates/${salesChannelId}`;
+            url += `/${salesChannelId}`;
         }
 
         return this.httpClient
@@ -26,10 +26,10 @@ class UnzerPaymentApplePayService extends ApiService {
     }
 
     async updateCertificates(salesChannelId, files, inheritMerchantIdentification, inheritPaymentProcessing) {
-        let url =`_action/${this.getApiBasePath()}/apple-pay/certificates`;
+        let url = `_action/${this.getApiBasePath()}/apple-pay/certificates`;
 
         if (salesChannelId) {
-            url =`_action/${this.getApiBasePath()}/apple-pay/certificates/${salesChannelId}`;
+            url += `/${salesChannelId}`;
         }
 
         const data = {};
