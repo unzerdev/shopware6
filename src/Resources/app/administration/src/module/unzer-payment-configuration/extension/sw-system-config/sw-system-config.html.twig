@@ -1,0 +1,5 @@
+{% block sw_system_config_content_card_field %}
+    <template v-if="element.name != 'UnzerPayment6.settings.applePayPaymentProcessingCertificateId' && element.name != 'UnzerPayment6.settings.applePayMerchantIdentificationCertificateId'">
+        {% parent() %}
+    </template>
+{% endblock %}

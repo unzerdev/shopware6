@@ -1,6 +1,7 @@
 # Unreleased
 * Aktualisierung des Unzer PHP SDK zu Version 1.1.5.0
 * Kompatibilität zu Unzer Basket V2 API hergestellt
+* Apple Pay als weitere Zahlungsart hinzugefügt
 
 # 4.0.0
 * Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert
