@@ -1,6 +1,7 @@
 # Unreleased
 * Updated Unzer PHP SDK to version 1.1.5.0
-* Add compatibility to Unzer Basket V2 API
+* Added compatibility to Unzer Basket V2 API
+* Added Apple Pay as new payment method
 
 # 4.0.0
 * Transfer information is now stored in the custom fields instead of a separate table.
