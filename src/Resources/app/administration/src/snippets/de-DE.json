@@ -117,6 +117,9 @@
             "paymentProcessingKey": {
                 "label": "Payment Processing Zertifikatsschlüssel (privatekey.key)"
             },
+            "publicKey": {
+                "changeNotice": "Bitte beachten: Nach dem Ändern der Unzer Keys muss das Apple Pay Payment Processing Certificate neu hochgeladen werden."
+            },
             "merchantIdentificationCertificate": {
                 "label": "Merchant Identification Zertifikat (merchant_id.pem)",
                 "helpText": "Zertifikat und Schlüssel müssen nach den Schritten der <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">Unzer-Dokumentation</a> vorbereitet werden."
