@@ -1,3 +1,6 @@
+# Unreleased
+* Korrektur der wiederkehrenden Nutzung einer Kreditkarte
+
 # 4.0.0
 * Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert
   * **Bitte beachten,** dass bestehende Daten beim Plugin-Update **nicht** migriert werden.

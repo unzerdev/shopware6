@@ -1,3 +1,6 @@
+# Unreleased
+* Fix of recurring use of a credit card
+
 # 4.0.0
 * Transfer information is now stored in the custom fields instead of a separate table.
   * **Please note,** that existing data will **not** be migrated
