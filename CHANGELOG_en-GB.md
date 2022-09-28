@@ -1,4 +1,5 @@
 # Unreleased
+* Fix of recurring use of a credit card
 * Updated Unzer PHP SDK to version 1.1.5.0
 * Added compatibility to Unzer Basket V2 API
 * Added Apple Pay as new payment method
