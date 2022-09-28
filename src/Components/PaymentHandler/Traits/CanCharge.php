@@ -28,7 +28,7 @@ trait CanCharge
         }
 
         $paymentResult = $this->paymentType->charge(
-            $this->unzerBasket->getAmountTotalGross(),
+            $this->unzerBasket->getTotalValueGross(),
             $this->unzerBasket->getCurrencyCode(),
             $returnUrl,
             $this->unzerCustomer,

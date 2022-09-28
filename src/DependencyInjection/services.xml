@@ -61,5 +61,11 @@
         <service id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper">
             <argument type="service" id="order_transaction.repository"/>
         </service>
+
+        <service id="UnzerPayment6\Components\BasketConverter\BasketConverter"/>
+
+        <service id="UnzerPayment6\Components\ApplePay\CertificateManager">
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+        </service>
     </services>
 </container>
