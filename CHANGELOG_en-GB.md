@@ -1,4 +1,4 @@
-# Unreleased
+# 4.1.0
 * Fix of recurring use of a credit card
 * Updated Unzer PHP SDK to version 1.1.5.0
 * Added compatibility to Unzer Basket V2 API
