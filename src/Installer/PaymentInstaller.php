@@ -362,7 +362,7 @@ class PaymentInstaller implements InstallerInterface
     public function update(UpdateContext $context): void
     {
         foreach (self::PAYMENT_METHODS as $paymentMethod) {
-            if (!$this->isPaymentMethodActive($paymentMethod['id'], $context->getContext())) {
+            if (!$this->isPaymentMethodInstalled($paymentMethod['id'], $context->getContext())) {
                 $this->paymentMethodRepository->upsert([$paymentMethod], $context->getContext());
             }
         }
@@ -408,7 +408,7 @@ class PaymentInstaller implements InstallerInterface
         $this->paymentMethodRepository->upsert($upsertPayload, $context->getContext());
     }
 
-    private function isPaymentMethodActive(string $paymentMethodId, Context $context): bool
+    private function isPaymentMethodInstalled(string $paymentMethodId, Context $context): bool
     {
         return $this->paymentMethodRepository->searchIds(new Criteria([$paymentMethodId]), $context)->getTotal() > 0;
     }
