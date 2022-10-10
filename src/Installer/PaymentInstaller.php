@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Installer;
 
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -360,7 +361,11 @@ class PaymentInstaller implements InstallerInterface
 
     public function update(UpdateContext $context): void
     {
-        $this->paymentMethodRepository->upsert(self::PAYMENT_METHODS, $context->getContext());
+        foreach (self::PAYMENT_METHODS as $paymentMethod) {
+            if (!$this->isPaymentMethodActive($paymentMethod['id'], $context->getContext())) {
+                $this->paymentMethodRepository->upsert([$paymentMethod], $context->getContext());
+            }
+        }
     }
 
     public function uninstall(UninstallContext $context): void
@@ -401,5 +406,10 @@ class PaymentInstaller implements InstallerInterface
         }
 
         $this->paymentMethodRepository->upsert($upsertPayload, $context->getContext());
+    }
+
+    private function isPaymentMethodActive(string $paymentMethodId, Context $context): bool
+    {
+        return $this->paymentMethodRepository->searchIds(new Criteria([$paymentMethodId]), $context)->getTotal() > 0;
     }
 }
