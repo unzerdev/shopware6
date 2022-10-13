@@ -17,7 +17,7 @@ use UnzerPayment6\Components\PaymentHandler\Traits\HasRiskDataTrait;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
 use UnzerSDK\Exceptions\UnzerApiException;
 
-class UnzerNewInvoicePaymentHandler extends AbstractUnzerPaymentHandler
+class UnzerPaylaterInvoicePaymentHandler extends AbstractUnzerPaymentHandler
 {
     use HasTransferInfoTrait;
     use CanAuthorize;
@@ -50,14 +50,14 @@ class UnzerNewInvoicePaymentHandler extends AbstractUnzerPaymentHandler
                 throw new \RuntimeException('fraud prevention session id is missing from the current request');
             }
 
-            $returnUrl  = $this->authorize(
+            $returnUrl = $this->authorize(
                 $transaction->getReturnUrl(),
                 $transaction->getOrderTransaction()->getAmount()->getTotalPrice(),
                 null,
                 $riskData
             );
 
-            $this->saveTransferInfo($transaction->getOrderTransaction(), $salesChannelContext->getContext());
+            $this->payment->charge($transaction->getOrderTransaction()->getAmount()->getTotalPrice());
 
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {

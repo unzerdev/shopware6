@@ -27,7 +27,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInstallmentSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceSecuredPaymentHandler;
-use UnzerPayment6\Components\PaymentHandler\UnzerNewInvoicePaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPisPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler;
@@ -55,7 +55,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_SOFORT               = '95aa098aac8f11e9a2a32a2ae2dbcce4';
     public const PAYMENT_ID_WE_CHAT              = 'fd96d03535a46d197f5adac17c9f8bac';
     public const PAYMENT_ID_BANCONTACT           = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
-    public const PAYMENT_ID_UNZER_INVOICE        = '09588ffee8064f168e909ff31889dd7f';
+    public const PAYMENT_ID_PAYLATER_INVOICE     = '09588ffee8064f168e909ff31889dd7f';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -75,7 +75,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_SOFORT,
         self::PAYMENT_ID_WE_CHAT,
         self::PAYMENT_ID_BANCONTACT,
-        self::PAYMENT_ID_UNZER_INVOICE,
+        self::PAYMENT_ID_PAYLATER_INVOICE,
     ];
 
     public const PAYMENT_METHODS = [
@@ -335,8 +335,8 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
         [
-            'id'                => self::PAYMENT_ID_UNZER_INVOICE,
-            'handlerIdentifier' => UnzerNewInvoicePaymentHandler::class,
+            'id'                => self::PAYMENT_ID_PAYLATER_INVOICE,
+            'handlerIdentifier' => UnzerPaylaterInvoicePaymentHandler::class,
             'name'              => 'Invoice (Unzer payments)',
             'translations'      => [
                 'de-DE' => [

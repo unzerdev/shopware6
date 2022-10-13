@@ -262,7 +262,7 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentHandler\UnzerNewInvoicePaymentHandler">
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler">
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>

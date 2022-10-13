@@ -1,0 +1,17 @@
+{% block unzer_payment_frame_paylater_invoice %}
+    {% block unzer_payment_checkout_confirm_frame_card_body_title %}
+        <div class="card-title">
+            {{ context.paymentMethod.translated.name }}
+        </div>
+    {% endblock %}
+
+    <div id="unzer-payment-paylater-invoice-wrapper"
+         class="unzer-payment-paylater-invoice-wrapper"
+         data-unzer-payment-paylater-invoice="true"
+         data-unzer-payment-invoice-secured-options='{
+            "isB2BCustomer": "{{ context.customer.activeBillingAddress.company is not empty }}"
+         }'>
+
+    </div>
+{% endblock %}
+

@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "unzerdev/php-sdk",
-            "version": "1.2.0.0",
+            "version": "1.2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unzerdev/php-sdk.git",
-                "reference": "da9c3fce11264f412e03009606621cc6d9ec0ab1"
+                "reference": "cfd2f41d1b194fc9a6a666b9a35ec6013e429953"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/da9c3fce11264f412e03009606621cc6d9ec0ab1",
-                "reference": "da9c3fce11264f412e03009606621cc6d9ec0ab1",
+                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/cfd2f41d1b194fc9a6a666b9a35ec6013e429953",
+                "reference": "cfd2f41d1b194fc9a6a666b9a35ec6013e429953",
                 "shasum": ""
             },
             "require": {
@@ -45,9 +45,9 @@
             "description": "This is the php sdk to connect to the Unzer rest api.",
             "support": {
                 "email": "support@unzer.com",
-                "source": "https://github.com/unzerdev/php-sdk/tree/1.2.0.0"
+                "source": "https://github.com/unzerdev/php-sdk/tree/1.2.2.0"
             },
-            "time": "2022-06-02T11:43:15+00:00"
+            "time": "2022-10-04T12:05:18+00:00"
         }
     ],
     "packages-dev": [
@@ -171,5 +171,5 @@
         "php": ">=7.2 || <=8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.0.0"
 }

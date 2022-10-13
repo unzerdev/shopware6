@@ -113,7 +113,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addDirectDebitSecuredExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_UNZER_INVOICE) {
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
             $this->addFraudPreventionExtension($event);
         }
 

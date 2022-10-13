@@ -66,7 +66,7 @@ class CancelService implements CancelServiceInterface
 
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
-        if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_UNZER_INVOICE) {
+        if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
             $cancellation = new Cancellation($amountGross);
 
             $client->cancelAuthorizedPayment(
