@@ -93,7 +93,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
 
             $returnUrl = $bookingMode === BookingMode::CHARGE
                 ? $this->charge($transaction->getReturnUrl(), $recurrenceType)
-                : $this->authorize($transaction->getReturnUrl(), $this->unzerBasket->getAmountTotalGross(), $recurrenceType);
+                : $this->authorize($transaction->getReturnUrl(), $this->unzerBasket->getTotalValueGross(), $recurrenceType);
 
             if ($registerCreditCards && $salesChannelContext->getCustomer() !== null) {
                 $this->saveToDeviceVault(
