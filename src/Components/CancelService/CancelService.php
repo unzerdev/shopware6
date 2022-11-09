@@ -69,7 +69,7 @@ class CancelService implements CancelServiceInterface
         if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
             $cancellation = new Cancellation($amountGross);
 
-            $client->cancelAuthorizedPayment(
+            $client->cancelChargedPayment(
                 $orderTransactionId,
                 $cancellation
             );
