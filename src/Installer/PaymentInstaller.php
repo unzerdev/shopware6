@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Installer;
 
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -17,6 +18,7 @@ use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerApplePayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerBancontactHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerCreditCardPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitPaymentHandler;
@@ -56,6 +58,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_WE_CHAT              = 'fd96d03535a46d197f5adac17c9f8bac';
     public const PAYMENT_ID_BANCONTACT           = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
     public const PAYMENT_ID_PAYLATER_INVOICE     = '09588ffee8064f168e909ff31889dd7f';
+    public const PAYMENT_ID_APPLE_PAY            = '62490bda54fa48fbb29ed6b9368bafe1';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -76,6 +79,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_WE_CHAT,
         self::PAYMENT_ID_BANCONTACT,
         self::PAYMENT_ID_PAYLATER_INVOICE,
+        self::PAYMENT_ID_APPLE_PAY,
     ];
 
     public const PAYMENT_METHODS = [
@@ -349,6 +353,21 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
         ],
+        [
+            'id'                => self::PAYMENT_ID_APPLE_PAY,
+            'handlerIdentifier' => UnzerApplePayPaymentHandler::class,
+            'name'              => 'Apple Pay (Unzer payments)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Apple Pay (Unzer payments)',
+                    'description' => 'Apple Pay mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'Apple Pay (Unzer payments)',
+                    'description' => 'Apple Pay with Unzer payments',
+                ],
+            ],
+        ],
     ];
 
     /** @var EntityRepositoryInterface */
@@ -393,9 +412,11 @@ class PaymentInstaller implements InstallerInterface
         $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(UnzerPayment6::class, $context->getContext());
 
         foreach (self::PAYMENT_METHODS as $paymentMethod) {
-            $paymentMethod['pluginId'] = $pluginId;
+            if (!$this->isPaymentMethodInstalled($paymentMethod['id'], $context->getContext())) {
+                $paymentMethod['pluginId'] = $pluginId;
 
-            $this->paymentMethodRepository->upsert([$paymentMethod], $context->getContext());
+                $this->paymentMethodRepository->upsert([$paymentMethod], $context->getContext());
+            }
         }
     }
 
@@ -417,5 +438,10 @@ class PaymentInstaller implements InstallerInterface
         }
 
         $this->paymentMethodRepository->upsert($upsertPayload, $context->getContext());
+    }
+
+    private function isPaymentMethodInstalled(string $paymentMethodId, Context $context): bool
+    {
+        return $this->paymentMethodRepository->searchIds(new Criteria([$paymentMethodId]), $context)->getTotal() > 0;
     }
 }

@@ -6,7 +6,9 @@ namespace UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator;
 
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use stdClass;
 use Throwable;
 use UnzerPayment6\UnzerPayment6;
@@ -30,7 +32,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         $this->logger = $logger;
     }
 
-    public function hydrateArray(Payment $payment, ?OrderTransactionEntity $orderTransaction): array
+    public function hydrateArray(Payment $payment, OrderTransactionEntity $orderTransaction): array
     {
         $decimalPrecision = $this->getDecimalPrecision($orderTransaction);
         $data             = $this->getBaseData($payment, $decimalPrecision);
@@ -46,6 +48,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         }
 
         $this->hydrateTransactions($data, $payment, $decimalPrecision);
+        $this->validateIsShipmentAllowed($data, $orderTransaction->getOrder());
 
         if ($payment->getMetadata() !== null) {
             $exposedMeta = $payment->getMetadata()->expose();
@@ -182,6 +185,47 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         }
 
         ksort($data['transactions']);
+    }
+
+    protected function validateIsShipmentAllowed(array &$data, ?OrderEntity $orderEntity): void
+    {
+        if ($data['isShipmentAllowed'] === false) {
+            return;
+        }
+
+        if ($orderEntity === null) {
+            return;
+        }
+
+        $orderDocuments = $orderEntity->getDocuments();
+
+        if ($orderDocuments === null) {
+            return;
+        }
+
+        $filteredDocuments = $orderDocuments->filter(static function (DocumentEntity $entity) {
+            if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
+                return $entity;
+            }
+
+            return null;
+        });
+
+        /** Set `isShipmentAllowed` to false due to missing invoice */
+        $data['isShipmentAllowed'] = false;
+
+        if ($filteredDocuments->count() <= 0) {
+            return;
+        }
+
+        /** @var DocumentEntity $filteredDocument */
+        foreach ($filteredDocuments as $filteredDocument) {
+            $documentConfig = $filteredDocument->getConfig();
+
+            if (array_key_exists('documentNumber', $documentConfig) && !empty($documentConfig['documentNumber'])) {
+                $data['isShipmentAllowed'] = true;
+            }
+        }
     }
 
     protected function hydrateAmount(Amount $amount, int $decimalPrecision): array

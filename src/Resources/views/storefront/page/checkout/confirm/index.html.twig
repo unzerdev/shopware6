@@ -33,7 +33,8 @@
 
 {% block page_checkout_confirm_product_table %}
     {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
-    {% if page.extensions.unzerPaymentFrame.paymentFrame and page.extensions[paymentDataExtensionName] %}
+    {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
+    {% if page.extensions[paymentFrameExtensionName].paymentFrame and page.extensions[paymentDataExtensionName] %}
         {% block unzer_payment_checkout_confirm_frame %}
             {% sw_include '@Storefront/storefront/component/unzer/base/unzer-library.html.twig' %}
 
@@ -56,7 +57,7 @@
                             {% block unzer_payment_checkout_confirm_frame_card_body %}
                                 {% block unzer_payment_checkout_confirm_frame_card_body_frame %}
                                     <div class="unzer-payment-frame">
-                                        {% sw_include page.extensions.unzerPaymentFrame.paymentFrame ignore missing %}
+                                        {% sw_include page.extensions[paymentFrameExtensionName].paymentFrame ignore missing %}
                                     </div>
                                 {% endblock %}
                             {% endblock %}
@@ -79,4 +80,42 @@
     {% endif %}
 
     {{ parent() }}
+{% endblock %}
+
+{% block page_checkout_confirm_form_submit %}
+    {{ parent() }}
+
+    {% if page.order %}
+        {% set billingAddress = page.order.billingAddress %}
+        {% set summary = page.order %}
+    {% else %}
+        {% set billingAddress = context.customer.activeBillingAddress %}
+        {% set summary = page.cart %}
+    {% endif %}
+
+    {% block unzer_payment_frame_apple_pay %}
+        {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
+        {% set applePayExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\ApplePayPageExtension::EXTENSION_NAME") %}
+
+        {% if page.extensions[applePayExtensionName] %}
+            <div data-unzer-payment-apple-pay data-unzer-payment-apple-pay-options="{{ {
+                countryCode: billingAddress.country.iso,
+                currency: context.currency.isoCode,
+                shopName: page.extensions[paymentFrameExtensionName].shopName,
+                amount: summary.price.rawTotal ?: summary.price.totalPrice,
+                authorizePaymentUrl: path('unzer.apple_pay.authorize_payment'),
+                merchantValidationUrl: path('unzer.apple_pay.validate_merchant'),
+                noApplePayMessage: "UnzerPayment.frame.applePay.missingMessage" | trans,
+                supportedNetworks: page.extensions[applePayExtensionName].supportedNetworks,
+            }|json_encode }}">
+                {% block unzer_payment_frame_apple_pay_test_data %}
+                    {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
+                    {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
+                        {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/apple-pay.html.twig' %}
+                    {% endif %}
+                {% endblock %}
+                <apple-pay-button buttonstyle="black" type="buy" locale="{{ context.salesChannel.locale.code }}" style="--apple-pay-button-width: 100%;"></apple-pay-button>
+            </div>
+        {% endif %}
+    {% endblock %}
 {% endblock %}

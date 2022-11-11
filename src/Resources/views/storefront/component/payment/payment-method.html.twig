@@ -1,0 +1,11 @@
+{% sw_extends "@Storefront/storefront/component/payment/payment-method.html.twig" %}
+
+{% block component_payment_method_field %}
+    {% if payment and payment.id == constant("UnzerPayment6\\Installer\\PaymentInstaller::PAYMENT_ID_APPLE_PAY") %}
+        <div class="unzer-payment-apple-pay-method-wrapper">
+            {{ parent() }}
+        </div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
