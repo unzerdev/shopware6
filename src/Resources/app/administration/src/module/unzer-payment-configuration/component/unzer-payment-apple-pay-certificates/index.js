@@ -94,6 +94,7 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
             this.$refs.merchantIdentificationCertificateInput.onRemoveIconClick();
             this.$refs.merchantIdentificationKeyInput.onRemoveIconClick();
         },
+
         resetFileFieldsPaymentProcessing() {
             this.$refs.paymentProcessingCertificateInput.onRemoveIconClick();
             this.$refs.paymentProcessingKeyInput.onRemoveIconClick();
@@ -113,8 +114,9 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                 && !this.$refs.inheritWrapperPaymentProcessingCertificate.isInherited
             ) {
                 this.isUpdateSuccessful = true;
-                me.isUpdating = false;
-                return;
+                this.isUpdating = false;
+
+                return Promise.resolve();
             }
 
             return this.UnzerPaymentApplePayService.updateCertificates(

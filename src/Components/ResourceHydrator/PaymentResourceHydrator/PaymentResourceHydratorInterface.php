@@ -14,5 +14,5 @@ interface PaymentResourceHydratorInterface
      *
      * @see https://bugs.php.net/bug.php?id=74221
      */
-    public function hydrateArray(Payment $payment, ?OrderTransactionEntity $orderTransaction): array;
+    public function hydrateArray(Payment $payment, OrderTransactionEntity $orderTransaction): array;
 }
