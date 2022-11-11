@@ -172,14 +172,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE,
             'handlerIdentifier' => UnzerInvoicePaymentHandler::class,
-            'name'              => 'Legacy Invoice (Unzer payments)',
+            'name'              => 'Invoice (Unzer payments, deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice (nicht mehr unterstützt)',
+                    'name'        => 'Unzer invoice (veraltet)',
                     'description' => 'Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice (unsupported)',
+                    'name'        => 'Unzer invoice (deprecated)',
                     'description' => 'Invoice payments with Unzer payments',
                 ],
             ],
@@ -187,14 +187,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE_SECURED,
             'handlerIdentifier' => UnzerInvoiceSecuredPaymentHandler::class,
-            'name'              => 'Unzer invoice secured (Legacy)',
+            'name'              => 'Unzer invoice secured (deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice secured (nicht mehr unterstützt)',
+                    'name'        => 'Unzer invoice secured (veraltet)',
                     'description' => 'Gesicherter Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice secured (unsupported)',
+                    'name'        => 'Unzer invoice secured (deprecated)',
                     'description' => 'Invoice secured payments with Unzer payments',
                 ],
             ],
