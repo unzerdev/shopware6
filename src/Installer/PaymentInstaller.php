@@ -365,6 +365,7 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
     ];
+    private const PLUGIN_VERSION_PAYLATER_INVOICE = '4.2.0';
 
     /** @var EntityRepositoryInterface */
     private $paymentMethodRepository;
@@ -386,6 +387,13 @@ class PaymentInstaller implements InstallerInterface
     public function update(UpdateContext $context): void
     {
         $this->upsertPaymentMethods($context);
+
+        if ($context->getUpdatePluginVersion() === self::PLUGIN_VERSION_PAYLATER_INVOICE) {
+            $this->paymentMethodRepository->upsert([
+                $this->getPaymentMethod(self::PAYMENT_ID_INVOICE),
+                $this->getPaymentMethod(self::PAYMENT_ID_INVOICE_SECURED),
+            ], $context->getContext());
+        }
     }
 
     public function uninstall(UninstallContext $context): void
@@ -439,5 +447,16 @@ class PaymentInstaller implements InstallerInterface
     private function isPaymentMethodInstalled(string $paymentMethodId, Context $context): bool
     {
         return $this->paymentMethodRepository->searchIds(new Criteria([$paymentMethodId]), $context)->getTotal() > 0;
+    }
+
+    private function getPaymentMethod(string $paymentMethodId): ?array
+    {
+        foreach (self::PAYMENT_METHODS as $paymentMethod) {
+            if ($paymentMethod['id'] === $paymentMethodId) {
+                return $paymentMethod;
+            }
+        }
+
+        return null;
     }
 }

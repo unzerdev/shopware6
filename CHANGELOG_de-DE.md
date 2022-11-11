@@ -1,3 +1,6 @@
+# Unreleased
+* Paylater Rechnung als weitere Zahlungsart hinzugefügt
+
 # 4.1.0
 * Korrektur der wiederkehrenden Nutzung einer Kreditkarte
 * Aktualisierung des Unzer PHP SDK zu Version 1.1.5.0
