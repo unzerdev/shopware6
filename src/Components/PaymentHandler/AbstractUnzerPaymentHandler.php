@@ -38,7 +38,7 @@ use UnzerSDK\Unzer;
 
 abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var AbstractUnzerResource|BasePaymentType */
+    /** @var BasePaymentType */
     protected $paymentType;
 
     /** @var Payment */

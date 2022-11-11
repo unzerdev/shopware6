@@ -26,6 +26,7 @@ use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInte
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\SepaDirectDebit;
 
 class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
@@ -33,7 +34,7 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
     use CanCharge;
     use HasDeviceVault;
 
-    /** @var SepaDirectDebit */
+    /** @var BasePaymentType|SepaDirectDebit */
     protected $paymentType;
 
     public function __construct(

@@ -17,6 +17,7 @@ use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerSDK\Constants\RecurrenceTypes;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Card;
 
 class UnzerApplePayPaymentHandler extends AbstractUnzerPaymentHandler
@@ -24,7 +25,7 @@ class UnzerApplePayPaymentHandler extends AbstractUnzerPaymentHandler
     use CanCharge;
     use CanAuthorize;
 
-    /** @var Card */
+    /** @var BasePaymentType|Card */
     protected $paymentType;
 
     /**

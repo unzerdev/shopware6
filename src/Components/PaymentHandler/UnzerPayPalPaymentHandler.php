@@ -33,7 +33,6 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
-use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Paypal;
 
@@ -44,7 +43,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
     use CanRecur;
     use HasDeviceVault;
 
-    /** @var null|AbstractUnzerResource|BasePaymentType|Paypal */
+    /** @var BasePaymentType|Paypal */
     protected $paymentType;
 
     public function __construct(

@@ -29,6 +29,7 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerSDK\Constants\RecurrenceTypes;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Card;
 
 class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
@@ -37,7 +38,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
     use CanAuthorize;
     use HasDeviceVault;
 
-    /** @var Card */
+    /** @var BasePaymentType|Card */
     protected $paymentType;
 
     public function __construct(
