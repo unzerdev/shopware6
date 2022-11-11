@@ -23,6 +23,7 @@ trait HasRiskDataTrait
         $riskData->setThreatMetrixId($sessionId);
 
         $customer = $context->getCustomer();
+
         if (null !== $customer) {
             $date = $customer->getCreatedAt() ? $customer->getCreatedAt()->format('Ymd') : null;
 

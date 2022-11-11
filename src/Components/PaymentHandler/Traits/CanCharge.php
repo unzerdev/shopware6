@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
 use RuntimeException;
-use UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\EmbeddedResources\RiskData;
 use UnzerSDK\Resources\TransactionTypes\Charge;
@@ -19,8 +18,7 @@ trait CanCharge
         string $returnUrl,
         ?string $recurrenceType = null,
         ?RiskData $riskData = null
-    ): string
-    {
+    ): string {
         if ($this->unzerClient === null) {
             throw new RuntimeException('unzerClient can not be null');
         }
