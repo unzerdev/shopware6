@@ -333,7 +333,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function isFreeBasketItem(BasketItem $basketItem, int $currencyPrecision): bool
     {
-        if ((int) (round($basketItem->getAmountPerUnitGross(), $currencyPrecision) * $currencyPrecision) === 0 && (int) (round($basketItem->getAmountDiscountPerUnitGross(), $currencyPrecision) * $currencyPrecision) === 0) {
+        if ((int) round($basketItem->getAmountPerUnitGross() * (10 ** $currencyPrecision)) === 0 && (int) round($basketItem->getAmountDiscountPerUnitGross() * (10 ** $currencyPrecision)) === 0) {
             return true;
         }
 
