@@ -14,20 +14,20 @@
 {% block layout_head_meta_tags %}
     {{ parent() }}
 
-    {% set fraudPreventionExtensioName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
+    {% set fraudPreventionExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
 
-    {% if page.extensions[fraudPreventionExtensioName] %}
-        <script type="text/javascript" src="https://h.online-metrix.net/fp/tags.js?org_id=363t8kgq&session_id={{ page.extensions[fraudPreventionExtensioName].sessionId }}"></script>
+    {% if page.extensions[fraudPreventionExtensionName] %}
+        <script type="text/javascript" src="https://h.online-metrix.net/fp/tags.js?org_id=363t8kgq&session_id={{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"></script>
     {% endif %}
 {% endblock %}
 
 {% block base_noscript %}
     {{ parent() }}
 
-    {% set fraudPreventionExtensioName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
+    {% set fraudPreventionExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
 
-    {% if page.extensions[fraudPreventionExtensioName] %}
-        <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://h.online-metrix.net/fp/tags?org_id=363t8kgq&session_id={{ page.extensions[fraudPreventionExtensioName].sessionId }}"></iframe>
+    {% if page.extensions[fraudPreventionExtensionName] %}
+        <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://h.online-metrix.net/fp/tags?org_id=363t8kgq&session_id={{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"></iframe>
     {% endif %}
 {% endblock %}
 
@@ -68,13 +68,13 @@
         {% endblock %}
     {% endif %}
 
-    {% set fraudPreventionExtensioName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
+    {% set fraudPreventionExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
 
-    {% if page.extensions[fraudPreventionExtensioName] %}
+    {% if page.extensions[fraudPreventionExtensionName] %}
         <input
             name="unzerPaymentFraudPreventionSessionId"
             type="hidden"
-            value="{{ page.extensions[fraudPreventionExtensioName].sessionId }}"
+            value="{{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"
             form="confirmOrderForm"
         />
     {% endif %}

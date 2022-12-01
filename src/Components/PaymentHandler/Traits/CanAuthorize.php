@@ -17,7 +17,7 @@ trait CanAuthorize
         ?RiskData $riskData = null
     ): string {
         if ($this->unzerClient === null) {
-            throw new RuntimeException('unzerClient can not be null');
+            throw new RuntimeException('UnzerClient can not be null');
         }
 
         if (!method_exists($this->unzerClient, 'performAuthorization')) {
@@ -25,7 +25,7 @@ trait CanAuthorize
         }
 
         if ($this->paymentType === null) {
-            throw new RuntimeException('paymentType can not be null');
+            throw new RuntimeException('PaymentType can not be null');
         }
 
         $authorization = new Authorization(

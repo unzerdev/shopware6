@@ -133,7 +133,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     private function addFraudPreventionExtension(PageLoadedEvent $event): void
     {
         $extension = new FraudPreventionPageExtension();
-        $extension->setSessionId(Uuid::randomHex());
+        $extension->setFraudPreventionSessionId(Uuid::randomHex());
 
         $event->getPage()->addExtension(FraudPreventionPageExtension::EXTENSION_NAME, $extension);
     }

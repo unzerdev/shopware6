@@ -7,7 +7,6 @@ namespace UnzerPayment6\Components\PaymentTransitionMapper;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
-use UnzerSDK\Resources\PaymentTypes\Invoice;
 use UnzerSDK\Resources\PaymentTypes\PaylaterInvoice;
 
 class PaylaterInvoiceTransitionMapper extends AbstractTransitionMapper
@@ -40,6 +39,6 @@ class PaylaterInvoiceTransitionMapper extends AbstractTransitionMapper
 
     protected function getResourceName(): string
     {
-        return Invoice::getResourceName();
+        return PaylaterInvoice::getResourceName();
     }
 }

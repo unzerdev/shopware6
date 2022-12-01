@@ -38,6 +38,8 @@ class UnzerPaylaterInvoicePaymentHandler extends AbstractUnzerPaymentHandler
         $birthday       = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {
+            $this->saveFraudPreventionData($transaction, $salesChannelContext);
+
             if (!empty($birthday)
                 && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
                 $this->unzerCustomer->setBirthDate($birthday);

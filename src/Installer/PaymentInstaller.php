@@ -393,6 +393,12 @@ class PaymentInstaller implements InstallerInterface
                 $this->getPaymentMethod(self::PAYMENT_ID_INVOICE),
                 $this->getPaymentMethod(self::PAYMENT_ID_INVOICE_SECURED),
             ], $context->getContext());
+
+            // Make sure every Unzer payment method is linked to the plugin
+            $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(UnzerPayment6::class, $context->getContext());
+            foreach (self::PAYMENT_METHODS as $paymentMethod) {
+                $this->paymentMethodRepository->upsert([['id' => $paymentMethod['id'], 'pluginId' => $pluginId]], $context->getContext());
+            }
         }
     }
 

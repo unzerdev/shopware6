@@ -20,7 +20,7 @@ trait CanCharge
         ?RiskData $riskData = null
     ): string {
         if ($this->unzerClient === null) {
-            throw new RuntimeException('unzerClient can not be null');
+            throw new RuntimeException('UnzerClient can not be null');
         }
 
         if (!method_exists($this->unzerClient, 'performAuthorization')) {

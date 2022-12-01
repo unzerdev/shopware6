@@ -1,5 +1,6 @@
 # Unreleased
 * Added Paylater Invoice as new payment method
+* Updated Unzer PHP SDK to version 1.2.2.0
 
 # 4.1.0
 * Fix of recurring use of a credit card

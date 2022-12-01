@@ -13,14 +13,14 @@ trait HasRiskDataTrait
 {
     private function generateRiskDataResource(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $context): ?RiskData
     {
-        $sessionId = $this->fetchFraudPreventionSessionId($transaction, $context);
+        $fraudPreventionSessionId = $this->fetchFraudPreventionSessionId($transaction, $context);
 
-        if (null === $sessionId) {
+        if (null === $fraudPreventionSessionId) {
             return null;
         }
 
         $riskData = new RiskData();
-        $riskData->setThreatMetrixId($sessionId);
+        $riskData->setThreatMetrixId($fraudPreventionSessionId);
 
         $customer = $context->getCustomer();
 
@@ -36,20 +36,19 @@ trait HasRiskDataTrait
 
     private function fetchFraudPreventionSessionId(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $context): ?string
     {
-        $orderTransaction = $transaction->getOrderTransaction();
+        $orderTransaction         = $transaction->getOrderTransaction();
+        $currentRequest           = $this->getCurrentRequestFromStack($orderTransaction->getId());
+        $fraudPreventionSessionId = $currentRequest->get('unzerPaymentFraudPreventionSessionId', '');
 
-        $currentRequest = $this->getCurrentRequestFromStack($orderTransaction->getId());
-        $sessionId      = $currentRequest->get('unzerPaymentFraudPreventionSessionId', '');
-
-        if (empty($sessionId)) {
+        if (empty($fraudPreventionSessionId)) {
             $customFields = $orderTransaction->getCustomFields() ?? [];
 
             if (!empty($customFields[CustomFieldInstaller::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID])) {
-                $sessionId = $customFields[CustomFieldInstaller::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID];
+                $fraudPreventionSessionId = $customFields[CustomFieldInstaller::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID];
             }
         }
 
-        if (empty($sessionId)) {
+        if (empty($fraudPreventionSessionId)) {
             return null;
         }
 
@@ -57,11 +56,31 @@ trait HasRiskDataTrait
             [
                 'id'           => $orderTransaction->getId(),
                 'customFields' => [
-                    CustomFieldInstaller::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID => $sessionId,
+                    CustomFieldInstaller::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID => $fraudPreventionSessionId,
                 ],
             ],
         ], $context->getContext());
 
-        return $sessionId;
+        return $fraudPreventionSessionId;
+    }
+
+    private function saveFraudPreventionData(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $context): void
+    {
+        $orderTransaction         = $transaction->getOrderTransaction();
+        $currentRequest           = $this->getCurrentRequestFromStack($orderTransaction->getId());
+        $fraudPreventionSessionId = $currentRequest->get('unzerPaymentFraudPreventionSessionId', '');
+
+        if (empty($fraudPreventionSessionId)) {
+            return;
+        }
+
+        $this->transactionRepository->upsert([
+            [
+                'id'           => $orderTransaction->getId(),
+                'customFields' => [
+                    CustomFieldInstaller::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID => $fraudPreventionSessionId,
+                ],
+            ],
+        ], $context->getContext());
     }
 }

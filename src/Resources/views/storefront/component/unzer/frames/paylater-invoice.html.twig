@@ -5,13 +5,28 @@
         </div>
     {% endblock %}
 
+    <div class="unzer-payment-frame-row">
+        <div id="unzer-payment-form">
+            <label for="unzerPaymentBirthday" class="unzer-payment-label">
+                {{ "account.personalBirthdayLabel"|trans }}
+            </label>
+            <input type="date"
+                   id="unzerPaymentBirthday"
+                   name="unzerPaymentBirthday"
+                   class="form-control unzer-payment-date-input"
+                   form="confirmOrderForm"
+                   required="required"
+                   max="9999-12-31"
+                   {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+        </div>
+    </div>
+
     <div id="unzer-payment-paylater-invoice-wrapper"
          class="unzer-payment-paylater-invoice-wrapper"
          data-unzer-payment-paylater-invoice="true"
          data-unzer-payment-invoice-secured-options='{
             "isB2BCustomer": "{{ context.customer.activeBillingAddress.company is not empty }}"
          }'>
-
     </div>
 {% endblock %}
 

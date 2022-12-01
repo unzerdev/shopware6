@@ -11,15 +11,15 @@ class FraudPreventionPageExtension extends Struct
     public const EXTENSION_NAME = 'unzerFraudPrevention';
 
     /** @var string */
-    private $sessionId = '';
+    private $fraudPreventionSessionId = '';
 
-    public function getSessionId(): string
+    public function getFraudPreventionSessionId(): string
     {
-        return $this->sessionId;
+        return $this->fraudPreventionSessionId;
     }
 
-    public function setSessionId(string $sessionId): void
+    public function setFraudPreventionSessionId(string $fraudPreventionSessionId): void
     {
-        $this->sessionId = $sessionId;
+        $this->fraudPreventionSessionId = $fraudPreventionSessionId;
     }
 }
