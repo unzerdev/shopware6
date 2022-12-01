@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Constants\CancelReasonCodes;
 use UnzerSDK\Resources\TransactionTypes\Cancellation;
@@ -65,7 +66,7 @@ class CancelService implements CancelServiceInterface
 
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
-        if ($transaction->getPaymentMethodId()) {
+        if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
             $cancellation = new Cancellation($amountGross);
 
             $client->cancelChargedPayment(
