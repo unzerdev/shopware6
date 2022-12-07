@@ -1,6 +1,7 @@
 # 4.1.0
 * Fix of recurring use of a credit card
-* Updated Unzer PHP SDK to version 1.1.5.0
+* Added Paylater Invoice as new payment method
+* Updated Unzer PHP SDK to version 1.2.2.0
 * Added compatibility to Unzer Basket V2 API
 * Added Apple Pay as new payment method
 * Fix the payment method update when updating the plugin

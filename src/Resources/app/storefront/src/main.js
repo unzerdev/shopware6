@@ -8,6 +8,7 @@ import UnzerPaymentInvoiceSecuredPlugin from './unzer/unzer-payment.invoice-secu
 import UnzerPaymentPayPalPlugin from './unzer/unzer-payment.paypal.plugin';
 import UnzerPaymentSepaDirectDebitPlugin from './unzer/unzer-payment.sepa-direct-debit.plugin';
 import UnzerPaymentSepaDirectDebitSecuredPlugin from './unzer/unzer-payment.sepa-direct-debit-secured.plugin';
+import UnzerPaymentPaylaterInvoicePlugin from "./unzer/unzer-payment.paylater-invoice.plugin";
 import UnzerPaymentApplePayPlugin from './unzer/unzer-payment.apple-pay.plugin';
 
 window.PluginManager.register('UnzerPaymentBase', UnzerPaymentBasePlugin, '[data-unzer-payment-base]');
@@ -21,6 +22,7 @@ window.PluginManager.register('UnzerPaymentPayPal', UnzerPaymentPayPalPlugin, '[
 window.PluginManager.register('UnzerPaymentSepaDirectDebit', UnzerPaymentSepaDirectDebitPlugin, '[data-unzer-payment-sepa-direct-debit]');
 window.PluginManager.register('UnzerPaymentSepaDirectDebitSecured', UnzerPaymentSepaDirectDebitSecuredPlugin, '[data-unzer-payment-sepa-direct-debit-secured]');
 window.PluginManager.register('UnzerPaymentApplePay', UnzerPaymentApplePayPlugin, '[data-unzer-payment-apple-pay]');
+window.PluginManager.register('UnzerPaymentPaylaterInvoice', UnzerPaymentPaylaterInvoicePlugin, '[data-unzer-payment-paylater-invoice]');
 
 // Necessary for the webpack hot module reloading server
 if (module.hot) {

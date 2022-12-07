@@ -10,7 +10,6 @@ use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Unzer;
@@ -31,10 +30,6 @@ trait CanRecur
      */
     public function activateRecurring(string $returnUrl, ?string $recurrenceType = null): string
     {
-        if (!$this instanceof AbstractUnzerPaymentHandler) {
-            throw new RuntimeException('Trait can only be used in a payment handler context which extends the AbstractUnzerPaymentHandler class');
-        }
-
         if ($this->paymentType === null) {
             throw new RuntimeException('PaymentType can not be null');
         }

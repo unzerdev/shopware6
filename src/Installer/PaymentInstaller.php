@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerApplePayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerBancontactHandler;
@@ -24,12 +25,14 @@ use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInstallmentSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceSecuredPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPisPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerSofortPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerWeChatPaymentHandler;
+use UnzerPayment6\UnzerPayment6;
 
 class PaymentInstaller implements InstallerInterface
 {
@@ -50,6 +53,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_SOFORT               = '95aa098aac8f11e9a2a32a2ae2dbcce4';
     public const PAYMENT_ID_WE_CHAT              = 'fd96d03535a46d197f5adac17c9f8bac';
     public const PAYMENT_ID_BANCONTACT           = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
+    public const PAYMENT_ID_PAYLATER_INVOICE     = '09588ffee8064f168e909ff31889dd7f';
     public const PAYMENT_ID_APPLE_PAY            = '62490bda54fa48fbb29ed6b9368bafe1';
 
     public const PAYMENT_METHOD_IDS = [
@@ -70,6 +74,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_SOFORT,
         self::PAYMENT_ID_WE_CHAT,
         self::PAYMENT_ID_BANCONTACT,
+        self::PAYMENT_ID_PAYLATER_INVOICE,
         self::PAYMENT_ID_APPLE_PAY,
     ];
 
@@ -167,14 +172,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE,
             'handlerIdentifier' => UnzerInvoicePaymentHandler::class,
-            'name'              => 'Invoice (Unzer payments)',
+            'name'              => 'Invoice (Unzer payments, deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice',
+                    'name'        => 'Unzer invoice (veraltet)',
                     'description' => 'Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice',
+                    'name'        => 'Unzer invoice (deprecated)',
                     'description' => 'Invoice payments with Unzer payments',
                 ],
             ],
@@ -182,14 +187,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE_SECURED,
             'handlerIdentifier' => UnzerInvoiceSecuredPaymentHandler::class,
-            'name'              => 'Unzer invoice secured',
+            'name'              => 'Unzer invoice secured (deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice secured',
+                    'name'        => 'Unzer invoice secured (veraltet)',
                     'description' => 'Gesicherter Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice secured',
+                    'name'        => 'Unzer invoice secured (deprecated)',
                     'description' => 'Invoice secured payments with Unzer payments',
                 ],
             ],
@@ -330,6 +335,21 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
         [
+            'id'                => self::PAYMENT_ID_PAYLATER_INVOICE,
+            'handlerIdentifier' => UnzerPaylaterInvoicePaymentHandler::class,
+            'name'              => 'Invoice (Unzer payments)',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Unzer invoice',
+                    'description' => 'Rechnungskauf mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'Unzer invoice',
+                    'description' => 'Invoice payments with Unzer payments',
+                ],
+            ],
+        ],
+        [
             'id'                => self::PAYMENT_ID_APPLE_PAY,
             'handlerIdentifier' => UnzerApplePayPaymentHandler::class,
             'name'              => 'Apple Pay (Unzer payments)',
@@ -345,26 +365,44 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
     ];
+    private const PLUGIN_VERSION_PAYLATER_INVOICE = '4.1.0';
 
     /** @var EntityRepositoryInterface */
     private $paymentMethodRepository;
 
-    public function __construct(EntityRepositoryInterface $paymentMethodRepository)
+    /** @var PluginIdProvider */
+    private $pluginIdProvider;
+
+    public function __construct(EntityRepositoryInterface $paymentMethodRepository, PluginIdProvider $pluginIdProvider)
     {
         $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->pluginIdProvider        = $pluginIdProvider;
     }
 
     public function install(InstallContext $context): void
     {
-        $this->paymentMethodRepository->upsert(self::PAYMENT_METHODS, $context->getContext());
+        $this->upsertPaymentMethods($context);
     }
 
     public function update(UpdateContext $context): void
     {
-        foreach (self::PAYMENT_METHODS as $paymentMethod) {
-            if (!$this->isPaymentMethodInstalled($paymentMethod['id'], $context->getContext())) {
-                $this->paymentMethodRepository->upsert([$paymentMethod], $context->getContext());
-            }
+        $this->upsertPaymentMethods($context);
+
+        if ($context->getUpdatePluginVersion() === self::PLUGIN_VERSION_PAYLATER_INVOICE) {
+            $this->paymentMethodRepository->upsert([
+                $this->getPaymentMethod(self::PAYMENT_ID_INVOICE),
+                $this->getPaymentMethod(self::PAYMENT_ID_INVOICE_SECURED),
+            ], $context->getContext());
+
+            // Make sure every Unzer payment method is linked to the plugin
+            $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(UnzerPayment6::class, $context->getContext());
+            $update   = array_map(static function ($paymentMethod) use ($pluginId) {
+                return [
+                    'pluginId' => $pluginId,
+                    'id'       => $paymentMethod['id'],
+                ];
+            }, self::PAYMENT_METHODS);
+            $this->paymentMethodRepository->upsert($update, $context->getContext());
         }
     }
 
@@ -383,9 +421,17 @@ class PaymentInstaller implements InstallerInterface
         $this->setAllPaymentMethodsActive(false, $context);
     }
 
-    public static function getPaymentIds(): array
+    private function upsertPaymentMethods(InstallContext $context): void
     {
-        return array_column(self::PAYMENT_METHODS, 'id');
+        $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(UnzerPayment6::class, $context->getContext());
+
+        foreach (self::PAYMENT_METHODS as $paymentMethod) {
+            if (!$this->isPaymentMethodInstalled($paymentMethod['id'], $context->getContext())) {
+                $paymentMethod['pluginId'] = $pluginId;
+
+                $this->paymentMethodRepository->upsert([$paymentMethod], $context->getContext());
+            }
+        }
     }
 
     private function setAllPaymentMethodsActive(bool $active, InstallContext $context): void
@@ -411,5 +457,16 @@ class PaymentInstaller implements InstallerInterface
     private function isPaymentMethodInstalled(string $paymentMethodId, Context $context): bool
     {
         return $this->paymentMethodRepository->searchIds(new Criteria([$paymentMethodId]), $context)->getTotal() > 0;
+    }
+
+    private function getPaymentMethod(string $paymentMethodId): ?array
+    {
+        foreach (self::PAYMENT_METHODS as $paymentMethod) {
+            if ($paymentMethod['id'] === $paymentMethodId) {
+                return $paymentMethod;
+            }
+        }
+
+        return null;
     }
 }

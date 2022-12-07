@@ -33,7 +33,6 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
-use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Paypal;
 
@@ -44,7 +43,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
     use CanRecur;
     use HasDeviceVault;
 
-    /** @var null|AbstractUnzerResource|BasePaymentType|Paypal */
+    /** @var BasePaymentType|Paypal */
     protected $paymentType;
 
     public function __construct(
@@ -140,7 +139,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
-                sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
@@ -156,7 +155,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
-                sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                       'request' => $this->getLoggableRequest($currentRequest),
                     'dataBag'   => $dataBag,
@@ -228,7 +227,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             $this->customFieldsHelper->setOrderTransactionCustomFields($transaction->getOrderTransaction(), $salesChannelContext->getContext());
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
-                sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
                     'exception'   => $apiException,
@@ -238,7 +237,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getMessage());
         } catch (Throwable $exception) {
             $this->logger->error(
-                sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
                     'exception'   => $exception,
@@ -273,7 +272,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
-                sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
                     'exception'   => $apiException,
@@ -288,7 +287,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
             throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
-                sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
                     'exception'   => $exception,

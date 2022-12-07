@@ -11,13 +11,18 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
+use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
+use UnzerPayment6\Components\PaymentHandler\Traits\HasRiskDataTrait;
+use UnzerPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
 use UnzerSDK\Exceptions\UnzerApiException;
-use UnzerSDK\Resources\PaymentTypes\Sofort;
 
-class UnzerSofortPaymentHandler extends AbstractUnzerPaymentHandler
+class UnzerPaylaterInvoicePaymentHandler extends AbstractUnzerPaymentHandler
 {
+    use HasTransferInfoTrait;
+    use CanAuthorize;
     use CanCharge;
+    use HasRiskDataTrait;
 
     /**
      * {@inheritdoc}
@@ -29,17 +34,37 @@ class UnzerSofortPaymentHandler extends AbstractUnzerPaymentHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        try {
-            $this->paymentType = $this->unzerClient->createPaymentType(new Sofort());
+        $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
+        $birthday       = $currentRequest->get('unzerPaymentBirthday', '');
 
-            $returnUrl = $this->charge($transaction->getReturnUrl());
+        try {
+            if (!empty($birthday)
+                && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
+                $this->unzerCustomer->setBirthDate($birthday);
+                $this->unzerCustomer = $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
+            }
+
+            $riskData = $this->generateRiskDataResource($transaction, $salesChannelContext);
+
+            if (null === $riskData) {
+                throw new \RuntimeException('fraud prevention session id is missing from the current request');
+            }
+
+            $returnUrl = $this->authorize(
+                $transaction->getReturnUrl(),
+                $transaction->getOrderTransaction()->getAmount()->getTotalPrice(),
+                null,
+                $riskData
+            );
+
+            $this->payment->charge($transaction->getOrderTransaction()->getAmount()->getTotalPrice());
 
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
                 sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
                     'exception'   => $apiException,
                 ]
@@ -55,7 +80,7 @@ class UnzerSofortPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
                     'exception'   => $exception,
                 ]

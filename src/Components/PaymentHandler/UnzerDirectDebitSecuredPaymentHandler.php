@@ -113,7 +113,7 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
-                sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
@@ -129,7 +129,7 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
-                sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,

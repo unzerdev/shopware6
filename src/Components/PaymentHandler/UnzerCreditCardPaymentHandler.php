@@ -29,6 +29,7 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerSDK\Constants\RecurrenceTypes;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Card;
 
 class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
@@ -37,7 +38,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
     use CanAuthorize;
     use HasDeviceVault;
 
-    /** @var Card */
+    /** @var BasePaymentType|Card */
     protected $paymentType;
 
     public function __construct(
@@ -106,7 +107,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
-                sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'dataBag'     => $dataBag,
                     'transaction' => $transaction,
@@ -122,7 +123,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
-                sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'dataBag'     => $dataBag,
                     'transaction' => $transaction,

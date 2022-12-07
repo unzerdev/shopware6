@@ -7,6 +7,7 @@ namespace UnzerPayment6\EventListeners\Checkout;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
@@ -21,6 +22,7 @@ use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayPageE
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSecuredPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\FraudPreventionPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\InstallmentSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
@@ -112,6 +114,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addDirectDebitSecuredExtension($event);
         }
 
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
+            $this->addFraudPreventionExtension($event);
+        }
+
         if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED) {
             $this->addInstallmentSecuredExtension($event);
         }
@@ -122,6 +128,14 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         $this->addPaymentFrameExtension($event);
         $this->addUnzerDataExtension($event);
+    }
+
+    private function addFraudPreventionExtension(PageLoadedEvent $event): void
+    {
+        $extension = new FraudPreventionPageExtension();
+        $extension->setFraudPreventionSessionId(Uuid::randomHex());
+
+        $event->getPage()->addExtension(FraudPreventionPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addUnzerDataExtension(PageLoadedEvent $event): void
