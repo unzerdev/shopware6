@@ -63,24 +63,4 @@ trait HasRiskDataTrait
 
         return $fraudPreventionSessionId;
     }
-
-    private function saveFraudPreventionData(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $context): void
-    {
-        $orderTransaction         = $transaction->getOrderTransaction();
-        $currentRequest           = $this->getCurrentRequestFromStack($orderTransaction->getId());
-        $fraudPreventionSessionId = $currentRequest->get('unzerPaymentFraudPreventionSessionId', '');
-
-        if (empty($fraudPreventionSessionId)) {
-            return;
-        }
-
-        $this->transactionRepository->upsert([
-            [
-                'id'           => $orderTransaction->getId(),
-                'customFields' => [
-                    CustomFieldInstaller::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID => $fraudPreventionSessionId,
-                ],
-            ],
-        ], $context->getContext());
-    }
 }

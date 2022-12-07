@@ -69,7 +69,7 @@
                            name="unzerPaymentBirthday"
                            class="form-control unzer-payment-date-input"
                            form="confirmOrderForm"
-                           max="9999-12-31"
+                           max="{{ 'now -18 years'|date('Y-m-d') }}"
                            {% if page.extensions.unzerDirectDebitSecured.directDebitDevices|length > 0 %}required="required"{% endif %}
                             {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
                 </div>
