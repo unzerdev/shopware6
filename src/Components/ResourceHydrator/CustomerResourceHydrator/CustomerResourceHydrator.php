@@ -10,6 +10,7 @@ use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use UnzerPayment6\Installer\PaymentInstaller;
+use UnzerSDK\Constants\ShippingTypes;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Customer;
 use UnzerSDK\Resources\CustomerFactory;
@@ -181,7 +182,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         }
 
         $unzerCustomer->setBillingAddress($unzerBillingAddress);
-        $this->updateShippingAddress($unzerCustomer, $customer->getActiveShippingAddress());
+        $this->updateShippingAddress($unzerCustomer, $customer->getActiveShippingAddress(), $billingAddress);
 
         return $unzerCustomer;
     }
@@ -201,7 +202,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         return $customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null;
     }
 
-    private function updateShippingAddress(Customer $unzerCustomer, ?CustomerAddressEntity $shippingAddress): void
+    private function updateShippingAddress(Customer $unzerCustomer, ?CustomerAddressEntity $shippingAddress, CustomerAddressEntity $billingAddress): void
     {
         $unzerShippingAddress = $unzerCustomer->getShippingAddress();
 
@@ -230,6 +231,12 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         if ($shippingAddress->getCountry() !== null && $unzerShippingAddress->getCountry() !== $shippingAddress->getCountry()->getIso()) {
             $unzerShippingAddress->setCountry($shippingAddress->getCountry()->getIso());
         }
+
+        $shippingType = $billingAddress->getId() === $shippingAddress->getId()
+            ? ShippingTypes::EQUALS_BILLING
+            : ShippingTypes::DIFFERENT_ADDRESS;
+
+        $unzerShippingAddress->setShippingType($shippingType);
 
         $unzerCustomer->setShippingAddress($unzerShippingAddress);
     }
