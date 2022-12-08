@@ -57,8 +57,6 @@ class UnzerPaylaterInvoicePaymentHandler extends AbstractUnzerPaymentHandler
                 $riskData
             );
 
-            $this->payment->charge($transaction->getOrderTransaction()->getAmount()->getTotalPrice());
-
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
