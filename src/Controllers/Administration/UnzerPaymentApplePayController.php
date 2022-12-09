@@ -81,7 +81,6 @@ class UnzerPaymentApplePayController extends AbstractController
         $client = $this->clientFactory->createClient($salesChannelId);
 
         if ($dataBag->has(self::INHERIT_PAYMENT_PROCESSING_PARAMETER)) {
-            $this->logger->debug(sprintf('Payment Processing reference for sales channel %s cleared', $salesChannelId));
             $this->systemConfigService->delete(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID), $salesChannelId);
         }
 
@@ -89,7 +88,6 @@ class UnzerPaymentApplePayController extends AbstractController
             $certificate = $dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER);
 
             if (extension_loaded('openssl') && !openssl_x509_parse($certificate)) {
-                $this->logger->error('Invalid Payment Processing certificate given');
                 throw new InvalidCertificate('Payment Processing');
             }
 
@@ -105,21 +103,17 @@ class UnzerPaymentApplePayController extends AbstractController
             $client->getResourceService()->createResource($certificateResource->setParentResource($client));
 
             $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID), $certificateResource->getId(), $salesChannelId);
-            $this->logger->debug(sprintf('Payment Processing certificate for sales channel %s updated', $salesChannelId));
         } elseif (($dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && !$dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER))
             || (!$dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && $dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER))) {
-            $this->logger->error('Payment Processing certificate or key missing');
             throw new MissingCertificateFiles('Payment Processing');
         }
 
         if ($dataBag->has(self::INHERIT_MERCHANT_IDENTIFICATION_PARAMETER)) {
             if ($this->filesystem->has($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId))) {
-                $this->logger->debug(sprintf('Merchant Identification certificate for sales channel %s deleted', $salesChannelId));
                 $this->filesystem->delete($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId));
             }
 
             if ($this->filesystem->has($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId))) {
-                $this->logger->debug(sprintf('Merchant Identification key for sales channel %s deleted', $salesChannelId));
                 $this->filesystem->delete($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId));
             }
 
@@ -131,17 +125,14 @@ class UnzerPaymentApplePayController extends AbstractController
             $key         = $dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER);
 
             if (extension_loaded('openssl') && !openssl_x509_parse($certificate)) {
-                $this->logger->error('Invalid Merchant Identification certificate given');
                 throw new InvalidCertificate('Merchant Identification');
             }
             $this->filesystem->put($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId), $certificate);
             $this->filesystem->put($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId), $key);
 
             $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), $salesChannelId, $salesChannelId);
-            $this->logger->debug(sprintf('Merchant Identification certificate for sales channel %s updated', $salesChannelId));
         } elseif (($dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && !$dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER))
             || (!$dataBag->get(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && $dataBag->get(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER))) {
-            $this->logger->error('Merchant Identification certificate or key missing');
             throw new MissingCertificateFiles('Merchant Identification');
         }
 
