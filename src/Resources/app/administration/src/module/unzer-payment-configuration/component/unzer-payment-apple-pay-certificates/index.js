@@ -133,29 +133,20 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                     });
 
                     me.$emit('certificate-updated', response);
-                    if (me.parentRefs.systemConfig.loadCurrentSalesChannelConfig) {
-                        me.parentRefs.systemConfig.loadCurrentSalesChannelConfig();
-                    } else {
-                        delete me.parentRefs.systemConfig.actualConfigData[this.selectedSalesChannelId]; // force reload of config data
-                        me.parentRefs.systemConfig.readAll();
-                    }
+                    me.parentRefs.systemConfig.loadCurrentSalesChannelConfig();
                     me.checkCertificates();
                     me.resetFileFieldsPaymentProcessing();
                     me.resetFileFieldsMerchantIdentification();
                 })
                 .catch((errorResponse) => {
-                    let message = 'unzer-payment-settings.apple-pay.certificates.update.error.message';
-                    if (errorResponse && errorResponse.response && errorResponse.response.data && errorResponse.response.data.message) {
-                        message = errorResponse.response.data.message;
-                    }
-                    let translationData = {};
-                    if (errorResponse && errorResponse.response && errorResponse.response.data && errorResponse.response.data.translationData) {
-                        translationData = errorResponse.response.data.translationData;
+                    let message = errorResponse?.response?.data?.message;
+                    if (!message) {
+                        message = 'unzer-payment-settings.apple-pay.certificates.update.error.message';
                     }
 
                     me.createNotificationError({
                         title: me.$tc('unzer-payment-settings.apple-pay.certificates.update.error.title'),
-                        message: me.$t(message, translationData)
+                        message: me.$t(message, errorResponse?.response?.data?.translationData ?? {})
                     });
                 })
                 .finally(() => {
@@ -196,11 +187,7 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
         },
 
         getInheritedValue(name) {
-            if (this.parentRefs.systemConfig.getInheritedValue) {
-                return this.parentRefs.systemConfig.getInheritedValue({ name: 'UnzerPayment6.settings.' + name, type: 'text' });
-            } else {
-                return this.parentRefs.systemConfig.actualConfigData.null['UnzerPayment6.settings.' + name];
-            }
+            return this.parentRefs.systemConfig.getInheritedValue({ name: 'UnzerPayment6.settings.' + name, type: 'text' });
         },
     }
 });

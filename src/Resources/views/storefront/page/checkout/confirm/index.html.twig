@@ -102,7 +102,7 @@
             countryCode: billingAddress.country.iso,
             currency: context.currency.isoCode,
             shopName: page.extensions[paymentFrameExtensionName].shopName,
-            amount: summary.price.rawTotal ?: summary.price.totalPrice,
+            amount: summary.price.rawTotal,
             authorizePaymentUrl: path('unzer.apple_pay.authorize_payment'),
             merchantValidationUrl: path('unzer.apple_pay.validate_merchant'),
             noApplePayMessage: "UnzerPayment.frame.applePay.missingMessage" | trans,
