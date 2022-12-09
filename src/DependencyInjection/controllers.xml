@@ -53,7 +53,6 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="shopware.filesystem.private"/>
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="UnzerPayment6\Components\ApplePay\CertificateManager"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -71,11 +70,7 @@
         </service>
 
         <service id="UnzerPayment6\Controllers\Storefront\UnzerPaymentApplePayController">
-            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader" />
-            <argument type="service" id="shopware.filesystem.private"/>
             <argument type="service" id="unzer_payment.logger" />
-            <argument type="service" id="UnzerPayment6\Components\ApplePay\CertificateManager"/>
-            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

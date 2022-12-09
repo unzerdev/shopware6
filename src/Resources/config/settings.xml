@@ -107,14 +107,6 @@
         <title>Apple Pay</title>
         <title lang="de-DE">Apple Pay</title>
 
-        <input-field type="text">
-            <name>applePayMerchantIdentifier</name>
-            <label>Merchant Identifier</label>
-            <label lang="de-DE">Merchant Identifier</label>
-            <helpText>Available in your Apple Developer account</helpText>
-            <helpText lang="de-DE">Verfügbar im Apple Developer Account</helpText>
-        </input-field>
-
         <input-field type="single-select">
             <name>bookingModeApplePay</name>
             <label>Booking mode Apple Pay</label>

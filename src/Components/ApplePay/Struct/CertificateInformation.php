@@ -9,12 +9,9 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class CertificateInformation extends Struct
 {
-    /** @var bool */
-    protected $paymentProcessingValid;
-    /** @var bool */
-    protected $merchantIdentificationValid;
-    /** @var null|DateTimeInterface */
-    protected $merchantIdentificationValidUntil;
+    protected bool $paymentProcessingValid;
+    protected bool $merchantIdentificationValid;
+    protected ?DateTimeInterface $merchantIdentificationValidUntil;
 
     public function __construct(bool $paymentProcessingValid, bool $merchantIdentificationValid, ?DateTimeInterface $merchantIdentificationValidUntil)
     {

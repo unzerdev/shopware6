@@ -93,14 +93,14 @@
         {% set summary = page.cart %}
     {% endif %}
 
+    {% set total = summary.price.rawTotal %}
+
     <div data-unzer-payment-apple-pay data-unzer-payment-apple-pay-options='{
         "countryCode": "{{ billingAddress.country.iso }}",
         "currency": "{{ context.currency.isoCode }}",
-        "shopName": "{{ context.salesChannel.homeMetaTitle|escape('js') }}",
-        "amount": "{{ summary.price.rawTotal|escape('js') }}",
-        "authorizePaymentUrl": "{{ path('unzer.apple_pay.authorize_payment')|escape('js') }}",
-        "merchantValidationUrl": "{{ path('unzer.apple_pay.validate_merchant')|escape('js') }}"
-    }}'>
+        "label": "{{ context.salesChannel.name|escape('js') }}",
+        "amount": "{{ total|escape('js') }}"
+    }'>
         <apple-pay-button buttonstyle="black" type="buy" locale="{{ context.salesChannel.locale.code }}" style="--apple-pay-button-width: 100%;"></apple-pay-button>
     </div>
 {% endblock %}

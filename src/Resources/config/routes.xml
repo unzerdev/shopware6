@@ -6,7 +6,6 @@
 
     <import resource="@UnzerPayment6/Controllers/Storefront/UnzerPaymentWebhookController.php" type="annotation" />
     <import resource="@UnzerPayment6/Controllers/Storefront/UnzerPaymentDeviceController.php" type="annotation" />
-    <import resource="@UnzerPayment6/Controllers/Storefront/UnzerPaymentApplePayController.php" type="annotation" />
 
     <import resource="@UnzerPayment6/Controllers/Administration/UnzerPaymentTransactionController.php" type="annotation" />
     <import resource="@UnzerPayment6/Controllers/Administration/UnzerPaymentConfigurationController.php" type="annotation" />
