@@ -64,7 +64,7 @@ class UnzerPaymentApplePayController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/applePay/validateMerchant", name="unzer.apple_pay.validate_merchant", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false, "_route_scope": {"storefront"}})
+     * @Route("/unzer/applePay/validateMerchant", name="unzer.apple_pay.validate_merchant", methods={"POST"}, defaults={"csrf_protected": false, "_route_scope": {"storefront"}})
      */
     public function validateMerchant(Request $request, SalesChannelContext $salesChannelContext): Response
     {
@@ -132,7 +132,7 @@ class UnzerPaymentApplePayController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/applePay/authorizePayment", name="unzer.apple_pay.authorize_payment", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false, "_route_scope": {"storefront"}})
+     * @Route("/unzer/applePay/authorizePayment", name="unzer.apple_pay.authorize_payment", methods={"POST"}, defaults={"csrf_protected": false, "_route_scope": {"storefront"}})
      */
     public function authorizePayment(Request $request, SalesChannelContext $salesChannelContext): Response
     {
@@ -144,6 +144,7 @@ class UnzerPaymentApplePayController extends StorefrontController
 
         try {
             // Charge/Authorize is done in payment handler, return pending to satisfy Apple Pay widget
+            // TODO: Not sure, if we must charge/authorize here, documentation examples look like it. Check once certificates are available.
             $paymentType                   = $client->fetchPaymentType($typeId);
             $response['transactionStatus'] = 'pending';
         } catch (UnzerApiException $e) {

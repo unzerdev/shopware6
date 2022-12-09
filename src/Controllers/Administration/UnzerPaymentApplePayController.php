@@ -97,7 +97,7 @@ class UnzerPaymentApplePayController extends AbstractController
             $certificateResource->setPrivateKey($privateKeyId);
             $client->getResourceService()->createResource($certificateResource->setParentResource($client));
 
-            $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID), $certificateResource->getId());
+            $this->systemConfigService->set(sprintf('%s.%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID), $certificateResource->getId());
         } elseif (($dataBag->has(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && !$dataBag->has(self::PAYMENT_PROCESSING_KEY_PARAMETER))
             || (!$dataBag->has(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && $dataBag->has(self::PAYMENT_PROCESSING_KEY_PARAMETER))) {
             throw new MissingCertificateFiles('Payment Processing');
@@ -114,7 +114,7 @@ class UnzerPaymentApplePayController extends AbstractController
             $this->filesystem->write($this->certificateManager->getMerchantIdentificationCertificatePath($salesChannelId), $certificate);
             $this->filesystem->write($this->certificateManager->getMerchantIdentificationKeyPath($salesChannelId), $key);
 
-            $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), $salesChannelId);
+            $this->systemConfigService->set(sprintf('%s.%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), $salesChannelId);
         } elseif (($dataBag->has(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && !$dataBag->has(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER))
             || (!$dataBag->has(self::MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER) && $dataBag->has(self::MERCHANT_IDENTIFICATION_KEY_PARAMETER))) {
             throw new MissingCertificateFiles('Merchant Identification');

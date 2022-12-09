@@ -11,10 +11,6 @@
             <tag name="unzer.transition_mapper"/>
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentTransitionMapper\ApplePayTransitionMapper">
-            <tag name="unzer.transition_mapper"/>
-        </service>
-
         <service id="UnzerPayment6\Components\PaymentTransitionMapper\BancontactTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>

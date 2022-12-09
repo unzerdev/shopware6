@@ -14,7 +14,6 @@ use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler;
-use UnzerPayment6\Components\PaymentHandler\UnzerApplePayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerBancontactHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerCreditCardPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitPaymentHandler;
@@ -351,7 +350,7 @@ class PaymentInstaller implements InstallerInterface
         ],
         [
             'id'                => self::PAYMENT_ID_APPLE_PAY,
-            'handlerIdentifier' => UnzerApplePayPaymentHandler::class,
+            'handlerIdentifier' => UnzerBancontactHandler::class,
             'name'              => 'Apple Pay (Unzer payments)',
             'translations'      => [
                 'de-DE' => [

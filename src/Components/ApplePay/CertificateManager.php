@@ -12,13 +12,11 @@ class CertificateManager
 
     public function getMerchantIdentificationCertificatePath(string $salesChannelId): string
     {
-        // TODO: Get path prefix via ConfigReader
         return sprintf('%s/%s/%s', self::APPLE_PAY_CERTIFICATE_PATH, $salesChannelId, self::MERCHANT_IDENTIFICATION_CERTIFICATE_FILENAME);
     }
 
     public function getMerchantIdentificationKeyPath(string $salesChannelId): string
     {
-        // TODO: Get path prefix via ConfigReader
         return sprintf('%s/%s/%s', self::APPLE_PAY_CERTIFICATE_PATH, $salesChannelId, self::MERCHANT_IDENTIFICATION_KEY_FILENAME);
     }
 }
