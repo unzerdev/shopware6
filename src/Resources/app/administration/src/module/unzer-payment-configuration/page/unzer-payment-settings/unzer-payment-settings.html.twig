@@ -55,25 +55,12 @@
                         salesChannelSwitchable
                         inherit
                         @config-changed="onConfigChange"
-                        @loading-changed="onLoadingChanged"
                         @sales-channel-changed="onSalesChannelChanged"
                         domain="UnzerPayment6.settings">
                     </sw-system-config>
 
-                    <sw-card
-                        :is-loading="isLoading"
-                        :title="$tc(`unzer-payment-settings.apple-pay.certificates.title`)"
-                        class="unzer--apple-pay-card"
-                    >
-                        <unzer-payment-apple-pay-certificates
-                            ref="applePayCertificates"
-                            :selectedSalesChannelId="selectedSalesChannelId"
-                            :parentRefs="$refs"
-                            :isLoading="isLoading">
-                        </unzer-payment-apple-pay-certificates>
-                    </sw-card>
-
                     <sw-card :title="$tc(`unzer-payment-settings.modal.webhook.title`)" class="unzer--webhook-card">
+
                         <sw-alert
                             v-if="!isLoadingWebhooks && webhooks.length === 0"
                             variant="warning"
@@ -104,7 +91,9 @@
                                 variant="danger">
                                 {{ $tc('unzer-payment-settings.modal.webhook.submit.clear', webhookSelectionLength, {count: webhookSelectionLength}) }}
                             </sw-button-process>
+
                         </div>
+
                     </sw-card>
                 </sw-card-view>
             </template>

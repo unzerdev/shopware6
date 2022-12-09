@@ -156,9 +156,9 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
             return false;
         }
 
-        const birthdate = new Date(this.birthdateInput.value);
-        const maxDate = new Date();
-        const minAge = new Date()
+        const birthdate = new Date(this.birthdateInput.value),
+            maxDate = new Date(),
+            minAge = new Date()
         ;
 
         //normalize times
@@ -170,7 +170,7 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
         maxDate.setDate(maxDate.getDate() + 1);
         minAge.setFullYear(minAge.getFullYear() - 18);
 
-        const isValid = birthdate <= minAge && birthdate < maxDate;
+        let isValid = birthdate <= minAge && birthdate < maxDate;
 
         if (isValid) {
             this.birthdateContainer.classList.remove('error');

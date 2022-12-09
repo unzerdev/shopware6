@@ -28,7 +28,7 @@
         <input-field type="bool">
             <name>extendedLogging</name>
             <label>Extended logging</label>
-            <label lang="de-DE">Erweitertes Logging</label>
+            <label lang="de-DE">Erweitertes logging</label>
             <helpText lang="de-DE">Aktivieren, um alle API-Aufrufe in eine Logdatei (plugin_unzer_payment.XXX.log) zu schreiben. Unabhängig von dieser Option werden auftretende Fehler entsprechend von Shopware geloggt.</helpText>
             <helpText>Activate to write any API requests to a logfile (plugin_unzer_payment.XXX.log). Irrespective of this option, errors will be logged by Shopware accordingly.</helpText>
         </input-field>
@@ -100,51 +100,6 @@
             <name>registerDirectDebit</name>
             <label>Register direct debit accounts</label>
             <label lang="de-DE">Lastschrift-Konten registrieren</label>
-        </input-field>
-    </card>
-
-    <card>
-        <title>Apple Pay</title>
-        <title lang="de-DE">Apple Pay</title>
-
-        <input-field type="text">
-            <name>applePayMerchantIdentifier</name>
-            <label>Merchant Identifier</label>
-            <label lang="de-DE">Merchant Identifier</label>
-            <helpText>Available in your Apple Developer account</helpText>
-            <helpText lang="de-DE">Verfügbar im Apple Developer Account</helpText>
-        </input-field>
-
-        <input-field type="single-select">
-            <name>bookingModeApplePay</name>
-            <label>Booking mode Apple Pay</label>
-            <label lang="de-DE">Buchungsmodus für Apple Pay</label>
-            <helpText>If you select the charge option, the amount is debited immediately; if you select the authorization option, the amount must be collected manually later.</helpText>
-            <helpText lang="de-DE">Bei der Option Direkt wird der Betrag sofort abgebucht, wählen Sie hingegen die Option Autorisierung muss der Betrag später manuell eingezogen werden.</helpText>
-            <options>
-                <option>
-                    <id>charge</id>
-                    <name>Charge</name>
-                    <name lang="de-DE">Direkt</name>
-                </option>
-                <option>
-                    <id>authorize</id>
-                    <name>Authorize</name>
-                    <name lang="de-DE">Autorisierung</name>
-                </option>
-            </options>
-        </input-field>
-
-        <input-field type="text">
-            <name>applePayPaymentProcessingCertificateId</name>
-            <label>ID of payment processing certificate at Unzer</label>
-            <label lang="de-DE">ID des Payment Processing Zertifikats bei Unzer</label>
-        </input-field>
-
-        <input-field type="text">
-            <name>applePayMerchantIdentificationCertificateId</name>
-            <label>ID of merchant identification certificate path</label>
-            <label lang="de-DE">ID des Merchant Identification Zertifikat-Pfads</label>
         </input-field>
     </card>
 

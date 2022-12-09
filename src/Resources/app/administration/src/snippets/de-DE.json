@@ -80,54 +80,6 @@
             "title": "Unzer Payment",
             "description": "Unzer Payment"
         },
-        "apple-pay": {
-            "certificates": {
-                "title": "Apple Pay Zertifikate",
-                "check": {
-                    "paymentProcessingValid": {
-                        "true": "Das Payment Processing-Zertifikat ist vorhanden und gültig",
-                        "false": "Das Payment Processing-Zertifikat fehlt"
-                    },
-                    "merchantIdentificationValid": {
-                        "true": "Das Merchant Identification-Zertifikat ist vorhanden",
-                        "false": "Das Merchant Identification-Zertifikat fehlt"
-                    },
-                    "merchantIdentificationValidUntil": {
-                        "true": "Das Merchant Identification-Zertifikat ist gültig",
-                        "false": "Das Merchant Identification-Zertifikat ist abgelaufen und muss erneuert werden"
-                    }
-                },
-                "update": {
-                    "success": {
-                        "title": "Erfolg",
-                        "message": "Die Zertifikate wurden erfolgreich aktualisiert"
-                    },
-                    "error": {
-                        "title": "Fehler",
-                        "message": "Bei der Aktualisierung der Zertifikate trat ein Fehler auf",
-                        "messageInvalidCertificate": "Die übergebenen Zertifikatsdaten für {type} sind ungültig",
-                        "messageMissingCertificateFiles": "Die übergebenen Zertifikatsdaten für {type} sind unvollständig"
-                    }
-                }
-            },
-            "paymentProcessingCertificate": {
-                "label": "Payment Processing Zertifikat (apple_pay.pem)",
-                "helpText": "Zertifikat und Schlüssel müssen nach den Schritten der <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">Unzer-Dokumentation</a> vorbereitet werden."
-            },
-            "paymentProcessingKey": {
-                "label": "Payment Processing Zertifikatsschlüssel (privatekey.key)"
-            },
-            "publicKey": {
-                "changeNotice": "Bitte beachten: Nach dem Ändern der Unzer Keys muss das Apple Pay Payment Processing Certificate neu hochgeladen werden."
-            },
-            "merchantIdentificationCertificate": {
-                "label": "Merchant Identification Zertifikat (merchant_id.pem)",
-                "helpText": "Zertifikat und Schlüssel müssen nach den Schritten der <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">Unzer-Dokumentation</a> vorbereitet werden."
-            },
-            "merchantIdentificationKey": {
-                "label": "Merchant Identification Zertifikatsschlüssel (merchant_id.key)"
-            }
-        },
         "form": {
             "message": {
                 "success": {
