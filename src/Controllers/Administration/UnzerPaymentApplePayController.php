@@ -150,16 +150,18 @@ class UnzerPaymentApplePayController extends AbstractController
                     $merchantIdentificationValidUntil = \DateTimeImmutable::createFromFormat('U', $certificateData['validTo_time_t']) ?: null;
                 }
             }
-        } elseif ($this->filesystem->has($this->certificateManager->getMerchantIdentificationCertificatePath('')) &&
-            $this->filesystem->has($this->certificateManager->getMerchantIdentificationKeyPath(''))) {
-            $merchantIdentificationValid     = true;
-            $merchantIdentificationInherited = true;
+        } else {
+            if ($this->filesystem->has($this->certificateManager->getMerchantIdentificationCertificatePath('')) &&
+                $this->filesystem->has($this->certificateManager->getMerchantIdentificationKeyPath(''))) {
+                $merchantIdentificationValid     = true;
+                $merchantIdentificationInherited = true;
 
-            if (extension_loaded('openssl')) {
-                $certificateData = openssl_x509_parse((string) $this->filesystem->read($this->certificateManager->getMerchantIdentificationKeyPath('')));
+                if (extension_loaded('openssl')) {
+                    $certificateData = openssl_x509_parse((string) $this->filesystem->read($this->certificateManager->getMerchantIdentificationKeyPath('')));
 
-                if (is_array($certificateData) && array_key_exists('validTo_time_t', $certificateData)) {
-                    $merchantIdentificationValidUntil = \DateTimeImmutable::createFromFormat('U', $certificateData['validTo_time_t']) ?: null;
+                    if (is_array($certificateData) && array_key_exists('validTo_time_t', $certificateData)) {
+                        $merchantIdentificationValidUntil = \DateTimeImmutable::createFromFormat('U', $certificateData['validTo_time_t']) ?: null;
+                    }
                 }
             }
         }
