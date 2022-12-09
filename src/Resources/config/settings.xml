@@ -128,13 +128,13 @@
         </input-field>
 
         <input-field type="text">
-            <name>applePayPaymentProcessingCertificateId</name>
+            <name>paymentProcessingCertificateId</name>
             <label>ID of payment processing certificate at Unzer</label>
             <label lang="de-DE">ID des Payment Processing Zertifikats bei Unzer</label>
         </input-field>
 
         <input-field type="text">
-            <name>applePayMerchantIdentificationCertificateId</name>
+            <name>merchantIdentificationCertificateId</name>
             <label>ID of merchant identification certificate at Unzer</label>
             <label lang="de-DE">ID des Merchant Identification Zertifikats bei Unzer</label>
         </input-field>
