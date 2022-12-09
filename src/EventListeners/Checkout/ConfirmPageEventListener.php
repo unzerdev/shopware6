@@ -18,7 +18,6 @@ use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
 use UnzerPayment6\Components\Struct\Configuration;
-use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSecuredPageExtension;
@@ -120,10 +119,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED) {
             $this->addInstallmentSecuredExtension($event);
-        }
-
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_APPLE_PAY) {
-            $this->addApplePayExtension($event);
         }
 
         $this->addPaymentFrameExtension($event);
@@ -262,15 +257,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension->setOrderDate(date('Y-m-d'));
 
         $event->getPage()->addExtension(InstallmentSecuredPageExtension::EXTENSION_NAME, $extension);
-    }
-
-    private function addApplePayExtension(PageLoadedEvent $event): void
-    {
-        $supportedNetworks = $this->configData->get(ConfigReader::CONFIG_KEY_APPLE_PAY_SUPPORTED_NETWORKS);
-
-        $extension = new ApplePayPageExtension($supportedNetworks ?: []);
-
-        $event->getPage()->addExtension(ApplePayPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function getLocaleByLanguageId(string $languageId, Context $context): string

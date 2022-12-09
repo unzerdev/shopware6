@@ -135,34 +135,6 @@
             </options>
         </input-field>
 
-        <input-field type="multi-select">
-            <name>applePaySupportedNetworks</name>
-            <label>Supported Networks</label>
-            <label lang="de-DE">Unterstützte Zahlungsmittel</label>
-            <options>
-                <option>
-                    <id>masterCard</id>
-                    <name>MasterCard</name>
-                </option>
-                <option>
-                    <id>visa</id>
-                    <name>VISA</name>
-                </option>
-                <option>
-                    <id>amex</id>
-                    <name>American Express</name>
-                </option>
-                <option>
-                    <id>maestro</id>
-                    <name>Maestro</name>
-                </option>
-                <option>
-                    <id>vPay</id>
-                    <name>V Pay</name>
-                </option>
-            </options>
-        </input-field>
-
         <input-field type="text">
             <name>applePayPaymentProcessingCertificateId</name>
             <label>ID of payment processing certificate at Unzer</label>

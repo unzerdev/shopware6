@@ -128,9 +128,7 @@ class UnzerPaymentApplePayController extends AbstractController
     {
         $salesChannelId                   = $dataBag->get('salesChannelId', '');
         $paymentProcessingValid           = false;
-        $paymentProcessingInherited       = false;
         $merchantIdentificationValid      = false;
-        $merchantIdentificationInherited  = false;
         $merchantIdentificationValidUntil = null;
 
         if ($this->filesystem->has($this->certificateManager->getMerchantIdentificationCertificatePath($salesChannelId)) &&
@@ -144,34 +142,16 @@ class UnzerPaymentApplePayController extends AbstractController
                     $merchantIdentificationValidUntil = \DateTimeImmutable::createFromFormat('U', $certificateData['validTo_time_t']) ?: null;
                 }
             }
-        } else {
-            if ($this->filesystem->has($this->certificateManager->getMerchantIdentificationCertificatePath('')) &&
-                $this->filesystem->has($this->certificateManager->getMerchantIdentificationKeyPath(''))) {
-                $merchantIdentificationValid     = true;
-                $merchantIdentificationInherited = true;
-
-                if (extension_loaded('openssl')) {
-                    $certificateData = openssl_x509_parse((string) $this->filesystem->read($this->certificateManager->getMerchantIdentificationKeyPath('')));
-
-                    if (is_array($certificateData) && array_key_exists('validTo_time_t', $certificateData)) {
-                        $merchantIdentificationValidUntil = \DateTimeImmutable::createFromFormat('U', $certificateData['validTo_time_t']) ?: null;
-                    }
-                }
-            }
         }
 
-        $configuration     = $this->configReader->read($salesChannelId, false);
-        $baseConfiguration = $this->configReader->read('');
+        $configuration = $this->configReader->read($salesChannelId, true);
 
         if ($configuration->get(ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID)) {
             $paymentProcessingValid = true;
-        } elseif ($baseConfiguration->get(ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID)) {
-            $paymentProcessingValid     = true;
-            $paymentProcessingInherited = true;
         }
 
         return new JsonResponse(
-            new CertificateInformation($paymentProcessingValid, $paymentProcessingInherited, $merchantIdentificationValid, $merchantIdentificationInherited, $merchantIdentificationValidUntil),
+            new CertificateInformation($paymentProcessingValid, $merchantIdentificationValid, $merchantIdentificationValidUntil),
             ($paymentProcessingValid && $merchantIdentificationValid) ? Response::HTTP_OK : Response::HTTP_NOT_FOUND
         );
     }

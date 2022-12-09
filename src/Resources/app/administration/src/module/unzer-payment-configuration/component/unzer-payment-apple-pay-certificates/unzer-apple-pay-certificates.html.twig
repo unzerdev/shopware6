@@ -6,12 +6,10 @@
                 <form
                     ref="certificatesForm"
                 >
-                    <!-- TODO: How would we show inheritance and what does removing/restoring inheritance mean here? Currently this is "only" used as a label component -->
                     <sw-inherit-wrapper
                         :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingCertificate.label')"
                         v-model="paymentProcessingCertificate"
-                        inheritedValue="null"
-                        has-parent="isNotDefaultSalesChannel"
+                        inheritedValue="paymentProcessingCertificate"
                         >
                         <template #content="props">
                             <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input -->
@@ -33,8 +31,7 @@
                     <sw-inherit-wrapper
                         :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingKey.label')"
                         v-model="paymentProcessingKey"
-                        inheritedValue="null"
-                        has-parent="isNotDefaultSalesChannel"
+                        inheritedValue="paymentProcessingKey"
                     >
                         <template #content="props">
                             <sw-file-input
@@ -47,8 +44,7 @@
                     <sw-inherit-wrapper
                         :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationCertificate.label')"
                         v-model="merchantIdentificationCertificate"
-                        inheritedValue="null"
-                        has-parent="isNotDefaultSalesChannel"
+                        inheritedValue="merchantIdentificationCertificate"
                     >
                         <template #content="props">
                             <sw-label
@@ -76,8 +72,7 @@
                     <sw-inherit-wrapper
                         :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationKey.label')"
                         v-model="merchantIdentificationKey"
-                        inheritedValue="null"
-                        has-parent="isNotDefaultSalesChannel"
+                        inheritedValue="merchantIdentificationKey"
                     >
                         <template #content="props">
                             <sw-file-input

@@ -12,9 +12,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
         checkoutConfirmButtonSelector: '#confirmFormSubmit',
         applePayMethodSelector: '.unzer-payment-apple-pay-method-wrapper',
         authorizePaymentUrl: '',
-        merchantValidationUrl: '',
         noApplePayMessage: '',
-        supportedNetworks: ['masterCard', 'visa'],
     };
 
     /**
@@ -90,7 +88,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
         const applePayPaymentRequest = {
             countryCode: this.options.countryCode,
             currencyCode: this.options.currency,
-            supportedNetworks: this.options.supportedNetworks,
+            supportedNetworks: ['visa', 'masterCard'],
             merchantCapabilities: ['supports3DS'],
             total: { label: this.options.shopName, amount: this.options.amount },
         };
@@ -98,7 +96,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
         const session = new ApplePaySession(6, applePayPaymentRequest);
         session.onvalidatemerchant = function (event) {
             try {
-                me.client.post(me.options.merchantValidationUrl, { merchantValidationUrl: event.validationURL }, (response) => {
+                me.client.post(me.options.authorizePaymentUrl, { merchantValidationUrl: event.validationURL }, (response) => {
                     session.completeMerchantValidation(response);
                 });
             } catch(e) {

@@ -96,17 +96,15 @@
 
     {% block unzer_payment_frame_apple_pay %}
         {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
-        {% set applePayExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\ApplePayPageExtension::EXTENSION_NAME") %}
 
         <div data-unzer-payment-apple-pay data-unzer-payment-apple-pay-options="{{ {
-            countryCode: billingAddress.country.iso,
-            currency: context.currency.isoCode,
-            shopName: page.extensions[paymentFrameExtensionName].shopName,
-            amount: summary.price.rawTotal,
-            authorizePaymentUrl: path('unzer.apple_pay.authorize_payment'),
-            merchantValidationUrl: path('unzer.apple_pay.validate_merchant'),
-            noApplePayMessage: "UnzerPayment.frame.applePay.missingMessage" | trans,
-            supportedNetworks: page.extensions[applePayExtensionName].supportedNetworks,
+        countryCode: billingAddress.country.iso,
+        currency: context.currency.isoCode,
+        shopName: page.extensions[paymentFrameExtensionName].shopName,
+        amount: summary.price.rawTotal,
+        authorizePaymentUrl: path('unzer.apple_pay.authorize_payment'),
+        merchantValidationUrl: path('unzer.apple_pay.validate_merchant'),
+        noApplePayMessage: "UnzerPayment.frame.applePay.missingMessage" | trans
         }|json_encode }}">
             {% block unzer_payment_frame_apple_pay_test_data %}
                 {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
