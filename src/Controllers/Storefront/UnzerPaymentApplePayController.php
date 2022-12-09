@@ -58,7 +58,7 @@ class UnzerPaymentApplePayController extends StorefrontController
      */
     public function validateMerchant(Request $request, SalesChannelContext $salesChannelContext): Response
     {
-        $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
+        $salesChannelId = $salesChannelContext->getSalesChannelId();
         $configuration  = $this->configReader->read($salesChannelId, true);
 
         $applePaySession = new ApplepaySession(
@@ -114,7 +114,7 @@ class UnzerPaymentApplePayController extends StorefrontController
      */
     public function authorizePayment(Request $request, SalesChannelContext $salesChannelContext): Response
     {
-        $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
+        $salesChannelId = $salesChannelContext->getSalesChannelId();
         $client         = $this->clientFactory->createClient($salesChannelId);
         $typeId         = $request->get('id');
 
