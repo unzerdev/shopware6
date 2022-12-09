@@ -65,7 +65,7 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             let criteria = new Criteria(page, limit);
             criteria.addAssociation('domains');
 
-            this.salesChannelRepository.search(criteria, Shopware.Context.api)
+            this.salesChannelRepository.search(criteria, Shopware.Context.Api)
                 .then((result) => {
                     me.salesChannels = result;
                     me.isDataLoading = false;
