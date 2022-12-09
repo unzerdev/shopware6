@@ -1,16 +1,14 @@
 {% block unzer_payment_apple_pay_certificates %}
     <sw-container :title="$tc(`unzer-payment-settings.apple-pay.certificates.title`)"
                   class="unzer-payment-settings--apple-pay-certificates">
-        <template v-if="!isLoading">
+        <template>
             {% block unzer_payment_apple_pay_certificates_form %}
+                <!-- TODO: How would we show inheritance and what does removing/restoring inheritance mean here? Currently this is "only" used as a label component -->
                 <sw-inherit-wrapper
-                    ref="inheritWrapperPaymentProcessingCertificate"
                     :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingCertificate.label')"
-                    v-model="parentRefs.systemConfig.actualConfigData[selectedSalesChannelId]['UnzerPayment6.settings.applePayPaymentProcessingCertificateId']"
-                    :inheritedValue="getInheritedValue('applePayPaymentProcessingCertificateId')"
+                    v-model="paymentProcessingCertificate"
+                    inheritedValue="null"
                     :has-parent="isNotDefaultSalesChannel"
-                    @restore="setPaymentProcessingInheritance"
-                    @remove="removePaymentProcessingInheritance"
                     >
                     <template #content="props">
                         <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input -->
@@ -26,38 +24,30 @@
                             ref="paymentProcessingCertificateInput"
                             class="sw-field sw-block-field"
                             v-model="paymentProcessingCertificate"
-                            @change="onInputChangePaymentProcessing"
                         ></sw-file-input>
                     </template>
                 </sw-inherit-wrapper>
 
                 <sw-inherit-wrapper
-                    ref="inheritWrapperPaymentProcessingKey"
                     :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingKey.label')"
-                    v-model="parentRefs.systemConfig.actualConfigData[selectedSalesChannelId]['UnzerPayment6.settings.applePayPaymentProcessingCertificateId']"
-                    :inheritedValue="getInheritedValue('applePayPaymentProcessingCertificateId')"
+                    v-model="paymentProcessingKey"
+                    inheritedValue="null"
                     :has-parent="isNotDefaultSalesChannel"
-                    @restore="setPaymentProcessingInheritance"
-                    @remove="removePaymentProcessingInheritance"
                 >
                     <template #content="props">
                         <sw-file-input
                             ref="paymentProcessingKeyInput"
                             class="sw-field sw-block-field"
                             v-model="paymentProcessingKey"
-                            @change="onInputChangePaymentProcessing"
                         ></sw-file-input>
                     </template>
                 </sw-inherit-wrapper>
 
                 <sw-inherit-wrapper
-                    ref="inheritWrapperMerchantIdentificationCertificate"
                     :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationCertificate.label')"
-                    v-model="parentRefs.systemConfig.actualConfigData[selectedSalesChannelId]['UnzerPayment6.settings.applePayMerchantIdentificationCertificateId']"
-                    :inheritedValue="getInheritedValue('applePayMerchantIdentificationCertificateId')"
+                    v-model="merchantIdentificationCertificate"
+                    inheritedValue="null"
                     :has-parent="isNotDefaultSalesChannel"
-                    @restore="setMerchantIdentificationInheritance"
-                    @remove="removeMerchantIdentificationInheritance"
                 >
                     <template #content="props">
                         <sw-label
@@ -79,26 +69,21 @@
                             ref="merchantIdentificationCertificateInput"
                             class="sw-field sw-block-field"
                             v-model="merchantIdentificationCertificate"
-                            @change="onInputChangeMerchantIdentification"
                         ></sw-file-input>
                     </template>
                 </sw-inherit-wrapper>
 
                 <sw-inherit-wrapper
-                    ref="inheritWrapperMerchantIdentificationKey"
                     :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationKey.label')"
-                    v-model="parentRefs.systemConfig.actualConfigData[selectedSalesChannelId]['UnzerPayment6.settings.applePayMerchantIdentificationCertificateId']"
-                    :inheritedValue="getInheritedValue('applePayMerchantIdentificationCertificateId')"
+                    v-model="merchantIdentificationKey"
+                    inheritedValue="null"
                     :has-parent="isNotDefaultSalesChannel"
-                    @restore="setMerchantIdentificationInheritance"
-                    @remove="removeMerchantIdentificationInheritance"
                 >
                     <template #content="props">
                         <sw-file-input
                             ref="merchantIdentificationKeyInput"
                             class="sw-field sw-block-field"
                             v-model="merchantIdentificationKey"
-                            @change="onInputChangeMerchantIdentification"
                         ></sw-file-input>
                     </template>
                 </sw-inherit-wrapper>

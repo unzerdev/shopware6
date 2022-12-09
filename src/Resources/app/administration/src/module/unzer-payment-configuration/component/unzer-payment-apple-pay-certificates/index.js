@@ -20,10 +20,7 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
         selectedSalesChannelId: {
             type: String,
             required: false
-        },
-        parentRefs: {
-            required: true
-        },
+        }
     },
 
     data() {
@@ -86,44 +83,17 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
             return this.updateCertificates();
         },
 
-        resetFileFieldsMerchantIdentification() {
-            this.$refs.merchantIdentificationCertificateInput.onRemoveIconClick();
-            this.$refs.merchantIdentificationKeyInput.onRemoveIconClick();
-        },
-        resetFileFieldsPaymentProcessing() {
-            this.$refs.paymentProcessingCertificateInput.onRemoveIconClick();
-            this.$refs.paymentProcessingKeyInput.onRemoveIconClick();
-        },
-
         updateCertificates() {
             const me = this;
             this.isUpdateSuccessful = false;
             this.isUpdating = true;
 
-            if (
-                !this.paymentProcessingCertificate
-                && !this.paymentProcessingKey
-                && !this.merchantIdentificationCertificate
-                && !this.merchantIdentificationKey
-                && !this.$refs.inheritWrapperMerchantIdentificationCertificate.isInherited
-                && !this.$refs.inheritWrapperPaymentProcessingCertificate.isInherited
-            ) {
-                this.isUpdateSuccessful = true;
-                me.isUpdating = false;
-                return;
-            }
-
-            return this.UnzerPaymentApplePayService.updateCertificates(
-                this.selectedSalesChannelId,
-                {
-                    paymentProcessingCertificate: this.paymentProcessingCertificate,
-                    paymentProcessingKey: this.paymentProcessingKey,
-                    merchantIdentificationCertificate: this.merchantIdentificationCertificate,
-                    merchantIdentificationKey: this.merchantIdentificationKey,
-                },
-                this.$refs.inheritWrapperMerchantIdentificationCertificate.isInherited,
-                this.$refs.inheritWrapperPaymentProcessingCertificate.isInherited
-            )
+            return this.UnzerPaymentApplePayService.updateCertificates(this.selectedSalesChannelId, {
+                paymentProcessingCertificate: this.paymentProcessingCertificate,
+                paymentProcessingKey: this.paymentProcessingKey,
+                merchantIdentificationCertificate: this.merchantIdentificationCertificate,
+                merchantIdentificationKey: this.merchantIdentificationKey,
+            })
                 .then((response) => {
                     me.isUpdateSuccessful = true;
 
@@ -133,10 +103,11 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                     });
 
                     me.$emit('certificate-updated', response);
-                    me.parentRefs.systemConfig.loadCurrentSalesChannelConfig();
                     me.checkCertificates();
-                    me.resetFileFieldsPaymentProcessing();
-                    me.resetFileFieldsMerchantIdentification();
+                    me.$refs.paymentProcessingCertificateInput.onRemoveIconClick();
+                    me.$refs.paymentProcessingKeyInput.onRemoveIconClick();
+                    me.$refs.merchantIdentificationCertificateInput.onRemoveIconClick();
+                    me.$refs.merchantIdentificationKeyInput.onRemoveIconClick();
                 })
                 .catch(() => {
                     me.createNotificationError({
@@ -149,40 +120,12 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                 });
         },
 
-        onInputChangePaymentProcessing(value) {
-            if (value) {
-                // Other field is handled with inheritance wrapper event
-                this.$refs.inheritWrapperPaymentProcessingCertificate.removeInheritance();
-            }
-        },
-        onInputChangeMerchantIdentification(value) {
-            if (value) {
-                // Other field is handled with inheritance wrapper event
-                this.$refs.inheritWrapperMerchantIdentificationCertificate.removeInheritance();
-            }
-        },
+        getInheritedValue(element) {
+            const value = this.actualConfigData.null[element.name];
 
-        setPaymentProcessingInheritance() {
-            this.$refs.inheritWrapperPaymentProcessingCertificate.isInherited && this.$refs.inheritWrapperPaymentProcessingCertificate.restoreInheritance();
-            this.$refs.inheritWrapperPaymentProcessingKey.isInherited && this.$refs.inheritWrapperPaymentProcessingKey.restoreInheritance();
-            this.resetFileFieldsPaymentProcessing();
-        },
-        removePaymentProcessingInheritance() {
-            !this.$refs.inheritWrapperPaymentProcessingCertificate.isInherited && this.$refs.inheritWrapperPaymentProcessingCertificate.removeInheritance();
-            !this.$refs.inheritWrapperPaymentProcessingKey.isInherited && this.$refs.inheritWrapperPaymentProcessingKey.removeInheritance();
-        },
-        setMerchantIdentificationInheritance() {
-            this.$refs.inheritWrapperMerchantIdentificationCertificate.isInherited && this.$refs.inheritWrapperMerchantIdentificationCertificate.restoreInheritance();
-            this.$refs.inheritWrapperMerchantIdentificationKey.isInherited && this.$refs.inheritWrapperMerchantIdentificationKey.restoreInheritance();
-            this.resetFileFieldsMerchantIdentification();
-        },
-        removeMerchantIdentificationInheritance() {
-            !this.$refs.inheritWrapperMerchantIdentificationCertificate.isInherited && this.$refs.inheritWrapperMerchantIdentificationCertificate.removeInheritance();
-            !this.$refs.inheritWrapperMerchantIdentificationKey.isInherited && this.$refs.inheritWrapperMerchantIdentificationKey.removeInheritance();
-        },
-
-        getInheritedValue(name) {
-            return this.parentRefs.systemConfig.getInheritedValue({ name: 'UnzerPayment6.settings.' + name, type: 'text' });
+            if (value) {
+                return value;
+            }
         },
     }
 });
