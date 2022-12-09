@@ -10,12 +10,6 @@
             "amount": "Betrag"
         },
         "frame": {
-            "applePay": {
-                "missingMessage": "Eine Zahlung per Apple Pay steht mit diesem Browser leider nicht zur Verfügung",
-                "testData": {
-                    "linkText": "Apple Pay Sandbox-Informationen und Testdaten"
-                }
-            },
             "creditCard": {
                 "new": "Eine andere Kreditkarte verwenden",
                 "number": "Kreditkartennummer",

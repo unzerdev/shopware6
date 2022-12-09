@@ -1,5 +1,7 @@
 {% block sw_system_config_content_card_field %}
-    <template v-if="element.name != 'UnzerPayment6.settings.applePayPaymentProcessingCertificateId' && element.name != 'UnzerPayment6.settings.applePayMerchantIdentificationCertificateId'">
+    {% if domain == 'UnzerPayment6.settings' and (element.name == 'paymentProcessingCertificateId' or element.name == 'merchantIdentificationCertificiateId') %}
+        {# hide field #}
+    {% else %}
         {% parent() %}
-    </template>
+    {% endif %}
 {% endblock %}

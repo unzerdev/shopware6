@@ -1,12 +1,6 @@
-{% sw_extends "@Storefront/storefront/component/payment/payment-fields.html.twig" %}
+{% sw_extends '@Storefront/storefront/component/payment/payment-fields.html.twig' %}
 
-{# SW 6.2 compatibility #}
-{% block component_payment_method %}
-    {% if payment and payment.id == constant("UnzerPayment6\\Installer\\PaymentInstaller::PAYMENT_ID_APPLE_PAY") %}
-        <div class="unzer-payment-apple-pay-method-wrapper">
-            {{ parent() }}
-        </div>
-    {% else %}
-        {{ parent() }}
-    {% endif %}
+{% block component_payment_methods %}
+    {# TODO: Remove Apple Pay payment method element (via JS) if not capable. Take care for payment method selection < 6.4 #}
+    {{ parent() }}
 {% endblock %}

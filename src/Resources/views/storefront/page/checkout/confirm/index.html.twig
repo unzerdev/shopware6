@@ -33,8 +33,7 @@
 
 {% block page_checkout_confirm_product_table %}
     {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
-    {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
-    {% if page.extensions[paymentFrameExtensionName].paymentFrame and page.extensions[paymentDataExtensionName] %}
+    {% if page.extensions.unzerPaymentFrame.paymentFrame and page.extensions[paymentDataExtensionName] %}
         {% block unzer_payment_checkout_confirm_frame %}
             {% sw_include '@Storefront/storefront/component/unzer/base/unzer-library.html.twig' %}
 
@@ -57,7 +56,7 @@
                             {% block unzer_payment_checkout_confirm_frame_card_body %}
                                 {% block unzer_payment_checkout_confirm_frame_card_body_frame %}
                                     <div class="unzer-payment-frame">
-                                        {% sw_include page.extensions[paymentFrameExtensionName].paymentFrame ignore missing %}
+                                        {% sw_include page.extensions.unzerPaymentFrame.paymentFrame ignore missing %}
                                     </div>
                                 {% endblock %}
                             {% endblock %}
@@ -94,25 +93,14 @@
         {% set summary = page.cart %}
     {% endif %}
 
-    {% block unzer_payment_frame_apple_pay %}
-        {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
-
-        <div data-unzer-payment-apple-pay data-unzer-payment-apple-pay-options="{{ {
-        countryCode: billingAddress.country.iso,
-        currency: context.currency.isoCode,
-        shopName: page.extensions[paymentFrameExtensionName].shopName,
-        amount: summary.price.rawTotal,
-        authorizePaymentUrl: path('unzer.apple_pay.authorize_payment'),
-        merchantValidationUrl: path('unzer.apple_pay.validate_merchant'),
-        noApplePayMessage: "UnzerPayment.frame.applePay.missingMessage" | trans
-        }|json_encode }}">
-            {% block unzer_payment_frame_apple_pay_test_data %}
-                {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
-                {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
-                    {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/apple-pay.html.twig' %}
-                {% endif %}
-            {% endblock %}
-            <apple-pay-button buttonstyle="black" type="buy" locale="{{ context.salesChannel.locale.code }}" style="--apple-pay-button-width: 100%;"></apple-pay-button>
-        </div>
-    {% endblock %}
+    <div data-unzer-payment-apple-pay data-unzer-payment-apple-pay-options='{
+        "countryCode": "{{ billingAddress.country.iso }}",
+        "currency": "{{ context.currency.isoCode }}",
+        "shopName": "{{ context.salesChannel.homeMetaTitle|escape('js') }}",
+        "amount": "{{ summary.price.rawTotal|escape('js') }}",
+        "authorizePaymentUrl": "{{ path('unzer.apple_pay.authorize_payment')|escape('js') }}",
+        "merchantValidationUrl": "{{ path('unzer.apple_pay.validate_merchant')|escape('js') }}"
+    }}'>
+        <apple-pay-button buttonstyle="black" type="buy" locale="{{ context.salesChannel.locale.code }}" style="--apple-pay-button-width: 100%;"></apple-pay-button>
+    </div>
 {% endblock %}
