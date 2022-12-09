@@ -170,7 +170,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
     protected function hydrateRefunds(array &$data, Payment $payment, int $decimalPrecision, Unzer $client): void
     {
-        /** @var Cancellation $lazyCharge */
+        /** @var Cancellation $lazyRefund */
         foreach ($payment->getRefunds() as $lazyRefund) {
             try {
                 $cancellation = $client->fetchPaymentRefund($payment, $lazyRefund->getId());
