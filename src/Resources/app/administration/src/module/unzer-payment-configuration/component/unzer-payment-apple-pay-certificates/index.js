@@ -182,7 +182,7 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
 
         getInheritedValue(name) {
             const systemConfig = this.parentRefs.systemConfig;
-            if (systemConfig.getInheritedValue && systemConfig.actualConfigData.null) {
+            if (systemConfig.getInheritedValue) {
                 return systemConfig.getInheritedValue({ name: 'UnzerPayment6.settings.' + name, type: 'text' });
             } else {
                 return systemConfig.actualConfigData.null ? (systemConfig.actualConfigData.null['UnzerPayment6.settings.' + name] || null) : null;
