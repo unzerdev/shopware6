@@ -73,7 +73,7 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                 .then((response) => {
                     if (typeof response !== "undefined") {
                         this.merchantIdentificationValid = response.merchantIdentificationValid;
-                        this.merchantIdentificationValidUntil = response.merchantIdentificationValidUntil ? new Date(response.merchantIdentificationValidUntil) : null;
+                        this.merchantIdentificationValidUntil = response.merchantIdentificationValidUntil;
                         this.paymentProcessingValid = response.paymentProcessingValid;
                     }
                 })
