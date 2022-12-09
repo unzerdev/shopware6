@@ -12,7 +12,7 @@
                         inheritedValue="paymentProcessingCertificate"
                         >
                         <template #content="props">
-                            <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input -->
+                            <!-- TODO: Drag&Drop does not work on these sw-file-input -->
                             <sw-label
                                 v-if="!isDataLoading"
                                 :variant="paymentProcessingValid ? 'success' : 'danger'"
