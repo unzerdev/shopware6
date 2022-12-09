@@ -23,7 +23,6 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_REGISTER_PAYPAL              = 'registerPayPal';
     public const CONFIG_KEY_INSTALLMENT_SECURED_INTEREST = 'installmentSecuredEffectiveInterest';
     public const CONFIG_KEY_REGISTER_DIRECT_DEBIT        = 'registerDirectDebit';
-    public const CONFIG_KEY_BOOKING_MODE_APPLE_PAY       = 'bookingModeApplePay';
 
     public const CONFIG_KEY_SHIPPING_STATUS = 'statusForAutomaticShippingNotification';
 

@@ -47,27 +47,10 @@
             </call>
         </service>
 
-        <service id="UnzerPayment6\Controllers\Administration\UnzerPaymentApplePayController">
-            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
-            <argument type="service" id="unzer_payment.logger"/>
-
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
-
         <service id="UnzerPayment6\Controllers\Storefront\UnzerCheckoutController"
                  decorates="Shopware\Storefront\Controller\CheckoutController">
             <argument type="service" id="UnzerPayment6\Controllers\Storefront\UnzerCheckoutController.inner"/>
             <argument type="service" id="Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoader"/>
-
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
-
-        <service id="UnzerPayment6\Controllers\Storefront\UnzerPaymentApplePayController">
-            <argument type="service" id="unzer_payment.logger" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

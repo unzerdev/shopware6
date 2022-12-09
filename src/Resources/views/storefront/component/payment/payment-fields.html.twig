@@ -1,6 +1,0 @@
-{% sw_extends '@Storefront/storefront/component/payment/payment-fields.html.twig' %}
-
-{% block component_payment_methods %}
-    {# TODO: Remove Apple Pay payment method element (via JS) if not capable. Take care for payment method selection < 6.4 #}
-    {{ parent() }}
-{% endblock %}
