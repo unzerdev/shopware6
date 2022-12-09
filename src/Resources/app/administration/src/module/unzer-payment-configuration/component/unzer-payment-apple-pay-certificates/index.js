@@ -28,10 +28,6 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
             isUpdating: false,
             isUpdateSuccessful: false,
             isDataLoading: false,
-            paymentProcessingCertificate: false,
-            paymentProcessingKey: false,
-            merchantIdentificationCertificate: false,
-            merchantIdentificationKey: false,
         };
     },
 
@@ -72,35 +68,28 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                 });
         },
 
-        onSave() {
-            return this.updateCertificates();
-        },
-
         updateCertificates() {
             const me = this;
             this.isUpdateSuccessful = false;
             this.isUpdating = true;
 
-            return this.UnzerPaymentApplePayService.updateCertificates(this.selectedSalesChannelId, {
-                paymentProcessingCertificate: this.paymentProcessingCertificate,
-                paymentProcessingKey: this.paymentProcessingKey,
-                merchantIdentificationCertificate: this.merchantIdentificationCertificate,
-                merchantIdentificationKey: this.merchantIdentificationKey,
+            this.UnzerPaymentApplePayService.updateCertificates({
+                // TODO
             })
                 .then((response) => {
                     me.isUpdateSuccessful = true;
 
                     this.createNotificationSuccess({
-                        title: this.$tc('unzer-payment-settings.apple-pay.certificates.update.success.title'),
-                        message: this.$tc('unzer-payment-settings.apple-pay.certificates.update.success.message')
+                        title: this.$tc('unzer-payment-settings.apple-pay.update.success.title'),
+                        message: this.$tc('unzer-payment-settings.apple-pay.update.success.message')
                     });
 
                     this.$emit('certificate-updated', response);
                 })
                 .catch(() => {
                     this.createNotificationError({
-                        title: this.$tc('unzer-payment-settings.apple-pay.certificates.update.error.title'),
-                        message: this.$tc('unzer-payment-settings.apple-pay.certificates.update.error.message')
+                        title: this.$tc('unzer-payment-settings.webhook.globalError.title'),
+                        message: this.$tc('unzer-payment-settings.webhook.globalError.message')
                     });
                 })
                 .finally(() => {

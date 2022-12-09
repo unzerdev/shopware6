@@ -34,7 +34,6 @@ class UnzerPaymentApplePayController extends AbstractController
      */
     public function updateApplePayCertificates(RequestDataBag $dataBag): JsonResponse
     {
-        // TODO: Receive certificates as text parameters
         // TODO: Persist uploaded files in private filesystem, verify certificates (if openssl is present)
         // TODO: Send certificate data to Unzer
         return new JsonResponse(

@@ -60,10 +60,8 @@
                     </sw-system-config>
 
                     <sw-card :title="$tc(`unzer-payment-settings.apple-pay.certificates.title`)" class="unzer--apple-pay-card">
-                        <unzer-payment-apple-pay-certificates
-                            ref="applePayCertificates"
-                            :selectedSalesChannelId="selectedSalesChannelId"
-                            :isLoading="isLoading">
+                        <unzer-payment-apple-pay-certificates :selectedSalesChannelId="selectedSalesChannelId"
+                                                              :isLoading="isLoading">
                         </unzer-payment-apple-pay-certificates>
                     </sw-card>
 

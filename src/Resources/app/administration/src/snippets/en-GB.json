@@ -80,33 +80,6 @@
             "title": "Unzer Payment",
             "description": "Unzer Payment"
         },
-        "apple-pay": {
-            "certificates": {
-                "title": "Apple Pay Certificates",
-                "update": {
-                    "success": {
-                        "title": "Success",
-                        "message": "Certificates were updated successfully"
-                    },
-                    "error": {
-                        "title": "Error",
-                        "message": "An error occured during certificate update"
-                    }
-                }
-            },
-            "paymentProcessingCertificate": {
-                "label": "Payment Processing Certificate"
-            },
-            "paymentProcessingKey": {
-                "label": "Payment Processing Certificate Key (Private Key)"
-            },
-            "merchantIdentificationCertificate": {
-                "label": "Merchant Identification Certificate"
-            },
-            "merchantIdentificationKey": {
-                "label": "Merchant Identification Certificate Key (Private Key)"
-            }
-        },
         "form": {
             "message": {
                 "success": {

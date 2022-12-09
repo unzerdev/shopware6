@@ -120,9 +120,7 @@ Component.register('unzer-payment-settings', {
                     message: messageSaveSuccess
                 });
 
-                this.$refs.applePayCertificates.onSave().then(() => {
-                    this.isLoading = false;
-                });
+                this.isLoading = false;
             }).catch((err) => {
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
