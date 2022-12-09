@@ -365,7 +365,7 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
     ];
-    private const PLUGIN_VERSION_PAYLATER_INVOICE = '4.1.0';
+    private const PLUGIN_VERSION_PAYLATER_INVOICE = '5.0.0';
 
     /** @var EntityRepositoryInterface */
     private $paymentMethodRepository;

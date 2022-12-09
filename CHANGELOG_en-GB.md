@@ -1,10 +1,11 @@
-# 4.1.0
+# 5.0.0
 * Fix of recurring use of a credit card
 * Added Paylater Invoice as new payment method
 * Updated Unzer PHP SDK to version 1.2.2.0
 * Added compatibility to Unzer Basket V2 API
 * Added Apple Pay as new payment method
-* Fix the payment method update when updating the plugin
+* Fix the update of payment methods when updating the plugin
+* Added new parameter to `PaymentResourceHydratorInterface::hydateArray` to handle the display of refunds for Paylater invoice
 
 # 4.0.0
 * Transfer information is now stored in the custom fields instead of a separate table.

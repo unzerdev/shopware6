@@ -21,6 +21,7 @@ use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Cancellation;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
+use UnzerSDK\Unzer;
 
 class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 {
@@ -32,7 +33,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         $this->logger = $logger;
     }
 
-    public function hydrateArray(Payment $payment, OrderTransactionEntity $orderTransaction): array
+    public function hydrateArray(Payment $payment, OrderTransactionEntity $orderTransaction, Unzer $client): array
     {
         $decimalPrecision = $this->getDecimalPrecision($orderTransaction);
         $data             = $this->getBaseData($payment, $decimalPrecision);
@@ -47,7 +48,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
             $this->logResourceError($throwable);
         }
 
-        $this->hydrateTransactions($data, $payment, $decimalPrecision);
+        $this->hydrateTransactions($data, $payment, $decimalPrecision, $client);
         $this->validateIsShipmentAllowed($data, $orderTransaction->getOrder());
 
         if ($payment->getMetadata() !== null) {
@@ -114,10 +115,29 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         );
     }
 
-    protected function hydrateTransactions(array &$data, Payment $payment, int $decimalPrecision): void
+    protected function hydrateTransactions(array &$data, Payment $payment, int $decimalPrecision, Unzer $client): void
     {
-        $totalShippingAmount = 0;
+        $this->hydrateCharges($data, $payment, $decimalPrecision);
+        $this->hydrateRefunds($data, $payment, $decimalPrecision, $client);
+        $totalShippingAmount = $this->hydrateShipments($data, $payment, $decimalPrecision);
 
+        if ($totalShippingAmount === round($payment->getAmount()->getTotal() * (10 ** $decimalPrecision))) {
+            $data['isShipmentAllowed'] = false;
+        }
+
+        foreach (array_reverse($data['transactions'], true) as $transaction) {
+            if (array_key_exists('shortId', $transaction) && !empty($transaction['shortId'])) {
+                $data['shortId'] = $transaction['shortId'];
+
+                break;
+            }
+        }
+
+        ksort($data['transactions']);
+    }
+
+    protected function hydrateCharges(array &$data, Payment $payment, int $decimalPrecision): void
+    {
         /** @var Charge $lazyCharge */
         foreach ($payment->getCharges() as $lazyCharge) {
             try {
@@ -149,6 +169,31 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 );
             }
         }
+    }
+
+    protected function hydrateRefunds(array &$data, Payment $payment, int $decimalPrecision, Unzer $client): void
+    {
+        /** @var Cancellation $lazyCharge */
+        foreach ($payment->getRefunds() as $lazyRefund) {
+            try {
+                $cancellation = $client->fetchPaymentRefund($payment, $lazyRefund->getId());
+            } catch (Throwable $throwable) {
+                $this->logResourceError($throwable);
+
+                continue;
+            }
+
+            $data['transactions'][$this->getTransactionKey($cancellation)] = $this->hydrateTransactionItem(
+                $cancellation,
+                'cancellation',
+                $decimalPrecision
+            );
+        }
+    }
+
+    protected function hydrateShipments(array &$data, Payment $payment, int $decimalPrecision): float
+    {
+        $totalShippingAmount = 0;
 
         /** @var Shipment $lazyShipment */
         foreach ($payment->getShipments() as $lazyShipment) {
@@ -172,19 +217,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
             }
         }
 
-        if ($totalShippingAmount === round($payment->getAmount()->getTotal() * (10 ** $decimalPrecision))) {
-            $data['isShipmentAllowed'] = false;
-        }
-
-        foreach (array_reverse($data['transactions'], true) as $transaction) {
-            if (array_key_exists('shortId', $transaction) && !empty($transaction['shortId'])) {
-                $data['shortId'] = $transaction['shortId'];
-
-                break;
-            }
-        }
-
-        ksort($data['transactions']);
+        return $totalShippingAmount;
     }
 
     protected function validateIsShipmentAllowed(array &$data, ?OrderEntity $orderEntity): void

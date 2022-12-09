@@ -86,7 +86,7 @@ class UnzerPaymentTransactionController extends AbstractController
             $payment = $client->fetchPaymentByOrderId($orderTransactionId);
             $payment = $client->fetchPayment($payment);
 
-            $data = $this->hydrator->hydrateArray($payment, $transaction);
+            $data = $this->hydrator->hydrateArray($payment, $transaction, $client);
 
             /* Basket V2 since Version 1.1.5 */
             if (!empty($data['basket']['totalValueGross'])) {
