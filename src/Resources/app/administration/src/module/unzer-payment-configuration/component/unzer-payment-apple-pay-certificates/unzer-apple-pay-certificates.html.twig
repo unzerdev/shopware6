@@ -8,7 +8,11 @@
                     :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingCertificate.label')"
                     v-model="parentConfigData['UnzerPayment6.settings.applePayPaymentProcessingCertificateId']"
                     :inheritedValue="getInheritedValue('applePayPaymentProcessingCertificateId')"
-                    :hasParent="isNotDefaultSalesChannel"
+                    :has-parent="isNotDefaultSalesChannel"
+                    @restore="setPaymentProcessingInheritance"
+                    @remove="removePaymentProcessingInheritance"
+                    @inheritance-restore="setPaymentProcessingInheritance"
+                    @inheritance-remove="removePaymentProcessingInheritance"
                     >
                     <template #content="props">
                         <sw-label
@@ -38,7 +42,11 @@
                     :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingKey.label')"
                     v-model="parentConfigData['UnzerPayment6.settings.applePayPaymentProcessingCertificateId']"
                     :inheritedValue="getInheritedValue('applePayPaymentProcessingCertificateId')"
-                    :hasParent="isNotDefaultSalesChannel"
+                    :has-parent="isNotDefaultSalesChannel"
+                    @restore="setPaymentProcessingInheritance"
+                    @remove="removePaymentProcessingInheritance"
+                    @inheritance-restore="setPaymentProcessingInheritance"
+                    @inheritance-remove="removePaymentProcessingInheritance"
                 >
                     <template #content="props">
                         <sw-file-input
@@ -56,7 +64,11 @@
                     :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationCertificate.label')"
                     v-model="parentConfigData['UnzerPayment6.settings.applePayMerchantIdentificationCertificateId']"
                     :inheritedValue="getInheritedValue('applePayMerchantIdentificationCertificateId')"
-                    :hasParent="isNotDefaultSalesChannel"
+                    :has-parent="isNotDefaultSalesChannel"
+                    @restore="setMerchantIdentificationInheritance"
+                    @remove="removeMerchantIdentificationInheritance"
+                    @inheritance-restore="setMerchantIdentificationInheritance"
+                    @inheritance-remove="removeMerchantIdentificationInheritance"
                 >
                     <template #content="props">
                         <sw-label
@@ -95,7 +107,11 @@
                     :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationKey.label')"
                     v-model="parentConfigData['UnzerPayment6.settings.applePayMerchantIdentificationCertificateId']"
                     :inheritedValue="getInheritedValue('applePayMerchantIdentificationCertificateId')"
-                    :hasParent="isNotDefaultSalesChannel"
+                    :has-parent="isNotDefaultSalesChannel"
+                    @restore="setMerchantIdentificationInheritance"
+                    @remove="removeMerchantIdentificationInheritance"
+                    @inheritance-restore="setMerchantIdentificationInheritance"
+                    @inheritance-remove="removeMerchantIdentificationInheritance"
                 >
                     <template #content="props">
                         <sw-file-input

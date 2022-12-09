@@ -180,6 +180,25 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
             }
         },
 
+        setPaymentProcessingInheritance() {
+            this.$refs.inheritWrapperPaymentProcessingCertificate.isInherited && this.$refs.inheritWrapperPaymentProcessingCertificate.restoreInheritance();
+            this.$refs.inheritWrapperPaymentProcessingKey.isInherited && this.$refs.inheritWrapperPaymentProcessingKey.restoreInheritance();
+            this.resetFileFieldsPaymentProcessing();
+        },
+        removePaymentProcessingInheritance() {
+            !this.$refs.inheritWrapperPaymentProcessingCertificate.isInherited && this.$refs.inheritWrapperPaymentProcessingCertificate.removeInheritance();
+            !this.$refs.inheritWrapperPaymentProcessingKey.isInherited && this.$refs.inheritWrapperPaymentProcessingKey.removeInheritance();
+        },
+        setMerchantIdentificationInheritance() {
+            this.$refs.inheritWrapperMerchantIdentificationCertificate.isInherited && this.$refs.inheritWrapperMerchantIdentificationCertificate.restoreInheritance();
+            this.$refs.inheritWrapperMerchantIdentificationKey.isInherited && this.$refs.inheritWrapperMerchantIdentificationKey.restoreInheritance();
+            this.resetFileFieldsMerchantIdentification();
+        },
+        removeMerchantIdentificationInheritance() {
+            !this.$refs.inheritWrapperMerchantIdentificationCertificate.isInherited && this.$refs.inheritWrapperMerchantIdentificationCertificate.removeInheritance();
+            !this.$refs.inheritWrapperMerchantIdentificationKey.isInherited && this.$refs.inheritWrapperMerchantIdentificationKey.removeInheritance();
+        },
+
         getInheritedValue(name) {
             const systemConfig = this.parentRefs.systemConfig;
             if (systemConfig.getInheritedValue) {
