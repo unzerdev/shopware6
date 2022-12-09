@@ -143,8 +143,8 @@
 
         <input-field type="text">
             <name>applePayMerchantIdentificationCertificateId</name>
-            <label>ID of merchant identification certificate path</label>
-            <label lang="de-DE">ID des Merchant Identification Zertifikat-Pfads</label>
+            <label>ID of merchant identification certificate at Unzer</label>
+            <label lang="de-DE">ID des Merchant Identification Zertifikats bei Unzer</label>
         </input-field>
     </card>
 
