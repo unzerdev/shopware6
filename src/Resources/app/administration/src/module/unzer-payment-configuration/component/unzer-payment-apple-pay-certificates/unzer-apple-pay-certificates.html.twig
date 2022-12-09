@@ -13,6 +13,7 @@
                     @remove="removePaymentProcessingInheritance"
                     >
                     <template #content="props">
+                        <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input -->
                         <sw-label
                             v-if="!isDataLoading"
                             :variant="paymentProcessingValid ? 'success' : 'danger'"
@@ -20,19 +21,13 @@
                             v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingValid.' + paymentProcessingValid.toString())">
                             <sw-icon :name="paymentProcessingValid ? 'default-basic-checkmark-circle' : 'default-badge-alert'" :small="true"></sw-icon>
                         </sw-label>
-                        <sw-loader size="10px" v-else></sw-loader>
-                        <small v-html="$tc('unzer-payment-settings.apple-pay.paymentProcessingCertificate.helpText')"></small>
 
                         <sw-file-input
                             ref="paymentProcessingCertificateInput"
                             class="sw-field sw-block-field"
                             v-model="paymentProcessingCertificate"
                             @change="onInputChangePaymentProcessing"
-                        >
-                            <template v-slot:caption-label>
-                                <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input, so we hide the text for that -->
-                            </template>
-                        </sw-file-input>
+                        ></sw-file-input>
                     </template>
                 </sw-inherit-wrapper>
 
@@ -51,11 +46,7 @@
                             class="sw-field sw-block-field"
                             v-model="paymentProcessingKey"
                             @change="onInputChangePaymentProcessing"
-                        >
-                            <template v-slot:caption-label>
-                                <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input, so we hide the text for that -->
-                            </template>
-                        </sw-file-input>
+                        ></sw-file-input>
                     </template>
                 </sw-inherit-wrapper>
 
@@ -76,7 +67,6 @@
                             v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValid.' + merchantIdentificationValid.toString())">
                             <sw-icon :name="merchantIdentificationValid ? 'default-basic-checkmark-circle' : 'default-badge-alert'" :small="true"></sw-icon>
                         </sw-label>
-                        <sw-loader size="10px" v-else></sw-loader>
                         <sw-label
                             v-if="!isDataLoading && merchantIdentificationValidUntil !== null"
                             :variant="merchantIdentificationValidUntil > now ? 'success' : 'warning'"
@@ -84,18 +74,13 @@
                             v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValidUntil.' + merchantIdentificationValidUntil > now)">
                             <sw-icon name="default-time-clock" :small="true"></sw-icon>
                         </sw-label>
-                        <small v-html="$tc('unzer-payment-settings.apple-pay.merchantIdentificationCertificate.helpText')"></small>
 
                         <sw-file-input
                             ref="merchantIdentificationCertificateInput"
                             class="sw-field sw-block-field"
                             v-model="merchantIdentificationCertificate"
                             @change="onInputChangeMerchantIdentification"
-                        >
-                            <template v-slot:caption-label>
-                                <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input, so we hide the text for that -->
-                            </template>
-                        </sw-file-input>
+                        ></sw-file-input>
                     </template>
                 </sw-inherit-wrapper>
 
@@ -114,11 +99,7 @@
                             class="sw-field sw-block-field"
                             v-model="merchantIdentificationKey"
                             @change="onInputChangeMerchantIdentification"
-                        >
-                            <template v-slot:caption-label>
-                                <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input, so we hide the text for that -->
-                            </template>
-                        </sw-file-input>
+                        ></sw-file-input>
                     </template>
                 </sw-inherit-wrapper>
             {% endblock %}
