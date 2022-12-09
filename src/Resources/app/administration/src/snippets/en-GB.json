@@ -117,9 +117,6 @@
             "paymentProcessingKey": {
                 "label": "Payment Processing Certificate Key (Private Key)"
             },
-            "publicKey": {
-                "changeNotice": "Please note: After changing the Unzer keys, you have to re-upload your Apple Pay Payment Processing Certificate."
-            },
             "merchantIdentificationCertificate": {
                 "label": "Merchant Identification Certificate",
                 "helpText": "Certificate and Key have to be prepared as specified in <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">the Unzer documentation</a>."
