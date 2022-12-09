@@ -21,26 +21,26 @@ class CertificateManager
         $this->configReader = $configReader;
     }
 
-    public function getMerchantIdentificationCertificatePath(?string $salesChannelId): string
+    public function getMerchantIdentificationCertificatePath(string $salesChannelId): string
     {
         $config = $this->configReader->read($salesChannelId);
 
         return sprintf('%s/%s/%s', self::APPLE_PAY_CERTIFICATE_PATH, $config->get(ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), self::MERCHANT_IDENTIFICATION_CERTIFICATE_FILENAME);
     }
 
-    public function getMerchantIdentificationCertificatePathForUpdate(?string $salesChannelId): string
+    public function getMerchantIdentificationCertificatePathForUpdate(string $salesChannelId): string
     {
         return sprintf('%s/%s/%s', self::APPLE_PAY_CERTIFICATE_PATH, $salesChannelId, self::MERCHANT_IDENTIFICATION_CERTIFICATE_FILENAME);
     }
 
-    public function getMerchantIdentificationKeyPath(?string $salesChannelId): string
+    public function getMerchantIdentificationKeyPath(string $salesChannelId): string
     {
         $config = $this->configReader->read($salesChannelId);
 
         return sprintf('%s/%s/%s', self::APPLE_PAY_CERTIFICATE_PATH, $config->get(ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), self::MERCHANT_IDENTIFICATION_KEY_FILENAME);
     }
 
-    public function getMerchantIdentificationKeyPathForUpdate(?string $salesChannelId): string
+    public function getMerchantIdentificationKeyPathForUpdate(string $salesChannelId): string
     {
         return sprintf('%s/%s/%s', self::APPLE_PAY_CERTIFICATE_PATH, $salesChannelId, self::MERCHANT_IDENTIFICATION_KEY_FILENAME);
     }
