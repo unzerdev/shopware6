@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "566b6f8af180b7cf433e2b3e7a6b92ab",
+    "content-hash": "a83106005b51db7e46300eb240b7a9e2",
     "packages": [
         {
             "name": "unzerdev/php-sdk",
@@ -167,5 +167,5 @@
         "php": ">=7.2 || <=8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }
