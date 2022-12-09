@@ -83,20 +83,6 @@
         "apple-pay": {
             "certificates": {
                 "title": "Apple Pay Zertifikate",
-                "check": {
-                    "paymentProcessingValid": {
-                        "true": "Das Payment Processing-Zertifikat ist vorhanden und gültig",
-                        "false": "Das Payment Processing-Zertifikat fehlt"
-                    },
-                    "merchantIdentificationValid": {
-                        "true": "Das Merchant Identification-Zertifikat ist vorhanden",
-                        "false": "Das Merchant Identification-Zertifikat fehlt"
-                    },
-                    "merchantIdentificationValidUntil": {
-                        "true": "Das Merchant Identification-Zertifikat ist gültig",
-                        "false": "Das Merchant Identification-Zertifikat ist abgelaufen und muss erneuert werden"
-                    }
-                },
                 "update": {
                     "success": {
                         "title": "Erfolg",

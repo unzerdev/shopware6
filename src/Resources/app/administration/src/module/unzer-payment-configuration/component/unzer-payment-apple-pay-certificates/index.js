@@ -32,16 +32,7 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
             paymentProcessingKey: false,
             merchantIdentificationCertificate: false,
             merchantIdentificationKey: false,
-            merchantIdentificationValid: false,
-            merchantIdentificationValidUntil: null,
-            paymentProcessingValid: false,
         };
-    },
-
-    computed: {
-        now() {
-            return Date.now();
-        },
     },
 
     created() {
@@ -58,13 +49,23 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
 
             me.isDataLoading = true;
 
-            this.UnzerPaymentApplePayService.checkCertificates(this.selectedSalesChannelId)
+            this.UnzerPaymentApplePayService.checkCertificates({
+                salesChannelId: this.selectedSalesChannelId
+            })
                 .then((response) => {
-                    if (typeof response !== "undefined") {
-                        this.merchantIdentificationValid = response.merchantIdentificationValid;
-                        this.merchantIdentificationValidUntil = response.merchantIdentificationValidUntil;
-                        this.paymentProcessingValid = response.paymentProcessingValid;
+                    me.isUpdateSuccessful = true;
+
+                    if (undefined !== response) {
+                        me.messageGeneration(response);
                     }
+
+                    this.$emit('certificate-updated', response);
+                })
+                .catch(() => {
+                    this.createNotificationError({
+                        title: this.$tc('unzer-payment-settings.webhook.globalError.title'),
+                        message: this.$tc('unzer-payment-settings.webhook.globalError.message')
+                    });
                 })
                 .finally(() => {
                     me.isDataLoading = false;
