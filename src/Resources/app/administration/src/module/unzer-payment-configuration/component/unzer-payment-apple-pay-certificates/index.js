@@ -138,15 +138,10 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                     me.resetFileFieldsPaymentProcessing();
                     me.resetFileFieldsMerchantIdentification();
                 })
-                .catch((errorResponse) => {
-                    let message = errorResponse?.response?.data?.message;
-                    if (!message) {
-                        message = 'unzer-payment-settings.apple-pay.certificates.update.error.message';
-                    }
-
+                .catch(() => {
                     me.createNotificationError({
                         title: me.$tc('unzer-payment-settings.apple-pay.certificates.update.error.title'),
-                        message: me.$t(message, errorResponse?.response?.data?.translationData ?? {})
+                        message: me.$tc('unzer-payment-settings.apple-pay.certificates.update.error.message')
                     });
                 })
                 .finally(() => {

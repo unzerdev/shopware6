@@ -9,12 +9,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MissingCertificateFiles extends ShopwareHttpException
 {
-    private string $certificateType;
-
     public function __construct(string $certificateType)
     {
         parent::__construct('You must upload certificate and private key together for {{ certificateType }}', ['certificateType' => $certificateType]);
-        $this->certificateType = $certificateType;
     }
 
     public function getStatusCode(): int
@@ -25,17 +22,5 @@ class MissingCertificateFiles extends ShopwareHttpException
     public function getErrorCode(): string
     {
         return 'UNZER_PAYMENT__MISSING_CERTIFICATE_FILES';
-    }
-
-    public function getTranslationKey(): string
-    {
-        return 'unzer-payment-settings.apple-pay.certificates.update.error.messageMissingCertificateFiles';
-    }
-
-    public function getTranslationData(): array
-    {
-        return [
-            'type' => $this->certificateType,
-        ];
     }
 }
