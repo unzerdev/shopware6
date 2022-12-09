@@ -11,7 +11,7 @@
                         :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingCertificate.label')"
                         v-model="paymentProcessingCertificate"
                         inheritedValue="null"
-                        :has-parent="isNotDefaultSalesChannel"
+                        has-parent="isNotDefaultSalesChannel"
                         >
                         <template #content="props">
                             <!-- NEXT-22639: Drag&Drop does not work on these sw-file-input -->
@@ -34,7 +34,7 @@
                         :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingKey.label')"
                         v-model="paymentProcessingKey"
                         inheritedValue="null"
-                        :has-parent="isNotDefaultSalesChannel"
+                        has-parent="isNotDefaultSalesChannel"
                     >
                         <template #content="props">
                             <sw-file-input
@@ -48,7 +48,7 @@
                         :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationCertificate.label')"
                         v-model="merchantIdentificationCertificate"
                         inheritedValue="null"
-                        :has-parent="isNotDefaultSalesChannel"
+                        has-parent="isNotDefaultSalesChannel"
                     >
                         <template #content="props">
                             <sw-label
@@ -77,7 +77,7 @@
                         :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationKey.label')"
                         v-model="merchantIdentificationKey"
                         inheritedValue="null"
-                        :has-parent="isNotDefaultSalesChannel"
+                        has-parent="isNotDefaultSalesChannel"
                     >
                         <template #content="props">
                             <sw-file-input
