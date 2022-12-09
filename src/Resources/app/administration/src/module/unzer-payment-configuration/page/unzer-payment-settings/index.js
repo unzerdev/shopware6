@@ -2,6 +2,8 @@ import template from './unzer-payment-settings.html.twig';
 import './unzer-payment-settings.scss';
 
 const { Component, Mixin } = Shopware;
+const Criteria = Shopware.Data.Criteria;
+
 
 Component.register('unzer-payment-settings', {
     template,
@@ -106,7 +108,6 @@ Component.register('unzer-payment-settings', {
 
         onSave() {
             this.isLoading = true;
-
             this.$refs.systemConfig.saveAll().then(() => {
                 let messageSaveSuccess = this.$tc('sw-plugin-config.messageSaveSuccess');
 
