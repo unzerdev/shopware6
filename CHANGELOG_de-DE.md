@@ -3,7 +3,6 @@
 * Paylater Rechnung als weitere Zahlungsart hinzugefügt
 * Aktualisierung des Unzer PHP SDK zu Version 1.2.2.0
 * Kompatibilität zu Unzer Basket V2 API hergestellt
-* Apple Pay als weitere Zahlungsart hinzugefügt
 * Korrektur der Aktualisierung von Zahlungsarten beim Plugin-Update
 * Ergänzung eines weiteren Parameters für `PaymentResourceHydratorInterface::hydateArray` um die Rückerstattungen von Paylater invoice anzeigen zu können
 
