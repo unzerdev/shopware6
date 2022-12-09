@@ -41,18 +41,12 @@ class UnzerPaymentApplePayController extends AbstractController
         self::MERCHANT_IDENTIFICATION_KEY_PARAMETER,
     ];
 
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var SystemConfigService */
-    private $systemConfigService;
-    /** @var FilesystemInterface */
-    private $filesystem;
-    /** @var ConfigReaderInterface */
-    private $configReader;
-    /** @var CertificateManager */
-    private $certificateManager;
+    private ClientFactoryInterface $clientFactory;
+    private LoggerInterface $logger;
+    private SystemConfigService $systemConfigService;
+    private FilesystemInterface $filesystem;
+    private ConfigReaderInterface $configReader;
+    private CertificateManager $certificateManager;
 
     public function __construct(
         ClientFactoryInterface $clientFactory,
@@ -178,7 +172,7 @@ class UnzerPaymentApplePayController extends AbstractController
 
         return new JsonResponse(
             new CertificateInformation($paymentProcessingValid, $paymentProcessingInherited, $merchantIdentificationValid, $merchantIdentificationInherited, $merchantIdentificationValidUntil),
-            Response::HTTP_OK
+            ($paymentProcessingValid && $merchantIdentificationValid) ? Response::HTTP_OK : Response::HTTP_NOT_FOUND
         );
     }
 }
