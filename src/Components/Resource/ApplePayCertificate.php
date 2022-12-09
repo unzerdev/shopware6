@@ -4,31 +4,28 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\Resource;
 
-use stdClass;
 use UnzerSDK\Adapter\HttpAdapterInterface;
 use UnzerSDK\Resources\AbstractUnzerResource;
 
 class ApplePayCertificate extends AbstractUnzerResource
 {
     /** @var string */
-    protected $format = 'PEM';
+    private $format = 'PEM';
     /** @var string */
-    protected $type = 'certificate';
+    private $type = 'certificate';
     /** @var string */
-    protected $privateKey;
+    private $privateKey;
     /** @var string */
-    protected $certificate;
+    private $certificate;
 
     public function getFormat(): string
     {
         return $this->format;
     }
 
-    public function setFormat(string $format): self
+    public function setFormat(string $format): void
     {
         $this->format = $format;
-
-        return $this;
     }
 
     public function getType(): string
@@ -36,11 +33,9 @@ class ApplePayCertificate extends AbstractUnzerResource
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(string $type): void
     {
         $this->type = $type;
-
-        return $this;
     }
 
     public function getPrivateKey(): string
@@ -48,11 +43,9 @@ class ApplePayCertificate extends AbstractUnzerResource
         return $this->privateKey;
     }
 
-    public function setPrivateKey(string $privateKey): self
+    public function setPrivateKey(string $privateKey): void
     {
         $this->privateKey = $privateKey;
-
-        return $this;
     }
 
     public function getCertificate(): string
@@ -60,23 +53,9 @@ class ApplePayCertificate extends AbstractUnzerResource
         return $this->certificate;
     }
 
-    public function setCertificate(string $certificate): self
+    public function setCertificate(string $certificate): void
     {
         $this->certificate = $certificate;
-
-        return $this;
-    }
-
-    public function expose()
-    {
-        $data = parent::expose();
-
-        if (!($data instanceof stdClass) && array_key_exists('privateKey', $data)) {
-            $data['private-key'] = $data['privateKey'];
-            unset($data['privateKey']);
-        }
-
-        return $data;
     }
 
     protected function getResourcePath($httpMethod = HttpAdapterInterface::REQUEST_GET): string

@@ -10,22 +10,20 @@ use UnzerSDK\Resources\AbstractUnzerResource;
 class ApplePayPrivateKey extends AbstractUnzerResource
 {
     /** @var string */
-    protected $format = 'PEM';
+    private $format = 'PEM';
     /** @var string */
-    protected $type = 'private-key';
+    private $type = 'private-key';
     /** @var string */
-    protected $certificate;
+    private $certificate;
 
     public function getFormat(): string
     {
         return $this->format;
     }
 
-    public function setFormat(string $format): self
+    public function setFormat(string $format): void
     {
         $this->format = $format;
-
-        return $this;
     }
 
     public function getType(): string
@@ -33,11 +31,9 @@ class ApplePayPrivateKey extends AbstractUnzerResource
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(string $type): void
     {
         $this->type = $type;
-
-        return $this;
     }
 
     public function getCertificate(): string
@@ -45,11 +41,9 @@ class ApplePayPrivateKey extends AbstractUnzerResource
         return $this->certificate;
     }
 
-    public function setCertificate(string $certificate): self
+    public function setCertificate(string $certificate): void
     {
         $this->certificate = $certificate;
-
-        return $this;
     }
 
     protected function getResourcePath($httpMethod = HttpAdapterInterface::REQUEST_GET): string
