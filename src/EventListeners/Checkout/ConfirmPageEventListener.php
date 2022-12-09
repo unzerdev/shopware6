@@ -266,7 +266,11 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     private function addApplePayExtension(PageLoadedEvent $event): void
     {
-        $event->getPage()->addExtension(ApplePayPageExtension::EXTENSION_NAME, new ApplePayPageExtension());
+        $supportedNetworks = $this->configData->get(ConfigReader::CONFIG_KEY_APPLE_PAY_SUPPORTED_NETWORKS);
+
+        $extension = new ApplePayPageExtension($supportedNetworks ?: []);
+
+        $event->getPage()->addExtension(ApplePayPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function getLocaleByLanguageId(string $languageId, Context $context): string

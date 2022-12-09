@@ -11,7 +11,12 @@ class ApplePayPageExtension extends Struct
     public const EXTENSION_NAME = 'unzerApplePay';
 
     /** @var string[] */
-    protected $supportedNetworks = ['masterCard', 'visa'];
+    protected $supportedNetworks;
+
+    public function __construct(array $supportedNetworks)
+    {
+        $this->supportedNetworks = $supportedNetworks;
+    }
 
     public function getSupportedNetworks(): array
     {
