@@ -63,5 +63,9 @@
         </service>
 
         <service id="UnzerPayment6\Components\BasketConverter\BasketConverter"/>
+
+        <service id="UnzerPayment6\Components\ApplePay\CertificateManager">
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+        </service>
     </services>
 </container>

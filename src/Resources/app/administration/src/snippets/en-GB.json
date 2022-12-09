@@ -80,6 +80,54 @@
             "title": "Unzer Payment",
             "description": "Unzer Payment"
         },
+        "apple-pay": {
+            "certificates": {
+                "title": "Apple Pay Certificates",
+                "check": {
+                    "paymentProcessingValid": {
+                        "true": "The Payment Processing certificate is present and valid",
+                        "false": "The Payment Processing certificate is missing"
+                    },
+                    "merchantIdentificationValid": {
+                        "true": "The Merchant Identification certificate is present",
+                        "false": "The Merchant Identification certificate is missing"
+                    },
+                    "merchantIdentificationValidUntil": {
+                        "true": "The Merchant Identification certificate is valid",
+                        "false": "The Merchant Identification certificate is expired and must be renewed"
+                    }
+                },
+                "update": {
+                    "success": {
+                        "title": "Success",
+                        "message": "Certificates were updated successfully"
+                    },
+                    "error": {
+                        "title": "Error",
+                        "message": "An error occurred during certificate update",
+                        "messageInvalidCertificate": "The given certificate data for {type} is invalid",
+                        "messageMissingCertificateFiles": "The given certificate data for {type} is incomplete"
+                    }
+                }
+            },
+            "paymentProcessingCertificate": {
+                "label": "Payment Processing Certificate",
+                "helpText": "Certificate and Key have to be prepared as specified in <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">the Unzer documentation</a>."
+            },
+            "paymentProcessingKey": {
+                "label": "Payment Processing Certificate Key (Private Key)"
+            },
+            "publicKey": {
+                "changeNotice": "Please note: After changing the Unzer keys, you have to re-upload your Apple Pay Payment Processing Certificate."
+            },
+            "merchantIdentificationCertificate": {
+                "label": "Merchant Identification Certificate",
+                "helpText": "Certificate and Key have to be prepared as specified in <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">the Unzer documentation</a>."
+            },
+            "merchantIdentificationKey": {
+                "label": "Merchant Identification Certificate Key (Private Key)"
+            }
+        },
         "form": {
             "message": {
                 "success": {
