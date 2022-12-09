@@ -31,9 +31,9 @@ class UnzerPaymentApplePayController extends AbstractController
     private const INHERIT_PAYMENT_PROCESSING_PARAMETER          = 'inheritPaymentProcessing';
     private const PAYMENT_PROCESSING_CERTIFICATE_PARAMETER      = 'paymentProcessingCertificate';
     private const PAYMENT_PROCESSING_KEY_PARAMETER              = 'paymentProcessingKey';
-    private const INHERIT_MERCHANT_IDENTIFICATION_PARAMETER     = 'inheritMerchantIdentification';
-    private const MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER = 'merchantIdentificationCertificate';
-    private const MERCHANT_IDENTIFICATION_KEY_PARAMETER         = 'merchantIdentificationKey';
+    private const INHERIT_MERCHANT_IDENTIFICATION_PARAMETER      = 'inheritMerchantIdentification';
+    private const MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER  = 'merchantIdentificationCertificate';
+    private const MERCHANT_IDENTIFICATION_KEY_PARAMETER          = 'merchantIdentificationKey';
 
     /** @var ClientFactoryInterface */
     private $clientFactory;
