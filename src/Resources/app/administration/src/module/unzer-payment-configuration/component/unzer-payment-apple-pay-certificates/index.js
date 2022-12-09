@@ -49,10 +49,6 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
         now() {
             return Date.now();
         },
-
-        parentConfigData() {
-            return this.parentRefs.systemConfig.actualConfigData[this.selectedSalesChannelId] || {};
-        }
     },
 
     created() {
@@ -200,11 +196,10 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
         },
 
         getInheritedValue(name) {
-            const systemConfig = this.parentRefs.systemConfig;
-            if (systemConfig.getInheritedValue) {
-                return systemConfig.getInheritedValue({ name: 'UnzerPayment6.settings.' + name, type: 'text' });
+            if (this.parentRefs.systemConfig.getInheritedValue) {
+                return this.parentRefs.systemConfig.getInheritedValue({ name: 'UnzerPayment6.settings.' + name, type: 'text' });
             } else {
-                return systemConfig.actualConfigData.null ? (systemConfig.actualConfigData.null['UnzerPayment6.settings.' + name] || null) : null;
+                return this.parentRefs.systemConfig.actualConfigData.null['UnzerPayment6.settings.' + name];
             }
         },
     }
