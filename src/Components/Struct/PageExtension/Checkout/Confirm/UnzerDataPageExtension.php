@@ -19,6 +19,9 @@ class UnzerDataPageExtension extends Struct
     /** @var bool */
     private $showTestData;
 
+    /** @var string */
+    private $customerId;
+
     public function getPublicKey(): string
     {
         return $this->publicKey;
@@ -47,5 +50,15 @@ class UnzerDataPageExtension extends Struct
     public function setShowTestData(bool $showTestData): void
     {
         $this->showTestData = $showTestData;
+    }
+
+    public function getCustomerId(): string
+    {
+        return $this->customerId;
+    }
+
+    public function setCustomerId(string $customerId): void
+    {
+        $this->customerId = $customerId;
     }
 }
