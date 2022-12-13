@@ -118,6 +118,10 @@ Component.register('unzer-payment-actions', {
                     message = this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage');
                 }
 
+                if (message === 'paylater-invoice-document-required') {
+                    message = this.$tc('unzer-payment.paymentDetails.notifications.paylaterInvoiceDocumentRequiredErrorMessage');
+                }
+
                 this.createNotificationError({
                     title: this.$tc('unzer-payment.paymentDetails.notifications.chargeErrorTitle'),
                     message: message
