@@ -160,8 +160,12 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return '';
         }
 
-        $client = $this->clientFactory->createClient($event->getSalesChannelContext()->getSalesChannelId());
+        // Backwards compatibility to Shopware < 6.3.5.0
+        $salesChannelId = !method_exists($event->getSalesChannelContext(), 'getSalesChannelId')
+            ? $event->getSalesChannelContext()->getSalesChannel()->getId()
+            : $event->getSalesChannelContext()->getSalesChannelId();
 
+        $client         = $this->clientFactory->createClient($salesChannelId);
         $customerNumber = $customer->getCustomerNumber();
         $billingAddress = $customer->getActiveBillingAddress();
 
@@ -170,12 +174,12 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         try {
-            $fetchedCustomer = $client->fetchCustomerByExtCustomerId($customerNumber);
+            return $client->fetchCustomerByExtCustomerId($customerNumber)->getId() ?? '';
         } catch (Throwable $t) {
-            return '';
+            // silent fail if customer does not exist
         }
 
-        return $fetchedCustomer->getId() ?: '';
+        return '';
     }
 
     private function addPaymentFrameExtension(PageLoadedEvent $event): void

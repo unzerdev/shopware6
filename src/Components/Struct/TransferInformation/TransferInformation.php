@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\Struct\TransferInformation;
 
 use Shopware\Core\Framework\Struct\Struct;
+use UnzerSDK\Resources\TransactionTypes\AbstractTransactionType;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
@@ -28,7 +29,7 @@ class TransferInformation extends Struct
     /**
      * @param Authorization|Charge $payment
      */
-    public function __construct($payment)
+    public function __construct(AbstractTransactionType $payment)
     {
         $this->iban       = $payment->getIban();
         $this->bic        = $payment->getBic();
