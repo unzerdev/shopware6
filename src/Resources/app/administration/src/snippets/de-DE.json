@@ -36,7 +36,8 @@
                 "state": "Status",
                 "amountRemaining": "Betrag (Rest)",
                 "amountCancelled": "Betrag (Rückerstattet)",
-                "amountCharged": "Betrag (Eingezogen)"
+                "amountCharged": "Betrag (Eingezogen)",
+                "descriptor": "Deskriptor"
             },
             "metadata": {
                 "cardTitle": "Metadaten",
