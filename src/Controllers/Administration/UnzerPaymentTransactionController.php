@@ -144,10 +144,13 @@ class UnzerPaymentTransactionController extends AbstractController
                 $invoiceNumber = $this->getInvoiceNumber($transaction);
 
                 if ($invoiceNumber === null) {
-                    return new JsonResponse([
-                        'status'  => false,
-                        'message' => 'paylater-invoice-document-required',
-                    ]);
+                    return new JsonResponse(
+                            [
+                            'status'  => false,
+                            'message' => 'paylater-invoice-document-required',
+                        ],
+                        Response::HTTP_BAD_REQUEST
+                    );
                 }
 
                 $charge->setInvoiceId($invoiceNumber);
