@@ -57,6 +57,8 @@ class UnzerPaylaterInvoicePaymentHandler extends AbstractUnzerPaymentHandler
                 $riskData
             );
 
+            $this->saveTransferInfoFromAuthorize($transaction->getOrderTransaction(), $salesChannelContext->getContext());
+
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(

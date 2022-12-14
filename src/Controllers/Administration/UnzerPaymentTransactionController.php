@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
+use DateTime;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
@@ -21,6 +23,7 @@ use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydratorInterface;
 use UnzerPayment6\Components\ShipService\ShipServiceInterface;
+use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
@@ -137,6 +140,22 @@ class UnzerPaymentTransactionController extends AbstractController
         try {
             $charge = new Charge($amount);
 
+            if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
+                $invoiceNumber = $this->getInvoiceNumber($transaction);
+
+                if ($invoiceNumber === null) {
+                    return new JsonResponse(
+                            [
+                            'status'  => false,
+                            'message' => 'paylater-invoice-document-required',
+                        ],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+
+                $charge->setInvoiceId($invoiceNumber);
+            }
+
             $client->performChargeOnPayment($orderTransactionId, $charge);
         } catch (UnzerApiException $exception) {
             $this->logger->error(sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
@@ -244,5 +263,30 @@ class UnzerPaymentTransactionController extends AbstractController
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();
+    }
+
+    private function getInvoiceNumber(OrderTransactionEntity $transaction): ?string
+    {
+        if ($transaction->getOrder() === null || $transaction->getOrder()->getDocuments() === null) {
+            return null;
+        }
+
+        $documents     = $transaction->getOrder()->getDocuments()->getElements();
+        $invoiceNumber = null;
+        $documentDate  = null;
+
+        // get latest invoice document
+        foreach ($documents as $document) {
+            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
+                $newDocumentDate = new DateTime($document->getConfig()['documentDate']);
+
+                if ($documentDate === null || $newDocumentDate->getTimestamp() > $documentDate->getTimestamp()) {
+                    $documentDate  = $newDocumentDate;
+                    $invoiceNumber = $document->getConfig()['documentNumber'];
+                }
+            }
+        }
+
+        return $invoiceNumber;
     }
 }

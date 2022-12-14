@@ -13,6 +13,7 @@ use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
@@ -52,18 +53,23 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var EntityRepositoryInterface */
     private $languageRepository;
 
+    /** @var ClientFactoryInterface */
+    private $clientFactory;
+
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
         ConfigReaderInterface $configReader,
         PaymentFrameFactoryInterface $paymentFrameFactory,
         SystemConfigService $systemConfigReader,
-        EntityRepositoryInterface $languageRepository
+        EntityRepositoryInterface $languageRepository,
+        ClientFactoryInterface $clientFactory
     ) {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
         $this->paymentFrameFactory = $paymentFrameFactory;
         $this->systemConfigReader  = $systemConfigReader;
         $this->languageRepository  = $languageRepository;
+        $this->clientFactory       = $clientFactory;
     }
 
     /**
@@ -141,8 +147,39 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension->setPublicKey($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY));
         $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
         $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
+        $extension->setCustomerId($this->getUnzerCustomerId($event));
 
         $event->getPage()->addExtension(UnzerDataPageExtension::EXTENSION_NAME, $extension);
+    }
+
+    private function getUnzerCustomerId(PageLoadedEvent $event): string
+    {
+        $customer = $event->getSalesChannelContext()->getCustomer();
+
+        if ($customer === null) {
+            return '';
+        }
+
+        // Backwards compatibility to Shopware < 6.3.5.0
+        $salesChannelId = !method_exists($event->getSalesChannelContext(), 'getSalesChannelId')
+            ? $event->getSalesChannelContext()->getSalesChannel()->getId()
+            : $event->getSalesChannelContext()->getSalesChannelId();
+
+        $client         = $this->clientFactory->createClient($salesChannelId);
+        $customerNumber = $customer->getCustomerNumber();
+        $billingAddress = $customer->getActiveBillingAddress();
+
+        if ($billingAddress !== null && !empty($billingAddress->getCompany())) {
+            $customerNumber .= '_b';
+        }
+
+        try {
+            return $client->fetchCustomerByExtCustomerId($customerNumber)->getId() ?? '';
+        } catch (Throwable $t) {
+            // silent fail if customer does not exist
+        }
+
+        return '';
     }
 
     private function addPaymentFrameExtension(PageLoadedEvent $event): void

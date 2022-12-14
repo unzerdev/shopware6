@@ -182,7 +182,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         }
 
         $unzerCustomer->setBillingAddress($unzerBillingAddress);
-        $this->updateShippingAddress($unzerCustomer, $customer->getActiveShippingAddress(), $billingAddress);
+        $this->updateShippingAddress($unzerCustomer, $customer->getActiveShippingAddress(), $billingAddress->getId());
 
         return $unzerCustomer;
     }
@@ -202,7 +202,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         return $customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null;
     }
 
-    private function updateShippingAddress(Customer $unzerCustomer, ?CustomerAddressEntity $shippingAddress, CustomerAddressEntity $billingAddress): void
+    private function updateShippingAddress(Customer $unzerCustomer, ?CustomerAddressEntity $shippingAddress, string $billingAddressId): void
     {
         $unzerShippingAddress = $unzerCustomer->getShippingAddress();
 
@@ -232,7 +232,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
             $unzerShippingAddress->setCountry($shippingAddress->getCountry()->getIso());
         }
 
-        $shippingType = $billingAddress->getId() === $shippingAddress->getId()
+        $shippingType = $billingAddressId === $shippingAddress->getId()
             ? ShippingTypes::EQUALS_BILLING
             : ShippingTypes::DIFFERENT_ADDRESS;
 
