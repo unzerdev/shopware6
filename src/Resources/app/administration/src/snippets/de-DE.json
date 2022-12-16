@@ -37,7 +37,7 @@
                 "amountRemaining": "Betrag (Rest)",
                 "amountCancelled": "Betrag (Rückerstattet)",
                 "amountCharged": "Betrag (Eingezogen)",
-                "descriptor": "Deskriptor"
+                "descriptor": "Verwendungszweck"
             },
             "metadata": {
                 "cardTitle": "Metadaten",
