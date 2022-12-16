@@ -15,7 +15,7 @@ Component.register('unzer-payment-detail', {
         return {
             isLoading: false,
             isSuccessful: false,
-            paylaterInvoicePaymentMethodId: '09588ffee8064f168e909ff31889dd7f'
+            paylaterInvoicePaymentMethodId: '09588ffee8064f168e909ff31889dd7f' // see \UnzerPayment6\Installer\PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE
         };
     },
 
