@@ -41,7 +41,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
             if ($authorization instanceof Authorization) {
                 $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateAuthorize($authorization, $decimalPrecision);
-                $data['descriptor'] = $authorization->getDescriptor();
+                $data['descriptor']                                             = $authorization->getDescriptor();
             }
         } catch (Throwable $throwable) {
             $this->logResourceError($throwable);
