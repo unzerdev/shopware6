@@ -34,13 +34,14 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     public function hydrateArray(Payment $payment, OrderTransactionEntity $orderTransaction, Unzer $client): array
     {
         $decimalPrecision = $this->getDecimalPrecision($orderTransaction);
-        $data             = $this->getBaseData($payment, $decimalPrecision);
+        $data             = $this->getBaseData($payment, $orderTransaction->getPaymentMethodId(), $decimalPrecision);
 
         try {
             $authorization = $payment->getAuthorization();
 
             if ($authorization instanceof Authorization) {
                 $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateAuthorize($authorization, $decimalPrecision);
+                $data['descriptor']                                             = $authorization->getDescriptor();
             }
         } catch (Throwable $throwable) {
             $this->logResourceError($throwable);
@@ -73,7 +74,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         return $data;
     }
 
-    protected function getBaseData(Payment $payment, int $decimalPrecision): array
+    protected function getBaseData(Payment $payment, string $paymentMethodId, int $decimalPrecision): array
     {
         $paymentType = $payment->getPaymentType();
 
@@ -108,6 +109,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 'type'              => $paymentType ? $paymentType->expose() : null,
                 'amount'            => $this->hydrateAmount($payment->getAmount(), $decimalPrecision),
                 'transactions'      => [],
+                'paymentMethod'     => $paymentMethodId,
             ]
         );
     }

@@ -36,7 +36,8 @@
                 "state": "State",
                 "amountRemaining": "Amount (Remaining)",
                 "amountCancelled": "Amount (Cancelled)",
-                "amountCharged": "Amount (Charged)"
+                "amountCharged": "Amount (Charged)",
+                "descriptor": "Descriptor"
             },
             "metadata": {
                 "cardTitle": "Metadata",
