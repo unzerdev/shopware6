@@ -29,7 +29,7 @@
                             <dt>{{ $tc('unzer-payment.paymentDetails.detail.state') }}</dt>
                             <dd>{{ paymentResource.state.name }}</dd>
 
-                            <span v-if="paymentResource.paymentMethod === paylaterInvoicePaymentMethodId">
+                            <span v-if="paymentResource.paymentMethodId === paylaterInvoicePaymentMethodId">
                                 <dt>{{ $tc('unzer-payment.paymentDetails.detail.descriptor') }}</dt>
                                 <dd>{{ paymentResource.descriptor }}</dd>
                             </span>

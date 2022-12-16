@@ -109,7 +109,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 'type'              => $paymentType ? $paymentType->expose() : null,
                 'amount'            => $this->hydrateAmount($payment->getAmount(), $decimalPrecision),
                 'transactions'      => [],
-                'paymentMethod'     => $paymentMethodId,
+                'paymentMethodId'   => $paymentMethodId,
             ]
         );
     }
