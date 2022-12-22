@@ -18,6 +18,7 @@ use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
+use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
@@ -30,6 +31,7 @@ use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\UnzerDataPage
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerPayment6\Installer\PaymentInstaller;
+use UnzerSDK\Resources\Customer;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
 {
@@ -56,13 +58,17 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
+    /** @var CustomerResourceHydratorInterface */
+    private $customerResource;
+
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
         ConfigReaderInterface $configReader,
         PaymentFrameFactoryInterface $paymentFrameFactory,
         SystemConfigService $systemConfigReader,
         EntityRepositoryInterface $languageRepository,
-        ClientFactoryInterface $clientFactory
+        ClientFactoryInterface $clientFactory,
+        CustomerResourceHydratorInterface $customerResource
     ) {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
@@ -70,6 +76,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $this->systemConfigReader  = $systemConfigReader;
         $this->languageRepository  = $languageRepository;
         $this->clientFactory       = $clientFactory;
+        $this->customerResource    = $customerResource;
     }
 
     /**
@@ -176,7 +183,19 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         try {
             return $client->fetchCustomerByExtCustomerId($customerNumber)->getId() ?? '';
         } catch (Throwable $t) {
-            // silent fail if customer does not exist
+            try {
+                /** @var Customer $unzerCustomer */
+                $unzerCustomer = $this->customerResource->hydrateObject(
+                    $event->getSalesChannelContext()->getPaymentMethod()->getId(),
+                    $event->getSalesChannelContext()
+                );
+
+                $unzerCustomer = $client->createOrUpdateCustomer($unzerCustomer);
+
+                return $unzerCustomer->getId() ?? '';
+            } catch(Throwable $t) {
+                // silent fail because required data (e.g. birthdate) is missing
+            }
         }
 
         return '';
