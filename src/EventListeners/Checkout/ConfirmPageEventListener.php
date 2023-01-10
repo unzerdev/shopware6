@@ -193,7 +193,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
                 $unzerCustomer = $client->createOrUpdateCustomer($unzerCustomer);
 
                 return $unzerCustomer->getId() ?? '';
-            } catch(Throwable $t) {
+            } catch (Throwable $t) {
                 // silent fail because required data (e.g. birthdate) is missing
             }
         }

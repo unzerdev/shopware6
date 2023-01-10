@@ -113,8 +113,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => 'generic-error',
+                    'status' => false,
+                    'errors' => ['generic-error'],
                 ],
                 Response::HTTP_BAD_REQUEST
             );
@@ -146,8 +146,8 @@ class UnzerPaymentTransactionController extends AbstractController
                 if ($invoiceNumber === null) {
                     return new JsonResponse(
                             [
-                            'status'  => false,
-                            'message' => 'paylater-invoice-document-required',
+                            'status' => false,
+                            'errors' => ['paylater-invoice-document-required'],
                         ],
                         Response::HTTP_BAD_REQUEST
                     );
@@ -164,8 +164,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => $exception->getMerchantMessage(),
+                    'status' => false,
+                    'errors' => [$exception->getMerchantMessage()],
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
@@ -175,8 +175,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => 'generic-error',
+                    'status' => false,
+                    'errors' => ['generic-error'],
                 ],
                 Response::HTTP_BAD_REQUEST
             );
@@ -213,8 +213,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => 'generic-error',
+                    'status' => false,
+                    'errors' => ['generic-error'],
                 ],
                 Response::HTTP_BAD_REQUEST
             );
@@ -244,8 +244,8 @@ class UnzerPaymentTransactionController extends AbstractController
                 'trace' => $exception->getTraceAsString(),
             ]);
             $result = [
-                    'status'  => false,
-                    'message' => 'generic-error',
+                    'status' => false,
+                    'errors' => ['generic-error'],
                 ];
         }
 
