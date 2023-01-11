@@ -78,7 +78,7 @@ Component.register('unzer-payment-detail', {
 
                 this.$emit('reload');
             }).catch((errorResponse) => {
-                let message = errorResponse.response.data.message;
+                let message = errorResponse.response.data.errors[0];
 
                 if (message === 'generic-error') {
                     message = this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage');

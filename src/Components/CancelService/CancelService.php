@@ -56,7 +56,9 @@ class CancelService implements CancelServiceInterface
             $taxRates[] = $calculatedTax->getTaxRate();
         }
 
-        $clearedTaxRate = array_sum($taxRates) / count($taxRates);
+        $clearedTaxRate = count($taxRates) > 0
+            ? array_sum($taxRates) / count($taxRates)
+            : 0;
 
         $roundedAmountGross = (int) round($amountGross * (10 ** $decimalPrecision));
         $roundedAmountNet   = (int) round($roundedAmountGross / (100 + $clearedTaxRate) * 100);
