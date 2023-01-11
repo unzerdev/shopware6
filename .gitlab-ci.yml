@@ -24,7 +24,7 @@ codestyle:
     before_script:
         - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
         - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update --2; else /var/www/html/composer global require hirak/prestissimo; fi
+        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
         - ${COMPOSER_COMMAND}
         - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
     script:
@@ -48,7 +48,7 @@ k10r-phpstan:
     before_script:
         - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
         - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update --2; else /var/www/html/composer global require hirak/prestissimo; fi
+        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
         - ${COMPOSER_COMMAND}
         - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
     script:
@@ -71,7 +71,7 @@ sw-phpstan:
     before_script:
         - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
         - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update --2; else if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update --2; else /var/www/html/composer global require hirak/prestissimo; fi; fi
+        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update 2.4.4; else if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update --2; else /var/www/html/composer global require hirak/prestissimo; fi; fi
         - ${COMPOSER_COMMAND}
         - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
         - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git
@@ -96,7 +96,7 @@ phpunit:
     before_script:
         - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
         - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update --2; else /var/www/html/composer global require hirak/prestissimo; fi
+        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
         - ${COMPOSER_COMMAND}
         - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
         - sudo rm -rf /var/run/mysqld/mysqld.sock.lock
