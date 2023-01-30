@@ -102,8 +102,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => $exception->getMerchantMessage(),
+                    'status' => false,
+                    'errors' => [$exception->getMerchantMessage()],
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
@@ -202,8 +202,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => $exception->getMerchantMessage(),
+                    'status' => false,
+                    'errors' => [$exception->getMerchantMessage()],
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
@@ -236,9 +236,9 @@ class UnzerPaymentTransactionController extends AbstractController
                 'trace' => $exception->getTraceAsString(),
             ]);
             $result = [
-                    'status'  => false,
-                    'message' => $exception->getMerchantMessage(),
-                ];
+                'status' => false,
+                'errors' => [$exception->getMerchantMessage()],
+            ];
         } catch (Throwable $exception) {
             $this->logger->error(sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
                 'trace' => $exception->getTraceAsString(),
