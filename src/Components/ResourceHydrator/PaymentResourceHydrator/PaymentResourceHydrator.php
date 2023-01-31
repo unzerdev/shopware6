@@ -24,9 +24,9 @@ use UnzerSDK\Unzer;
 class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 {
     private const TRANSACTION_TYPE_AUTHORIZATION = 'authorization';
-    private const TRANSACTION_TYPE_CANCELLATION = 'cancellation';
-    private const TRANSACTION_TYPE_CHARGE = 'charge';
-    private const TRANSACTION_TYPE_SHIPMENT = 'shipment';
+    private const TRANSACTION_TYPE_CANCELLATION  = 'cancellation';
+    private const TRANSACTION_TYPE_CHARGE        = 'charge';
+    private const TRANSACTION_TYPE_SHIPMENT      = 'shipment';
 
     /** @var LoggerInterface */
     protected $logger;
@@ -193,6 +193,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 $decimalPrecision
             );
 
+            // Refunds aren't linked to a specific charge, so we have to reduce all of them
             foreach ($data['transactions'] as &$transaction) {
                 if ($transaction['type'] !== self::TRANSACTION_TYPE_CHARGE) {
                     continue;
