@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\PaymentHandler;
 
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
@@ -25,6 +26,7 @@ use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerR
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerSDK\Constants\ShippingTypes;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Basket;
@@ -90,6 +92,9 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
     /** @var CustomFieldsHelperInterface */
     protected $customFieldsHelper;
+
+    /** @var bool */
+    protected $syncShopwareCustomerToUnzer = true;
 
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
@@ -274,6 +279,11 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         }
 
         if ($fetchedCustomer) {
+            // In case the customer enters (different) data inside the Unzer UI components, we don't want to override them again with Shopwares' data
+            if (!$this->syncShopwareCustomerToUnzer) {
+                return $fetchedCustomer;
+            }
+
             /** @var Customer $updatedCustomer */
             $updatedCustomer = $this->customerHydrator->hydrateExistingCustomer($fetchedCustomer, $salesChannelContext);
 

@@ -24,6 +24,8 @@ class UnzerPaylaterInvoicePaymentHandler extends AbstractUnzerPaymentHandler
     use CanCharge;
     use HasRiskDataTrait;
 
+    protected $syncShopwareCustomerToUnzer = false;
+
     /**
      * {@inheritdoc}
      */
@@ -35,15 +37,8 @@ class UnzerPaylaterInvoicePaymentHandler extends AbstractUnzerPaymentHandler
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
-        $birthday       = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {
-            if (!empty($birthday)
-                && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
-                $this->unzerCustomer->setBirthDate($birthday);
-                $this->unzerCustomer = $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
-            }
-
             $riskData = $this->generateRiskDataResource($transaction, $salesChannelContext);
 
             if (null === $riskData) {
