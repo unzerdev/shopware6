@@ -91,6 +91,9 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var CustomFieldsHelperInterface */
     protected $customFieldsHelper;
 
+    /** @var bool */
+    protected $syncShopwareCustomerToUnzer = true;
+
     public function __construct(
         ResourceHydratorInterface $basketHydrator,
         CustomerResourceHydratorInterface $customerHydrator,
@@ -274,6 +277,11 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         }
 
         if ($fetchedCustomer) {
+            // In case the customer enters (different) data inside the Unzer UI components, we don't want to override them again with Shopwares' data
+            if (!$this->syncShopwareCustomerToUnzer) {
+                return $fetchedCustomer;
+            }
+
             /** @var Customer $updatedCustomer */
             $updatedCustomer = $this->customerHydrator->hydrateExistingCustomer($fetchedCustomer, $salesChannelContext);
 

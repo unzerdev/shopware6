@@ -58,6 +58,7 @@ export default class UnzerPaymentPaylaterInvoicePlugin extends Plugin {
             this._b2bCustomer.initFormFields(this._unzerPaymentPlugin.getB2bCustomerObject(this.options.customerInfo));
             this._b2bCustomer.update(this.options.customerId, {
                 containerId: 'unzer-payment-b2b-form',
+                paymentTypeName: 'paylater-invoice'
             });
 
             return;
