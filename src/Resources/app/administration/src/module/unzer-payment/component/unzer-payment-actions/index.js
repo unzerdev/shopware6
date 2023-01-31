@@ -64,7 +64,7 @@ Component.register('unzer-payment-actions', {
                 amount = this.paymentResource.amount.remaining;
             }
 
-            if (this.transactionResource.remainingAmount) {
+            if ('remainingAmount' in this.transactionResource) {
                 amount = this.transactionResource.remainingAmount;
             }
 
