@@ -154,17 +154,17 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension->setPublicKey($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY));
         $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
         $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
-        $extension->setCustomerId($this->getUnzerCustomerId($event));
+        $extension->setUnzerCustomer($this->getUnzerCustomer($event));
 
         $event->getPage()->addExtension(UnzerDataPageExtension::EXTENSION_NAME, $extension);
     }
 
-    private function getUnzerCustomerId(PageLoadedEvent $event): string
+    private function getUnzerCustomer(PageLoadedEvent $event): ?Customer
     {
         $customer = $event->getSalesChannelContext()->getCustomer();
 
         if ($customer === null) {
-            return '';
+            return null;
         }
 
         // Backwards compatibility to Shopware < 6.3.5.0
@@ -181,24 +181,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         try {
-            return $client->fetchCustomerByExtCustomerId($customerNumber)->getId() ?? '';
+            return $client->fetchCustomerByExtCustomerId($customerNumber);
         } catch (Throwable $t) {
-            try {
-                /** @var Customer $unzerCustomer */
-                $unzerCustomer = $this->customerResource->hydrateObject(
-                    $event->getSalesChannelContext()->getPaymentMethod()->getId(),
-                    $event->getSalesChannelContext()
-                );
-
-                $unzerCustomer = $client->createOrUpdateCustomer($unzerCustomer);
-
-                return $unzerCustomer->getId() ?? '';
-            } catch (Throwable $t) {
-                // silent fail because required data (e.g. birthdate) is missing
-            }
+            return null;
         }
-
-        return '';
     }
 
     private function addPaymentFrameExtension(PageLoadedEvent $event): void

@@ -64,6 +64,14 @@
             "title": "Ihre gespeicherten Zahlungsmittel"
         },
         "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Zahlung ändern</a>",
-        "birthdayInvalid": "Sie müssen mindestens 18 Jahre alt sein."
+        "birthdayInvalid": "Sie müssen mindestens 18 Jahre alt sein.",
+        "companyType": {
+            "label": "Art des Unternehmens",
+            "authority": "Behörde",
+            "association": "Gesellschaft",
+            "sole": "Einzelunternehmen",
+            "company": "Firma",
+            "other": "Sonstige"
+        }
     }
 }

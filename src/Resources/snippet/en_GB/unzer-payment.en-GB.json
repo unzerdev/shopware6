@@ -63,6 +63,14 @@
             "title": "Your saved means of payment"
         },
         "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Change payment method</a>",
-        "birthdayInvalid": "You need to be at least 18 years old."
+        "birthdayInvalid": "You need to be at least 18 years old.",
+        "companyType": {
+            "label": "Type of company",
+            "authority": "Authority",
+            "association": "Association",
+            "sole": "Sole",
+            "company": "Company",
+            "other": "Other"
+        }
     }
 }

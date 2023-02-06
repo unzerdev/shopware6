@@ -193,9 +193,10 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 $decimalPrecision
             );
 
-            // Refunds aren't linked to a specific charge, so we have to reduce all of them
+            // Refunds aren't linked to a specific charge, so we have to reduce all the charges before the current refund
             foreach ($data['transactions'] as &$transaction) {
-                if ($transaction['type'] !== self::TRANSACTION_TYPE_CHARGE) {
+                if ($transaction['type'] !== self::TRANSACTION_TYPE_CHARGE
+                    || new \DateTime($item['date']) < new \DateTime($transaction['date'])) {
                     continue;
                 }
 
