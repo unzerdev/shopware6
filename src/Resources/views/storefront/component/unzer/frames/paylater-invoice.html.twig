@@ -13,9 +13,19 @@
                         {{ "UnzerPayment.companyType.label"|trans }}
                     </label>
 
-                    <select form="confirmOrderForm"
+                    <select required="required"
+                            form="confirmOrderForm"
                             name="unzerPaymentCompanyType"
                             class="form-control">
+                            <option value=""
+                                    disabled="disabled"
+                                    hidden="hidden"
+                                    {% if page.extensions[paymentDataExtensionName].unzerCustomer is null or page.extensions[paymentDataExtensionName].unzerCustomer.companyInfo is null or page.extensions[paymentDataExtensionName].unzerCustomer.companyInfo.companyType is empty %}
+                                        selected="selected"
+                                    {% endif %}
+                            >
+                                {{ "UnzerPayment.companyType.placeholder"|trans }}
+                            </option>
                         {% for type in page.extensions[paymentDataExtensionName].companyTypes %}
                             <option value="{{ type }}"
                                     {% if page.extensions[paymentDataExtensionName].unzerCustomer and page.extensions[paymentDataExtensionName].unzerCustomer.companyInfo and page.extensions[paymentDataExtensionName].unzerCustomer.companyInfo.companyType is same as type %}

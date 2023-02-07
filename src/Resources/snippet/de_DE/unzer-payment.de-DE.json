@@ -67,6 +67,7 @@
         "birthdayInvalid": "Sie müssen mindestens 18 Jahre alt sein.",
         "companyType": {
             "label": "Art des Unternehmens",
+            "placeholder": "Bitte auswählen",
             "authority": "Behörde",
             "association": "Gesellschaft",
             "sole": "Einzelunternehmen",
