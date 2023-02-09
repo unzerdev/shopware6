@@ -29,7 +29,7 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        $this->unzerBasket->setAmountTotalGross($this->unzerBasket->getAmountTotalGross() + $this->unzerBasket->getAmountTotalDiscount());
+        $this->unzerBasket->setTotalValueGross($this->unzerBasket->getTotalValueGross());
 
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
@@ -48,7 +48,10 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
                 UnzerPayment6::MAX_DECIMAL_PRECISION
             ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
 
-            $returnUrl = $this->authorize($transaction->getReturnUrl(), round($transaction->getOrder()->getAmountTotal(), $currencyPrecision));
+            $returnUrl = $this->authorize(
+                $transaction->getReturnUrl(),
+                round($transaction->getOrder()->getAmountTotal(), $currencyPrecision)
+            );
 
             /** @phpstan-ignore-next-line */
             $this->payment->charge(round($transaction->getOrder()->getAmountTotal(), $currencyPrecision));
@@ -56,7 +59,7 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
-                sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
@@ -72,7 +75,7 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
-                sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'request'     => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,

@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ecfdff59df68204ae6e0b087c3196a16",
+    "content-hash": "a83106005b51db7e46300eb240b7a9e2",
     "packages": [
         {
             "name": "unzerdev/php-sdk",
-            "version": "1.1.4.2",
+            "version": "1.2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unzerdev/php-sdk.git",
-                "reference": "4184b4083567faa4797bc09c9b92b5cf6a8fd9d5"
+                "reference": "cfd2f41d1b194fc9a6a666b9a35ec6013e429953"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/4184b4083567faa4797bc09c9b92b5cf6a8fd9d5",
-                "reference": "4184b4083567faa4797bc09c9b92b5cf6a8fd9d5",
+                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/cfd2f41d1b194fc9a6a666b9a35ec6013e429953",
+                "reference": "cfd2f41d1b194fc9a6a666b9a35ec6013e429953",
                 "shasum": ""
             },
             "require": {
@@ -25,7 +25,7 @@
                 "php": "~7.1.0|~7.2.0|~7.3.0|~7.4.0|~8.0.0|~8.1.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.0",
+                "friendsofphp/php-cs-fixer": "^3.0",
                 "phpunit/phpunit": ">6.5 <10.0"
             },
             "suggest": {
@@ -45,9 +45,9 @@
             "description": "This is the php sdk to connect to the Unzer rest api.",
             "support": {
                 "email": "support@unzer.com",
-                "source": "https://github.com/unzerdev/php-sdk/tree/1.1.4.2"
+                "source": "https://github.com/unzerdev/php-sdk/tree/1.2.2.0"
             },
-            "time": "2022-01-27T11:29:30+00:00"
+            "time": "2022-10-04T12:05:18+00:00"
         }
     ],
     "packages-dev": [
@@ -99,16 +99,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.99",
+            "version": "0.12.100",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b4d40f1d759942f523be267a1bab6884f46ca3f7"
+                "reference": "48236ddf823547081b2b153d1cd2994b784328c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b4d40f1d759942f523be267a1bab6884f46ca3f7",
-                "reference": "b4d40f1d759942f523be267a1bab6884f46ca3f7",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/48236ddf823547081b2b153d1cd2994b784328c3",
+                "reference": "48236ddf823547081b2b153d1cd2994b784328c3",
                 "shasum": ""
             },
             "require": {
@@ -139,7 +139,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.99"
+                "source": "https://github.com/phpstan/phpstan/tree/0.12.100"
             },
             "funding": [
                 {
@@ -151,15 +151,11 @@
                     "type": "github"
                 },
                 {
-                    "url": "https://www.patreon.com/phpstan",
-                    "type": "patreon"
-                },
-                {
                     "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-12T20:09:55+00:00"
+            "time": "2022-11-01T09:52:08+00:00"
         }
     ],
     "aliases": [],
@@ -171,5 +167,5 @@
         "php": ">=7.2 || <=8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }

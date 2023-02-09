@@ -7,19 +7,23 @@ namespace UnzerPayment6\EventListeners\Checkout;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
+use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSecuredPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\FraudPreventionPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\InstallmentSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
@@ -27,6 +31,7 @@ use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\UnzerDataPage
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerPayment6\Installer\PaymentInstaller;
+use UnzerSDK\Resources\Customer;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
 {
@@ -50,18 +55,28 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var EntityRepositoryInterface */
     private $languageRepository;
 
+    /** @var ClientFactoryInterface */
+    private $clientFactory;
+
+    /** @var CustomerResourceHydratorInterface */
+    private $customerResource;
+
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
         ConfigReaderInterface $configReader,
         PaymentFrameFactoryInterface $paymentFrameFactory,
         SystemConfigService $systemConfigReader,
-        EntityRepositoryInterface $languageRepository
+        EntityRepositoryInterface $languageRepository,
+        ClientFactoryInterface $clientFactory,
+        CustomerResourceHydratorInterface $customerResource
     ) {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
         $this->paymentFrameFactory = $paymentFrameFactory;
         $this->systemConfigReader  = $systemConfigReader;
         $this->languageRepository  = $languageRepository;
+        $this->clientFactory       = $clientFactory;
+        $this->customerResource    = $customerResource;
     }
 
     /**
@@ -111,12 +126,24 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addDirectDebitSecuredExtension($event);
         }
 
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
+            $this->addFraudPreventionExtension($event);
+        }
+
         if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED) {
             $this->addInstallmentSecuredExtension($event);
         }
 
         $this->addPaymentFrameExtension($event);
         $this->addUnzerDataExtension($event);
+    }
+
+    private function addFraudPreventionExtension(PageLoadedEvent $event): void
+    {
+        $extension = new FraudPreventionPageExtension();
+        $extension->setFraudPreventionSessionId(Uuid::randomHex());
+
+        $event->getPage()->addExtension(FraudPreventionPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addUnzerDataExtension(PageLoadedEvent $event): void
@@ -127,8 +154,37 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension->setPublicKey($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY));
         $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
         $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
+        $extension->setUnzerCustomer($this->getUnzerCustomer($event));
 
         $event->getPage()->addExtension(UnzerDataPageExtension::EXTENSION_NAME, $extension);
+    }
+
+    private function getUnzerCustomer(PageLoadedEvent $event): ?Customer
+    {
+        $customer = $event->getSalesChannelContext()->getCustomer();
+
+        if ($customer === null) {
+            return null;
+        }
+
+        // Backwards compatibility to Shopware < 6.3.5.0
+        $salesChannelId = !method_exists($event->getSalesChannelContext(), 'getSalesChannelId')
+            ? $event->getSalesChannelContext()->getSalesChannel()->getId()
+            : $event->getSalesChannelContext()->getSalesChannelId();
+
+        $client         = $this->clientFactory->createClient($salesChannelId);
+        $customerNumber = $customer->getCustomerNumber();
+        $billingAddress = $customer->getActiveBillingAddress();
+
+        if ($billingAddress !== null && !empty($billingAddress->getCompany())) {
+            $customerNumber .= '_b';
+        }
+
+        try {
+            return $client->fetchCustomerByExtCustomerId($customerNumber);
+        } catch (Throwable $t) {
+            return null;
+        }
     }
 
     private function addPaymentFrameExtension(PageLoadedEvent $event): void

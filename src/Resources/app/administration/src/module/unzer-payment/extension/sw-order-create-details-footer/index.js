@@ -18,6 +18,7 @@ const unzerPaymentIds = [
     'cd6f59d572e6c90dff77a48ce16b44db', //PAYMENT_ID_PRZELEWY24
     '95aa098aac8f11e9a2a32a2ae2dbcce4', //PAYMENT_ID_SOFORT
     'fd96d03535a46d197f5adac17c9f8bac', //PAYMENT_ID_WE_CHAT
+    '09588ffee8064f168e909ff31889dd7f', //PAYMENT_ID_PAYLATER_INVOICE
 ]
 
 Shopware.Component.override('sw-order-create-details-footer', {

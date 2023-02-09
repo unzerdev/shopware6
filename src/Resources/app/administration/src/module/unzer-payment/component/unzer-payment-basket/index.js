@@ -18,22 +18,22 @@ Component.register('unzer-payment-basket', {
 
             this.paymentResource.basket.basketItems.forEach((basketItem) => {
                 let amountGross = this.$options.filters.currency(
-                    parseFloat(basketItem.amountGross),
+                    parseFloat(basketItem.amountGross.toFixed(2)),
                     this.paymentResource.currency
                 );
                 let amountNet = this.$options.filters.currency(
-                    parseFloat(basketItem.amountNet),
+                    parseFloat(basketItem.amountNet.toFixed(2)),
                     this.paymentResource.currency
                 );
 
                 if (basketItem.amountDiscount > 0) {
                     amountGross = this.$options.filters.currency(
-                        parseFloat(basketItem.amountDiscount) * -1,
+                        parseFloat(basketItem.amountDiscount.toFixed(2)) * -1,
                         this.paymentResource.currency
                     );
 
                     amountNet = this.$options.filters.currency(
-                        parseFloat(basketItem.amountDiscount - basketItem.amountVat) * -1,
+                        parseFloat((basketItem.amountDiscount - basketItem.amountVat).toFixed(2)) * -1,
                         this.paymentResource.currency
                     );
                 }

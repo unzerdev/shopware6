@@ -36,7 +36,8 @@
                 "state": "State",
                 "amountRemaining": "Amount (Remaining)",
                 "amountCancelled": "Amount (Cancelled)",
-                "amountCharged": "Amount (Charged)"
+                "amountCharged": "Amount (Charged)",
+                "descriptor": "Descriptor"
             },
             "metadata": {
                 "cardTitle": "Metadata",
@@ -68,7 +69,8 @@
                 "invoiceNotFoundMessage": "No invoice was found for this order.",
                 "couldNotRetrieveMessage": "The payment details could not be retrieved, please check the log files for more information.",
                 "documentDateMissingError": "Document date for invoice is empty.",
-                "paymentMissingError": "Payment could not be found"
+                "paymentMissingError": "Payment could not be found",
+                "paylaterInvoiceDocumentRequiredErrorMessage": "Please create or upload an invoice for the order first."
             }
         },
         "order-list": {

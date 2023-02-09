@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
+use DateTime;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
@@ -16,11 +18,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
+use UnzerPayment6\Components\BasketConverter\BasketConverterInterface;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydratorInterface;
 use UnzerPayment6\Components\ShipService\ShipServiceInterface;
+use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\TransactionTypes\Charge;
 
 /**
  * @RouteScope(scopes={"api"})
@@ -42,6 +47,9 @@ class UnzerPaymentTransactionController extends AbstractController
     /** @var ShipServiceInterface */
     private $shipService;
 
+    /** @var BasketConverterInterface */
+    private $basketConverter;
+
     /** @var LoggerInterface */
     private $logger;
 
@@ -51,6 +59,7 @@ class UnzerPaymentTransactionController extends AbstractController
         PaymentResourceHydratorInterface $hydrator,
         CancelServiceInterface $cancelService,
         ShipServiceInterface $shipService,
+        BasketConverterInterface $basketConverter,
         LoggerInterface $logger
     ) {
         $this->clientFactory              = $clientFactory;
@@ -58,6 +67,7 @@ class UnzerPaymentTransactionController extends AbstractController
         $this->hydrator                   = $hydrator;
         $this->cancelService              = $cancelService;
         $this->shipService                = $shipService;
+        $this->basketConverter            = $basketConverter;
         $this->logger                     = $logger;
     }
 
@@ -76,11 +86,15 @@ class UnzerPaymentTransactionController extends AbstractController
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $payment          = $client->fetchPaymentByOrderId($orderTransactionId);
-            $payment          = $client->fetchPayment($payment);
-            $orderTransaction = $this->getOrderTransaction($orderTransactionId, $context);
+            $payment = $client->fetchPaymentByOrderId($orderTransactionId);
+            $payment = $client->fetchPayment($payment);
 
-            $data = $this->hydrator->hydrateArray($payment, $orderTransaction);
+            $data = $this->hydrator->hydrateArray($payment, $transaction, $client);
+
+            /* Basket V2 since Version 1.1.5 */
+            if (!empty($data['basket']['totalValueGross'])) {
+                $data['basket'] = $this->basketConverter->populateDeprecatedVariables($data['basket']);
+            }
         } catch (UnzerApiException $exception) {
             $this->logger->error(sprintf('Error while executing fetching transaction details for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
                 'trace' => $exception->getTraceAsString(),
@@ -88,8 +102,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => $exception->getMerchantMessage(),
+                    'status' => false,
+                    'errors' => [$exception->getMerchantMessage()],
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
@@ -99,8 +113,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => 'generic-error',
+                    'status' => false,
+                    'errors' => ['generic-error'],
                 ],
                 Response::HTTP_BAD_REQUEST
             );
@@ -124,7 +138,25 @@ class UnzerPaymentTransactionController extends AbstractController
         $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
 
         try {
-            $client->chargeAuthorization($orderTransactionId, $amount);
+            $charge = new Charge($amount);
+
+            if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
+                $invoiceNumber = $this->getInvoiceNumber($transaction);
+
+                if ($invoiceNumber === null) {
+                    return new JsonResponse(
+                            [
+                            'status' => false,
+                            'errors' => ['paylater-invoice-document-required'],
+                        ],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+
+                $charge->setInvoiceId($invoiceNumber);
+            }
+
+            $client->performChargeOnPayment($orderTransactionId, $charge);
         } catch (UnzerApiException $exception) {
             $this->logger->error(sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
                 'trace' => $exception->getTraceAsString(),
@@ -132,8 +164,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => $exception->getMerchantMessage(),
+                    'status' => false,
+                    'errors' => [$exception->getMerchantMessage()],
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
@@ -143,8 +175,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => 'generic-error',
+                    'status' => false,
+                    'errors' => ['generic-error'],
                 ],
                 Response::HTTP_BAD_REQUEST
             );
@@ -170,8 +202,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => $exception->getMerchantMessage(),
+                    'status' => false,
+                    'errors' => [$exception->getMerchantMessage()],
                 ],
                 Response::HTTP_BAD_REQUEST);
         } catch (Throwable $exception) {
@@ -181,8 +213,8 @@ class UnzerPaymentTransactionController extends AbstractController
 
             return new JsonResponse(
                 [
-                    'status'  => false,
-                    'message' => 'generic-error',
+                    'status' => false,
+                    'errors' => ['generic-error'],
                 ],
                 Response::HTTP_BAD_REQUEST
             );
@@ -204,16 +236,16 @@ class UnzerPaymentTransactionController extends AbstractController
                 'trace' => $exception->getTraceAsString(),
             ]);
             $result = [
-                    'status'  => false,
-                    'message' => $exception->getMerchantMessage(),
-                ];
+                'status' => false,
+                'errors' => [$exception->getMerchantMessage()],
+            ];
         } catch (Throwable $exception) {
             $this->logger->error(sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
                 'trace' => $exception->getTraceAsString(),
             ]);
             $result = [
-                    'status'  => false,
-                    'message' => 'generic-error',
+                    'status' => false,
+                    'errors' => ['generic-error'],
                 ];
         }
 
@@ -231,5 +263,30 @@ class UnzerPaymentTransactionController extends AbstractController
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();
+    }
+
+    private function getInvoiceNumber(OrderTransactionEntity $transaction): ?string
+    {
+        if ($transaction->getOrder() === null || $transaction->getOrder()->getDocuments() === null) {
+            return null;
+        }
+
+        $documents     = $transaction->getOrder()->getDocuments()->getElements();
+        $invoiceNumber = null;
+        $documentDate  = null;
+
+        // get latest invoice document
+        foreach ($documents as $document) {
+            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
+                $newDocumentDate = new DateTime($document->getConfig()['documentDate']);
+
+                if ($documentDate === null || $newDocumentDate->getTimestamp() > $documentDate->getTimestamp()) {
+                    $documentDate  = $newDocumentDate;
+                    $invoiceNumber = $document->getConfig()['documentNumber'];
+                }
+            }
+        }
+
+        return $invoiceNumber;
     }
 }
