@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -46,7 +47,10 @@ class UnzerPayment6 extends Plugin
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
-        (new PaymentInstaller($paymentRepository))->install($installContext);
+        /** @var PluginIdProvider $pluginIdProvider */
+        $pluginIdProvider = $this->container->get(PluginIdProvider::class);
+
+        (new PaymentInstaller($paymentRepository, $pluginIdProvider))->install($installContext);
         (new CustomFieldInstaller($customFieldSetRepository))->install($installContext);
     }
 
@@ -61,7 +65,10 @@ class UnzerPayment6 extends Plugin
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
-        (new PaymentInstaller($paymentRepository))->update($updateContext);
+        /** @var PluginIdProvider $pluginIdProvider */
+        $pluginIdProvider = $this->container->get(PluginIdProvider::class);
+
+        (new PaymentInstaller($paymentRepository, $pluginIdProvider))->update($updateContext);
         (new CustomFieldInstaller($customFieldSetRepository))->update($updateContext);
     }
 
@@ -76,7 +83,10 @@ class UnzerPayment6 extends Plugin
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
-        (new PaymentInstaller($paymentRepository))->activate($activateContext);
+        /** @var PluginIdProvider $pluginIdProvider */
+        $pluginIdProvider = $this->container->get(PluginIdProvider::class);
+
+        (new PaymentInstaller($paymentRepository, $pluginIdProvider))->activate($activateContext);
         (new CustomFieldInstaller($customFieldSetRepository))->activate($activateContext);
     }
 
@@ -91,7 +101,10 @@ class UnzerPayment6 extends Plugin
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
-        (new PaymentInstaller($paymentRepository))->deactivate($deactivateContext);
+        /** @var PluginIdProvider $pluginIdProvider */
+        $pluginIdProvider = $this->container->get(PluginIdProvider::class);
+
+        (new PaymentInstaller($paymentRepository, $pluginIdProvider))->deactivate($deactivateContext);
         (new CustomFieldInstaller($customFieldSetRepository))->deactivate($deactivateContext);
     }
 
@@ -109,7 +122,10 @@ class UnzerPayment6 extends Plugin
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
 
-        (new PaymentInstaller($paymentRepository))->uninstall($uninstallContext);
+        /** @var PluginIdProvider $pluginIdProvider */
+        $pluginIdProvider = $this->container->get(PluginIdProvider::class);
+
+        (new PaymentInstaller($paymentRepository, $pluginIdProvider))->uninstall($uninstallContext);
 
         if (!$uninstallContext->keepUserData()) {
             (new CustomFieldInstaller($customFieldSetRepository))->uninstall($uninstallContext);

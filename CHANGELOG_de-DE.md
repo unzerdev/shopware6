@@ -1,3 +1,11 @@
+# 5.0.0
+* Korrektur der wiederkehrenden Nutzung einer Kreditkarte
+* Paylater Rechnung als weitere Zahlungsart hinzugefügt
+* Aktualisierung des Unzer PHP SDK zu Version 1.2.2.0
+* Kompatibilität zu Unzer Basket V2 API hergestellt
+* Korrektur der Aktualisierung von Zahlungsarten beim Plugin-Update
+* Ergänzung eines weiteren Parameters für `PaymentResourceHydratorInterface::hydateArray` um die Rückerstattungen von Paylater invoice anzeigen zu können
+
 # 4.0.0
 * Überweisungsinformationen werden nun in den Zusatzfeldern anstelle einer eigenen Tabelle gespeichert
   * **Bitte beachten,** dass bestehende Daten beim Plugin-Update **nicht** migriert werden.

@@ -36,7 +36,8 @@
                 "state": "Status",
                 "amountRemaining": "Betrag (Rest)",
                 "amountCancelled": "Betrag (Rückerstattet)",
-                "amountCharged": "Betrag (Eingezogen)"
+                "amountCharged": "Betrag (Eingezogen)",
+                "descriptor": "Verwendungszweck"
             },
             "metadata": {
                 "cardTitle": "Metadaten",
@@ -68,7 +69,8 @@
                 "invoiceNotFoundMessage": "Zu dieser Bestellung wurde keine Rechnung gefunden",
                 "couldNotRetrieveMessage": "Die Zahlungsdetails konnten nicht abgerufen werden, bitte prüfen Sie die Logdateien für weitere Informationen.",
                 "documentDateMissingError": "Das Datum der Rechnung ist leer.",
-                "paymentMissingError": "Die Zahlung konnte nicht gefunden werden"
+                "paymentMissingError": "Die Zahlung konnte nicht gefunden werden",
+                "paylaterInvoiceDocumentRequiredErrorMessage": "Bitte erstellen oder hinterlegen Sie zunächst eine Rechnung für die Bestellung."
             }
         },
         "order-list": {

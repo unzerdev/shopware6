@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\Struct\TransferInformation;
 
 use Shopware\Core\Framework\Struct\Struct;
+use UnzerSDK\Resources\TransactionTypes\AbstractTransactionType;
+use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
 class TransferInformation extends Struct
@@ -24,13 +26,16 @@ class TransferInformation extends Struct
     /** @var null|float */
     protected $amount;
 
-    public function __construct(Charge $charge)
+    /**
+     * @param Authorization|Charge $payment
+     */
+    public function __construct(AbstractTransactionType $payment)
     {
-        $this->iban       = $charge->getIban();
-        $this->bic        = $charge->getBic();
-        $this->holder     = $charge->getHolder();
-        $this->descriptor = $charge->getDescriptor();
-        $this->amount     = round($charge->getAmount(), 2);
+        $this->iban       = $payment->getIban();
+        $this->bic        = $payment->getBic();
+        $this->holder     = $payment->getHolder();
+        $this->descriptor = $payment->getDescriptor();
+        $this->amount     = round($payment->getAmount(), 2);
     }
 
     public function getEntityData(): array

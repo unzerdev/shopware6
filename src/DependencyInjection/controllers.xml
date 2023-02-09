@@ -21,6 +21,7 @@
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydrator" />
             <argument type="service" id="UnzerPayment6\Components\CancelService\CancelService" />
             <argument type="service" id="UnzerPayment6\Components\ShipService\ShipService" />
+            <argument type="service" id="UnzerPayment6\Components\BasketConverter\BasketConverter" />
             <argument type="service" id="unzer_payment.logger" />
 
             <call method="setContainer">

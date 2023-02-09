@@ -26,6 +26,7 @@ use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInte
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\SepaDirectDebit;
 
 class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
@@ -33,7 +34,7 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
     use CanCharge;
     use HasDeviceVault;
 
-    /** @var SepaDirectDebit */
+    /** @var BasePaymentType|SepaDirectDebit */
     protected $paymentType;
 
     public function __construct(
@@ -95,7 +96,7 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
-                sprintf('Catched an API exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'dataBag'     => $dataBag,
                     'transaction' => $transaction,
@@ -111,7 +112,7 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
             throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
         } catch (Throwable $exception) {
             $this->logger->error(
-                sprintf('Catched a generic exception in %s of %s', __METHOD__, __CLASS__),
+                sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'dataBag'     => $dataBag,
                     'transaction' => $transaction,

@@ -19,9 +19,15 @@ use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Cancellation;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
+use UnzerSDK\Unzer;
 
 class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 {
+    private const TRANSACTION_TYPE_AUTHORIZATION = 'authorization';
+    private const TRANSACTION_TYPE_CANCELLATION  = 'cancellation';
+    private const TRANSACTION_TYPE_CHARGE        = 'charge';
+    private const TRANSACTION_TYPE_SHIPMENT      = 'shipment';
+
     /** @var LoggerInterface */
     protected $logger;
 
@@ -30,22 +36,23 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         $this->logger = $logger;
     }
 
-    public function hydrateArray(Payment $payment, ?OrderTransactionEntity $orderTransaction): array
+    public function hydrateArray(Payment $payment, OrderTransactionEntity $orderTransaction, Unzer $client): array
     {
         $decimalPrecision = $this->getDecimalPrecision($orderTransaction);
-        $data             = $this->getBaseData($payment, $decimalPrecision);
+        $data             = $this->getBaseData($payment, $orderTransaction->getPaymentMethodId(), $decimalPrecision);
 
         try {
             $authorization = $payment->getAuthorization();
 
             if ($authorization instanceof Authorization) {
                 $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateAuthorize($authorization, $decimalPrecision);
+                $data['descriptor']                                             = $authorization->getDescriptor();
             }
         } catch (Throwable $throwable) {
             $this->logResourceError($throwable);
         }
 
-        $this->hydrateTransactions($data, $payment, $decimalPrecision);
+        $this->hydrateTransactions($data, $payment, $decimalPrecision, $client);
 
         if ($payment->getMetadata() !== null) {
             $exposedMeta = $payment->getMetadata()->expose();
@@ -72,7 +79,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         return $data;
     }
 
-    protected function getBaseData(Payment $payment, int $decimalPrecision): array
+    protected function getBaseData(Payment $payment, string $paymentMethodId, int $decimalPrecision): array
     {
         $paymentType = $payment->getPaymentType();
 
@@ -107,14 +114,34 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 'type'              => $paymentType ? $paymentType->expose() : null,
                 'amount'            => $this->hydrateAmount($payment->getAmount(), $decimalPrecision),
                 'transactions'      => [],
+                'paymentMethodId'   => $paymentMethodId,
             ]
         );
     }
 
-    protected function hydrateTransactions(array &$data, Payment $payment, int $decimalPrecision): void
+    protected function hydrateTransactions(array &$data, Payment $payment, int $decimalPrecision, Unzer $client): void
     {
-        $totalShippingAmount = 0;
+        $this->hydrateCharges($data, $payment, $decimalPrecision);
+        $this->hydrateRefunds($data, $payment, $decimalPrecision, $client);
+        $totalShippingAmount = $this->hydrateShipments($data, $payment, $decimalPrecision);
 
+        if ($totalShippingAmount === round($payment->getAmount()->getTotal() * (10 ** $decimalPrecision))) {
+            $data['isShipmentAllowed'] = false;
+        }
+
+        foreach (array_reverse($data['transactions'], true) as $transaction) {
+            if (array_key_exists('shortId', $transaction) && !empty($transaction['shortId'])) {
+                $data['shortId'] = $transaction['shortId'];
+
+                break;
+            }
+        }
+
+        ksort($data['transactions']);
+    }
+
+    protected function hydrateCharges(array &$data, Payment $payment, int $decimalPrecision): void
+    {
         /** @var Charge $lazyCharge */
         foreach ($payment->getCharges() as $lazyCharge) {
             try {
@@ -141,11 +168,48 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
                 $data['transactions'][$this->getTransactionKey($cancellation)] = $this->hydrateTransactionItem(
                     $cancellation,
-                    'cancellation',
+                    self::TRANSACTION_TYPE_CANCELLATION,
                     $decimalPrecision
                 );
             }
         }
+    }
+
+    protected function hydrateRefunds(array &$data, Payment $payment, int $decimalPrecision, Unzer $client): void
+    {
+        /** @var Cancellation $lazyRefund */
+        foreach ($payment->getRefunds() as $lazyRefund) {
+            try {
+                $cancellation = $client->fetchPaymentRefund($payment, $lazyRefund->getId());
+            } catch (Throwable $throwable) {
+                $this->logResourceError($throwable);
+
+                continue;
+            }
+
+            $item = $this->hydrateTransactionItem(
+                $cancellation,
+                self::TRANSACTION_TYPE_CANCELLATION,
+                $decimalPrecision
+            );
+
+            // Refunds aren't linked to a specific charge, so we have to reduce all the charges
+            foreach ($data['transactions'] as &$transaction) {
+                if ($transaction['type'] !== self::TRANSACTION_TYPE_CHARGE) {
+                    continue;
+                }
+
+                $transaction['remainingAmount'] = round($payment->getAmount()->getCharged() * (10 ** $decimalPrecision));
+            }
+            unset($transaction);
+
+            $data['transactions'][$this->getTransactionKey($cancellation)] = $item;
+        }
+    }
+
+    protected function hydrateShipments(array &$data, Payment $payment, int $decimalPrecision): float
+    {
+        $totalShippingAmount = 0;
 
         /** @var Shipment $lazyShipment */
         foreach ($payment->getShipments() as $lazyShipment) {
@@ -160,7 +224,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
             $data['transactions'][$this->getTransactionKey($shipment)] = $this->hydrateTransactionItem(
                 $shipment,
-                'shipment',
+                self::TRANSACTION_TYPE_SHIPMENT,
                 $decimalPrecision
             );
 
@@ -169,19 +233,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
             }
         }
 
-        if ($totalShippingAmount === round($payment->getAmount()->getTotal() * (10 ** $decimalPrecision))) {
-            $data['isShipmentAllowed'] = false;
-        }
-
-        foreach (array_reverse($data['transactions'], true) as $transaction) {
-            if (array_key_exists('shortId', $transaction) && !empty($transaction['shortId'])) {
-                $data['shortId'] = $transaction['shortId'];
-
-                break;
-            }
-        }
-
-        ksort($data['transactions']);
+        return $totalShippingAmount;
     }
 
     protected function hydrateAmount(Amount $amount, int $decimalPrecision): array
@@ -208,7 +260,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
     protected function hydrateCharge(Charge $charge, int $decimalPrecision): array
     {
-        $data = $this->hydrateTransactionItem($charge, 'charge', $decimalPrecision);
+        $data = $this->hydrateTransactionItem($charge, self::TRANSACTION_TYPE_CHARGE, $decimalPrecision);
 
         if ($charge->getCancelledAmount() !== null) {
             $chargedAmount   = (int) round($charge->getAmount() * (10 ** $decimalPrecision));
@@ -226,7 +278,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     {
         $data = $this->hydrateTransactionItem(
             $authorization,
-            'authorization',
+            self::TRANSACTION_TYPE_AUTHORIZATION,
             $decimalPrecision
         );
 

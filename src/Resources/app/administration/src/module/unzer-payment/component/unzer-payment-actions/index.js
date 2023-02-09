@@ -64,7 +64,7 @@ Component.register('unzer-payment-actions', {
                 amount = this.paymentResource.amount.remaining;
             }
 
-            if (this.transactionResource.remainingAmount) {
+            if ('remainingAmount' in this.transactionResource) {
                 amount = this.transactionResource.remainingAmount;
             }
 
@@ -112,10 +112,14 @@ Component.register('unzer-payment-actions', {
 
                 this.$emit('reload');
             }).catch((errorResponse) => {
-                let message = errorResponse.response.data.message;
+                let message = errorResponse.response.data.errors[0];
 
                 if (message === 'generic-error') {
                     message = this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage');
+                }
+
+                if (message === 'paylater-invoice-document-required') {
+                    message = this.$tc('unzer-payment.paymentDetails.notifications.paylaterInvoiceDocumentRequiredErrorMessage');
                 }
 
                 this.createNotificationError({
@@ -145,7 +149,7 @@ Component.register('unzer-payment-actions', {
 
                 this.$emit('reload');
             }).catch((errorResponse) => {
-                let message = errorResponse.response.data.message;
+                let message = errorResponse.response.data.errors[0];
 
                 if (message === 'generic-error') {
                     message = this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage');
