@@ -14,7 +14,8 @@ Component.register('unzer-payment-detail', {
     data() {
         return {
             isLoading: false,
-            isSuccessful: false
+            isSuccessful: false,
+            paylaterInvoicePaymentMethodId: '09588ffee8064f168e909ff31889dd7f' // see \UnzerPayment6\Installer\PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE
         };
     },
 
@@ -77,7 +78,7 @@ Component.register('unzer-payment-detail', {
 
                 this.$emit('reload');
             }).catch((errorResponse) => {
-                let message = errorResponse.response.data.message;
+                let message = errorResponse.response.data.errors[0];
 
                 if (message === 'generic-error') {
                     message = this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage');

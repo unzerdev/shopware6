@@ -29,6 +29,11 @@
                             <dt>{{ $tc('unzer-payment.paymentDetails.detail.state') }}</dt>
                             <dd>{{ paymentResource.state.name }}</dd>
 
+                            <span v-if="paymentResource.paymentMethodId === paylaterInvoicePaymentMethodId">
+                                <dt>{{ $tc('unzer-payment.paymentDetails.detail.descriptor') }}</dt>
+                                <dd>{{ paymentResource.descriptor }}</dd>
+                            </span>
+
                             {% block unzer_payment_detail_container_right_inner %}{% endblock %}
                         </sw-description-list>
                     {% endblock %}

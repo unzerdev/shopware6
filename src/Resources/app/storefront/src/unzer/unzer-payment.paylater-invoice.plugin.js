@@ -46,6 +46,13 @@ export default class UnzerPaymentPaylaterInvoicePlugin extends Plugin {
     _onCreateResource() {
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
+        this._createResource();
+    }
+
+    /**
+     * @private
+     */
+    _createResource() {
         this.paylaterInvoice.createResource()
             .then((resource) => this._submitPayment(resource))
             .catch((error) => this._handleError(error));

@@ -23,6 +23,11 @@ use UnzerSDK\Unzer;
 
 class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 {
+    private const TRANSACTION_TYPE_AUTHORIZATION = 'authorization';
+    private const TRANSACTION_TYPE_CANCELLATION  = 'cancellation';
+    private const TRANSACTION_TYPE_CHARGE        = 'charge';
+    private const TRANSACTION_TYPE_SHIPMENT      = 'shipment';
+
     /** @var LoggerInterface */
     protected $logger;
 
@@ -34,13 +39,14 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     public function hydrateArray(Payment $payment, OrderTransactionEntity $orderTransaction, Unzer $client): array
     {
         $decimalPrecision = $this->getDecimalPrecision($orderTransaction);
-        $data             = $this->getBaseData($payment, $decimalPrecision);
+        $data             = $this->getBaseData($payment, $orderTransaction->getPaymentMethodId(), $decimalPrecision);
 
         try {
             $authorization = $payment->getAuthorization();
 
             if ($authorization instanceof Authorization) {
                 $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateAuthorize($authorization, $decimalPrecision);
+                $data['descriptor']                                             = $authorization->getDescriptor();
             }
         } catch (Throwable $throwable) {
             $this->logResourceError($throwable);
@@ -73,7 +79,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         return $data;
     }
 
-    protected function getBaseData(Payment $payment, int $decimalPrecision): array
+    protected function getBaseData(Payment $payment, string $paymentMethodId, int $decimalPrecision): array
     {
         $paymentType = $payment->getPaymentType();
 
@@ -108,6 +114,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 'type'              => $paymentType ? $paymentType->expose() : null,
                 'amount'            => $this->hydrateAmount($payment->getAmount(), $decimalPrecision),
                 'transactions'      => [],
+                'paymentMethodId'   => $paymentMethodId,
             ]
         );
     }
@@ -161,7 +168,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
                 $data['transactions'][$this->getTransactionKey($cancellation)] = $this->hydrateTransactionItem(
                     $cancellation,
-                    'cancellation',
+                    self::TRANSACTION_TYPE_CANCELLATION,
                     $decimalPrecision
                 );
             }
@@ -180,11 +187,23 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 continue;
             }
 
-            $data['transactions'][$this->getTransactionKey($cancellation)] = $this->hydrateTransactionItem(
+            $item = $this->hydrateTransactionItem(
                 $cancellation,
-                'cancellation',
+                self::TRANSACTION_TYPE_CANCELLATION,
                 $decimalPrecision
             );
+
+            // Refunds aren't linked to a specific charge, so we have to reduce all the charges
+            foreach ($data['transactions'] as &$transaction) {
+                if ($transaction['type'] !== self::TRANSACTION_TYPE_CHARGE) {
+                    continue;
+                }
+
+                $transaction['remainingAmount'] = round($payment->getAmount()->getCharged() * (10 ** $decimalPrecision));
+            }
+            unset($transaction);
+
+            $data['transactions'][$this->getTransactionKey($cancellation)] = $item;
         }
     }
 
@@ -205,7 +224,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
             $data['transactions'][$this->getTransactionKey($shipment)] = $this->hydrateTransactionItem(
                 $shipment,
-                'shipment',
+                self::TRANSACTION_TYPE_SHIPMENT,
                 $decimalPrecision
             );
 
@@ -241,7 +260,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
     protected function hydrateCharge(Charge $charge, int $decimalPrecision): array
     {
-        $data = $this->hydrateTransactionItem($charge, 'charge', $decimalPrecision);
+        $data = $this->hydrateTransactionItem($charge, self::TRANSACTION_TYPE_CHARGE, $decimalPrecision);
 
         if ($charge->getCancelledAmount() !== null) {
             $chargedAmount   = (int) round($charge->getAmount() * (10 ** $decimalPrecision));
@@ -259,7 +278,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     {
         $data = $this->hydrateTransactionItem(
             $authorization,
-            'authorization',
+            self::TRANSACTION_TYPE_AUTHORIZATION,
             $decimalPrecision
         );
 

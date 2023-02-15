@@ -6,25 +6,61 @@
     {% endblock %}
 
     <div class="unzer-payment-frame-row">
-        <div id="unzer-payment-form">
-            <label for="unzerPaymentBirthday" class="unzer-payment-label">
-                {{ "account.personalBirthdayLabel"|trans }}
-            </label>
-            <input type="date"
-                   id="unzerPaymentBirthday"
-                   name="unzerPaymentBirthday"
-                   class="form-control unzer-payment-date-input"
-                   form="confirmOrderForm"
-                   required="required"
-                   max="{{ 'now -18 years'|date('Y-m-d') }}"
-                   {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
-        </div>
+        {% block unzer_payment_frame_paylater_invoice_company_types %}
+            {% if context.customer.activeBillingAddress.company is not empty %}
+                <div id="unzer-payment-b2b-form">
+                    <label for="unzerPaymentCompanyType" class="unzer-payment-label">
+                        {{ "UnzerPayment.companyType.label"|trans }}
+                    </label>
+
+                    <select required="required"
+                            form="confirmOrderForm"
+                            name="unzerPaymentCompanyType"
+                            class="form-control">
+                            <option value=""
+                                    disabled="disabled"
+                                    hidden="hidden"
+                                    {% if page.extensions[paymentDataExtensionName].unzerCustomer is null or page.extensions[paymentDataExtensionName].unzerCustomer.companyInfo is null or page.extensions[paymentDataExtensionName].unzerCustomer.companyInfo.companyType is empty %}
+                                        selected="selected"
+                                    {% endif %}
+                            >
+                                {{ "UnzerPayment.companyType.placeholder"|trans }}
+                            </option>
+                        {% for type in page.extensions[paymentDataExtensionName].companyTypes %}
+                            <option value="{{ type }}"
+                                    {% if page.extensions[paymentDataExtensionName].unzerCustomer and page.extensions[paymentDataExtensionName].unzerCustomer.companyInfo and page.extensions[paymentDataExtensionName].unzerCustomer.companyInfo.companyType is same as type %}
+                                        selected="selected"
+                                    {% endif %}
+                            >
+                                {{ ("UnzerPayment.companyType." ~ type)|trans }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+        {% endblock %}
+
+        {% block unzer_payment_frame_paylater_invoice_birthday %}
+            <div id="unzer-payment-b2c-form">
+                <label for="unzerPaymentBirthday" class="unzer-payment-label">
+                    {{ "account.personalBirthdayLabel"|trans }}
+                </label>
+                <input type="date"
+                       id="unzerPaymentBirthday"
+                       name="unzerPaymentBirthday"
+                       class="form-control unzer-payment-date-input"
+                       form="confirmOrderForm"
+                       required="required"
+                       max="{{ 'now -18 years'|date('Y-m-d') }}"
+                       {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+            </div>
+        {% endblock %}
     </div>
 
     <div id="unzer-payment-paylater-invoice-wrapper"
          class="unzer-payment-paylater-invoice-wrapper"
          data-unzer-payment-paylater-invoice="true"
-         data-unzer-payment-invoice-secured-options='{
+         data-unzer-payment-paylater-invoice-options='{
             "isB2BCustomer": "{{ context.customer.activeBillingAddress.company is not empty }}"
          }'>
     </div>
