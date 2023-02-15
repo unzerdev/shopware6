@@ -19,9 +19,9 @@
     "require": {
         "php": ">=7.2 || <=8.1",
         "unzerdev/php-sdk": "~1.2.0",
-        "shopware/core": "~6.2.0 || ~6.3.0 || ~6.4.0",
-        "shopware/administration": "~6.2.0 || ~6.3.0 || ~6.4.0",
-        "shopware/storefront": "~6.2.0 || ~6.3.0 || ~6.4.0"
+        "shopware/core": "~6.3.4 || ~6.4.0",
+        "shopware/administration": "~6.3.4 || ~6.4.0",
+        "shopware/storefront": "~6.3.4 || ~6.4.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^0.12",

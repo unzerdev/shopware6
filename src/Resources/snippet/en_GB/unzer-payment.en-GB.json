@@ -10,6 +10,12 @@
             "amount": "Amount"
         },
         "frame": {
+            "applePay": {
+                "missingMessage": "Payment with Apple Pay is not possible for your browser",
+                "testData": {
+                    "linkText": "Apple Pay Sandbox information and test data"
+                }
+            },
             "creditCard": {
                 "new": "Use another credit card",
                 "number": "Card number:",
