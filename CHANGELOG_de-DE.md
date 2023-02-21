@@ -1,3 +1,6 @@
+# 5.1.0
+* Apple Pay als weitere Zahlungsart hinzugefügt
+
 # 5.0.0
 * Korrektur der wiederkehrenden Nutzung einer Kreditkarte
 * Paylater Rechnung als weitere Zahlungsart hinzugefügt

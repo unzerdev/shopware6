@@ -1,3 +1,6 @@
+# 5.1.0
+* Added Apple Pay as new payment method
+
 # 5.0.0
 * Fix of recurring use of a credit card
 * Added Paylater Invoice as new payment method

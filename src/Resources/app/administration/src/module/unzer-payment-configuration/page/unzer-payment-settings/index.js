@@ -2,8 +2,6 @@ import template from './unzer-payment-settings.html.twig';
 import './unzer-payment-settings.scss';
 
 const { Component, Mixin } = Shopware;
-const Criteria = Shopware.Data.Criteria;
-
 
 Component.register('unzer-payment-settings', {
     template,
@@ -108,6 +106,7 @@ Component.register('unzer-payment-settings', {
 
         onSave() {
             this.isLoading = true;
+
             this.$refs.systemConfig.saveAll().then(() => {
                 let messageSaveSuccess = this.$tc('sw-plugin-config.messageSaveSuccess');
 
@@ -120,7 +119,9 @@ Component.register('unzer-payment-settings', {
                     message: messageSaveSuccess
                 });
 
-                this.isLoading = false;
+                this.$refs.applePayCertificates.onSave().then(() => {
+                    this.isLoading = false;
+                });
             }).catch((err) => {
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
@@ -135,6 +136,11 @@ Component.register('unzer-payment-settings', {
             this.config = config;
             this.isLoading = false;
             this.loadWebhooks();
+            this.$refs.applePayCertificates.loadData();
+        },
+
+        onLoadingChanged(value) {
+            this.isLoading = value;
         },
 
         onSalesChannelChanged(config, salesChannelId) {
@@ -148,7 +154,6 @@ Component.register('unzer-payment-settings', {
         onWebhookRegistered() {
             this.loadWebhooks();
         },
-
 
         loadWebhooks() {
             this.isLoadingWebhooks = true;
