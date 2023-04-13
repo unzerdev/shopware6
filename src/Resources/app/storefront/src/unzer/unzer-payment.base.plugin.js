@@ -15,6 +15,11 @@ export default class UnzerPaymentBasePlugin extends Plugin {
     };
 
     /**
+     * @type {Boolean}
+     */
+    static submitting = false;
+
+    /**
      * @type {Object}
      *
      * @public
@@ -75,7 +80,9 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         const resourceIdElement = document.getElementById(this.options.resourceIdElementId);
         resourceIdElement.value = resource.id;
 
-        this.confirmForm.submit();
+        this.setSubmitButtonActive(true);
+        this.submitButton.click();
+        this.setSubmitButtonActive(false);
     }
 
     /**
@@ -85,7 +92,9 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         const resourceIdElement = document.getElementById(this.options.resourceIdElementId);
         resourceIdElement.value = typeId;
 
-        this.confirmForm.submit();
+        this.setSubmitButtonActive(true);
+        this.submitButton.click();
+        this.setSubmitButtonActive(false);
     }
 
     /**
@@ -129,6 +138,12 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      * @private
      */
     _onSubmitButtonClick(event) {
+        if (this.submitting === true) {
+            return;
+        }
+
+        this.submitting = true;
+
         event.preventDefault();
 
         if (!this._validateForm()) {
