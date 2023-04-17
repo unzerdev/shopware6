@@ -1,3 +1,6 @@
+# 5.x.x
+* Added compatibility to CSRF mode ajax
+
 # 5.1.0
 * Added Apple Pay as new payment method
 
