@@ -10,10 +10,11 @@ cache:
 
 variables:
     DOCKER_DRIVER: overlay2
-    BASE_SW_VERSION: '6.2.0'
+    BASE_SW_VERSION: '6.3.4.0'
     PLUGIN_NAME: 'UnzerPayment6'
     DISABLE_PHPUNIT: '1'
     COMPOSER_COMMAND: "/var/www/html/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
+    COMPOSER_HOME: '/var/www/html/.composer'
 
 codestyle:
     stage: style
@@ -24,7 +25,7 @@ codestyle:
     before_script:
         - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
         - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
+        - if [ $SW_VERSION == '6.4.0.0' ] || [ $SW_VERSION == '6.4.20.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
         - ${COMPOSER_COMMAND}
         - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
     script:
@@ -40,15 +41,17 @@ k10r-phpstan:
     image: "dockware/play:${SW_VERSION}"
     parallel:
         matrix:
-            -   PHP_VERSION: [ "7.2", "7.3", "7.4" ]
-                SW_VERSION: [ "6.2.0", "6.3.0", "6.3.1.0", "6.3.2.0", "6.3.3.0", "6.3.4.0", "6.3.5.0", "6.4.0.0" ]
+            -   PHP_VERSION: [ "7.2", "7.3", "7.4", "8.0", "8.1" ]
+                SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
+            -   PHP_VERSION: [ "7.4", "8.0", "8.1" ]
+                SW_VERSION: [ "6.4.0.0" ]
     needs: [ ]
     except:
         variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
     before_script:
         - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
         - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
+        - if [ $SW_VERSION == '6.4.0.0' ] || [ $SW_VERSION == '6.4.20.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
         - ${COMPOSER_COMMAND}
         - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
     script:
@@ -63,15 +66,17 @@ sw-phpstan:
     image: "dockware/play:${SW_VERSION}"
     parallel:
         matrix:
-            -   PHP_VERSION: [ "7.2", "7.3", "7.4" ]
-                SW_VERSION: [ "6.2.0", "6.3.0", "6.3.1.0", "6.3.2.0", "6.3.3.0", "6.3.4.0", "6.3.5.0", "6.4.0.0" ]
+            - PHP_VERSION: [ "7.2", "7.3", "7.4", "8.0", "8.1" ]
+              SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
+            - PHP_VERSION: [ "7.4", "8.0", "8.1" ]
+              SW_VERSION: [ "6.4.0.0" ]
     needs: [ ]
     except:
         variables: [ $DISABLE_PHPSTAN_SW == "1" ]
     before_script:
         - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
         - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update 2.4.4; else if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update --2; else /var/www/html/composer global require hirak/prestissimo; fi; fi
+        - if [ $SW_VERSION == '6.4.0.0' ] || [ $SW_VERSION == '6.4.20.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
         - ${COMPOSER_COMMAND}
         - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
         - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git
@@ -88,15 +93,17 @@ phpunit:
     image: "dockware/play:${SW_VERSION}"
     parallel:
         matrix:
-            -   PHP_VERSION: [ "7.2", "7.3", "7.4" ]
-                SW_VERSION: [ "6.2.0", "6.3.0", "6.3.1.0", "6.3.2.0", "6.3.3.0", "6.3.4.0", "6.3.5.0", "6.4.0.0" ]
+            - PHP_VERSION: [ "7.2", "7.3", "7.4", "8.0", "8.1" ]
+              SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
+            - PHP_VERSION: [ "7.4", "8.0", "8.1" ]
+              SW_VERSION: [ "6.4.0.0" ]
     needs: [ ]
     except:
         variables: [ $DISABLE_PHPUNIT == "1" ]
     before_script:
         - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
         - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
+        - if [ $SW_VERSION == '6.4.0.0' ] || [ $SW_VERSION == '6.4.20.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
         - ${COMPOSER_COMMAND}
         - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
         - sudo rm -rf /var/run/mysqld/mysqld.sock.lock
