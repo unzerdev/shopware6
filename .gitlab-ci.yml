@@ -12,7 +12,7 @@ variables:
     CODESTYLE_VERSION: "6.4.20.0"
     DEFAULT_SW_VERSION: "v6.2.0"
     PLUGIN_NAME: 'UnzerPayment6'
-    DISABLE_PHPUNIT: '1'
+    COMPOSER_HOME: '/var/www/html/.composer'
     COMPOSER_COMMAND: "/var/www/html/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
 
 include:
@@ -27,6 +27,4 @@ include:
         - '/plugin/phpstan/k10r/sw-64.yml'
         - '/plugin/phpstan/sw/sw-63.yml'
         - '/plugin/phpstan/sw/sw-64.yml'
-        - '/plugin/phpunit/sw-63.yml'
-        - '/plugin/phpunit/sw-64.yml'
         - '/plugin/build-package.yml'
