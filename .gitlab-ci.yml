@@ -20,13 +20,18 @@ include:
     ref: feature/INT-1279
     file: 
         - '/plugin/codestyle.yml'
-        - '/plugin/install/sw-62.yml'
-        - '/plugin/install/sw-63.yml'
-        - '/plugin/install/sw-64.yml'
-        - '/plugin/phpstan/k10r/sw-62.yml'
         - '/plugin/phpstan/k10r/sw-63.yml'
         - '/plugin/phpstan/k10r/sw-64.yml'
-        - '/plugin/phpstan/sw/sw-62.yml'
         - '/plugin/phpstan/sw/sw-63.yml'
         - '/plugin/phpstan/sw/sw-64.yml'
+        - '/plugin/install/sw-63.yml'
+        - '/plugin/install/sw-64.yml'
         - '/plugin/build-package.yml'
+
+custom-install-63:
+    <<: *install-63
+    parallel:
+        matrix:
+            -   PHP_VERSION: [ "7.2", "7.3" ]
+                SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
+
