@@ -28,8 +28,7 @@ include:
         - '/plugin/install/sw-64.yml'
         - '/plugin/build-package.yml'
 
-custom-install-63:
-    <<: *install-63
+install-63:
     parallel:
         matrix:
             -   PHP_VERSION: [ "7.2", "7.3" ]
