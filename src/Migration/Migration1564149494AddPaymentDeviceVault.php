@@ -6,6 +6,7 @@ namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
+use UnzerPayment6\Components\BackwardsCompatibility\DbalConnectionHelper;
 
 class Migration1564149494AddPaymentDeviceVault extends MigrationStep
 {
@@ -16,7 +17,7 @@ class Migration1564149494AddPaymentDeviceVault extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $result = $connection->fetchColumn('SHOW TABLES LIKE \'unzer_payment_payment_device\';');
+        $result = DbalConnectionHelper::fetchColumn($connection,'SHOW TABLES LIKE \'unzer_payment_payment_device\';');
 
         if ($result) {
             return;
@@ -42,7 +43,7 @@ class Migration1564149494AddPaymentDeviceVault extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 SQL;
 
-        $connection->exec($sql);
+        DbalConnectionHelper::exec($connection, $sql);
     }
 
     public function updateDestructive(Connection $connection): void

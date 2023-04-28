@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use function array_key_exists;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -50,7 +51,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         ResourceHydratorInterface $basketHydrator,
         CustomerResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
-        EntityRepositoryInterface $transactionRepository,
+        EntityRepository $transactionRepository,
         ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,

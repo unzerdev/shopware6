@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use UnzerPayment6\Components\BookingMode;
@@ -22,7 +23,7 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
     private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKING_MODE_CARD;
     private const DEFAULT_MODE     = BookingMode::CHARGE;
 
-    public function __construct(ConfigReaderInterface $configReader, EntityRepositoryInterface $orderTransactionRepository)
+    public function __construct(ConfigReaderInterface $configReader, EntityRepository $orderTransactionRepository)
     {
         $this->configReader               = $configReader;
         $this->orderTransactionRepository = $orderTransactionRepository;

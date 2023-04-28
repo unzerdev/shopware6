@@ -6,6 +6,7 @@ namespace UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,13 +18,13 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 
 class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceRepositoryInterface
 {
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $entityRepository;
 
     /** @var AddressHashGeneratorInterface */
     private $addressHashService;
 
-    public function __construct(EntityRepositoryInterface $entityRepository, AddressHashGeneratorInterface $addressHashGenerator)
+    public function __construct(EntityRepository $entityRepository, AddressHashGeneratorInterface $addressHashGenerator)
     {
         $this->entityRepository   = $entityRepository;
         $this->addressHashService = $addressHashGenerator;

@@ -26,7 +26,7 @@ class UnzerPaymentDeviceController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/deleteDevice", name="unzer.device.delete", methods={"GET"})
+     * @Route("/unzer/deleteDevice", name="unzer.device.delete", methods={"GET"}, defaults={"_routeScope": {"storefront"}})
      */
     public function deleteDevice(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {

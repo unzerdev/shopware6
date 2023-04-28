@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace UnzerPayment6\Commands;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -25,10 +27,10 @@ class RegisterWebhookCommand extends Command
     /** @var WebhookRegistratorInterface */
     private $webhookRegistrator;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $domainRepository;
 
-    public function __construct(WebhookRegistratorInterface $webhookRegistrator, EntityRepositoryInterface $domainRepository)
+    public function __construct(WebhookRegistratorInterface $webhookRegistrator, EntityRepository $domainRepository)
     {
         $this->webhookRegistrator = $webhookRegistrator;
         $this->domainRepository   = $domainRepository;

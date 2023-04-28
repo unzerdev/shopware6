@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\ResourceHydrator;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -20,10 +21,10 @@ class MetadataResourceHydrator implements ResourceHydratorInterface
     /** @var string */
     private $shopwareVersion;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $pluginRepository;
 
-    public function __construct(string $shopwareVersion, EntityRepositoryInterface $pluginRepository)
+    public function __construct(string $shopwareVersion, EntityRepository $pluginRepository)
     {
         $this->shopwareVersion  = $shopwareVersion;
         $this->pluginRepository = $pluginRepository;

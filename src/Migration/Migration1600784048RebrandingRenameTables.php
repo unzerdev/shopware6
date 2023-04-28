@@ -6,6 +6,7 @@ namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
+use UnzerPayment6\Components\BackwardsCompatibility\DbalConnectionHelper;
 
 class Migration1600784048RebrandingRenameTables extends MigrationStep
 {
@@ -16,16 +17,16 @@ class Migration1600784048RebrandingRenameTables extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $transferResult = $connection->fetchColumn('SHOW TABLES LIKE \'unzer_payment_transfer_info\';');
+        $transferResult = DbalConnectionHelper::fetchColumn($connection, 'SHOW TABLES LIKE \'unzer_payment_transfer_info\';');
 
         if (!$transferResult) {
-            $connection->exec('RENAME TABLE heidelpay_transfer_info TO unzer_payment_transfer_info;');
+            DbalConnectionHelper::exec($connection,'RENAME TABLE heidelpay_transfer_info TO unzer_payment_transfer_info;');
         }
 
-        $deviceResult = $connection->fetchColumn('SHOW TABLES LIKE \'unzer_payment_payment_device\';');
+        $deviceResult = DbalConnectionHelper::fetchColumn($connection, 'SHOW TABLES LIKE \'unzer_payment_payment_device\';');
 
         if (!$deviceResult) {
-            $connection->exec('RENAME TABLE heidelpay_payment_device TO unzer_payment_payment_device;');
+            DbalConnectionHelper::exec($connection, 'RENAME TABLE heidelpay_payment_device TO unzer_payment_payment_device;');
         }
     }
 

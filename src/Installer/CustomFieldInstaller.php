@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Installer;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
@@ -56,10 +57,10 @@ class CustomFieldInstaller implements InstallerInterface
         ],
     ];
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $customFieldSetRepository;
 
-    public function __construct(EntityRepositoryInterface $customFieldSetRepository)
+    public function __construct(EntityRepository $customFieldSetRepository)
     {
         $this->customFieldSetRepository = $customFieldSetRepository;
     }

@@ -7,6 +7,7 @@ namespace UnzerPayment6\Components\WebhookHandler;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Exception\InvalidUuidException;
@@ -28,7 +29,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $orderTransactionRepository;
 
     /** @var LoggerInterface */
@@ -40,7 +41,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
     public function __construct(
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
-        EntityRepositoryInterface $orderTransactionRepository,
+        EntityRepository $orderTransactionRepository,
         LoggerInterface $logger,
         CustomFieldsHelperInterface $customFieldsHelper
     ) {
