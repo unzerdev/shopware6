@@ -1,4 +1,4 @@
-# 5.x.x
+# 5.1.1
 * Kompatibilität zum CSRF-Modus Ajax hergestellt
 
 # 5.1.0

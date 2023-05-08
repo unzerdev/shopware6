@@ -1,4 +1,4 @@
-# 5.x.x
+# 5.1.1
 * Added compatibility to CSRF mode ajax
 
 # 5.1.0
