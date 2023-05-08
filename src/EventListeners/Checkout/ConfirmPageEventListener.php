@@ -140,8 +140,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addApplePayExtension($event);
         }
 
-        $this->addPaymentFrameExtension($event);
-        $this->addUnzerDataExtension($event);
+        if (in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS)) {
+            $this->addPaymentFrameExtension($event);
+            $this->addUnzerDataExtension($event);
+        }
     }
 
     private function addFraudPreventionExtension(PageLoadedEvent $event): void
