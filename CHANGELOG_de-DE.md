@@ -1,3 +1,6 @@
+# 5.1.1
+* Kompatibilität zum CSRF-Modus Ajax hergestellt
+
 # 5.1.0
 * Apple Pay als weitere Zahlungsart hinzugefügt
 

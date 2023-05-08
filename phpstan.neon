@@ -2,6 +2,7 @@ parameters:
     level: 7
     reportUnmatchedIgnoredErrors: false
     checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
     bootstrapFiles:
         - ../../../vendor/autoload.php
         - vendor/autoload.php
