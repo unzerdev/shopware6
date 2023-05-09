@@ -8,16 +8,12 @@ if (!class_exists('\Shopware\Core\Framework\Routing\Annotation\RouteScope')) {
     /**
      * @Annotation
      * @Attributes({
-     *   @Attribute("scopes",  type = "array"),
+     *     @Attribute("scopes",  type="array"),
      * })
      */
-    class RouteScope {
+    class RouteScope
+    {
         public $scopes = [];
-
-        public function setScopes()
-        {
-
-        }
     }
 }
 

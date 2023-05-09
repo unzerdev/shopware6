@@ -8,14 +8,13 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerSDK\Resources\Payment;
 
 /**
- * @property ConfigReaderInterface     $configReader
- * @property EntityRepository $orderTransactionRepository
+ * @property ConfigReaderInterface $configReader
+ * @property EntityRepository      $orderTransactionRepository
  */
 trait HasBookingMode
 {

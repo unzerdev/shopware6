@@ -30,6 +30,7 @@ use UnzerSDK\Unzer;
 
 /**
  * @RouteScope(scopes={"storefront"})
+ * @Route(defaults={"_routeScope": {"storefront"}})
  */
 class UnzerPaymentApplePayController extends StorefrontController
 {
@@ -37,7 +38,9 @@ class UnzerPaymentApplePayController extends StorefrontController
 
     /** @var ConfigReaderInterface */
     private $configReader;
-    /** @var FilesystemOperator */
+
+    // TODO: Adjust me if compatibility is at least 6.5.0.0
+    /** @var FilesystemInterface|FilesystemOperator */
     private $filesystem;
     /** @var LoggerInterface */
     private $logger;
@@ -48,9 +51,14 @@ class UnzerPaymentApplePayController extends StorefrontController
     /** @var SystemConfigService */
     private $systemConfigService;
 
+    // TODO: Adjust me if compatibility is at least 6.5.0.0
+
+    /**
+     * @param FilesystemInterface|FilesystemOperator $filesystem
+     */
     public function __construct(
         ConfigReaderInterface $configReader,
-        FilesystemOperator $filesystem,
+        $filesystem,
         LoggerInterface $logger,
         CertificateManager $certificateManager,
         ClientFactory $clientFactory,
@@ -65,7 +73,7 @@ class UnzerPaymentApplePayController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/applePay/validateMerchant", name="unzer.apple_pay.validate_merchant", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false, "_routeScope": {"storefront"}})
+     * @Route("/unzer/applePay/validateMerchant", name="unzer.apple_pay.validate_merchant", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false})
      */
     public function validateMerchant(Request $request, SalesChannelContext $salesChannelContext): Response
     {
@@ -133,7 +141,7 @@ class UnzerPaymentApplePayController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/applePay/authorizePayment", name="unzer.apple_pay.authorize_payment", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false, "_routeScope": {"storefront"}})
+     * @Route("/unzer/applePay/authorizePayment", name="unzer.apple_pay.authorize_payment", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false})
      */
     public function authorizePayment(Request $request, SalesChannelContext $salesChannelContext): Response
     {

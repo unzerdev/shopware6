@@ -6,7 +6,6 @@ namespace UnzerPayment6\Installer;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
@@ -376,6 +375,7 @@ class PaymentInstaller implements InstallerInterface
     private $pluginIdProvider;
 
     // TODO: Adjust this if compatibility is at least > 6.4.0.0
+
     /**
      * @param EntityRepository|\Shopware\Core\Checkout\Payment\DataAbstractionLayer\PaymentMethodRepositoryDecorator $paymentMethodRepository
      */

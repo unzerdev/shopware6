@@ -45,18 +45,25 @@ class UnzerPaymentApplePayController extends AbstractController
     private $logger;
     /** @var SystemConfigService */
     private $systemConfigService;
-    /** @var FilesystemOperator */
+
+    // TODO: Adjust me if compatibility is at least 6.5.0.0
+    /** @var FilesystemInterface|FilesystemOperator */
     private $filesystem;
     /** @var ConfigReaderInterface */
     private $configReader;
     /** @var CertificateManager */
     private $certificateManager;
 
+    // TODO: Adjust me if compatibility is at least 6.5.0.0
+
+    /**
+     * @param FilesystemInterface|FilesystemOperator $filesystem
+     */
     public function __construct(
         ClientFactoryInterface $clientFactory,
         LoggerInterface $logger,
         SystemConfigService $systemConfigService,
-        FilesystemOperator $filesystem,
+        $filesystem,
         ConfigReaderInterface $configReader,
         CertificateManager $certificateManager
     ) {

@@ -20,7 +20,7 @@ class Migration1600784048RebrandingRenameTables extends MigrationStep
         $transferResult = DbalConnectionHelper::fetchColumn($connection, 'SHOW TABLES LIKE \'unzer_payment_transfer_info\';');
 
         if (!$transferResult) {
-            DbalConnectionHelper::exec($connection,'RENAME TABLE heidelpay_transfer_info TO unzer_payment_transfer_info;');
+            DbalConnectionHelper::exec($connection, 'RENAME TABLE heidelpay_transfer_info TO unzer_payment_transfer_info;');
         }
 
         $deviceResult = DbalConnectionHelper::fetchColumn($connection, 'SHOW TABLES LIKE \'unzer_payment_payment_device\';');

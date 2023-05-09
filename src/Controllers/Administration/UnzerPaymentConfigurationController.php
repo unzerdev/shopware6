@@ -128,6 +128,10 @@ class UnzerPaymentConfigurationController extends AbstractController
      */
     public function getWebhooks(RequestDataBag $dataBag): JsonResponse
     {
+        if (!$dataBag->has('privateKey') || empty($dataBag->get('privateKey'))) {
+            return new JsonResponse();
+        }
+
         return new JsonResponse(
             $this->webhookRegistrator->getWebhooks($dataBag->get('privateKey')),
             200

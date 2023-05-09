@@ -17,7 +17,7 @@ class Migration1564149494AddPaymentDeviceVault extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $result = DbalConnectionHelper::fetchColumn($connection,'SHOW TABLES LIKE \'unzer_payment_payment_device\';');
+        $result = DbalConnectionHelper::fetchColumn($connection, 'SHOW TABLES LIKE \'unzer_payment_payment_device\';');
 
         if ($result) {
             return;

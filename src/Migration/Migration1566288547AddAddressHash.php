@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
 use Shopware\Core\Framework\Migration\MigrationStep;
 use Throwable;
 use UnzerPayment6\Components\BackwardsCompatibility\DbalConnectionHelper;

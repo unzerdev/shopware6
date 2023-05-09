@@ -14,6 +14,7 @@ use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDevi
 
 /**
  * @RouteScope(scopes={"storefront"})
+ * @Route(defaults={"_routeScope": {"storefront"}})
  */
 class UnzerPaymentDeviceController extends StorefrontController
 {
@@ -26,7 +27,7 @@ class UnzerPaymentDeviceController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/deleteDevice", name="unzer.device.delete", methods={"GET"}, defaults={"_routeScope": {"storefront"}})
+     * @Route("/unzer/deleteDevice", name="unzer.device.delete", methods={"GET"})
      */
     public function deleteDevice(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {

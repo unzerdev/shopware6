@@ -20,6 +20,7 @@ use UnzerPayment6\Components\WebhookHandler\WebhookHandlerInterface;
 
 /**
  * @RouteScope(scopes={"storefront"})
+ * @Route(defaults={"_routeScope": {"storefront"}})
  */
 class UnzerPaymentWebhookController extends StorefrontController
 {
@@ -40,7 +41,7 @@ class UnzerPaymentWebhookController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/webhook", name="unzer.webhook.execute", methods={"POST", "GET"}, defaults={"csrf_protected": false, "_routeScope": {"storefront"}})
+     * @Route("/unzer/webhook", name="unzer.webhook.execute", methods={"POST", "GET"}, defaults={"csrf_protected": false})
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {

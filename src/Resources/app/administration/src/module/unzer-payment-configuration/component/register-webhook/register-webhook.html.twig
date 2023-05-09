@@ -3,7 +3,7 @@
         {% block unzer_payment_payment_register_webhook_button %}
             <sw-button-process
                 :isLoading="isRegistering || isLoading"
-                :disabled="isLoading"
+                :disabled="isDisabled"
                 :processSuccess="isRegistrationSuccessful"
                 @process-finish="onRegistrationFinished()"
                 @click="openModal">
