@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Controllers\Storefront;
 
 use Exception;
-use League\Flysystem\FilesystemInterface;
 use League\Flysystem\FilesystemOperator;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -38,9 +37,7 @@ class UnzerPaymentApplePayController extends StorefrontController
 
     /** @var ConfigReaderInterface */
     private $configReader;
-
-    // TODO: Adjust me if compatibility is at least 6.5.0.0
-    /** @var FilesystemInterface|FilesystemOperator */
+    /** @var FilesystemOperator */
     private $filesystem;
     /** @var LoggerInterface */
     private $logger;
@@ -51,14 +48,9 @@ class UnzerPaymentApplePayController extends StorefrontController
     /** @var SystemConfigService */
     private $systemConfigService;
 
-    // TODO: Adjust me if compatibility is at least 6.5.0.0
-
-    /**
-     * @param FilesystemInterface|FilesystemOperator $filesystem
-     */
     public function __construct(
         ConfigReaderInterface $configReader,
-        $filesystem,
+        FilesystemOperator $filesystem,
         LoggerInterface $logger,
         CertificateManager $certificateManager,
         ClientFactory $clientFactory,

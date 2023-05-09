@@ -23,6 +23,9 @@ class DbalConnectionHelper
         return $connection->fetchOne($query, $params);
     }
 
+    /**
+     * @return false|mixed[]
+     */
     public static function fetchAssoc(Connection $connection, string $query)
     {
         // TODO: Remove me if compatibility is at least 6.4.0.0

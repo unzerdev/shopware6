@@ -2,21 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Shopware\Core\Framework\Routing\Annotation;
-
-if (!class_exists('\Shopware\Core\Framework\Routing\Annotation\RouteScope')) {
-    /**
-     * @Annotation
-     * @Attributes({
-     *     @Attribute("scopes",  type="array"),
-     * })
-     */
-    class RouteScope
-    {
-        public $scopes = [];
-    }
-}
-
 namespace UnzerPayment6;
 
 use Doctrine\DBAL\Connection;
