@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use UnzerPayment6\Components\BackwardsCompatibility\DbalConnectionHelper;
 use UnzerPayment6\Components\UnzerPaymentClassLoader;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerPayment6\Installer\PaymentInstaller;
@@ -129,10 +130,13 @@ class UnzerPayment6 extends Plugin
 
         if (!$uninstallContext->keepUserData()) {
             (new CustomFieldInstaller($customFieldSetRepository))->uninstall($uninstallContext);
-            $connection->exec('
-                DROP TABLE IF EXISTS `unzer_payment_transfer_info`;
-                DROP TABLE IF EXISTS `unzer_payment_payment_device`;
-            ');
+            DbalConnectionHelper::exec(
+                $connection,
+                '
+            DROP TABLE IF EXISTS `unzer_payment_transfer_info`;
+            DROP TABLE IF EXISTS `unzer_payment_payment_device`;
+        '
+            );
         }
     }
 }

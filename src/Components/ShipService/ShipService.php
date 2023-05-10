@@ -12,7 +12,7 @@ use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
@@ -29,7 +29,7 @@ class ShipService implements ShipServiceInterface
     /** @var TransactionStateHandlerInterface */
     private $transactionStateHandler;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $orderTransactionRepository;
 
     /** @var LoggerInterface */
@@ -38,7 +38,7 @@ class ShipService implements ShipServiceInterface
     public function __construct(
         ClientFactoryInterface $clientFactory,
         TransactionStateHandlerInterface $transactionStateHandler,
-        EntityRepositoryInterface $orderTransactionRepository,
+        EntityRepository $orderTransactionRepository,
         LoggerInterface $logger
     ) {
         $this->clientFactory              = $clientFactory;

@@ -10,7 +10,7 @@ use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -39,7 +39,7 @@ class SendShippingNotificationCommand extends Command
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $transactionRepository;
 
     /** @var Context */
@@ -53,7 +53,7 @@ class SendShippingNotificationCommand extends Command
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $transactionRepository,
+        EntityRepository $transactionRepository,
         EventDispatcherInterface $eventDispatcher,
         ShipServiceInterface $shipService
     ) {

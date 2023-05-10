@@ -12,7 +12,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Event\StateMachineTransitionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -25,13 +25,13 @@ use UnzerPayment6\Installer\CustomFieldInstaller;
 
 class TransitionEventListener implements EventSubscriberInterface
 {
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $orderRepository;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $orderDeliveryRepository;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $transactionRepository;
 
     /** @var LoggerInterface */
@@ -47,9 +47,9 @@ class TransitionEventListener implements EventSubscriberInterface
     private $shipService;
 
     public function __construct(
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $orderDeliveryRepository,
-        EntityRepositoryInterface $transactionRepository,
+        EntityRepository $orderRepository,
+        EntityRepository $orderDeliveryRepository,
+        EntityRepository $transactionRepository,
         AutomaticShippingValidatorInterface $automaticShippingValidator,
         LoggerInterface $logger,
         EventDispatcherInterface $eventDispatcher,

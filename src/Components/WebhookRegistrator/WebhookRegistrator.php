@@ -6,7 +6,7 @@ namespace UnzerPayment6\Components\WebhookRegistrator;
 
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
@@ -35,7 +35,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     /** @var Router */
     private $router;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $salesChannelDomainRepository;
 
     /** @var LoggerInterface */
@@ -44,7 +44,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     public function __construct(
         ClientFactoryInterface $clientFactory,
         Router $router,
-        EntityRepositoryInterface $salesChannelDomainRepository,
+        EntityRepository $salesChannelDomainRepository,
         LoggerInterface $logger
     ) {
         $this->clientFactory                = $clientFactory;

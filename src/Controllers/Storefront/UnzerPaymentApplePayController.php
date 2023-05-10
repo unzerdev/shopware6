@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Controllers\Storefront;
 
 use Exception;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
@@ -29,6 +29,7 @@ use UnzerSDK\Unzer;
 
 /**
  * @RouteScope(scopes={"storefront"})
+ * @Route(defaults={"_routeScope": {"storefront"}})
  */
 class UnzerPaymentApplePayController extends StorefrontController
 {
@@ -36,7 +37,7 @@ class UnzerPaymentApplePayController extends StorefrontController
 
     /** @var ConfigReaderInterface */
     private $configReader;
-    /** @var FilesystemInterface */
+    /** @var FilesystemOperator */
     private $filesystem;
     /** @var LoggerInterface */
     private $logger;
@@ -49,7 +50,7 @@ class UnzerPaymentApplePayController extends StorefrontController
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        FilesystemInterface $filesystem,
+        FilesystemOperator $filesystem,
         LoggerInterface $logger,
         CertificateManager $certificateManager,
         ClientFactory $clientFactory,
@@ -64,7 +65,7 @@ class UnzerPaymentApplePayController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/applePay/validateMerchant", name="unzer.apple_pay.validate_merchant", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false, "_route_scope": {"storefront"}})
+     * @Route("/unzer/applePay/validateMerchant", name="unzer.apple_pay.validate_merchant", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false})
      */
     public function validateMerchant(Request $request, SalesChannelContext $salesChannelContext): Response
     {
@@ -132,7 +133,7 @@ class UnzerPaymentApplePayController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/applePay/authorizePayment", name="unzer.apple_pay.authorize_payment", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false, "_route_scope": {"storefront"}})
+     * @Route("/unzer/applePay/authorizePayment", name="unzer.apple_pay.authorize_payment", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false})
      */
     public function authorizePayment(Request $request, SalesChannelContext $salesChannelContext): Response
     {
@@ -147,9 +148,6 @@ class UnzerPaymentApplePayController extends StorefrontController
             $paymentType                   = $client->fetchPaymentType($typeId);
             $response['transactionStatus'] = 'pending';
         } catch (UnzerApiException $e) {
-            $merchantMessage = $e->getMerchantMessage();
-            $clientMessage   = $e->getClientMessage();
-
             return new JsonResponse([
                 'clientMessage'   => $e->getClientMessage(),
                 'merchantMessage' => $e->getMerchantMessage(),

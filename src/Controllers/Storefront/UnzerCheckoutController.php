@@ -54,9 +54,6 @@ class UnzerCheckoutController extends StorefrontController
         return $this->innerService->offcanvas($request, $context);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function order(RequestDataBag $data, SalesChannelContext $context, Request $request): Response
     {
         try {

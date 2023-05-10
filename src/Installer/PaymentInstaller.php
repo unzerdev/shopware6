@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Installer;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
@@ -367,13 +367,19 @@ class PaymentInstaller implements InstallerInterface
     ];
     private const PLUGIN_VERSION_PAYLATER_INVOICE = '5.0.0';
 
-    /** @var EntityRepositoryInterface */
+    // TODO: Adjust this if compatibility is at least > 6.4.0.0
+    /** @var EntityRepository|\Shopware\Core\Checkout\Payment\DataAbstractionLayer\PaymentMethodRepositoryDecorator */
     private $paymentMethodRepository;
 
     /** @var PluginIdProvider */
     private $pluginIdProvider;
 
-    public function __construct(EntityRepositoryInterface $paymentMethodRepository, PluginIdProvider $pluginIdProvider)
+    // TODO: Adjust this if compatibility is at least > 6.4.0.0
+
+    /**
+     * @param EntityRepository|\Shopware\Core\Checkout\Payment\DataAbstractionLayer\PaymentMethodRepositoryDecorator $paymentMethodRepository
+     */
+    public function __construct($paymentMethodRepository, PluginIdProvider $pluginIdProvider)
     {
         $this->paymentMethodRepository = $paymentMethodRepository;
         $this->pluginIdProvider        = $pluginIdProvider;

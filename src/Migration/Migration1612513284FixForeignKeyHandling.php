@@ -6,6 +6,7 @@ namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
+use UnzerPayment6\Components\BackwardsCompatibility\DbalConnectionHelper;
 
 class Migration1612513284FixForeignKeyHandling extends MigrationStep
 {
@@ -33,7 +34,7 @@ class Migration1612513284FixForeignKeyHandling extends MigrationStep
         $this->dropIndex($connection, 'unzer_payment_transfer_info', 'fk.unzer_payment_transfer_info.transaction_id');
 
         try {
-            $connection->exec(<<<SQL
+            DbalConnectionHelper::exec($connection, <<<SQL
                 ALTER TABLE unzer_payment_transfer_info
                     ADD `transaction_version_id` BINARY(16) NOT NULL AFTER `transaction_id`;
 
@@ -53,7 +54,7 @@ SQL
 
     private function migratePaymentDevices(Connection $connection): void
     {
-        $paymentDeviceResult = $connection->fetchAssoc(
+        $paymentDeviceResult = DbalConnectionHelper::fetchAssoc($connection,
             'SHOW KEYS FROM `unzer_payment_payment_device` WHERE Key_name = "fk.heidelpay_payment_device.customer_id";'
         );
 
@@ -62,7 +63,7 @@ SQL
             $this->dropIndex($connection, 'unzer_payment_payment_device', 'fk.heidelpay_payment_device.customer_id');
 
             try {
-                $connection->exec(<<<SQL
+                DbalConnectionHelper::exec($connection, <<<SQL
                 ALTER TABLE unzer_payment_payment_device
                 ADD CONSTRAINT `fk.unzer_payment_payment_device.customer_id`
                     FOREIGN KEY (`customer_id`)
@@ -79,7 +80,7 @@ SQL
     private function dropForeignKey(Connection $connection, string $table, string $keyName): void
     {
         try {
-            $connection->exec(<<<SQL
+            DbalConnectionHelper::exec($connection, <<<SQL
             ALTER TABLE `$table`
                 DROP FOREIGN KEY `$keyName`
 SQL
@@ -92,7 +93,7 @@ SQL
     private function dropIndex(Connection $connection, string $table, string $indexName): void
     {
         try {
-            $connection->exec(<<<SQL
+            DbalConnectionHelper::exec($connection, <<<SQL
             ALTER TABLE `$table`
                 DROP INDEX `$indexName`
 SQL

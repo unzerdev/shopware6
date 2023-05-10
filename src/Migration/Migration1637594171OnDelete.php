@@ -6,6 +6,7 @@ namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
+use UnzerPayment6\Components\BackwardsCompatibility\DbalConnectionHelper;
 
 class Migration1637594171OnDelete extends MigrationStep
 {
@@ -29,24 +30,12 @@ class Migration1637594171OnDelete extends MigrationStep
         // first remove old fk
         $sql = 'ALTER TABLE unzer_payment_payment_device DROP FOREIGN KEY `fk.unzer_payment_payment_device.customer_id`;';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-        } elseif (method_exists($connection, 'exec')) {
-            /** method exec() is deprecated and will be removed in future doctrine releases */
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        DbalConnectionHelper::exec($connection, $sql);
 
         // second create new one
         $sql = 'ALTER TABLE unzer_payment_payment_device ADD CONSTRAINT `fk.unzer_payment_payment_device.customer_id` FOREIGN KEY (customer_id)
                 REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-        } elseif (method_exists($connection, 'exec')) {
-            /** method exec() is deprecated and will be removed in future doctrine releases */
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        DbalConnectionHelper::exec($connection, $sql);
     }
 }

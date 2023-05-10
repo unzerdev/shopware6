@@ -14,6 +14,7 @@ use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDevi
 
 /**
  * @RouteScope(scopes={"storefront"})
+ * @Route(defaults={"_routeScope": {"storefront"}})
  */
 class UnzerPaymentDeviceController extends StorefrontController
 {
