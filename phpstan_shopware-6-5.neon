@@ -1,0 +1,13 @@
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+    reportUnmatchedIgnoredErrors: false
+    inferPrivatePropertyTypeFromConstructor: true
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        - '#unknown class .*PaymentMethodRepositoryDecorator#'
+        - '#invalid type .*PaymentMethodRepositoryDecorator#'

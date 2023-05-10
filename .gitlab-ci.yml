@@ -42,13 +42,6 @@ sw-phpstan-65:
     matrix:
       -   PHP_VERSION: [ "8.1" ]
           SW_VERSION: [ "6.5.0.0" ]
-  script:
-    - cd /var/www/html
-    - /var/www/html/composer config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
-    - /var/www/html/composer require --dev --no-interaction code-quality bamarni/composer-bin-plugin
-    - "jq '.extra += {\"bamarni-bin\": {\"bin-links\": false, \"forward-command\": true}}' composer.json > composer.tmp && mv composer.tmp composer.json"
-    - ${COMPOSER_COMMAND}
-    - vendor-bin/phpstan/vendor/bin/phpstan analyse -c phpstan_sw.neon -a vendor/autoload.php -a ../../../vendor/autoload.php src tests
 
 install-63:
   parallel:
