@@ -375,7 +375,6 @@ class PaymentInstaller implements InstallerInterface
     private $pluginIdProvider;
 
     // TODO: Adjust this if compatibility is at least > 6.4.0.0
-
     /**
      * @param EntityRepository|\Shopware\Core\Checkout\Payment\DataAbstractionLayer\PaymentMethodRepositoryDecorator $paymentMethodRepository
      */

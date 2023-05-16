@@ -69,6 +69,7 @@ class UnzerPaymentApplePayController extends AbstractController
 
     /**
      * @Route("/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.update-certificates", methods={"POST"}, defaults={"salesChannelId": null})
+     * @Route("/api/v{version}/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.update-certificates.version", methods={"POST"}, defaults={"salesChannelId": null, "_route_scope": {"api"}})
      */
     public function updateApplePayCertificates(?string $salesChannelId, RequestDataBag $dataBag): JsonResponse
     {
@@ -177,6 +178,7 @@ class UnzerPaymentApplePayController extends AbstractController
 
     /**
      * @Route("/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.check-certificates", methods={"GET"}, defaults={"salesChannelId": null})
+     * @Route("/api/v{version}/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.check-certificates.version", methods={"GET"}, defaults={"salesChannelId": null, "_route_scope": {"api"}})
      */
     public function checkApplePayCertificates(RequestDataBag $dataBag): JsonResponse
     {

@@ -170,7 +170,6 @@ Component.register('unzer-payment-settings', {
 
             this.UnzerPaymentConfigurationService.getWebhooks(this.getConfigValue('privateKey'))
                 .then((response) => {
-                    console.log(response);
                     this.webhooks = response;
                 })
                 .finally(() => {
