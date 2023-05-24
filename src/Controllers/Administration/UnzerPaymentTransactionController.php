@@ -6,7 +6,6 @@ namespace UnzerPayment6\Controllers\Administration;
 
 use DateTime;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
@@ -18,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
+use UnzerPayment6\Components\BackwardsCompatibility\InvoiceGenerator;
 use UnzerPayment6\Components\BasketConverter\BasketConverterInterface;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
@@ -278,7 +278,7 @@ class UnzerPaymentTransactionController extends AbstractController
 
         // get latest invoice document
         foreach ($documents as $document) {
-            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
+            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::getInvoiceTechnicalName()) {
                 $newDocumentDate = new DateTime($document->getConfig()['documentDate']);
 
                 if ($documentDate === null || $newDocumentDate->getTimestamp() > $documentDate->getTimestamp()) {
