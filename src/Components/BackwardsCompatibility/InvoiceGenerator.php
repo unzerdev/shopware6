@@ -12,9 +12,11 @@ class InvoiceGenerator
     {
         // TODO: Remove me if compatibility is at least 6.5.0.0
         if (class_exists('\Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator')) {
+            /** @phpstan-ignore-next-line */
             return \Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator::INVOICE;
         }
 
+        /** @phpstan-ignore-next-line */
         return InvoiceRenderer::TYPE;
     }
 }
