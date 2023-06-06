@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Controllers\Administration;
 
 use Exception;
-use League\Flysystem\FilesystemOperator;
+use League\Flysystem\Filesystem;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -18,6 +18,7 @@ use UnzerPayment6\Components\ApplePay\CertificateManager;
 use UnzerPayment6\Components\ApplePay\Exception\InvalidCertificate;
 use UnzerPayment6\Components\ApplePay\Exception\MissingCertificateFiles;
 use UnzerPayment6\Components\ApplePay\Struct\CertificateInformation;
+use UnzerPayment6\Components\BackwardsCompatibility\Filesystem as BackwardsCompatibilityFilesystem;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
@@ -44,7 +45,7 @@ class UnzerPaymentApplePayController extends AbstractController
     private $logger;
     /** @var SystemConfigService */
     private $systemConfigService;
-    /** @var FilesystemOperator */
+    /** @var Filesystem */
     private $filesystem;
     /** @var ConfigReaderInterface */
     private $configReader;
@@ -55,7 +56,7 @@ class UnzerPaymentApplePayController extends AbstractController
         ClientFactoryInterface $clientFactory,
         LoggerInterface $logger,
         SystemConfigService $systemConfigService,
-        FilesystemOperator $filesystem,
+        Filesystem $filesystem,
         ConfigReaderInterface $configReader,
         CertificateManager $certificateManager
     ) {
@@ -130,8 +131,9 @@ class UnzerPaymentApplePayController extends AbstractController
                     $this->logger->error('Invalid Merchant Identification certificate given');
                     throw new InvalidCertificate('Merchant Identification');
                 }
-                $this->filesystem->put($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId), $certificate);
-                $this->filesystem->put($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId), $key);
+
+                BackwardsCompatibilityFilesystem::put($this->filesystem, $this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId), $certificate);
+                BackwardsCompatibilityFilesystem::put($this->filesystem, $this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId), $key);
 
                 $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), (string) $salesChannelId, $salesChannelId);
                 $this->logger->debug(sprintf('Merchant Identification certificate for sales channel %s updated', $salesChannelId));
