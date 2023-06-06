@@ -6,7 +6,6 @@ namespace UnzerPayment6\Controllers\Storefront;
 
 use Exception;
 use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemOperator;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
