@@ -1,4 +1,4 @@
-# 5.1.1
+# 5.x.x
 * Added compatibility to CSRF mode ajax
 * Fixed the cart calculation for net customers (thanks to twidmer)
 

@@ -1,4 +1,4 @@
-# 5.1.1
+# 5.x.x
 * Kompatibilität zum CSRF-Modus Ajax hergestellt
 * Korrektur der Warenkorbpreisberechnung für Netto-Kunden (Danke an twidmer)
 
