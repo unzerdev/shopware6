@@ -36,6 +36,10 @@ class OrderTransactionEventListener implements EventSubscriberInterface
         foreach ($event->getEntities() as $transaction) {
             $transferInfo = $this->transferInfoRepository->read($transaction->getId(), $event->getContext());
 
+            if ($transferInfo === null) {
+                return;
+            }
+
             $transaction->addExtension('unzerTransferInfo', $transferInfo);
         }
     }

@@ -16,12 +16,12 @@
                 {% block unzer_payment_frame_paypal_account_saved_device %}
                     {# @var payPalAccount \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
                     {% for payPalAccount in page.extensions.unzerPayPal.payPalAccounts %}
-                        <div class="custom-control custom-radio payment-control">
+                        <div class="form-check payment-method-radio custom-control custom-radio payment-control">
                             <input type="radio" value="{{ payPalAccount.typeId }}" name="savedPayPalAccount"
                                    id="account-{{ payPalAccount.id }}"
-                                   class="custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
+                                   class="form-check-input custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
                             <label for="account-{{ payPalAccount.id }}"
-                                   class="custom-control-label payment-method-label">
+                                   class="form-check-label custom-control-label payment-method-label">
                                 <strong>{{ payPalAccount.data['email'] }}</strong>
                             </label>
                         </div>
@@ -29,11 +29,11 @@
                 {% endblock %}
 
                 {% block unzer_payment_frame_paypal_account_saved_device_new %}
-                    <div class="custom-control custom-radio payment-control">
+                    <div class="form-check payment-method-radio custom-control custom-radio payment-control">
                         <input type="radio" value="new" name="savedPayPalAccount" id="account-new"
-                               class="custom-control-input payment-method-input"
+                               class="form-check-input custom-control-input payment-method-input"
                                 {% if page.extensions.unzerPayPal.payPalAccounts|length <= 0 %} checked="checked"{% endif %}>
-                        <label for="account-new" class="custom-control-label payment-method-label">
+                        <label for="account-new" class="form-check-label custom-control-label payment-method-label">
                             {{ "UnzerPayment.frame.paypal.new"|trans }}
                         </label>
                     </div>

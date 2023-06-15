@@ -20,6 +20,7 @@ use UnzerPayment6\Components\WebhookHandler\WebhookHandlerInterface;
 
 /**
  * @RouteScope(scopes={"storefront"})
+ * @Route(defaults={"_routeScope": {"storefront"}})
  */
 class UnzerPaymentWebhookController extends StorefrontController
 {

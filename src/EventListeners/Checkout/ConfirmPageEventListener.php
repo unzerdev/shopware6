@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\Checkout;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -53,7 +53,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var SystemConfigService */
     private $systemConfigReader;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $languageRepository;
 
     /** @var ClientFactoryInterface */
@@ -67,7 +67,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         ConfigReaderInterface $configReader,
         PaymentFrameFactoryInterface $paymentFrameFactory,
         SystemConfigService $systemConfigReader,
-        EntityRepositoryInterface $languageRepository,
+        EntityRepository $languageRepository,
         ClientFactoryInterface $clientFactory,
         CustomerResourceHydratorInterface $customerResource
     ) {
@@ -139,8 +139,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addApplePayExtension($event);
         }
 
-        $this->addPaymentFrameExtension($event);
-        $this->addUnzerDataExtension($event);
+        if (in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS)) {
+            $this->addPaymentFrameExtension($event);
+            $this->addUnzerDataExtension($event);
+        }
     }
 
     private function addFraudPreventionExtension(PageLoadedEvent $event): void

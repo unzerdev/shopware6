@@ -1,5 +1,6 @@
 # 5.1.1
 * Kompatibilität zum CSRF-Modus Ajax hergestellt
+* Korrektur der Warenkorbpreisberechnung für Netto-Kunden (Danke an twidmer)
 
 # 5.1.0
 * Apple Pay als weitere Zahlungsart hinzugefügt

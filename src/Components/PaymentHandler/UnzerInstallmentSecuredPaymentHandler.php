@@ -10,6 +10,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
+use UnzerPayment6\Components\BackwardsCompatibility\DecimalPrecisionHelper;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\UnzerPayment6;
@@ -44,7 +45,7 @@ class UnzerInstallmentSecuredPaymentHandler extends AbstractUnzerPaymentHandler
 
             /** @var int $currencyPrecision */
             $currencyPrecision = $transaction->getOrder()->getCurrency() !== null ? min(
-                $transaction->getOrder()->getCurrency()->getDecimalPrecision(),
+                DecimalPrecisionHelper::getPrecision($transaction->getOrder()->getCurrency()),
                 UnzerPayment6::MAX_DECIMAL_PRECISION
             ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
 
