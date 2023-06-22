@@ -1,6 +1,9 @@
-# 5.x.x
-* Added compatibility to CSRF mode ajax
+# 5.2.0
+* Added compatibility to Shopware 6.5
 * Fixed the cart calculation for net customers (thanks to twidmer)
+
+# 5.1.1
+* Added compatibility to CSRF mode ajax
 
 # 5.1.0
 * Added Apple Pay as new payment method

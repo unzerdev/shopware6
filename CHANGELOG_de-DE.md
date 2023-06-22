@@ -1,6 +1,9 @@
-# 5.x.x
-* Kompatibilität zum CSRF-Modus Ajax hergestellt
+# 5.2.0
+* Kompatibilität zu Shopware 6.5 hergestellt
 * Korrektur der Warenkorbpreisberechnung für Netto-Kunden (Danke an twidmer)
+
+# 5.1.1
+* Kompatibilität zum CSRF-Modus Ajax hergestellt
 
 # 5.1.0
 * Apple Pay als weitere Zahlungsart hinzugefügt
