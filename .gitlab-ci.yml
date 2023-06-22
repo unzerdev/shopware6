@@ -28,8 +28,8 @@ k10r-phpstan-65:
     image: "dockware/dev:${SW_VERSION}"
     parallel:
         matrix:
-            -   PHP_VERSION: [ "8.1", "8.2" ]
-                SW_VERSION: [ "6.5.0.0-rc4" ]
+            -   PHP_VERSION: [ "8.1" ]
+                SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
     needs: [ ]
     except:
         variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
@@ -50,8 +50,8 @@ sw-phpstan-65:
     image: "dockware/dev:${SW_VERSION}"
     parallel:
         matrix:
-            -   PHP_VERSION: [ "8.1", "8.2" ]
-                SW_VERSION: [ "6.5.0.0-rc4" ]
+            -   PHP_VERSION: [ "8.1" ]
+                SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
     needs: [ ]
     except:
         variables: [ $DISABLE_PHPSTAN_SW == "1" ]
@@ -72,8 +72,8 @@ install-65:
     image: "dockware/dev:${SW_VERSION}"
     parallel:
         matrix:
-            -   PHP_VERSION: [ "8.1", "8.2" ]
-                SW_VERSION: [ "6.5.0.0-rc4" ]
+            -   PHP_VERSION: [ "8.1" ]
+                SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
     needs: [ ]
     except:
         variables: [ $DISABLE_PHPUNIT == "1" ]
