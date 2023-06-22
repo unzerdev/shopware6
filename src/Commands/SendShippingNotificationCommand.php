@@ -189,12 +189,18 @@ class SendShippingNotificationCommand extends Command
 
     private function getInvoiceDocumentId(DocumentCollection $documents): string
     {
-        return $documents->filter(static function (DocumentEntity $entity) {
+        $document = $documents->filter(static function (DocumentEntity $entity) {
             if ($entity->getDocumentType() && $entity->getDocumentType()->getTechnicalName() === 'invoice') {
                 return $entity;
             }
 
             return null;
-        })->first()->getConfig()['documentNumber'];
+        })->first();
+
+        if ($document === null) {
+            throw new \RuntimeException('No invoice document found');
+        }
+
+        return $document->getConfig()['documentNumber'];
     }
 }

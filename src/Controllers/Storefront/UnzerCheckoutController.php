@@ -108,6 +108,7 @@ class UnzerCheckoutController extends StorefrontController
         try {
             /** @phpstan-ignore-next-line */
             return $this->innerService->finishPage($request, $context, $dataBag);
+            /** @phpstan-ignore-next-line */
         } catch (ArgumentCountError $exception) {
             // signature changed with v6.4, this is the old version without dataBag Parameter
             /** @phpstan-ignore-next-line */
