@@ -93,13 +93,13 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
 
         if (in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true)
             && !array_key_exists($salesChannelContext->getPaymentMethod()->getId(), $page->getPaymentMethods()->getElements())) {
-            $page->getCart()->addErrors(new PaymentMethodBlockedError($salesChannelContext->getPaymentMethod()->getName()));
+            $page->getCart()->addErrors(new PaymentMethodBlockedError($salesChannelContext->getPaymentMethod()->getName() ?? 'unknown'));
         }
     }
 
     protected function removePaymentMethodsFromIdResult(IdSearchResult $result): void
     {
-        $filteredPaymentMethods = array_filter($result->getIds(), static function (string $paymentMethod) {
+        $filteredPaymentMethods = array_filter($result->getIds(), static function ($paymentMethod) {
             return !in_array($paymentMethod, PaymentInstaller::PAYMENT_METHOD_IDS, true);
         });
 

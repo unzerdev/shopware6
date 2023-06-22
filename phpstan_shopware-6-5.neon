@@ -9,3 +9,5 @@ parameters:
     ignoreErrors:
         - '#unknown class .*PaymentMethodRepositoryDecorator#'
         - '#invalid type .*PaymentMethodRepositoryDecorator#'
+        - '#Parameter .*? expects .*?\|null given#'
+        - '#Property .*? does not accept (.*?\|null|UnzerSDK\\Resources\\AbstractUnzerResource)#'

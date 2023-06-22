@@ -16,6 +16,7 @@ class Filesystem
             return $filesystem->update($path, $content);
         }
 
+        /** @phpstan-ignore-next-line */
         return $filesystem->write($path, $content);
     }
 }

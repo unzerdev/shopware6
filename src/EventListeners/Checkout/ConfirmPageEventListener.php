@@ -18,7 +18,6 @@ use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
-use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
@@ -59,17 +58,13 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
-    /** @var CustomerResourceHydratorInterface */
-    private $customerResource;
-
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
         ConfigReaderInterface $configReader,
         PaymentFrameFactoryInterface $paymentFrameFactory,
         SystemConfigService $systemConfigReader,
         EntityRepository $languageRepository,
-        ClientFactoryInterface $clientFactory,
-        CustomerResourceHydratorInterface $customerResource
+        ClientFactoryInterface $clientFactory
     ) {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
@@ -77,7 +72,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $this->systemConfigReader  = $systemConfigReader;
         $this->languageRepository  = $languageRepository;
         $this->clientFactory       = $clientFactory;
-        $this->customerResource    = $customerResource;
     }
 
     /**

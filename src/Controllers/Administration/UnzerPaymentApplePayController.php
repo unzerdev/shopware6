@@ -94,6 +94,7 @@ class UnzerPaymentApplePayController extends AbstractController
                 $privateKeyResource->setCertificate($dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER));
 
                 $client->getResourceService()->createResource($privateKeyResource->setParentResource($client));
+                /** @var string $privateKeyId */
                 $privateKeyId = $privateKeyResource->getId();
 
                 $certificateResource = new ApplePayCertificate();

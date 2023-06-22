@@ -257,7 +257,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         }
 
         $filteredDocuments = $orderDocuments->filter(static function (DocumentEntity $entity) {
-            if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
+            if ($entity->getDocumentType() && $entity->getDocumentType()->getTechnicalName() === 'invoice') {
                 return $entity;
             }
 

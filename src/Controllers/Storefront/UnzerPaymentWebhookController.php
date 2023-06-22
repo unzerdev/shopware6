@@ -48,7 +48,7 @@ class UnzerPaymentWebhookController extends StorefrontController
         /** @var false|string $requestContent */
         $requestContent = $request->getContent();
 
-        if (!$requestContent || empty($requestContent)) {
+        if (empty($requestContent)) {
             $this->logger->error('The webhook was not executed due to missing data.');
 
             return new Response('The webhook was not executed due to missing data.', Response::HTTP_BAD_REQUEST);

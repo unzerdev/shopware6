@@ -59,7 +59,7 @@ class ShipService implements ShipServiceInterface
         }
 
         $order         = $transaction->getOrder();
-        $documents     = $order->getDocuments()->getElements();
+        $documents     = $transaction->getOrder()->getDocuments()->getElements();
         $invoiceNumber = null;
         $documentDate  = null;
 
@@ -136,7 +136,8 @@ class ShipService implements ShipServiceInterface
         if ($paymentType !== null && $paymentType instanceof InstallmentSecured) {
             /** @var DateTime $invoiceDueDate */
             $invoiceDueDate = clone $documentDate;
-            $dateInterval   = DateInterval::createFromDateString(sprintf('%s months', $paymentType->getNumberOfRates()));
+            /** @var DateInterval $dateInterval */
+            $dateInterval = DateInterval::createFromDateString(sprintf('%s months', $paymentType->getNumberOfRates()));
             $invoiceDueDate->add($dateInterval);
 
             $paymentType->setInvoiceDate($documentDate->format('Y-m-d'));

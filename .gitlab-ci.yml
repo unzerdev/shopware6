@@ -39,7 +39,7 @@ k10r-phpstan-65:
         - /var/www/html/composer require --dev --no-interaction code-quality bamarni/composer-bin-plugin
         - "jq '.extra += {\"bamarni-bin\": {\"bin-links\": false, \"forward-command\": true}}' composer.json > composer.tmp && mv composer.tmp composer.json"
         - /var/www/html/composer install --no-interaction
-        - vendor-bin/phpstan/vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan_shopware-6-5.neon custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
+        - vendor-bin/phpstan/vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan_shopware-6-5.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
     cache:
         key: global
         paths:
@@ -61,7 +61,7 @@ sw-phpstan-65:
         - /var/www/html/composer require --dev --no-interaction code-quality bamarni/composer-bin-plugin
         - "jq '.extra += {\"bamarni-bin\": {\"bin-links\": false, \"forward-command\": true}}' composer.json > composer.tmp && mv composer.tmp composer.json"
         - /var/www/html/composer install --no-interaction
-        - vendor-bin/phpstan/vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/shopware_store_phpstan.neon custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
+        - vendor-bin/phpstan/vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/shopware_store_phpstan.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
     cache:
         key: global
         paths:
