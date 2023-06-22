@@ -1,6 +1,4 @@
 includes:
-  - vendor/phpstan/phpstan-phpunit/extension.neon
-  - vendor/phpstan/phpstan-phpunit/rules.neon
   - phpstan_shopware-6-5.neon
 
 parameters:
