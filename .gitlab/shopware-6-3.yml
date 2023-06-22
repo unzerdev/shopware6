@@ -1,6 +1,6 @@
 codestyle:
   stage: style
-  image: "dockware/dev:6.3.0"
+  image: "dockware/dev:6.3.4.0"
   needs: [ ]
   except:
     variables: [ $DISABLE_PHP_CS == "1" ]
@@ -23,7 +23,7 @@ k10r-phpstan-63:
   parallel:
     matrix:
       -   PHP_VERSION: [ "7.2", "7.3" ]
-          SW_VERSION: [ "6.3.0", "6.3.5.0" ]
+          SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
@@ -40,7 +40,7 @@ sw-phpstan-63:
   parallel:
     matrix:
       -   PHP_VERSION: [ "7.2", "7.3" ]
-          SW_VERSION: [ "6.3.0", "6.3.5.0" ]
+          SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPSTAN_SW == "1" ]
@@ -59,7 +59,7 @@ install-63:
   parallel:
     matrix:
       -   PHP_VERSION: [ "7.2", "7.3" ]
-          SW_VERSION: [ "6.3.0", "6.3.5.0" ]
+          SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPUNIT == "1" ]
