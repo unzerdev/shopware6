@@ -1,7 +1,7 @@
 import template from './unzer-payment-settings.html.twig';
 import './unzer-payment-settings.scss';
 
-const { Component, Mixin } = Shopware;
+const { Component, Mixin, Context } = Shopware;
 
 Component.register('unzer-payment-settings', {
     template,
@@ -58,6 +58,16 @@ Component.register('unzer-payment-settings', {
                     label: 'URL'
                 }
             ];
+        },
+
+        arrowIconName() {
+            const match = Context.app.config.version.match(/((\d+)\.?(\d+?)\.?(\d+)?\.?(\d*))-?([A-z]+?\d+)?/i);
+
+            if (match[3] >= 5) {
+                return 'regular-chevron-right-xs';
+            }
+
+            return 'small-arrow-medium-right';
         }
     },
 

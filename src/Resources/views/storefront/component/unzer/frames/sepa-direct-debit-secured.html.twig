@@ -26,11 +26,11 @@
                 {% block unzer_payment_frame_direct_debit_secured_device_saved %}
                     {# @var sepaDevice \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
                     {% for sepaDevice in page.extensions.unzerDirectDebitSecured.directDebitDevices %}
-                        <div class="custom-control custom-radio payment-control">
+                        <div class="form-check payment-method-radio custom-control custom-radio payment-control">
                             <input type="radio" value="{{ sepaDevice.typeId }}" name="savedDirectDebitDevice"
                                    form="confirmOrderForm" id="device-{{ sepaDevice.id }}"
-                                   class="custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
-                            <label for="device-{{ sepaDevice.id }}" class="custom-control-label payment-method-label">
+                                   class="form-check-input custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
+                            <label for="device-{{ sepaDevice.id }}" class="form-check-label custom-control-label payment-method-label">
                                 <strong>{{ sepaDevice.data['iban'] }}</strong>
                             </label>
                         </div>
@@ -38,10 +38,10 @@
                 {% endblock %}
 
                 {% block unzer_payment_frame_direct_debit_secured_device_new %}
-                    <div class="custom-control custom-radio payment-control">
+                    <div class="form-check payment-method-radio custom-control custom-radio payment-control">
                         <input type="radio" value="new" name="savedDirectDebitDevice" form="confirmOrderForm"
-                               id="device-new" class="custom-control-input payment-method-input">
-                        <label for="device-new" class="custom-control-label payment-method-label">
+                               id="device-new" class="form-check-input custom-control-input payment-method-input">
+                        <label for="device-new" class="form-check-label custom-control-label payment-method-label">
                             {{ "UnzerPayment.frame.sepa.device.new"|trans }}
                         </label>
                     </div>

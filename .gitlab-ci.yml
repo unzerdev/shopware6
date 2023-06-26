@@ -3,160 +3,118 @@ stages:
     - quality
     - test
     - package
-    - validate
+    - deployment
 
 cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
 
 variables:
     DOCKER_DRIVER: overlay2
-    BASE_SW_VERSION: '6.3.4.0'
-    PLUGIN_NAME: 'UnzerPayment6'
-    DISABLE_PHPUNIT: '1'
     COMPOSER_COMMAND: "/var/www/html/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
     COMPOSER_HOME: '/var/www/html/.composer'
 
-codestyle:
-    stage: style
-    image: "dockware/play:${BASE_SW_VERSION}"
-    needs: [ ]
-    except:
-        variables: [ $DISABLE_PHP_CS == "1" ]
-    before_script:
-        - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
-        - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ] || [ $SW_VERSION == '6.4.20.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
-        - ${COMPOSER_COMMAND}
-        - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
-    script:
-        - cd /var/www/html/custom/plugins/${PLUGIN_NAME} && vendor/bin/php-cs-fixer fix -v --dry-run
-    cache:
-        key: global
-        paths:
-            - .php_cs.cache
-            - vendor
+include:
+    - '/.gitlab/shopware-6-3.yml'
+    - '/.gitlab/shopware-6-4.yml'
 
-k10r-phpstan:
+before_script:
+    - curl https://getcomposer.org/download/2.4.4/composer.phar -o /var/www/html/composer
+    - chmod +x /var/www/html/composer
+    - ${COMPOSER_COMMAND}
+    - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
+
+k10r-phpstan-65:
     stage: quality
-    image: "dockware/play:${SW_VERSION}"
+    image: "dockware/dev:${SW_VERSION}"
     parallel:
         matrix:
-            -   PHP_VERSION: [ "7.2", "7.3", "7.4", "8.0", "8.1" ]
-                SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
-            -   PHP_VERSION: [ "7.4", "8.0", "8.1" ]
-                SW_VERSION: [ "6.4.0.0" ]
+            -   PHP_VERSION: [ "8.1" ]
+                SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
     needs: [ ]
     except:
         variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
-    before_script:
-        - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
-        - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ] || [ $SW_VERSION == '6.4.20.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
-        - ${COMPOSER_COMMAND}
-        - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
     script:
-        - cd /var/www/html/custom/plugins/${PLUGIN_NAME} && vendor/bin/phpstan analyse -c phpstan.neon src tests
+        - cd /var/www/html
+        - /var/www/html/composer config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
+        - /var/www/html/composer require --dev --no-interaction code-quality bamarni/composer-bin-plugin
+        - "jq '.extra += {\"bamarni-bin\": {\"bin-links\": false, \"forward-command\": true}}' composer.json > composer.tmp && mv composer.tmp composer.json"
+        - /var/www/html/composer install --no-interaction
+        - vendor-bin/phpstan/vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan_shopware-6-5.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
     cache:
         key: global
         paths:
             - vendor
 
-sw-phpstan:
+sw-phpstan-65:
     stage: quality
-    image: "dockware/play:${SW_VERSION}"
+    image: "dockware/dev:${SW_VERSION}"
     parallel:
         matrix:
-            - PHP_VERSION: [ "7.2", "7.3", "7.4", "8.0", "8.1" ]
-              SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
-            - PHP_VERSION: [ "7.4", "8.0", "8.1" ]
-              SW_VERSION: [ "6.4.0.0" ]
+            -   PHP_VERSION: [ "8.1" ]
+                SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
     needs: [ ]
     except:
         variables: [ $DISABLE_PHPSTAN_SW == "1" ]
-    before_script:
-        - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
-        - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ] || [ $SW_VERSION == '6.4.20.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
-        - ${COMPOSER_COMMAND}
-        - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
-        - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git
-        - cp -r /tmp/store-plugin-codereview/configs/phpstan/phpstan.neon.sw6 /var/www/html/custom/plugins/${PLUGIN_NAME}/phpstan_sw.neon
     script:
-        - cd /var/www/html/custom/plugins/${PLUGIN_NAME} && vendor/bin/phpstan analyse -c phpstan_sw.neon -a vendor/autoload.php -a ../../../vendor/autoload.php src tests
+        - cd /var/www/html
+        - /var/www/html/composer config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
+        - /var/www/html/composer require --dev --no-interaction code-quality bamarni/composer-bin-plugin
+        - "jq '.extra += {\"bamarni-bin\": {\"bin-links\": false, \"forward-command\": true}}' composer.json > composer.tmp && mv composer.tmp composer.json"
+        - /var/www/html/composer install --no-interaction
+        - vendor-bin/phpstan/vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/shopware_store_phpstan.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
     cache:
         key: global
         paths:
             - vendor
 
-phpunit:
+install-65:
     stage: test
-    image: "dockware/play:${SW_VERSION}"
+    image: "dockware/dev:${SW_VERSION}"
     parallel:
         matrix:
-            - PHP_VERSION: [ "7.2", "7.3", "7.4", "8.0", "8.1" ]
-              SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
-            - PHP_VERSION: [ "7.4", "8.0", "8.1" ]
-              SW_VERSION: [ "6.4.0.0" ]
+            -   PHP_VERSION: [ "8.1" ]
+                SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
     needs: [ ]
     except:
         variables: [ $DISABLE_PHPUNIT == "1" ]
-    before_script:
-        - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
-        - chmod +x /var/www/html/composer
-        - if [ $SW_VERSION == '6.4.0.0' ] || [ $SW_VERSION == '6.4.20.0' ]; then /var/www/html/composer self-update 2.4.4; else /var/www/html/composer global require hirak/prestissimo; fi
-        - ${COMPOSER_COMMAND}
-        - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${PLUGIN_NAME}
+    script:
         - sudo rm -rf /var/run/mysqld/mysqld.sock.lock
         - sudo chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
         - sudo service mysql start
-        - cd /var/www/html/ && rm -rf vendor && ${COMPOSER_COMMAND} --no-scripts
-    script:
-        - cd /var/www/html/ && php bin/console plugin:refresh -nq && php bin/console plugin:install --activate -c ${PLUGIN_NAME} -nq
-        - cd /var/www/html/ && /var/www/html/composer dump-autoload -d custom/plugins/${PLUGIN_NAME}
-        - cd /var/www/html/ && php -d pcov.enabled=1 -d pcov.directory=/var/www/html/
-            vendor/bin/phpunit
-            --configuration custom/plugins/${PLUGIN_NAME}/phpunit.xml.dist
+        - cd /var/www/html/ && php bin/console plugin:refresh -nq && php bin/console plugin:install --activate -c ${CI_PROJECT_NAME} -nq
+        - cd /var/www/html/ && /var/www/html/composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
+        - cd /var/www/html/ && php bin/console plugin:list
     cache:
         key: global
         paths:
             - vendor
 
-package:
-    image:
-        name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.17
-        entrypoint: [""]
+build-65:
     stage: package
+    image:
+        name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.5.0
+        entrypoint: [""]
+    before_script:
+        - echo ""
     only:
         - tags
         - master
-        - develop
         - /^integration.*$/
         - /^fix.*$/
+        - feature/HEIDELPAYSUPPORT-302
     except:
         variables: [ $DISABLE_PACKAGE == "1" ]
     script:
         - start-mysql
-        - ln -s "$(pwd)" "/plugins/${PLUGIN_NAME}"
-        - plugin-uploader ext:prepare "/plugins/${PLUGIN_NAME}"
+        - ln -s "$(pwd)" "/plugins/${CI_PROJECT_NAME}"
+        - jq '.version = .version + "65"' /plugins/${CI_PROJECT_NAME}/composer.json > /plugins/${CI_PROJECT_NAME}/composer.tmp && mv /plugins/${CI_PROJECT_NAME}/composer.tmp /plugins/${CI_PROJECT_NAME}/composer.json
+        - sed '1 s_$_65_' /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.md > /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.tmp && mv /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.tmp /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.md
+        - sed '1 s_$_65_' /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.md > /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.tmp && mv /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.tmp /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.md
+        - plugin-uploader ext:prepare "/plugins/${CI_PROJECT_NAME}"
         - rm -rf $( cat .sw-zip-blocklist ) && rm -rf .sw-zip-blocklist
-        - pack-plugin ${PLUGIN_NAME}
+        - pack-plugin ${CI_PROJECT_NAME}
+        - plugin-uploader ext:validate "$(realpath "$(find . -type f -name "*.zip" -print0 -maxdepth 1)")"
     artifacts:
         paths:
             - "*.zip"
-
-shopware-validate:
-    image:
-        name: friendsofshopware/plugin-uploader:0.3.19
-        entrypoint: [ "/bin/sh", "-c" ]
-    stage: validate
-    needs:
-        - package
-    only:
-        - tags
-        - master
-        - /^integration.*$/
-        - /^fix.*$/
-    except:
-        variables: [ $DISABLE_VALIDATION == "1" ]
-    script:
-        - php /app/bin/pluginupload ext:validate ${PLUGIN_NAME}.zip
+        expire_in: 1 week

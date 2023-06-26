@@ -1,0 +1,87 @@
+k10r-phpstan-64:
+  stage: quality
+  image: "dockware/dev:${SW_VERSION}"
+  parallel:
+    matrix:
+      -   PHP_VERSION: [ "7.4", "8.0", "8.1" ]
+          SW_VERSION: [ "6.4.0.0", "6.4.20.0" ]
+  needs: [ ]
+  except:
+    variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
+  script:
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan.neon -a vendor/autoload.php -a ../../../vendor/autoload.php src tests
+  cache:
+    key: global
+    paths:
+      - vendor
+
+sw-phpstan-64:
+  stage: quality
+  image: "dockware/dev:${SW_VERSION}"
+  parallel:
+    matrix:
+      -   PHP_VERSION: [ "7.4", "8.0", "8.1" ]
+          SW_VERSION: [ "6.4.0.0", "6.4.20.0" ]
+  needs: [ ]
+  except:
+    variables: [ $DISABLE_PHPSTAN_SW == "1" ]
+  script:
+    - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git
+    - cp -r /tmp/store-plugin-codereview/configs/phpstan/phpstan.neon.sw6 /var/www/html/custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan_sw.neon -a vendor/autoload.php -a ../../../vendor/autoload.php src tests
+  cache:
+    key: global
+    paths:
+      - vendor
+
+install-64:
+  stage: test
+  image: "dockware/dev:${SW_VERSION}"
+  parallel:
+    matrix:
+      -   PHP_VERSION: [ "7.4", "8.0", "8.1" ]
+          SW_VERSION: [ "6.4.0.0", "6.4.20.0" ]
+  needs: [ ]
+  except:
+    variables: [ $DISABLE_PHPUNIT == "1" ]
+  script:
+    - sudo rm -rf /var/run/mysqld/mysqld.sock.lock
+    - sudo chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
+    - sudo service mysql start
+    - cd /var/www/html/ && php bin/console plugin:refresh -nq && php bin/console plugin:install --activate -c ${CI_PROJECT_NAME} -nq
+    - cd /var/www/html/ && /var/www/html/composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
+    - cd /var/www/html/ && php bin/console plugin:list
+  cache:
+    key: global
+    paths:
+      - vendor
+
+build-64:
+  stage: package
+  image:
+    name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.5
+    entrypoint: [""]
+  before_script:
+    - echo ""
+  only:
+    - tags
+    - master
+    - /^integration.*$/
+    - /^fix.*$/
+    - feature/HEIDELPAYSUPPORT-302
+  except:
+    variables: [ $DISABLE_PACKAGE == "1" ]
+  script:
+    - start-mysql
+    - ln -s "$(pwd)" "/plugins/${CI_PROJECT_NAME}"
+    - jq '.version = .version + "64"' /plugins/${CI_PROJECT_NAME}/composer.json > /plugins/${CI_PROJECT_NAME}/composer.tmp && mv /plugins/${CI_PROJECT_NAME}/composer.tmp /plugins/${CI_PROJECT_NAME}/composer.json
+    - sed '1 s_$_64_' /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.md > /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.tmp && mv /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.tmp /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.md
+    - sed '1 s_$_64_' /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.md > /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.tmp && mv /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.tmp /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.md
+    - plugin-uploader ext:prepare "/plugins/${CI_PROJECT_NAME}"
+    - rm -rf $( cat .sw-zip-blocklist ) && rm -rf .sw-zip-blocklist
+    - pack-plugin ${CI_PROJECT_NAME}
+    - plugin-uploader ext:validate "$(realpath "$(find . -type f -name "*.zip" -print0 -maxdepth 1)")"
+  artifacts:
+    paths:
+      - "*.zip"
+    expire_in: 1 week

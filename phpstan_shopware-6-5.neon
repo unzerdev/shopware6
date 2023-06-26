@@ -1,0 +1,13 @@
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+    reportUnmatchedIgnoredErrors: false
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    ignoreErrors:
+        - '#unknown class .*PaymentMethodRepositoryDecorator#'
+        - '#invalid type .*PaymentMethodRepositoryDecorator#'
+        - '#Parameter .*? expects .*?\|null given#'
+        - '#Property .*? does not accept (.*?\|null|UnzerSDK\\Resources\\AbstractUnzerResource)#'
