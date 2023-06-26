@@ -27,6 +27,10 @@ Shopware.Component.register('unzer-payment-register-webhook', {
         selectedSalesChannelId: {
             type: String,
             required: false
+        },
+        isDisabled: {
+            type: Boolean,
+            required: false
         }
     },
 
@@ -144,6 +148,10 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             let result = false;
 
             const salesChannel = this.getSalesChannelById(salesChannelId);
+
+            if (!this.webhooks.length) {
+                return false;
+            }
 
             salesChannel.domains.forEach((domain) => {
                 this.webhooks.forEach((webhook) => {

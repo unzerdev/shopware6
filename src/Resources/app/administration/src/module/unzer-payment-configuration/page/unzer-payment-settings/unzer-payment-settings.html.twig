@@ -4,7 +4,7 @@
             <template #smart-bar-header>
                 <h2>
                     {{ $tc('sw-settings.index.title') }}
-                    <sw-icon name="small-arrow-medium-right" small></sw-icon>
+                    <sw-icon :name="arrowIconName" small></sw-icon>
                     {{ $tc('unzer-payment-settings.module.title') }}
                 </h2>
             </template>
@@ -27,7 +27,7 @@
                 {% block unzer_payment_settings_actions_test %}
                     <sw-button-process
                         :isLoading="isTesting || isLoading"
-                        :disabled="isLoading || isTesting"
+                        :disabled="isLoading || isTesting || !getConfigValue('privateKey')"
                         :processSuccess="isTestSuccessful"
                         @process-finish="onTestFinished()"
                         @click="onValidateCredentials">
@@ -38,6 +38,7 @@
                 {% block unzer_payment_settings_actions_register_webhooks %}
                     <unzer-payment-register-webhook
                         :isLoading="isLoading"
+                        :isDisabled="isLoading || isLoadingWebhooks || !getConfigValue('privateKey')"
                         :webhooks="webhooks"
                         :selectedSalesChannelId="selectedSalesChannelId"
                         @webhook-registered="onWebhookRegistered">
@@ -75,7 +76,7 @@
 
                     <sw-card :title="$tc(`unzer-payment-settings.modal.webhook.title`)" class="unzer--webhook-card">
                         <sw-alert
-                            v-if="!isLoadingWebhooks && webhooks.length === 0"
+                            v-if="!isLoadingWebhooks && (!webhooks.length || webhooks.length === 0)"
                             variant="warning"
                             appearance="default"
                             :showIcon="true"

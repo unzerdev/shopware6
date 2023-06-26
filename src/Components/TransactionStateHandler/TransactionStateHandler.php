@@ -16,6 +16,7 @@ use UnzerPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapper
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\NoTransitionMapperFoundException;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use UnzerSDK\Resources\Payment;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 
 class TransactionStateHandler implements TransactionStateHandlerInterface
 {
@@ -88,7 +89,9 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
     protected function getTargetTransition(Payment $payment): string
     {
         try {
-            $transitionMapper = $this->transitionMapperFactory->getTransitionMapper($payment->getPaymentType());
+            /** @var BasePaymentType $paymentType */
+            $paymentType      = $payment->getPaymentType();
+            $transitionMapper = $this->transitionMapperFactory->getTransitionMapper($paymentType);
             $transition       = $transitionMapper->getTargetPaymentStatus($payment);
         } catch (NoTransitionMapperFoundException | TransitionMapperException $exception) {
             $this->logger->error($exception->getMessage(), [

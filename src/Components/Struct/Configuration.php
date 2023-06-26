@@ -14,6 +14,7 @@ class Configuration
         $this->configuration = $configuration;
     }
 
+    /** @phpstan-ignore-next-line  */
     public function get(string $key, $default = '')
     {
         if (!array_key_exists($key, $this->configuration)) {

@@ -35,7 +35,10 @@ class TransferInformation extends Struct
         $this->bic        = $payment->getBic();
         $this->holder     = $payment->getHolder();
         $this->descriptor = $payment->getDescriptor();
-        $this->amount     = round($payment->getAmount(), 2);
+
+        /** @var float $amount */
+        $amount       = $payment->getAmount();
+        $this->amount = round($amount, 2);
     }
 
     public function getEntityData(): array

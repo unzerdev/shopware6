@@ -3,7 +3,7 @@
         {% block unzer_payment_payment_register_webhook_button %}
             <sw-button-process
                 :isLoading="isRegistering || isLoading"
-                :disabled="isLoading"
+                :disabled="isDisabled"
                 :processSuccess="isRegistrationSuccessful"
                 @process-finish="onRegistrationFinished()"
                 @click="openModal">
@@ -57,7 +57,7 @@
 
                     <sw-pagination
                         :total="salesChannels.total"
-                        :limit="salesChannels.criteria.limit"
+                        :limit="salesChannels.total"
                         :page="salesChannels.criteria.page"
                         :steps="[2,10,25,100]"
                         @page-change="onPageChange">

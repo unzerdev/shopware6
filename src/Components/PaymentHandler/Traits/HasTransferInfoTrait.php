@@ -7,12 +7,16 @@ namespace UnzerPayment6\Components\PaymentHandler\Traits;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use UnzerPayment6\Components\Struct\TransferInformation\TransferInformation;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
+/**
+ * @property EntityRepository $transactionRepository
+ */
 trait HasTransferInfoTrait
 {
     private function saveTransferInfo(OrderTransactionEntity $orderTransactionEntity, Context $context): EntityWrittenContainerEvent
