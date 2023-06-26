@@ -13,7 +13,7 @@
         <service id="UnzerPayment6\Commands\SendShippingNotificationCommand" >
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="order_transaction.repository"/>
-            <argument type="service" id="Shopware\Core\Framework\Event\BusinessEventDispatcher"/>
+            <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="UnzerPayment6\Components\ShipService\ShipService" />
 
             <tag name="console.command" />

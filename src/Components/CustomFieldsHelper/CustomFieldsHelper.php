@@ -6,16 +6,16 @@ namespace UnzerPayment6\Components\CustomFieldsHelper;
 
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 
 class CustomFieldsHelper implements CustomFieldsHelperInterface
 {
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $orderTransactionRepository;
 
-    public function __construct(EntityRepositoryInterface $orderTransactionRepository)
+    public function __construct(EntityRepository $orderTransactionRepository)
     {
         $this->orderTransactionRepository = $orderTransactionRepository;
     }

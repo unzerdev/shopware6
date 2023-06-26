@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\Checkout;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -18,7 +18,6 @@ use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
-use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
@@ -53,23 +52,19 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var SystemConfigService */
     private $systemConfigReader;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $languageRepository;
 
     /** @var ClientFactoryInterface */
     private $clientFactory;
-
-    /** @var CustomerResourceHydratorInterface */
-    private $customerResource;
 
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
         ConfigReaderInterface $configReader,
         PaymentFrameFactoryInterface $paymentFrameFactory,
         SystemConfigService $systemConfigReader,
-        EntityRepositoryInterface $languageRepository,
-        ClientFactoryInterface $clientFactory,
-        CustomerResourceHydratorInterface $customerResource
+        EntityRepository $languageRepository,
+        ClientFactoryInterface $clientFactory
     ) {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
@@ -77,7 +72,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $this->systemConfigReader  = $systemConfigReader;
         $this->languageRepository  = $languageRepository;
         $this->clientFactory       = $clientFactory;
-        $this->customerResource    = $customerResource;
     }
 
     /**
@@ -139,8 +133,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addApplePayExtension($event);
         }
 
-        $this->addPaymentFrameExtension($event);
-        $this->addUnzerDataExtension($event);
+        if (in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS)) {
+            $this->addPaymentFrameExtension($event);
+            $this->addUnzerDataExtension($event);
+        }
     }
 
     private function addFraudPreventionExtension(PageLoadedEvent $event): void

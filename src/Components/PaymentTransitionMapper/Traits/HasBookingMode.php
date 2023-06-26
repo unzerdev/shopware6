@@ -7,21 +7,21 @@ namespace UnzerPayment6\Components\PaymentTransitionMapper\Traits;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerSDK\Resources\Payment;
 
 /**
- * @property ConfigReaderInterface     $configReader
- * @property EntityRepositoryInterface $orderTransactionRepository
+ * @property ConfigReaderInterface $configReader
+ * @property EntityRepository      $orderTransactionRepository
  */
 trait HasBookingMode
 {
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $orderTransactionRepository;
 
     protected function getBookingMode(Payment $paymentObject): string

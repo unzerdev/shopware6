@@ -11,7 +11,6 @@
         <import resource="entities.xml" />
         <import resource="event_listeners.xml" />
         <import resource="transition_mapper.xml" />
-        <import resource="translations.xml"/>
         <import resource="services.xml"/>
     </imports>
 </container>

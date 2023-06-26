@@ -1,3 +1,7 @@
+# 5.2.0
+* Kompatibilität zu Shopware 6.5 hergestellt
+* Korrektur der Warenkorbpreisberechnung für Netto-Kunden (Danke an twidmer)
+
 # 5.1.1
 * Kompatibilität zum CSRF-Modus Ajax hergestellt
 

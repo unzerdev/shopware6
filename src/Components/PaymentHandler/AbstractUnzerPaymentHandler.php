@@ -10,7 +10,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandle
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -40,7 +40,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var BasePaymentType */
     protected $paymentType;
 
-    /** @var Payment */
+    /** @var null|Payment */
     protected $payment;
 
     /** @var Recurring */
@@ -73,7 +73,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var ResourceHydratorInterface */
     protected $metadataHydrator;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     protected $transactionRepository;
 
     /** @var TransactionStateHandlerInterface */
@@ -95,7 +95,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         ResourceHydratorInterface $basketHydrator,
         CustomerResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
-        EntityRepositoryInterface $transactionRepository,
+        EntityRepository $transactionRepository,
         ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
@@ -126,7 +126,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
 
             $this->pluginConfig = $this->configReader->read($salesChannelId);
-            $this->unzerClient  = $this->clientFactory->createClient($salesChannelId, $currentRequest->getLocale() ?? $currentRequest->getDefaultLocale());
+            $this->unzerClient  = $this->clientFactory->createClient($salesChannelId, empty($currentRequest->getLocale()) ? $currentRequest->getDefaultLocale() : $currentRequest->getLocale());
 
             $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
             $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);

@@ -11,6 +11,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Order\OrderEntity;
 use stdClass;
 use Throwable;
+use UnzerPayment6\Components\BackwardsCompatibility\DecimalPrecisionHelper;
 use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Resources\EmbeddedResources\Amount;
 use UnzerSDK\Resources\Payment;
@@ -256,7 +257,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         }
 
         $filteredDocuments = $orderDocuments->filter(static function (DocumentEntity $entity) {
-            if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
+            if ($entity->getDocumentType() && $entity->getDocumentType()->getTechnicalName() === 'invoice') {
                 return $entity;
             }
 
@@ -368,7 +369,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         }
 
         return min(
-            $orderTransaction->getOrder()->getCurrency()->getDecimalPrecision(),
+            DecimalPrecisionHelper::getPrecision($orderTransaction->getOrder()->getCurrency()),
             UnzerPayment6::MAX_DECIMAL_PRECISION
         );
     }

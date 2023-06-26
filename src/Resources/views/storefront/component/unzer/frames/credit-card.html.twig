@@ -27,9 +27,9 @@
                 {% block unzer_payment_frame_credit_card_saved_device %}
                     {# @var creditCard \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
                     {% for creditCard in page.extensions.unzerCreditCard.creditCards %}
-                        <div class="custom-control custom-radio payment-control">
-                            <input type="radio" value="{{ creditCard.typeId }}" name="savedCreditCard" id="card-{{ creditCard.id }}" class="custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
-                            <label for="card-{{ creditCard.id }}" class="custom-control-label payment-method-label">
+                        <div class="form-check payment-method-radio custom-control custom-radio payment-control">
+                            <input type="radio" value="{{ creditCard.typeId }}" name="savedCreditCard" id="card-{{ creditCard.id }}" class="form-check-input custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
+                            <label for="card-{{ creditCard.id }}" class="form-check-label custom-control-label payment-method-label">
                                 <strong>{{ creditCard.data['number'] }}</strong>
                             </label>
                             <div class="payment-method-description">
@@ -40,9 +40,9 @@
                 {% endblock %}
 
                 {% block unzer_payment_frame_credit_card_saved_device_new %}
-                    <div class="custom-control custom-radio payment-control">
-                        <input type="radio" value="new" name="savedCreditCard" id="card-new" class="custom-control-input payment-method-input">
-                        <label for="card-new" class="custom-control-label payment-method-label">
+                    <div class="form-check payment-method-radio custom-control custom-radio payment-control">
+                        <input type="radio" value="new" name="savedCreditCard" id="card-new" class="form-check-input custom-control-input payment-method-input">
+                        <label for="card-new" class="form-check-label custom-control-label payment-method-label">
                             {{ "UnzerPayment.frame.creditCard.new"|trans }}
                         </label>
                     </div>

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Controllers\Administration;
 
 use Exception;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\Filesystem;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -18,6 +18,7 @@ use UnzerPayment6\Components\ApplePay\CertificateManager;
 use UnzerPayment6\Components\ApplePay\Exception\InvalidCertificate;
 use UnzerPayment6\Components\ApplePay\Exception\MissingCertificateFiles;
 use UnzerPayment6\Components\ApplePay\Struct\CertificateInformation;
+use UnzerPayment6\Components\BackwardsCompatibility\Filesystem as BackwardsCompatibilityFilesystem;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
@@ -27,6 +28,7 @@ use UnzerSDK\Exceptions\UnzerApiException;
 
 /**
  * @RouteScope(scopes={"api"})
+ * @Route(defaults={"_routeScope": {"api"}})
  */
 class UnzerPaymentApplePayController extends AbstractController
 {
@@ -43,7 +45,7 @@ class UnzerPaymentApplePayController extends AbstractController
     private $logger;
     /** @var SystemConfigService */
     private $systemConfigService;
-    /** @var FilesystemInterface */
+    /** @var Filesystem */
     private $filesystem;
     /** @var ConfigReaderInterface */
     private $configReader;
@@ -54,7 +56,7 @@ class UnzerPaymentApplePayController extends AbstractController
         ClientFactoryInterface $clientFactory,
         LoggerInterface $logger,
         SystemConfigService $systemConfigService,
-        FilesystemInterface $filesystem,
+        Filesystem $filesystem,
         ConfigReaderInterface $configReader,
         CertificateManager $certificateManager
     ) {
@@ -67,7 +69,7 @@ class UnzerPaymentApplePayController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.update-certificates", methods={"POST"}, defaults={"salesChannelId": null, "_route_scope": {"api"}})
+     * @Route("/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.update-certificates", methods={"POST"}, defaults={"salesChannelId": null})
      * @Route("/api/v{version}/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.update-certificates.version", methods={"POST"}, defaults={"salesChannelId": null, "_route_scope": {"api"}})
      */
     public function updateApplePayCertificates(?string $salesChannelId, RequestDataBag $dataBag): JsonResponse
@@ -92,6 +94,7 @@ class UnzerPaymentApplePayController extends AbstractController
                 $privateKeyResource->setCertificate($dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER));
 
                 $client->getResourceService()->createResource($privateKeyResource->setParentResource($client));
+                /** @var string $privateKeyId */
                 $privateKeyId = $privateKeyResource->getId();
 
                 $certificateResource = new ApplePayCertificate();
@@ -129,8 +132,9 @@ class UnzerPaymentApplePayController extends AbstractController
                     $this->logger->error('Invalid Merchant Identification certificate given');
                     throw new InvalidCertificate('Merchant Identification');
                 }
-                $this->filesystem->put($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId), $certificate);
-                $this->filesystem->put($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId), $key);
+
+                BackwardsCompatibilityFilesystem::put($this->filesystem, $this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId), $certificate);
+                BackwardsCompatibilityFilesystem::put($this->filesystem, $this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId), $key);
 
                 $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), (string) $salesChannelId, $salesChannelId);
                 $this->logger->debug(sprintf('Merchant Identification certificate for sales channel %s updated', $salesChannelId));
@@ -176,7 +180,7 @@ class UnzerPaymentApplePayController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.check-certificates", methods={"GET"}, defaults={"salesChannelId": null, "_route_scope": {"api"}})
+     * @Route("/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.check-certificates", methods={"GET"}, defaults={"salesChannelId": null})
      * @Route("/api/v{version}/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.check-certificates.version", methods={"GET"}, defaults={"salesChannelId": null, "_route_scope": {"api"}})
      */
     public function checkApplePayCertificates(RequestDataBag $dataBag): JsonResponse

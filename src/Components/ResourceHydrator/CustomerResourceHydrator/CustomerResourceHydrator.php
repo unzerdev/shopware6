@@ -61,7 +61,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
                 $this->getBirthDate($customer),
                 $this->getUnzerAddress($billingAddress),
                 $customer->getEmail(),
-                !empty($billingAddress->getCompany()) ? $billingAddress->getCompany() : ''
+                $billingAddress->getCompany()
             );
         }
 

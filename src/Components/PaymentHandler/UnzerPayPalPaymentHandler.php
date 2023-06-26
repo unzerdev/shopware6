@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -33,9 +33,13 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Paypal;
 
+/**
+ * @property Payment $payment
+ */
 class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use CanCharge;
@@ -50,7 +54,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         ResourceHydratorInterface $basketHydrator,
         CustomerResourceHydratorInterface $customerHydrator,
         ResourceHydratorInterface $metadataHydrator,
-        EntityRepositoryInterface $transactionRepository,
+        EntityRepository $transactionRepository,
         ConfigReaderInterface $configReader,
         TransactionStateHandlerInterface $transactionStateHandler,
         ClientFactoryInterface $clientFactory,
@@ -192,6 +196,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
         try {
             if (!($transactionCustomFields[$this->sessionIsRecurring] ?? false)) {
+                /** @phpstan-ignore-next-line */
                 $this->paymentType = $this->fetchPaymentByTypeId($transactionCustomFields[$this->sessionPaymentTypeKey]);
 
                 if ($this->paymentType === null) {
