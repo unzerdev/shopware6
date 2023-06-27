@@ -127,7 +127,15 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
             $this->pluginConfig = $this->configReader->read($salesChannelId);
             $this->unzerClient  = $this->clientFactory->createClient($salesChannelId, empty($currentRequest->getLocale()) ? $currentRequest->getDefaultLocale() : $currentRequest->getLocale());
-
+            if ($transaction->getOrder() && $transaction->getOrder()->getLineItems()) {
+                $array = array();
+                foreach ($transaction->getOrder()->getLineItems() as $element) {
+                    if (is_null($element->getParentId())) {
+                        array_push($array, $element);
+                    }
+                }
+                $transaction->getOrder()->setLineItems(new OrderLineItemCollection($array));
+            }
             $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
             $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
             $this->unzerCustomer = $this->getUnzerCustomer($currentRequest->get('unzerCustomerId', ''), $transaction->getOrderTransaction()->getPaymentMethodId(), $salesChannelContext);
