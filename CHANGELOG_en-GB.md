@@ -1,4 +1,4 @@
-# Unreleased
+# 5.2.1
 * Fixed the names of the frontend routes 
 
 # 5.2.0

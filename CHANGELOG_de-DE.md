@@ -1,4 +1,4 @@
-# Unreleased
+# 5.2.1
 * Korrektur der Namen für die Routen im Frontend
 
 # 5.2.0
