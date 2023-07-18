@@ -41,7 +41,7 @@ class UnzerPaymentWebhookController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/webhook", name="unzer.webhook.execute", methods={"POST", "GET"}, defaults={"csrf_protected": false})
+     * @Route("/unzer/webhook", name="frontend.unzer.webhook.execute", methods={"POST", "GET"}, defaults={"csrf_protected": false})
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {

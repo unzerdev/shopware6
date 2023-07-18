@@ -22,7 +22,7 @@
 
         {% block page_account_payment_main_unzer_paymentdevice_actions %}
             <div class="unzer-payment-device-actions">
-                <a class="btn btn-light btn-sm" href="{{ path('unzer.device.delete', {
+                <a class="btn btn-light btn-sm" href="{{ path('frontend.unzer.device.delete', {
                     'id': device.id
                 }) }}">
                     {{ "UnzerPayment.accountPayment.delete" | trans  }}
