@@ -10,7 +10,6 @@ use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use UnzerPayment6\Components\BackwardsCompatibility\DecimalPrecisionHelper;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerPayment6\UnzerPayment6;
@@ -45,7 +44,7 @@ class CancelService implements CancelServiceInterface
         }
 
         if ($transaction->getOrder()->getCurrency()) {
-            $decimalPrecision = min($decimalPrecision, DecimalPrecisionHelper::getPrecision($transaction->getOrder()->getCurrency()));
+            $decimalPrecision = min($decimalPrecision, $transaction->getOrder()->getCurrency()->getItemRounding()->getDecimals());
         }
 
         $taxRates = [];

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Storefront;
 
-use ArgumentCountError;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;

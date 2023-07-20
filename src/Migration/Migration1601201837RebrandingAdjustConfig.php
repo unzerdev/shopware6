@@ -6,7 +6,6 @@ namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
-use UnzerPayment6\Components\BackwardsCompatibility\DbalConnectionHelper;
 
 class Migration1601201837RebrandingAdjustConfig extends MigrationStep
 {
@@ -23,7 +22,7 @@ class Migration1601201837RebrandingAdjustConfig extends MigrationStep
             WHERE `configuration_key` LIKE "HeidelPayment6.settings.%"
 SQL;
 
-        DbalConnectionHelper::exec($connection, $sql);
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

@@ -16,7 +16,6 @@ use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Shipping\ShippingMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
-use UnzerPayment6\Components\BackwardsCompatibility\DecimalPrecisionHelper;
 use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Constants\BasketItemTypes;
 use UnzerSDK\Resources\AbstractUnzerResource;
@@ -46,7 +45,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
         /** @var int $currencyPrecision */
         $currencyPrecision = $order->getCurrency() !== null ? min(
-            DecimalPrecisionHelper::getPrecision($order->getCurrency()),
+            $order->getCurrency()->getItemRounding()->getDecimals(),
             UnzerPayment6::MAX_DECIMAL_PRECISION
         ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
 

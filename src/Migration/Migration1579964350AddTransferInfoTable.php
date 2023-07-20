@@ -6,7 +6,6 @@ namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
-use UnzerPayment6\Components\BackwardsCompatibility\DbalConnectionHelper;
 
 class Migration1579964350AddTransferInfoTable extends MigrationStep
 {
@@ -17,7 +16,7 @@ class Migration1579964350AddTransferInfoTable extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $result = DbalConnectionHelper::fetchColumn($connection, 'SHOW TABLES LIKE \'unzer_payment_transfer_info\';');
+        $result = $connection->fetchOne('SHOW TABLES LIKE \'unzer_payment_transfer_info\';');
 
         if ($result) {
             return;
@@ -45,7 +44,7 @@ class Migration1579964350AddTransferInfoTable extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 SQL;
 
-        DbalConnectionHelper::exec($connection, $sql);
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void
