@@ -20,11 +20,9 @@ use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessExcepti
  */
 class UnzerCheckoutController extends StorefrontController
 {
-    /** @var CheckoutController */
-    protected $innerService;
+    protected CheckoutController $innerService;
 
-    /** @var CheckoutFinishPageLoader */
-    private $finishPageLoader;
+    private CheckoutFinishPageLoader $finishPageLoader;
 
     public function __construct(
         CheckoutController $innerService,
@@ -105,14 +103,6 @@ class UnzerCheckoutController extends StorefrontController
             );
         }
 
-        try {
-            /** @phpstan-ignore-next-line */
-            return $this->innerService->finishPage($request, $context, $dataBag);
-            /** @phpstan-ignore-next-line */
-        } catch (ArgumentCountError $exception) {
-            // signature changed with v6.4, this is the old version without dataBag Parameter
-            /** @phpstan-ignore-next-line */
-            return $this->innerService->finishPage($request, $context);
-        }
+        return $this->innerService->finishPage($request, $context, $dataBag);
     }
 }
