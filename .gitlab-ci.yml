@@ -14,7 +14,6 @@ variables:
     COMPOSER_HOME: '/var/www/html/.composer'
 
 include:
-    - '/.gitlab/shopware-6-3.yml'
     - '/.gitlab/shopware-6-4.yml'
 
 before_script:

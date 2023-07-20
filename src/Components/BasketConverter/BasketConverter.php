@@ -32,8 +32,8 @@ class BasketConverter implements BasketConverterInterface
 
         $amountNet = (float) $item['amountGross'] / (1 + $vat);
 
-        $item['amountVat']     = round($amountNet * $vat, UnzerPayment6::MAX_DECIMAL_PRECISION);
-        $item['amountNet']     = round($amountNet, UnzerPayment6::MAX_DECIMAL_PRECISION);
+        $item['amountVat'] = round($amountNet * $vat, UnzerPayment6::MAX_DECIMAL_PRECISION);
+        $item['amountNet'] = round($amountNet, UnzerPayment6::MAX_DECIMAL_PRECISION);
 
         return $item;
     }
