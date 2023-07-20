@@ -19,11 +19,9 @@ use UnzerSDK\Resources\TransactionTypes\Cancellation;
 
 class CancelService implements CancelServiceInterface
 {
-    /** @var EntityRepository */
-    private $orderTransactionRepository;
+    private EntityRepository $orderTransactionRepository;
 
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
+    private ClientFactoryInterface $clientFactory;
 
     public function __construct(
         EntityRepository $orderTransactionRepository,
