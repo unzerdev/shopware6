@@ -3,7 +3,7 @@ k10r-phpstan-64:
   image: "dockware/dev:${SW_VERSION}"
   parallel:
     matrix:
-      -   PHP_VERSION: [ "7.4", "8.0", "8.1" ]
+      -   PHP_VERSION: [ "7.4", "8.0", "8.1", "8.2" ]
           SW_VERSION: [ "6.4.0.0", "6.4.20.0" ]
   needs: [ ]
   except:
@@ -20,7 +20,7 @@ sw-phpstan-64:
   image: "dockware/dev:${SW_VERSION}"
   parallel:
     matrix:
-      -   PHP_VERSION: [ "7.4", "8.0", "8.1" ]
+      -   PHP_VERSION: [ "7.4", "8.0", "8.1", "8.2" ]
           SW_VERSION: [ "6.4.0.0", "6.4.20.0" ]
   needs: [ ]
   except:
@@ -39,7 +39,7 @@ install-64:
   image: "dockware/dev:${SW_VERSION}"
   parallel:
     matrix:
-      -   PHP_VERSION: [ "7.4", "8.0", "8.1" ]
+      -   PHP_VERSION: [ "7.4", "8.0", "8.1", "8.2" ]
           SW_VERSION: [ "6.4.0.0", "6.4.20.0" ]
   needs: [ ]
   except:
