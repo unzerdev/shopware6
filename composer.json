@@ -1,9 +1,9 @@
 {
     "name": "unzerdev/shopware6",
     "description": "Unzer payment integration for Shopware 6",
-    "version": "5.2.0",
+    "version": "5.2.1",
     "type": "shopware-platform-plugin",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [

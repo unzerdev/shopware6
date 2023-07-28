@@ -1,3 +1,6 @@
+# 5.2.1
+* Fixed the names of the frontend routes 
+
 # 5.2.0
 * Added compatibility to Shopware 6.5
 * Fixed the cart calculation for net customers (thanks to twidmer)

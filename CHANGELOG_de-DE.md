@@ -1,3 +1,6 @@
+# 5.2.1
+* Korrektur der Namen für die Routen im Frontend
+
 # 5.2.0
 * Kompatibilität zu Shopware 6.5 hergestellt
 * Korrektur der Warenkorbpreisberechnung für Netto-Kunden (Danke an twidmer)
