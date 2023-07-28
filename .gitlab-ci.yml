@@ -14,7 +14,6 @@ variables:
     COMPOSER_HOME: '/var/www/html/.composer'
 
 include:
-    - '/.gitlab/shopware-6-3.yml'
     - '/.gitlab/shopware-6-4.yml'
 
 before_script:
@@ -28,7 +27,7 @@ k10r-phpstan-65:
     image: "dockware/dev:${SW_VERSION}"
     parallel:
         matrix:
-            -   PHP_VERSION: [ "8.1" ]
+            -   PHP_VERSION: [ "8.1", "8.2" ]
                 SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
     needs: [ ]
     except:
@@ -50,7 +49,7 @@ sw-phpstan-65:
     image: "dockware/dev:${SW_VERSION}"
     parallel:
         matrix:
-            -   PHP_VERSION: [ "8.1" ]
+            -   PHP_VERSION: [ "8.1", "8.2" ]
                 SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
     needs: [ ]
     except:
@@ -72,7 +71,7 @@ install-65:
     image: "dockware/dev:${SW_VERSION}"
     parallel:
         matrix:
-            -   PHP_VERSION: [ "8.1" ]
+            -   PHP_VERSION: [ "8.1", "8.2" ]
                 SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
     needs: [ ]
     except:

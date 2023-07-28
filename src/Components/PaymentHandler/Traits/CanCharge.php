@@ -41,7 +41,7 @@ trait CanCharge
         $charge->setCard3ds(true);
 
         if ($recurrenceType !== null) {
-            $charge->setRecurrenceType($recurrenceType, $this->paymentType);
+            $charge->setRecurrenceType($recurrenceType);
         }
 
         if ($riskData !== null) {

@@ -24,8 +24,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED,
     ];
 
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {

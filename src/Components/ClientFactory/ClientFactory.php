@@ -11,11 +11,9 @@ use UnzerSDK\Unzer;
 
 class ClientFactory implements ClientFactoryInterface
 {
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
-    /** @var DebugHandlerInterface */
-    private $debugHandler;
+    private DebugHandlerInterface $debugHandler;
 
     public function __construct(ConfigReaderInterface $configReader, DebugHandlerInterface $debugHandler)
     {
