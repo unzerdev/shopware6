@@ -1,5 +1,6 @@
-# 5.2.1
+# 5.3.0
 * Korrektur der Namen für die Routen im Frontend
+* Kompatibilität zu PHP 8.2 hergestellt
 
 # 5.2.0
 * Kompatibilität zu Shopware 6.5 hergestellt

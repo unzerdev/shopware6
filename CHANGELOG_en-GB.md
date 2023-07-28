@@ -1,5 +1,6 @@
-# 5.2.1
-* Fixed the names of the frontend routes 
+# 5.3.0
+* Fixed the names of the frontend routes
+* Added compatibility to PHP 8.2
 
 # 5.2.0
 * Added compatibility to Shopware 6.5
