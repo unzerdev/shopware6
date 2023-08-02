@@ -14,9 +14,6 @@ class DirectDebitPageExtension extends Struct
     /** @var UnzerPaymentDeviceEntity[] */
     protected $directDebitDevices = [];
 
-    /** @var bool */
-    protected $displayDirectDebitDeviceSelection;
-
     public function addDirectDebitDevice(UnzerPaymentDeviceEntity $directDebitDevice): self
     {
         $this->directDebitDevices[] = $directDebitDevice;
@@ -38,18 +35,6 @@ class DirectDebitPageExtension extends Struct
     public function setDirectDebitDevices(array $directDebitDevices): self
     {
         $this->directDebitDevices = $directDebitDevices;
-
-        return $this;
-    }
-
-    public function getDisplayDirectDebitDeviceSelection(): bool
-    {
-        return $this->displayDirectDebitDeviceSelection;
-    }
-
-    public function setDisplayDirectDebitDeviceSelection(bool $displayDirectDebitDeviceSelection): self
-    {
-        $this->displayDirectDebitDeviceSelection = $displayDirectDebitDeviceSelection;
 
         return $this;
     }

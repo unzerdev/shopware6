@@ -6,7 +6,6 @@ namespace UnzerPayment6\EventListeners\Account;
 
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Struct\PageExtension\Account\PaymentMethodPageExtension;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
@@ -44,33 +43,20 @@ class PaymentMethodPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
-
-        $registerCreditCards = $this->configReader->read($salesChannelId)->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
-        $registerPayPal      = $this->configReader->read($salesChannelId)->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
-        $registerDirectDebit = $this->configReader->read($salesChannelId)->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
-        $extension           = new PaymentMethodPageExtension();
-        $devices             = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
+        $extension = new PaymentMethodPageExtension();
+        $devices   = $this->deviceRepository->getCollectionByCustomer($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
         $extension->setDeviceRemoved((bool) $event->getRequest()->get('deviceRemoved'));
 
-        if ($registerCreditCards && $salesChannelContext->getCustomer() !== null) {
-            $creditCards = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD)->getElements();
-
-            $extension->addPaymentDevices($creditCards);
-        }
-
-        if ($registerPayPal && $salesChannelContext->getCustomer() !== null) {
-            $payPalAccounts = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL)->getElements();
-
-            $extension->addPaymentDevices($payPalAccounts);
-        }
-
-        if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null) {
+        if ($salesChannelContext->getCustomer() !== null) {
+            $creditCards               = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD)->getElements();
             $directDebitDevices        = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT)->getElements();
             $directDebitSecuredDevices = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_SECURED)->getElements();
+            $payPalAccounts            = $devices->filterByProperty('deviceType', UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL)->getElements();
 
+            $extension->addPaymentDevices($creditCards);
             $extension->addPaymentDevices($directDebitDevices);
             $extension->addPaymentDevices($directDebitSecuredDevices);
+            $extension->addPaymentDevices($payPalAccounts);
         }
 
         $event->getPage()->addExtension(PaymentMethodPageExtension::EXTENSION_NAME, $extension);

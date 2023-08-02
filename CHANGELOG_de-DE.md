@@ -1,3 +1,7 @@
+# Unreleased
+* Entfernung der Einstellungen für die Registrierung von Zahlungsdaten aus der Plugin-Konfiguration
+* Ergänzung und Anpassung der Registrierung von Zahlungsdaten im Checkout 
+
 # 5.3.0
 * Korrektur der Namen für die Routen im Frontend
 * Kompatibilität zu PHP 8.2 hergestellt
