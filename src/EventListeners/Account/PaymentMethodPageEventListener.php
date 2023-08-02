@@ -13,15 +13,11 @@ use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDevi
 
 class PaymentMethodPageEventListener implements EventSubscriberInterface
 {
-    /** @var ConfigReaderInterface */
-    private $configReader;
-
     /** @var UnzerPaymentDeviceRepositoryInterface */
     private $deviceRepository;
 
-    public function __construct(ConfigReaderInterface $configReader, UnzerPaymentDeviceRepositoryInterface $deviceRepository)
+    public function __construct(UnzerPaymentDeviceRepositoryInterface $deviceRepository)
     {
-        $this->configReader     = $configReader;
         $this->deviceRepository = $deviceRepository;
     }
 
