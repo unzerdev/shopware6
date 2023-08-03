@@ -1,6 +1,7 @@
 # 5.3.0
 * Fixed the names of the frontend routes
 * Added compatibility to PHP 8.2
+* Fixed the sorting of transactions in the Unzer tab on an order
 
 # 5.2.0
 * Added compatibility to Shopware 6.5

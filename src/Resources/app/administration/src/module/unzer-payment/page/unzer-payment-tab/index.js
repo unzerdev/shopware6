@@ -54,7 +54,9 @@ Component.register('unzer-payment-tab', {
         loadData() {
             const orderId = this.$route.params.id;
             const criteria = new Criteria();
-            criteria.addAssociation('transactions');
+            criteria
+                .getAssociation('transactions')
+                .addSorting(Criteria.sort('createdAt', 'DESC'));
 
             this.orderRepository.get(orderId, Context.api, criteria).then((order) => {
                 this.order = order;
