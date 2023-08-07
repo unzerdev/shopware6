@@ -36,20 +36,15 @@ class SendShippingNotificationCommand extends Command
     private const EXIT_CODE_NO_ORDERS     = 3;
     private const EXIT_CODE_CONFIGURATION = 4;
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
-    /** @var EntityRepository */
-    private $transactionRepository;
+    private EntityRepository $transactionRepository;
 
-    /** @var Context */
-    private $context;
+    private Context $context;
 
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
-    /** @var ShipServiceInterface */
-    private $shipService;
+    private ShipServiceInterface $shipService;
 
     public function __construct(
         ConfigReaderInterface $configReader,

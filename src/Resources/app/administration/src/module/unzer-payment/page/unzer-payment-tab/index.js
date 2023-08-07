@@ -15,6 +15,7 @@ Component.register('unzer-payment-tab', {
     data() {
         return {
             paymentResources: [],
+            loadedResources: 0,
             isLoading: true
         };
     },
@@ -43,6 +44,7 @@ Component.register('unzer-payment-tab', {
 
         resetDataAttributes() {
             this.paymentResources = [];
+            this.loadedResources = 0;
             this.isLoading = true;
         },
 
@@ -54,7 +56,9 @@ Component.register('unzer-payment-tab', {
         loadData() {
             const orderId = this.$route.params.id;
             const criteria = new Criteria();
-            criteria.addAssociation('transactions');
+            criteria
+                .getAssociation('transactions')
+                .addSorting(Criteria.sort('createdAt', 'DESC'));
 
             this.orderRepository.get(orderId, Context.api, criteria).then((order) => {
                 this.order = order;
@@ -63,21 +67,26 @@ Component.register('unzer-payment-tab', {
                     return;
                 }
 
-                order.transactions.forEach((orderTransaction) => {
+                order.transactions.forEach((orderTransaction, index) => {
                     if (!orderTransaction.customFields) {
+                        this.loadedResources++;
+
                         return;
                     }
 
                     if (!orderTransaction.customFields.unzer_payment_is_transaction
                         && !orderTransaction.customFields.heidelpay_is_transaction) {
+                        this.loadedResources++;
+
                         return;
                     }
 
                     this.UnzerPaymentService.fetchPaymentDetails(orderTransaction.id)
                         .then((response) => {
-                            this.isLoading = false;
+                            this.paymentResources[index] = response;
+                            this.loadedResources++;
 
-                            this.paymentResources.push(response);
+                            this.isLoading = this.order.transactions.length !== this.loadedResources;
                         })
                         .catch(() => {
                             this.createNotificationError({

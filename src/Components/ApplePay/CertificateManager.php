@@ -13,8 +13,7 @@ class CertificateManager
     private const MERCHANT_IDENTIFICATION_CERTIFICATE_FILENAME = 'merchant-identification-certificate.pem';
     private const MERCHANT_IDENTIFICATION_KEY_FILENAME         = 'merchant-identification-privatekey.key';
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
     public function __construct(ConfigReaderInterface $configReader)
     {

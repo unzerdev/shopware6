@@ -168,10 +168,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return null;
         }
 
-        // Backwards compatibility to Shopware < 6.3.5.0
-        $salesChannelId = !method_exists($event->getSalesChannelContext(), 'getSalesChannelId')
-            ? $event->getSalesChannelContext()->getSalesChannel()->getId()
-            : $event->getSalesChannelContext()->getSalesChannelId();
+        $salesChannelId = $event->getSalesChannelContext()->getSalesChannelId();
 
         $client         = $this->clientFactory->createClient($salesChannelId);
         $customerNumber = $customer->getCustomerNumber();

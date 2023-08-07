@@ -65,7 +65,7 @@ class UnzerPaymentApplePayController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/applePay/validateMerchant", name="unzer.apple_pay.validate_merchant", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false})
+     * @Route("/unzer/applePay/validateMerchant", name="frontend.unzer.apple_pay.validate_merchant", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false})
      */
     public function validateMerchant(Request $request, SalesChannelContext $salesChannelContext): Response
     {
@@ -133,7 +133,7 @@ class UnzerPaymentApplePayController extends StorefrontController
     }
 
     /**
-     * @Route("/unzer/applePay/authorizePayment", name="unzer.apple_pay.authorize_payment", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false})
+     * @Route("/unzer/applePay/authorizePayment", name="frontend.unzer.apple_pay.authorize_payment", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false})
      */
     public function authorizePayment(Request $request, SalesChannelContext $salesChannelContext): Response
     {

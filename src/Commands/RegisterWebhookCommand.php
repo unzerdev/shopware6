@@ -22,11 +22,9 @@ use UnzerSDK\Exceptions\UnzerApiException;
 
 class RegisterWebhookCommand extends Command
 {
-    /** @var WebhookRegistratorInterface */
-    private $webhookRegistrator;
+    private WebhookRegistratorInterface $webhookRegistrator;
 
-    /** @var EntityRepository */
-    private $domainRepository;
+    private EntityRepository $domainRepository;
 
     public function __construct(WebhookRegistratorInterface $webhookRegistrator, EntityRepository $domainRepository)
     {
