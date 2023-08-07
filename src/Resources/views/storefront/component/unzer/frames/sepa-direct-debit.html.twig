@@ -18,7 +18,7 @@
             {% endif %}
         {% endblock %}
 
-        {% if page.extensions.unzerDirectDebit.displayDirectDebitDeviceSelection and page.extensions.unzerDirectDebit.directDebitDevices|length > 0 %}
+        {% if page.extensions.unzerDirectDebit.directDebitDevices|length > 0 %}
             <div class="unzer-payment-saved-sepa-wrapper">
                 <div class="unzer-payment-saved-sepa--message">
                     {{ "UnzerPayment.frame.sepa.device.choose"|trans }}

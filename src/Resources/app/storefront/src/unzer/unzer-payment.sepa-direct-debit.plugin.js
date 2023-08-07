@@ -94,14 +94,13 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
     _onCreateResource() {
         const selectedDevice = document.querySelector(this.options.selectedRadioButtonSelector);
 
-        if (!this.options.hasSepaDevices || !selectedDevice || selectedDevice.id === this.options.radioButtonNewAccountId) {
-            this._unzerPaymentPlugin.setSubmitButtonActive(false);
+        this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
+        if (!selectedDevice || selectedDevice.id === this.options.radioButtonNewAccountId) {
             this.sepa.createResource()
                 .then((resource) => this._submitPayment(resource))
                 .catch((error) => this._handleError(error));
         } else {
-            this._unzerPaymentPlugin.setSubmitButtonActive(false);
             this._submitDevicePayment(selectedDevice.value);
         }
     }

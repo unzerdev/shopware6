@@ -28,7 +28,8 @@
                     "cvc": "CVC",
                     "secret": "Secret"
                 },
-                "choose": "Please choose a saved credit card or fill out the form."
+                "choose": "Please choose a saved credit card or fill out the form.",
+                "remember": "Save my credit card for the next purchase"
             },
             "sepa": {
                 "testData": {
@@ -39,11 +40,12 @@
                     "title": "SEPA direct debit mandate",
                     "content": "By signing this mandate form, you authorise %company% to send instructions to your bank to debit your account and your bank to debit your account in accordance with the instructions from %company%. Note: As part of your rights, you are entitled to a refund from your bank under the terms and conditions of your agreement with your bank. A refund must be claimed within 8 weeks starting from the date on which your account was debited. Your rights regarding this SEPA mandate are explained in a statement that you can obtain from your bank.",
                     "accept": "Accept SEPA direct debit mandate",
-                    "error": "Please accept the SEPA direct debit mandate in order to continue."
+                    "error": "Please accept the SEPA direct debit mandate in order to continue.",
+                    "remember": "Save my SEPA mandate for the next purchase"
                 },
                 "device": {
                     "choose": "Please select a saved account or fill out the form.",
-                    "new": "Register a new account"
+                    "new": "Use another account"
                 }
             },
             "installmentSecured": {
@@ -57,7 +59,8 @@
             },
             "paypal": {
                 "new": "New account",
-                "choose": "Please select a saved account or add an account."
+                "choose": "Please select a saved account or use another account.",
+                "remember": "Save my PayPal account for the next purchase"
             }
         },
         "accountPayment": {
