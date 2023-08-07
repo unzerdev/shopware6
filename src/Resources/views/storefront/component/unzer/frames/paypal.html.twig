@@ -48,7 +48,12 @@
             <div class="unzer-payment-saved-accounts-wrapper-elements">
                 {% block unzer_payment_frame_paypal_account_remember %}
                         <div class="unzer-payment-frame-row">
-                            <input type="checkbox" class="custom-control-input" form="confirmOrderForm" name="payPalRemember" id="unzer-payment-paypal-remember" />
+                            <input type="checkbox"
+                                   class="custom-control-input"
+                                   form="confirmOrderForm"
+                                   name="{{ constant('UnzerPayment6\\Components\\PaymentHandler\\UnzerPayPalPaymentHandler::REMEMBER_PAYPAL_ACCOUNT_KEY') }}"
+                                   id="unzer-payment-paypal-remember"
+                            />
                             <label for="unzer-payment-paypal-remember">{{ "UnzerPayment.frame.paypal.remember"|trans }}</label>
                         </div>
                 {% endblock %}

@@ -15,7 +15,12 @@
 
         {% if not context.customer.guest %}
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" form="confirmOrderForm" name="rememberSepaMandate" id="rememberSepaMandate" />
+                <input type="checkbox"
+                       class="custom-control-input"
+                       form="confirmOrderForm"
+                       name="{{ constant('UnzerPayment6\\Components\\PaymentHandler\\UnzerDirectDebitPaymentHandler::REMEMBER_SEPA_MANDATE_KEY') }}"
+                       id="rememberSepaMandate"
+                />
                 <label for="rememberSepaMandate" class="custom-control-label">{{ "UnzerPayment.frame.sepa.mandate.remember" | trans  }}</label>
             </div>
         {% endif %}

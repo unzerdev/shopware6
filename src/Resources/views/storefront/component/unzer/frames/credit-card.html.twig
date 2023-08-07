@@ -89,7 +89,12 @@
             {% block unzer_payment_frame_credit_card_remember %}
                 {% if not context.customer.guest %}
                     <div class="unzer-payment-frame-row">
-                        <input type="checkbox" class="custom-control-input" form="confirmOrderForm" name="creditCardRemember" id="unzer-payment-credit-card-remember" />
+                        <input type="checkbox"
+                               class="custom-control-input"
+                               form="confirmOrderForm"
+                               name="{{ constant('UnzerPayment6\\Components\\PaymentHandler\\UnzerCreditCardPaymentHandler::REMEMBER_CREDIT_CARD_KEY') }}"
+                               id="unzer-payment-credit-card-remember"
+                        />
                         <label for="unzer-payment-credit-card-remember">{{ "UnzerPayment.frame.creditCard.remember"|trans }}</label>
                     </div>
                 {% endif %}

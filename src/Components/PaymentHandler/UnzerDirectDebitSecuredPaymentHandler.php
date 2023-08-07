@@ -75,7 +75,7 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
         }
 
-        $registerDirectDebit = $dataBag->has('rememberSepaMandate');
+        $registerDirectDebit = $dataBag->has(UnzerDirectDebitPaymentHandler::REMEMBER_SEPA_MANDATE_KEY);
         $birthday            = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {

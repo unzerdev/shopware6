@@ -38,6 +38,8 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
     use CanAuthorize;
     use HasDeviceVault;
 
+    public const REMEMBER_CREDIT_CARD_KEY = 'creditCardRemember';
+
     /** @var BasePaymentType|Card */
     protected $paymentType;
 
@@ -85,7 +87,7 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
         }
 
         $bookingMode         = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_CARD, BookingMode::CHARGE);
-        $registerCreditCards = $dataBag->has('creditCardRemember');
+        $registerCreditCards = $dataBag->has(self::REMEMBER_CREDIT_CARD_KEY);
 
         try {
             $recurrenceType = $this->deviceRepository->exists($this->paymentType->getId(), $salesChannelContext->getContext())

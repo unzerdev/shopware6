@@ -33,6 +33,8 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
     use CanCharge;
     use HasDeviceVault;
 
+    public const REMEMBER_SEPA_MANDATE_KEY = 'rememberSepaMandate';
+
     /** @var BasePaymentType|SepaDirectDebit */
     protected $paymentType;
 
@@ -79,7 +81,7 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
         }
 
-        $registerDirectDebit = $dataBag->has('rememberSepaMandate');
+        $registerDirectDebit = $dataBag->has(self::REMEMBER_SEPA_MANDATE_KEY);
 
         try {
             $returnUrl = $this->charge($transaction->getReturnUrl());
