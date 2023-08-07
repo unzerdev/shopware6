@@ -367,14 +367,13 @@ class PaymentInstaller implements InstallerInterface
     ];
     private const PLUGIN_VERSION_PAYLATER_INVOICE = '5.0.0';
 
-    // TODO: Adjust this if compatibility is at least > 6.4.0.0
+    // TODO: Adjust this if compatibility is at least 6.5.0.0
     /** @var EntityRepository|\Shopware\Core\Checkout\Payment\DataAbstractionLayer\PaymentMethodRepositoryDecorator */
     private $paymentMethodRepository;
 
-    /** @var PluginIdProvider */
-    private $pluginIdProvider;
+    private PluginIdProvider $pluginIdProvider;
 
-    // TODO: Adjust this if compatibility is at least > 6.4.0.0
+    // TODO: Adjust this if compatibility is at least 6.5.0.0
 
     /**
      * @param EntityRepository|\Shopware\Core\Checkout\Payment\DataAbstractionLayer\PaymentMethodRepositoryDecorator $paymentMethodRepository

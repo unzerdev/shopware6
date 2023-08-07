@@ -10,14 +10,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class AutomaticShippingNotificationEvent extends Event
 {
-    /** @var OrderEntity */
-    protected $orderEntity;
+    protected OrderEntity $orderEntity;
 
-    /** @var string */
-    protected $invoiceId;
+    protected string $invoiceId;
 
-    /** @var Context */
-    protected $context;
+    protected Context $context;
 
     public function __construct(OrderEntity $orderEntity, string $invoiceId, Context $context)
     {

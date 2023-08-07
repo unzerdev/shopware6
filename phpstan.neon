@@ -2,7 +2,7 @@ includes:
   - phpstan_shopware-6-5.neon
 
 parameters:
-    phpVersion: 70200 # PHP 7.2
+    phpVersion: 70400 # PHP 7.4
     level: 8
     paths:
         - src

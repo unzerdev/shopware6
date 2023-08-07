@@ -30,8 +30,7 @@ class ConfigReader implements ConfigReaderInterface
 
     public const CONFIG_KEY_SHIPPING_STATUS = 'statusForAutomaticShippingNotification';
 
-    /** @var SystemConfigService */
-    private $systemConfigService;
+    private SystemConfigService $systemConfigService;
 
     public function __construct(SystemConfigService $systemConfigService)
     {
@@ -51,8 +50,7 @@ class ConfigReader implements ConfigReaderInterface
         foreach ($values as $key => $value) {
             $property = substr($key, strlen(self::SYSTEM_CONFIG_DOMAIN));
 
-            if ($property) {
-                /** @var string $property */
+            if (!empty($property)) {
                 $config[$property] = $value;
             }
         }

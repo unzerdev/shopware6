@@ -12,8 +12,7 @@ use UnzerPayment6\Installer\CustomFieldInstaller;
 
 class CustomFieldsHelper implements CustomFieldsHelperInterface
 {
-    /** @var EntityRepository */
-    private $orderTransactionRepository;
+    private EntityRepository $orderTransactionRepository;
 
     public function __construct(EntityRepository $orderTransactionRepository)
     {
@@ -27,7 +26,7 @@ class CustomFieldsHelper implements CustomFieldsHelperInterface
         $shipmentExecuted = !in_array(
             $transaction->getPaymentMethodId(),
             AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
-            false
+            true
         );
 
         $customFields = $transaction->getCustomFields() ?? [];

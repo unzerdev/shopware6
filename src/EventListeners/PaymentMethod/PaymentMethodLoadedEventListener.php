@@ -14,7 +14,6 @@ use Shopware\Core\System\SalesChannel\Entity\SalesChannelEntitySearchResultLoade
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use UnzerPayment6\Components\BackwardsCompatibility\DecimalPrecisionHelper;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Installer\PaymentInstaller;
@@ -133,7 +132,7 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
 
     protected function isZeroAmount(float $totalAmount, CurrencyEntity $currency): bool
     {
-        $currencyPrecision  = min(DecimalPrecisionHelper::getPrecision($currency), UnzerPayment6::MAX_DECIMAL_PRECISION);
+        $currencyPrecision  = min($currency->getItemRounding()->getDecimals(), UnzerPayment6::MAX_DECIMAL_PRECISION);
         $roundedAmountTotal = (int) round($totalAmount * (10 ** $currencyPrecision));
 
         return $roundedAmountTotal <= 0;
