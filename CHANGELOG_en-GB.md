@@ -1,4 +1,4 @@
-# Unreleased
+# 5.4.0
 * Removed the settings for registering the payment details in the plugin configuration
 * Added and adjusted the registering of payment details in the checkout
 
