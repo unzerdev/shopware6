@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
-use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
@@ -76,7 +75,7 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
         }
 
-        $registerDirectDebit = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
+        $registerDirectDebit = $dataBag->has(UnzerDirectDebitPaymentHandler::REMEMBER_SEPA_MANDATE_KEY);
         $birthday            = $currentRequest->get('unzerPaymentBirthday', '');
 
         try {
@@ -99,7 +98,7 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
 
             $returnUrl = $this->charge($transaction->getReturnUrl());
 
-            if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null) {
+            if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null && $salesChannelContext->getCustomer()->getGuest() === false) {
                 $this->saveToDeviceVault(
                     $salesChannelContext->getCustomer(),
                     UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_SECURED,

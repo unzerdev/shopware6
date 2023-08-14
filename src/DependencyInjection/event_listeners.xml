@@ -23,7 +23,6 @@
         </service>
 
         <service id="UnzerPayment6\EventListeners\Account\PaymentMethodPageEventListener">
-            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepository"/>
 
             <tag name="kernel.event_subscriber"/>
