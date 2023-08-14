@@ -47,6 +47,8 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
     use CanRecur;
     use HasDeviceVault;
 
+    public const REMEMBER_PAYPAL_ACCOUNT_KEY = 'payPalRemember';
+
     /** @var BasePaymentType|Paypal */
     protected $paymentType;
 
@@ -98,7 +100,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
         try {
             if ($this->paymentType === null) {
-                $registerAccounts  = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
+                $registerAccounts  = $dataBag->has(self::REMEMBER_PAYPAL_ACCOUNT_KEY);
                 $payPalPaymentType = new Paypal();
 
                 if (!empty($this->unzerCustomer->getEmail())) {
@@ -107,7 +109,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
                 $this->paymentType = $this->unzerClient->createPaymentType($payPalPaymentType);
 
-                if ($registerAccounts) {
+                if ($registerAccounts && $salesChannelContext->getCustomer() !== null && $salesChannelContext->getCustomer()->getGuest() === false) {
                     $returnUrl = $this->activateRecurring($transaction->getReturnUrl());
 
                     if ($this->recurring !== null && !empty($this->recurring->getRedirectUrl())) {
@@ -116,6 +118,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                                 CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY => $this->paymentType->getId(),
                                 $this->sessionPaymentTypeKey                       => $this->paymentType->getId(),
                                 $this->sessionCustomerIdKey                        => $this->unzerCustomer->getId(),
+                                self::REMEMBER_PAYPAL_ACCOUNT_KEY                  => true,
                             ],
                             $transaction->getOrderTransaction()->getId(),
                             $salesChannelContext->getContext()
@@ -179,10 +182,10 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         $this->pluginConfig = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $this->unzerClient  = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
 
-        $bookingMode      = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
-        $registerAccounts = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
+        $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
 
         $transactionCustomFields = $transaction->getOrderTransaction()->getCustomFields();
+        $registerAccounts        = !empty($transactionCustomFields[self::REMEMBER_PAYPAL_ACCOUNT_KEY]);
 
         if (!$registerAccounts) {
             parent::finalize($transaction, $request, $salesChannelContext);
@@ -210,6 +213,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 
                 if ($registerAccounts
                     && $salesChannelContext->getCustomer() !== null
+                    && $salesChannelContext->getCustomer()->getGuest() === false
                     && $this->paymentType instanceof PayPal
                     && $this->paymentType->getEmail() !== null
                 ) {

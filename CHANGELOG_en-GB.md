@@ -1,3 +1,7 @@
+# 5.4.0
+* Removed the settings for registering the payment details in the plugin configuration
+* Added and adjusted the registering of payment details in the checkout
+
 # 5.3.0
 * Fixed the names of the frontend routes
 * Added compatibility to PHP 8.2

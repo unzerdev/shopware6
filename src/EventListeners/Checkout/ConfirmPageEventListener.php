@@ -91,32 +91,25 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $salesChannelContext    = $event->getSalesChannelContext();
-        $this->configData       = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $registerCreditCards    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
-        $registerPayPalAccounts = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
-        $registerDirectDebit    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
+        $salesChannelContext = $event->getSalesChannelContext();
+        $this->configData    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
-        if ($registerCreditCards &&
-            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
         ) {
             $this->addCreditCardExtension($event);
         }
 
-        if ($registerPayPalAccounts &&
-            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYPAL
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYPAL
         ) {
             $this->addPayPalExtension($event);
         }
 
-        if ($registerDirectDebit &&
-            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT
         ) {
             $this->addDirectDebitExtension($event);
         }
 
-        if ($registerDirectDebit &&
-            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED
         ) {
             $this->addDirectDebitSecuredExtension($event);
         }
@@ -216,7 +209,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $creditCards = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD);
-        $extension   = (new CreditCardPageExtension())->setDisplayCreditCardSelection(true);
+        $extension   = new CreditCardPageExtension();
 
         /** @var UnzerPaymentDeviceEntity $creditCard */
         foreach ($creditCards as $creditCard) {
@@ -235,7 +228,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $payPalAccounts = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL);
-        $extension      = (new PayPalPageExtension())->setDisplaypayPalAccountselection(true);
+        $extension      = new PayPalPageExtension();
 
         /** @var UnzerPaymentDeviceEntity $payPalAccount */
         foreach ($payPalAccounts as $payPalAccount) {
@@ -254,7 +247,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT);
-        $extension          = (new DirectDebitPageExtension())->setDisplayDirectDebitDeviceSelection(true);
+        $extension          = new DirectDebitPageExtension();
 
         /** @var UnzerPaymentDeviceEntity $directDebitDevice */
         foreach ($directDebitDevices as $directDebitDevice) {

@@ -14,9 +14,6 @@ class CreditCardPageExtension extends Struct
     /** @var UnzerPaymentDeviceEntity[] */
     protected $creditCards = [];
 
-    /** @var bool */
-    protected $displayCreditCardSelection;
-
     public function addCreditCard(UnzerPaymentDeviceEntity $creditCard): self
     {
         $this->creditCards[] = $creditCard;
@@ -40,18 +37,6 @@ class CreditCardPageExtension extends Struct
     public function setCreditCards(array $creditCards): self
     {
         $this->creditCards = $creditCards;
-
-        return $this;
-    }
-
-    public function getDisplayCreditCardSelection(): bool
-    {
-        return $this->displayCreditCardSelection;
-    }
-
-    public function setDisplayCreditCardSelection(bool $displayCreditCardSelection): self
-    {
-        $this->displayCreditCardSelection = $displayCreditCardSelection;
 
         return $this;
     }

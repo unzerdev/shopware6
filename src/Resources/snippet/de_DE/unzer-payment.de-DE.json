@@ -29,7 +29,8 @@
                     "secret": "Secret"
                 },
                 "mandate": "Wurst",
-                "choose": "Wählen Sie bitte eine gespeicherte Kreditkarte oder füllen Sie das Formular aus."
+                "choose": "Wählen Sie bitte eine gespeicherte Kreditkarte oder füllen Sie das Formular aus.",
+                "remember": "Meine Kreditkarte für die nächste Bestellung speichern"
             },
             "sepa": {
                 "testData": {
@@ -40,7 +41,8 @@
                     "title": "SEPA Lastschrift-Mandat",
                     "content":  "Ich ermächtige %company%, Zahlungen von meinem Konto mittels SEPA Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von %company% auf mein Konto gezogenen SEPA Lastschriften einzulösen. Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrags verlangen. Es gelten dabei die mit meinem Kreditinstitut vereinbarten Bedingungen. Für den Fall der Nichteinlösung der Lastschriften oder des Widerspruchs gegen die Lastschriften weise ich meine Bank unwiderruflich an, %company% oder Dritten auf Anforderung meinen Namen, Adresse und Geburtsdatum vollständig mitzuteilen.",
                     "accept": "SEPA Lastschrift-Mandat akzeptieren",
-                    "error": "Bitte akzeptieren Sie das SEPA Lastschrift-Mandat um fortzufahren."
+                    "error": "Bitte akzeptieren Sie das SEPA Lastschrift-Mandat um fortzufahren.",
+                    "remember": "Mein SEPA Lastschrift-Mandat für die nächste Bestellung speichern"
                 },
                 "device": {
                     "choose": "Wählen Sie bitte ein gespeichertes Konto oder füllen Sie das Formular aus.",
@@ -58,7 +60,8 @@
             },
             "paypal": {
                 "new": "Neuer Account",
-                "choose": "Wählen Sie bitte einen gespeicherten Account aus oder fügen Sie einen Account hinzu."
+                "choose": "Wählen Sie bitte einen gespeicherten Account aus oder verwenden Sie einen anderen Account.",
+                "remember": "Mein PayPal Account für die nächste Bestellung speichern"
             }
         },
         "accountPayment": {
