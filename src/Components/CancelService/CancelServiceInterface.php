@@ -31,5 +31,5 @@ interface CancelServiceInterface
         string $authorizationId,
         float $amountGross,
         Context $context
-    );
+    ): void;
 }
