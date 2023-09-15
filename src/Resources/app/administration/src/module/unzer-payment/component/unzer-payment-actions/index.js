@@ -22,7 +22,8 @@ Component.register('unzer-payment-actions', {
             isLoading: false,
             isSuccessful: false,
             transactionAmount: 0.00,
-            reasonCode: null
+            reasonCode: null,
+            isCancelStarted: false
         };
     },
 
@@ -162,6 +163,42 @@ Component.register('unzer-payment-actions', {
 
                 this.isLoading = false;
             });
+        },
+
+        startCancel() {
+            this.isCancelStarted = true;
+        },
+
+        cancel() {
+            this.isLoading = true;
+
+            this.UnzerPaymentService.cancelTransaction(
+                this.paymentResource.orderId,
+                this.paymentResource.id,
+                this.transactionAmount
+            ).then(() => {
+                this.createNotificationSuccess({
+                    title: this.$tc('unzer-payment.paymentDetails.notifications.cancelSuccessTitle'),
+                    message: this.$tc('unzer-payment.paymentDetails.notifications.cancelSuccessMessage')
+                });
+
+                this.isSuccessful = true;
+
+                this.$emit('reload');
+            }).catch((errorResponse) => {
+                let message = errorResponse.response.data.errors[0];
+
+                if (message === 'generic-error') {
+                    message = this.$tc('unzer-payment.paymentDetails.notifications.cancelErrorMessage');
+                }
+
+                this.createNotificationError({
+                    title: this.$tc('unzer-payment.paymentDetails.notifications.cancelErrorTitle'),
+                    message: message
+                });
+
+                this.isLoading = false;
+            })
         }
     }
 });

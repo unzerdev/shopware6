@@ -13,7 +13,8 @@
                     "authorization": "Authorization",
                     "charge": "Charging",
                     "shipment": "Shipping notification",
-                    "cancellation": "Refund",
+                    "refund": "Refund",
+                    "cancellation": "Cancel",
                     "default": ""
                 }
             },
@@ -27,7 +28,14 @@
                 "chargeButton": "Charge",
                 "shipButton": "Shipping notice",
                 "refundButton": "Refund",
-                "defaultButton": "Done"
+                "defaultButton": "Done",
+                "cancelButton": "Cancel",
+                "confirmCancelModal": {
+                    "text": "Do you really want to cancel the authorization of the selected amount?",
+                    "amountLabel": "Amount:",
+                    "yesButton": "Yes",
+                    "noButton": "No"
+                }
             },
             "detail": {
                 "cardTitle": "Payment Details",
@@ -70,7 +78,11 @@
                 "couldNotRetrieveMessage": "The payment details could not be retrieved, please check the log files for more information.",
                 "documentDateMissingError": "Document date for invoice is empty.",
                 "paymentMissingError": "Payment could not be found",
-                "paylaterInvoiceDocumentRequiredErrorMessage": "Please create or upload an invoice for the order first."
+                "paylaterInvoiceDocumentRequiredErrorMessage": "Please create or upload an invoice for the order first.",
+                "cancelSuccessTitle": "Cancel",
+                "cancelErrorTitle": "Cancel",
+                "cancelSuccessMessage": "The reversal was successfully completed.",
+                "cancelErrorMessage": "The reversal could not be performed."
             }
         },
         "order-list": {

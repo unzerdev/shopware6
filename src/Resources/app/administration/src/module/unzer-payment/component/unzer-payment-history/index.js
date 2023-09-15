@@ -96,6 +96,8 @@ Component.register('unzer-payment-history', {
                     return this.$tc('unzer-payment.paymentDetails.history.type.charge');
                 case 'shipment':
                     return this.$tc('unzer-payment.paymentDetails.history.type.shipment');
+                case 'refund':
+                    return this.$tc('unzer-payment.paymentDetails.history.type.refund');
                 case 'cancellation':
                     return this.$tc('unzer-payment.paymentDetails.history.type.cancellation');
                 default:

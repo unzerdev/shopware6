@@ -27,7 +27,8 @@
                 "chargeButton": "Einziehen",
                 "shipButton": "Versandmitteilung",
                 "refundButton": "Rückerstatten",
-                "defaultButton": "Erledigt"
+                "defaultButton": "Erledigt",
+                "cancelButton": "Abbrechen"
             },
             "detail": {
                 "cardTitle": "Zahlungsdetails",
