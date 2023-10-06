@@ -63,37 +63,9 @@ Component.register('unzer-payment-detail', {
     },
 
     methods: {
-        async findOrderDetailAndReload(base = this) {
-            //TODO: sw-order-state-select-v2 is not updating the order state, what is it doing?!
-
-            const componentName = 'sw-order-detail';
-            const parent = base.$parent;
-
-            if (parent === undefined) {
-                return null;
-            }
-
-            if (parent.$options.name !== 'sw-order-detail') {
-                this.findOrderDetailAndReload(parent);
-
-                return;
-            }
-
-            if (parent.isOrderEditing) {
-                return;
-            }
-
-            const hasOrderDeepEditState = parent.hasOrderDeepEdit;
-            await parent.reloadEntityData();
-
-            //we need to reset it here, because the reloadEntityData() method will set it to true when not within documents
-            parent.hasOrderDeepEdit = hasOrderDeepEditState;
-        },
-
         reloadOrderDetail() {
-            this.findOrderDetailAndReload();
+            this.$emit('reloadOrderDetails');
         },
-
 
         ship() {
             this.isLoading = true;

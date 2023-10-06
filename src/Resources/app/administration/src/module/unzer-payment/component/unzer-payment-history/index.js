@@ -103,8 +103,9 @@ Component.register('unzer-payment-history', {
             }
         },
 
-        reloadPaymentDetails: function () {
+        reload: function () {
             this.$emit('reload');
+            this.$emit('reloadOrderDetails');
         },
 
         formatAmount(cents, decimalPrecision) {
