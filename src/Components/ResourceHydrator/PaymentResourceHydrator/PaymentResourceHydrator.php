@@ -216,6 +216,10 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     {
         /** @var Cancellation $cancellation */
         foreach ($payment->getCancellations() as $cancellation) {
+            if ($cancellation->isError()) {
+                continue;
+            }
+
             $item = $this->hydrateTransactionItem(
                 $cancellation,
                 self::TRANSACTION_TYPE_CANCELLATION,
