@@ -13,7 +13,8 @@
                     "authorization": "Reservierung",
                     "charge": "Einzug",
                     "shipment": "Versandmitteilung",
-                    "cancellation": "Rückerstattung",
+                    "refund": "Rückerstattung",
+                    "cancellation": "Stornierung",
                     "default": ""
                 }
             },
@@ -28,7 +29,13 @@
                 "shipButton": "Versandmitteilung",
                 "refundButton": "Rückerstatten",
                 "defaultButton": "Erledigt",
-                "cancelButton": "Abbrechen"
+                "cancelButton": "Stornieren",
+                "confirmCancelModal": {
+                    "text": "Möchten Sie wirklich die Reservierung über den angegebenen Betrag stornieren?",
+                    "amountLabel": "Betrag:",
+                    "yesButton": "Ja",
+                    "noButton": "Nein"
+                }
             },
             "detail": {
                 "cardTitle": "Zahlungsdetails",
@@ -71,7 +78,11 @@
                 "couldNotRetrieveMessage": "Die Zahlungsdetails konnten nicht abgerufen werden, bitte prüfen Sie die Logdateien für weitere Informationen.",
                 "documentDateMissingError": "Das Datum der Rechnung ist leer.",
                 "paymentMissingError": "Die Zahlung konnte nicht gefunden werden",
-                "paylaterInvoiceDocumentRequiredErrorMessage": "Bitte erstellen oder hinterlegen Sie zunächst eine Rechnung für die Bestellung."
+                "paylaterInvoiceDocumentRequiredErrorMessage": "Bitte erstellen oder hinterlegen Sie zunächst eine Rechnung für die Bestellung.",
+                "cancelSuccessTitle": "Stornierung",
+                "cancelErrorTitle": "Stornierung",
+                "cancelSuccessMessage": "Die Stornierung wurde erfolgreich durchgeführt.",
+                "cancelErrorMessage": "Die Stornierung konnte nicht durchgeführt werden."
             }
         },
         "order-list": {
