@@ -7,14 +7,16 @@
                         {% block unzer_payment_payment_details_content_payment_detail %}
                             <unzer-payment-detail
                                 :paymentResource="paymentResource"
-                                @reload="reloadPaymentDetails">
+                                @reload="reloadPaymentDetails"
+                                @reloadOrderDetails="reloadOrderDetails">
                             </unzer-payment-detail>
                         {% endblock %}
 
                         {% block unzer_payment_payment_details_content_payment_history %}
                             <unzer-payment-history
                                 :paymentResource="paymentResource"
-                                @reload="reloadPaymentDetails">
+                                @reload="reloadPaymentDetails"
+                                @reloadOrderDetails="reloadOrderDetails">
                             </unzer-payment-history>
                         {% endblock %}
 

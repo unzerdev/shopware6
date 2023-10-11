@@ -63,6 +63,10 @@ Component.register('unzer-payment-detail', {
     },
 
     methods: {
+        reloadOrderDetail() {
+            this.$emit('reloadOrderDetails');
+        },
+
         ship() {
             this.isLoading = true;
 

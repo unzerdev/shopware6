@@ -1,3 +1,10 @@
+# Unreleased
+* Die Bestellung wird nun nach den Aktionen im Unzer Tab neu geladen, damit unter anderem der Zahlungsstatus korrekt angezeigt wird
+* Ergänzung der Stornierung einer Authorisierung
+
+# 5.4.1
+* Korrektur der Zahlung via PayPal als Gast
+
 # 5.4.0
 * Entfernung der Einstellungen für die Registrierung von Zahlungsdaten aus der Plugin-Konfiguration
 * Ergänzung und Anpassung der Registrierung von Zahlungsdaten im Checkout 

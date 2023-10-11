@@ -1,11 +1,23 @@
 import template from './unzer-payment-history.html.twig';
 
-const { Component, Module } = Shopware;
+const { Component, Module, Mixin } = Shopware;
 
 Component.register('unzer-payment-history', {
     template,
 
-    inject: ['repositoryFactory'],
+    inject: ['repositoryFactory', 'UnzerPaymentService'],
+
+    mixins: [
+        Mixin.getByName('notification')
+    ],
+
+    data() {
+        return {
+            showCancelModal: false,
+            isCancelLoading: false,
+            cancelAmount: 0,
+        };
+    },
 
     props: {
         paymentResource: {
@@ -96,6 +108,8 @@ Component.register('unzer-payment-history', {
                     return this.$tc('unzer-payment.paymentDetails.history.type.charge');
                 case 'shipment':
                     return this.$tc('unzer-payment.paymentDetails.history.type.shipment');
+                case 'refund':
+                    return this.$tc('unzer-payment.paymentDetails.history.type.refund');
                 case 'cancellation':
                     return this.$tc('unzer-payment.paymentDetails.history.type.cancellation');
                 default:
@@ -103,12 +117,53 @@ Component.register('unzer-payment-history', {
             }
         },
 
-        reloadPaymentDetails: function () {
+        reload: function () {
             this.$emit('reload');
+            this.$emit('reloadOrderDetails');
         },
 
         formatAmount(cents, decimalPrecision) {
             return cents / (10 ** decimalPrecision);
+        },
+
+        openCancelModal(item, cancelAmount) {
+            this.showCancelModal = item.resource.id;
+            this.cancelAmount = cancelAmount;
+        },
+
+        closeCancelModal() {
+            this.showCancelModal = false;
+            this.cancelAmount = 0;
+        },
+
+        cancel() {
+            this.isCancelLoading = true;
+
+            this.UnzerPaymentService.cancelTransaction(
+                this.paymentResource.orderId,
+                this.paymentResource.id,
+                this.cancelAmount
+            ).then(() => {
+                this.createNotificationSuccess({
+                    title: this.$tc('unzer-payment.paymentDetails.notifications.cancelSuccessTitle'),
+                    message: this.$tc('unzer-payment.paymentDetails.notifications.cancelSuccessMessage')
+                });
+
+                this.reload();
+            }).catch((errorResponse) => {
+                let message = errorResponse.response.data.errors[0];
+
+                if (message === 'generic-error') {
+                    message = this.$tc('unzer-payment.paymentDetails.notifications.cancelErrorMessage');
+                }
+
+                this.createNotificationError({
+                    title: this.$tc('unzer-payment.paymentDetails.notifications.cancelErrorTitle'),
+                    message: message
+                });
+
+                this.isCancelLoading = false;
+            });
         }
     }
 });

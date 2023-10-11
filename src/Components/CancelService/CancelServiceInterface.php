@@ -21,4 +21,15 @@ interface CancelServiceInterface
         ?string $reasonCode,
         Context $context
     ): void;
+
+    /**
+     * @throws UnzerApiException
+     * @throws RuntimeException
+     */
+    public function cancelAuthorizationById(
+        string $orderTransactionId,
+        string $authorizationId,
+        float $amountGross,
+        Context $context
+    ): void;
 }
