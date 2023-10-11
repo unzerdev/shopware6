@@ -1,3 +1,6 @@
+# 5.4.1
+* Korrektur der Zahlung via PayPal als Gast
+
 # 5.4.0
 * Entfernung der Einstellungen für die Registrierung von Zahlungsdaten aus der Plugin-Konfiguration
 * Ergänzung und Anpassung der Registrierung von Zahlungsdaten im Checkout 
