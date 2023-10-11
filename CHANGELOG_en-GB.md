@@ -1,3 +1,6 @@
+# Unreleased
+* The order will now be reloaded after the actions in the Unzer tab so that so that the payment status is displayed correctly.
+
 # 5.4.1
 * Fixed the payment via PayPal with a guest account 
 

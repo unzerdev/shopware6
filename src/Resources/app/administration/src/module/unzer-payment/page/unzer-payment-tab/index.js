@@ -98,6 +98,33 @@ Component.register('unzer-payment-tab', {
                         });
                 });
             });
-        }
+        },
+
+        reloadOrderDetails() {
+            //we cannot know, when the webhook is called, but 5 seconds should be enough to wait for most cases
+            setTimeout(() => {
+                this.findOrderDetailComponentAndReInit();
+            }, 5000);
+        },
+
+        async findOrderDetailComponentAndReInit(base = this) {
+            const componentName = 'sw-order-detail';
+            const parent = base.$parent;
+
+            if (parent === undefined) {
+                return null;
+            }
+
+            if (parent.$options.name !== componentName) {
+                return this.findOrderDetailComponentAndReInit(parent);
+            }
+
+            if (parent.isOrderEditing) {
+                return null;
+            }
+
+            // we reinitialize the orderDetail component, because there is no other way to update  it is not updating the order state
+            parent.createdComponent();
+        },
     }
 });
