@@ -20,10 +20,10 @@
             },
             "actions": {
                 "reason": {
-                    "placeholder": "reason",
-                    "cancel": "cancel",
-                    "credit": "credit",
-                    "return": "return"
+                    "placeholder": "Reason",
+                    "cancel": "Cancel",
+                    "credit": "Credit",
+                    "return": "Return"
                 },
                 "chargeButton": "Charge",
                 "shipButton": "Shipping notice",

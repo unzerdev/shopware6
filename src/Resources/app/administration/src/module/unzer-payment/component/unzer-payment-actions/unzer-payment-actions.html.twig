@@ -1,5 +1,5 @@
 {% block unzer_payment_actions %}
-    <sw-container rows="1fr 1fr" gap="10px 0" v-on:click.native.stop>
+    <sw-container rows="1fr 2fr" gap="10px 0" v-on:click.native.stop>
         {% block unzer_payment_actions_amount_field %}
             <div class="unzer-payment-actions--input">
                 <sw-number-field
@@ -14,7 +14,7 @@
         {% endblock %}
 
         <div class="unzer-payment-actions--button">
-            <sw-button-group v-if="isChargePossible">
+            <sw-container rows="1fr 1fr" v-if="isChargePossible">
                 {% block unzer_payment_actions_charge_button %}
                     <sw-button-process :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0" :isLoading="isLoading" :processSuccess="isSuccessful" @click="charge">
                         {{ $tc('unzer-payment.paymentDetails.actions.chargeButton') }}
@@ -26,9 +26,9 @@
                         {{ $tc('unzer-payment.paymentDetails.actions.cancelButton') }}
                     </sw-button-process>
                 {% endblock %}
-            </sw-button-group>
+            </sw-container>
 
-            <sw-container columns="1fr 1fr" v-else-if="isRefundPossible">
+            <sw-container rows="1fr 1fr" v-else-if="isRefundPossible">
                 {% block unzer_payment_actions_reason_field %}
                     <sw-single-select :options="reasonCodeSelection"
                                       :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0"
