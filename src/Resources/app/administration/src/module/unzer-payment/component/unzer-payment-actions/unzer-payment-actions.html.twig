@@ -1,5 +1,5 @@
 {% block unzer_payment_actions %}
-    <sw-container columns="1fr 1fr" gap="0 10px" v-on:click.native.stop>
+    <sw-container rows="1fr 2fr" gap="10px 0" v-on:click.native.stop>
         {% block unzer_payment_actions_amount_field %}
             <div class="unzer-payment-actions--input">
                 <sw-number-field
@@ -14,29 +14,21 @@
         {% endblock %}
 
         <div class="unzer-payment-actions--button">
-            {% block unzer_payment_actions_charge_button %}
-                <sw-button-process :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0" :isLoading="isLoading" :processSuccess="isSuccessful" v-if="isChargePossible" @click="charge">
-                    {{ $tc('unzer-payment.paymentDetails.actions.chargeButton') }}
-                </sw-button-process>
-            {% endblock %}
+            <sw-container rows="1fr 1fr" v-if="isChargePossible">
+                {% block unzer_payment_actions_charge_button %}
+                    <sw-button-process :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0" :isLoading="isLoading" :processSuccess="isSuccessful" @click="charge">
+                        {{ $tc('unzer-payment.paymentDetails.actions.chargeButton') }}
+                    </sw-button-process>
+                {% endblock %}
 
-            {% block unzer_payment_actions_refund_button %}
-                <sw-button-process :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0" :isLoading="isLoading" :processSuccess="isSuccessful" v-else-if="isRefundPossible" @click="refund">
-                    {{ $tc('unzer-payment.paymentDetails.actions.refundButton') }}
-                </sw-button-process>
-            {% endblock %}
+                {% block unzer_payment_actions_cancel_button %}
+                    <sw-button-process :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0" :isLoading="isLoading" :processSuccess="isSuccessful" @click="startCancel" variant="ghost-danger">
+                        {{ $tc('unzer-payment.paymentDetails.actions.cancelButton') }}
+                    </sw-button-process>
+                {% endblock %}
+            </sw-container>
 
-            {% block unzer_payment_actions_default_button %}
-                <sw-button :disabled="true" v-else>
-                    {{ $tc('unzer-payment.paymentDetails.actions.defaultButton') }}
-                </sw-button>
-            {% endblock %}
-
-            {% block unzer_payment_actions_button_container_inner %}{% endblock %}
-        </div>
-
-        <template v-if="isRefundPossible">
-            <div class="unzer-payment-actions--reason-code">
+            <sw-container rows="1fr 1fr" v-else-if="isRefundPossible">
                 {% block unzer_payment_actions_reason_field %}
                     <sw-single-select :options="reasonCodeSelection"
                                       :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0"
@@ -46,7 +38,21 @@
                     >
                     </sw-single-select>
                 {% endblock %}
-            </div>
-        </template>
+
+                {% block unzer_payment_actions_refund_button %}
+                    <sw-button-process :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0" :isLoading="isLoading" :processSuccess="isSuccessful" @click="refund">
+                        {{ $tc('unzer-payment.paymentDetails.actions.refundButton') }}
+                    </sw-button-process>
+                {% endblock %}
+            </sw-container>
+
+            {% block unzer_payment_actions_default_button %}
+                <sw-button :disabled="true" v-else>
+                    {{ $tc('unzer-payment.paymentDetails.actions.defaultButton') }}
+                </sw-button>
+            {% endblock %}
+
+            {% block unzer_payment_actions_button_container_inner %}{% endblock %}
+        </div>
     </sw-container>
 {% endblock %}
