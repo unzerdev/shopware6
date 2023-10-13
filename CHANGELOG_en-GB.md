@@ -1,3 +1,9 @@
+# Unreleased
+* The order will now be reloaded after the actions in the Unzer tab so that so that the payment status is displayed correctly.
+
+# 5.4.1
+* Fixed the payment via PayPal with a guest account 
+
 # 5.4.0
 * Removed the settings for registering the payment details in the plugin configuration
 * Added and adjusted the registering of payment details in the checkout

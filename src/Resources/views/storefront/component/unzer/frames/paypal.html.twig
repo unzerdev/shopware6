@@ -1,52 +1,56 @@
 {% block unzer_payment_frame_paypal_account %}
-    {% if not context.customer.guest %}
+    {% set hasSavedAccounts = page.extensions.unzerPayPal.payPalAccounts|length > 0 %}
+    {% set showAccountSave = not context.customer.guest %}
+    {% set showTitle = hasSavedAccounts || showAccountSave %}
 
-        {% block unzer_payment_checkout_confirm_frame_card_body_title %}
+    {% block unzer_payment_checkout_confirm_frame_card_body_title %}
+        {% if showTitle %}
             <div class="card-title">
                 {{ context.paymentMethod.translated.name }}
             </div>
-        {% endblock %}
+        {% endif %}
+    {% endblock %}
 
-        <div class="unzer-payment-paypal-account-wrapper"
-             data-unzer-payment-paypal="true"
-             data-unzer-payment-pay-pal-options='{
-                "hasSavedAccounts": "{{ page.extensions.unzerPayPal.payPalAccounts|length > 0 }}"
-             }'>
-                {% if page.extensions.unzerPayPal.payPalAccounts|length > 0 %}
-                    <div class="unzer-payment-saved-accounts-wrapper">
-                        <div class="unzer-payment-saved-accounts--message">
-                            {{ "UnzerPayment.frame.paypal.choose"|trans }}
-                        </div>
-                        {% block unzer_payment_frame_paypal_account_saved_device %}
-                            {# @var payPalAccount \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
-                            {% for payPalAccount in page.extensions.unzerPayPal.payPalAccounts %}
-                                <div class="form-check payment-method-radio custom-control custom-radio payment-control">
-                                    <input type="radio" value="{{ payPalAccount.typeId }}" name="savedPayPalAccount"
-                                           id="account-{{ payPalAccount.id }}"
-                                           class="form-check-input custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
-                                    <label for="account-{{ payPalAccount.id }}"
-                                           class="form-check-label custom-control-label payment-method-label">
-                                        <strong>{{ payPalAccount.data['email'] }}</strong>
-                                    </label>
-                                </div>
-                            {% endfor %}
-                        {% endblock %}
-
-                        {% block unzer_payment_frame_paypal_account_saved_device_new %}
+    <div class="unzer-payment-paypal-account-wrapper"
+         data-unzer-payment-paypal="true"
+         data-unzer-payment-pay-pal-options='{
+            "hasSavedAccounts": {{ hasSavedAccounts ? 'true' : 'false' }}
+         }'>
+            {% if hasSavedAccounts %}
+                <div class="unzer-payment-saved-accounts-wrapper">
+                    <div class="unzer-payment-saved-accounts--message">
+                        {{ "UnzerPayment.frame.paypal.choose"|trans }}
+                    </div>
+                    {% block unzer_payment_frame_paypal_account_saved_device %}
+                        {# @var payPalAccount \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
+                        {% for payPalAccount in page.extensions.unzerPayPal.payPalAccounts %}
                             <div class="form-check payment-method-radio custom-control custom-radio payment-control">
-                                <input type="radio" value="new" name="savedPayPalAccount" id="account-new"
-                                       class="form-check-input custom-control-input payment-method-input"
-                                        {% if page.extensions.unzerPayPal.payPalAccounts|length <= 0 %} checked="checked"{% endif %}>
-                                <label for="account-new" class="form-check-label custom-control-label payment-method-label">
-                                    {{ "UnzerPayment.frame.paypal.new"|trans }}
+                                <input type="radio" value="{{ payPalAccount.typeId }}" name="savedPayPalAccount"
+                                       id="account-{{ payPalAccount.id }}"
+                                       class="form-check-input custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
+                                <label for="account-{{ payPalAccount.id }}"
+                                       class="form-check-label custom-control-label payment-method-label">
+                                    <strong>{{ payPalAccount.data['email'] }}</strong>
                                 </label>
                             </div>
-                        {% endblock %}
-                    </div>
-                {% endif %}
+                        {% endfor %}
+                    {% endblock %}
 
-            <div class="unzer-payment-saved-accounts-wrapper-elements">
-                {% block unzer_payment_frame_paypal_account_remember %}
+                    {% block unzer_payment_frame_paypal_account_saved_device_new %}
+                        <div class="form-check payment-method-radio custom-control custom-radio payment-control">
+                            <input type="radio" value="new" name="savedPayPalAccount" id="account-new"
+                                   class="form-check-input custom-control-input payment-method-input">
+                            <label for="account-new" class="form-check-label custom-control-label payment-method-label">
+                                {{ "UnzerPayment.frame.paypal.new"|trans }}
+                            </label>
+                        </div>
+                    {% endblock %}
+                </div>
+            {% endif %}
+
+            {% if showAccountSave %}
+                <div class="unzer-payment-saved-accounts-wrapper-elements">
+                    {% block unzer_payment_frame_paypal_account_remember %}
                         <div class="unzer-payment-frame-row custom-control custom-checkbox">
                             <input type="checkbox"
                                    class="custom-control-input"
@@ -56,9 +60,8 @@
                             />
                             <label for="unzer-payment-paypal-remember" class="custom-control-label">{{ "UnzerPayment.frame.paypal.remember"|trans }}</label>
                         </div>
-                {% endblock %}
-            </div>
+                    {% endblock %}
+                </div>
+            {% endif %}
         </div>
-
-    {% endif %}
 {% endblock %}

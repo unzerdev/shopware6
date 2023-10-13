@@ -117,8 +117,9 @@ Component.register('unzer-payment-history', {
             }
         },
 
-        reloadPaymentDetails: function () {
+        reload: function () {
             this.$emit('reload');
+            this.$emit('reloadOrderDetails');
         },
 
         formatAmount(cents, decimalPrecision) {
@@ -148,7 +149,7 @@ Component.register('unzer-payment-history', {
                     message: this.$tc('unzer-payment.paymentDetails.notifications.cancelSuccessMessage')
                 });
 
-                this.reloadPaymentDetails();
+                this.reload();
             }).catch((errorResponse) => {
                 let message = errorResponse.response.data.errors[0];
 

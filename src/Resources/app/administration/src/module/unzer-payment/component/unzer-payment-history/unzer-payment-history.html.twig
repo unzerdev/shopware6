@@ -16,7 +16,7 @@
                                         :transactionResource="item.resource"
                                         :paymentResource="paymentResource"
                                         :decimalPrecision="decimalPrecision"
-                                        @reload="reloadPaymentDetails"
+                                        @reload="reload"
                                         @cancel="(cancelAmount) => { openCancelModal(item, cancelAmount) }">
                                     </unzer-payment-actions>
                                 {% endblock %}
