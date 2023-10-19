@@ -1,6 +1,7 @@
 # Unreleased
 * Die Bestellung wird nun nach den Aktionen im Unzer Tab neu geladen, damit unter anderem der Zahlungsstatus korrekt angezeigt wird
-* Ergänzung der Stornierung einer Authorisierung
+* Ergänzung der Stornierung einer Autorisierung
+* Behebung an zusätzlichem Parameter in Übertragung von Zahlungsdaten an Unzer bei erstmalig gewolltem Speichern von Kreditkarteninformationen im Checkout
 
 # 5.4.1
 * Korrektur der Zahlung via PayPal als Gast
