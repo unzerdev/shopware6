@@ -1,6 +1,7 @@
 # Unreleased
-* The order will now be reloaded after the actions in the Unzer tab so that so that the payment status is displayed correctly.
+* The order will now be reloaded after the actions in the Unzer tab so that the payment status is displayed correctly.
 * Added the cancel of an authorization
+* Fixed an additional parameter in the transfer of payment data to Unzer when credit card information is saved in checkout for the first time
 
 # 5.4.1
 * Fixed the payment via PayPal with a guest account 
