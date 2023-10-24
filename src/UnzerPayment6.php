@@ -28,12 +28,12 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     (new UnzerPaymentClassLoader())->register();
 }
 
+/**
+ * @property ContainerInterface $container
+ */
 class UnzerPayment6 extends Plugin
 {
     public const MAX_DECIMAL_PRECISION = 4;
-
-    /** @var ContainerInterface */
-    protected $container;
 
     public function build(ContainerBuilder $container): void
     {
