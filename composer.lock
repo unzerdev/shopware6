@@ -4,25 +4,25 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a83106005b51db7e46300eb240b7a9e2",
+    "content-hash": "ece98920223152cf947c8af43240466a",
     "packages": [
         {
             "name": "unzerdev/php-sdk",
-            "version": "1.2.2.0",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unzerdev/php-sdk.git",
-                "reference": "cfd2f41d1b194fc9a6a666b9a35ec6013e429953"
+                "reference": "c49dbb63dfa46ad22da62130b6b885db2b2de16f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/cfd2f41d1b194fc9a6a666b9a35ec6013e429953",
-                "reference": "cfd2f41d1b194fc9a6a666b9a35ec6013e429953",
+                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/c49dbb63dfa46ad22da62130b6b885db2b2de16f",
+                "reference": "c49dbb63dfa46ad22da62130b6b885db2b2de16f",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "~7.1.0|~7.2.0|~7.3.0|~7.4.0|~8.0.0|~8.1.0"
+                "php": "~7.4.0|~8.0.0|~8.1.0|~8.2.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
@@ -45,9 +45,9 @@
             "description": "This is the php sdk to connect to the Unzer rest api.",
             "support": {
                 "email": "support@unzer.com",
-                "source": "https://github.com/unzerdev/php-sdk/tree/1.2.2.0"
+                "source": "https://github.com/unzerdev/php-sdk/tree/3.2.0"
             },
-            "time": "2022-10-04T12:05:18+00:00"
+            "time": "2023-07-05T13:42:56+00:00"
         }
     ],
     "packages-dev": [
@@ -99,20 +99,20 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.100",
+            "version": "1.10.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "48236ddf823547081b2b153d1cd2994b784328c3"
+                "reference": "b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/48236ddf823547081b2b153d1cd2994b784328c3",
-                "reference": "48236ddf823547081b2b153d1cd2994b784328c3",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5",
+                "reference": "b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1|^8.0"
+                "php": "^7.2|^8.0"
             },
             "conflict": {
                 "phpstan/phpstan-shim": "*"
@@ -122,11 +122,6 @@
                 "phpstan.phar"
             ],
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.12-dev"
-                }
-            },
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -137,9 +132,16 @@
                 "MIT"
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
+            "keywords": [
+                "dev",
+                "static analysis"
+            ],
             "support": {
+                "docs": "https://phpstan.org/user-guide/getting-started",
+                "forum": "https://github.com/phpstan/phpstan/discussions",
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.100"
+                "security": "https://github.com/phpstan/phpstan/security/policy",
+                "source": "https://github.com/phpstan/phpstan-src"
             },
             "funding": [
                 {
@@ -155,7 +157,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-01T09:52:08+00:00"
+            "time": "2023-06-21T20:07:58+00:00"
         }
     ],
     "aliases": [],
@@ -164,7 +166,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.2 || <=8.1"
+        "php": ">=7.4 || <=8.2"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

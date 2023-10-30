@@ -8,12 +8,12 @@ use DateInterval;
 use DateTime;
 use DateTimeInterface;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use UnzerPayment6\Components\BackwardsCompatibility\InvoiceGenerator;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
@@ -59,12 +59,12 @@ class ShipService implements ShipServiceInterface
         }
 
         $order         = $transaction->getOrder();
-        $documents     = $order->getDocuments()->getElements();
+        $documents     = $transaction->getOrder()->getDocuments()->getElements();
         $invoiceNumber = null;
         $documentDate  = null;
 
         foreach ($documents as $document) {
-            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
+            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::getInvoiceTechnicalName()) {
                 $newDocumentDate = new DateTime($document->getConfig()['documentDate']);
 
                 if ($documentDate === null || $newDocumentDate->getTimestamp() > $documentDate->getTimestamp()) {
@@ -136,7 +136,8 @@ class ShipService implements ShipServiceInterface
         if ($paymentType !== null && $paymentType instanceof InstallmentSecured) {
             /** @var DateTime $invoiceDueDate */
             $invoiceDueDate = clone $documentDate;
-            $dateInterval   = DateInterval::createFromDateString(sprintf('%s months', $paymentType->getNumberOfRates()));
+            /** @var DateInterval $dateInterval */
+            $dateInterval = DateInterval::createFromDateString(sprintf('%s months', $paymentType->getNumberOfRates()));
             $invoiceDueDate->add($dateInterval);
 
             $paymentType->setInvoiceDate($documentDate->format('Y-m-d'));

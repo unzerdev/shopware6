@@ -116,7 +116,6 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
 
             me.applePay.createResource(paymentData)
                 .then((createdResource) => {
-                    me.submitting = true;
                     PageLoadingIndicatorUtil.create();
 
                     try {
@@ -124,8 +123,8 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
                             const responseData = JSON.parse(response);
                             if (responseData.transactionStatus === 'pending') {
                                 session.completePayment({status: window.ApplePaySession.STATUS_SUCCESS});
-
                                 me._unzerPaymentPlugin.setSubmitButtonActive(false);
+                                me._unzerPaymentPlugin.submitting = true;
                                 me._unzerPaymentPlugin.submitResource(createdResource);
                             } else {
                                 PageLoadingIndicatorUtil.remove();
@@ -146,7 +145,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
                 })
                 .finally(() => {
                     me._unzerPaymentPlugin.setSubmitButtonActive(true);
-                    me.submitting = false;
+                    me._unzerPaymentPlugin.submitting = false;
                 });
         }
 

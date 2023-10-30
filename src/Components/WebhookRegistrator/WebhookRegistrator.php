@@ -70,7 +70,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
             }
 
             try {
-                $relativePath = $this->router->generate('unzer.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_PATH);
+                $relativePath = $this->router->generate('frontend.unzer.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_PATH);
                 $url          = $domainUrl . $relativePath;
 
                 $result = $this->clientFactory->createClient($salesChannelId)->createWebhook($url, 'payment');

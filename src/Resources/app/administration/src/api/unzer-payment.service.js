@@ -49,6 +49,19 @@ class UnzerPaymentService extends ApiService {
         });
     }
 
+    cancelTransaction(transaction, authorize, amount) {
+        const apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/cancel/${authorize}/${amount}`;
+
+        return this.httpClient.get(
+            apiRoute,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
     ship(transaction) {
         const apiRoute = `_action/${this.getApiBasePath()}/transaction/${transaction}/ship`;
 

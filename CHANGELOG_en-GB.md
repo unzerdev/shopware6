@@ -1,4 +1,25 @@
-# 5.x.x
+# Unreleased
+* The order will now be reloaded after the actions in the Unzer tab so that the payment status is displayed correctly.
+* Added the cancel of an authorization
+* Fixed an additional parameter in the transfer of payment data to Unzer when credit card information is saved in checkout for the first time
+
+# 5.4.1
+* Fixed the payment via PayPal with a guest account 
+
+# 5.4.0
+* Removed the settings for registering the payment details in the plugin configuration
+* Added and adjusted the registering of payment details in the checkout
+
+# 5.3.0
+* Fixed the names of the frontend routes
+* Added compatibility to PHP 8.2
+* Fixed the sorting of transactions in the Unzer tab on an order
+
+# 5.2.0
+* Added compatibility to Shopware 6.5
+* Fixed the cart calculation for net customers (thanks to twidmer)
+
+# 5.1.1
 * Added compatibility to CSRF mode ajax
 
 # 5.1.0

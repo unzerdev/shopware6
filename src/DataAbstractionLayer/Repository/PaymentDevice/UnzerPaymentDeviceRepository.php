@@ -34,6 +34,10 @@ class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceRepositoryInterf
      */
     public function getCollectionByCustomer(CustomerEntity $customer, Context $context, string $deviceType = null): EntitySearchResult
     {
+        if ($customer->getActiveBillingAddress() === null || $customer->getActiveShippingAddress() === null) {
+            throw new \RuntimeException('Customer has no active billing or shipping address');
+        }
+
         $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
 
         $criteria = new Criteria();
@@ -59,6 +63,10 @@ class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceRepositoryInterf
         array $data,
         Context $context
     ): EntityWrittenContainerEvent {
+        if ($customer->getActiveBillingAddress() === null || $customer->getActiveShippingAddress() === null) {
+            throw new \RuntimeException('Customer has no active billing or shipping address');
+        }
+
         $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
 
         $createData = [

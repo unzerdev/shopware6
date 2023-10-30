@@ -10,14 +10,13 @@ use UnzerSDK\Resources\AbstractUnzerResource;
 
 class ApplePayCertificate extends AbstractUnzerResource
 {
-    /** @var string */
-    protected $format = 'PEM';
-    /** @var string */
-    protected $type = 'certificate';
-    /** @var string */
-    protected $privateKey;
-    /** @var string */
-    protected $certificate;
+    protected string $format = 'PEM';
+
+    protected string $type = 'certificate';
+
+    protected string $privateKey;
+
+    protected string $certificate;
 
     public function getFormat(): string
     {

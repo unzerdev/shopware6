@@ -11,7 +11,6 @@
             "hasSavedCards": "{{ page.extensions.unzerCreditCard.creditCards|length > 0 }}"
          }'>
 
-
         {% block unzer_payment_frame_credit_card_test_data %}
             {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
             {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
@@ -19,7 +18,7 @@
             {% endif %}
         {% endblock %}
 
-        {% if page.extensions.unzerCreditCard.displayCreditCardSelection and page.extensions.unzerCreditCard.creditCards|length > 0 %}
+        {% if page.extensions.unzerCreditCard.creditCards|length > 0 %}
             <div class="unzer-payment-saved-cards-wrapper">
                 <div class="unzer-payment-saved-cards--message">
                     {{ "UnzerPayment.frame.creditCard.choose"|trans }}
@@ -85,6 +84,20 @@
                         </div>
                     </div>
                 </div>
+            {% endblock %}
+
+            {% block unzer_payment_frame_credit_card_remember %}
+                {% if not context.customer.guest %}
+                    <div class="unzer-payment-frame-row custom-control custom-checkbox">
+                        <input type="checkbox"
+                               class="custom-control-input"
+                               form="confirmOrderForm"
+                               name="{{ constant('UnzerPayment6\\Components\\PaymentHandler\\UnzerCreditCardPaymentHandler::REMEMBER_CREDIT_CARD_KEY') }}"
+                               id="unzer-payment-credit-card-remember"
+                        />
+                        <label for="unzer-payment-credit-card-remember" class="custom-control-label">{{ "UnzerPayment.frame.creditCard.remember"|trans }}</label>
+                    </div>
+                {% endif %}
             {% endblock %}
         </div>
     </div>

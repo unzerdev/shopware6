@@ -36,20 +36,15 @@ class SendShippingNotificationCommand extends Command
     private const EXIT_CODE_NO_ORDERS     = 3;
     private const EXIT_CODE_CONFIGURATION = 4;
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
-    /** @var EntityRepository */
-    private $transactionRepository;
+    private EntityRepository $transactionRepository;
 
-    /** @var Context */
-    private $context;
+    private Context $context;
 
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
-    /** @var ShipServiceInterface */
-    private $shipService;
+    private ShipServiceInterface $shipService;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -104,6 +99,18 @@ class SendShippingNotificationCommand extends Command
 
             $order = $transaction->getOrder();
 
+            if ($order === null) {
+                $output->writeln(sprintf('<error>Transaction %s has no order</error>', $transaction->getId()));
+
+                continue;
+            }
+
+            if ($order->getDocuments() === null) {
+                $output->writeln(sprintf('<error>Order %s has no documents</error>', $order->getOrderNumber()));
+
+                continue;
+            }
+
             $output->write(sprintf('(%s/%s) Order %s', $currentTransactionCounter, $transactionCount, $order->getOrderNumber()));
 
             $entityFilter = new DocumentTypeEntity();
@@ -120,7 +127,10 @@ class SendShippingNotificationCommand extends Command
                 $output->writeln(sprintf("\t<error>%s</error>", $apiException->getMerchantMessage()));
 
                 //Already insured but flag in DB missing!
-                if ($apiException->getCode() === ApiResponseCodes::CORE_ERROR_INSURANCE_ALREADY_ACTIVATED) {
+                /** @var string $exceptionCode */
+                $exceptionCode = $apiException->getCode();
+
+                if ($exceptionCode === ApiResponseCodes::CORE_ERROR_INSURANCE_ALREADY_ACTIVATED) {
                     $this->setCustomFields($transaction);
                     $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceId, $this->context));
 
@@ -174,12 +184,18 @@ class SendShippingNotificationCommand extends Command
 
     private function getInvoiceDocumentId(DocumentCollection $documents): string
     {
-        return $documents->filter(static function (DocumentEntity $entity) {
-            if ($entity->getDocumentType()->getTechnicalName() === 'invoice') {
+        $document = $documents->filter(static function (DocumentEntity $entity) {
+            if ($entity->getDocumentType() && $entity->getDocumentType()->getTechnicalName() === 'invoice') {
                 return $entity;
             }
 
             return null;
-        })->first()->getConfig()['documentNumber'];
+        })->first();
+
+        if ($document === null) {
+            throw new \RuntimeException('No invoice document found');
+        }
+
+        return $document->getConfig()['documentNumber'];
     }
 }

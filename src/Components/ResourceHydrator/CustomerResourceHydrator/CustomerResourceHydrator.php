@@ -24,8 +24,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED,
     ];
 
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -61,7 +60,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
                 $this->getBirthDate($customer),
                 $this->getUnzerAddress($billingAddress),
                 $customer->getEmail(),
-                !empty($billingAddress->getCompany()) ? $billingAddress->getCompany() : ''
+                $billingAddress->getCompany()
             );
         }
 

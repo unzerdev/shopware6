@@ -7,7 +7,6 @@ namespace UnzerPayment6\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 use Throwable;
-use UnzerPayment6\Components\BackwardsCompatibility\DbalConnectionHelper;
 
 class Migration1566288547AddAddressHash extends MigrationStep
 {
@@ -18,7 +17,7 @@ class Migration1566288547AddAddressHash extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $result = DbalConnectionHelper::fetchColumn($connection, 'SHOW TABLES LIKE \'unzer_payment_payment_device\';');
+        $result = $connection->fetchOne('SHOW TABLES LIKE \'unzer_payment_payment_device\';');
 
         if ($result) {
             return;
@@ -30,7 +29,7 @@ class Migration1566288547AddAddressHash extends MigrationStep
 SQL;
 
         try {
-            DbalConnectionHelper::exec($connection, $sql);
+            $connection->executeStatement($sql);
         } catch (Throwable $ex) {
             //The column may exist already
         }

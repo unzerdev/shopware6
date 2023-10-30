@@ -57,12 +57,6 @@
             </options>
         </input-field>
 
-        <input-field type="bool">
-            <name>registerCreditCard</name>
-            <label>Register credit cards</label>
-            <label lang="de-DE">Kreditkarten registrieren</label>
-        </input-field>
-
         <input-field type="single-select">
             <name>bookingModePayPal</name>
             <label>Booking mode PayPal</label>
@@ -83,23 +77,11 @@
             </options>
         </input-field>
 
-        <input-field type="bool">
-            <name>registerPayPal</name>
-            <label>Register PayPal accounts</label>
-            <label lang="de-DE">PayPal Accounts registrieren</label>
-        </input-field>
-
         <input-field type="float">
             <name>installmentSecuredEffectiveInterest</name>
             <label>Installment secured: effective interest</label>
             <label lang="de-DE">Ratenzahlung: effektive Verzinsung</label>
             <defaultValue>4.5</defaultValue>
-        </input-field>
-
-        <input-field type="bool">
-            <name>registerDirectDebit</name>
-            <label>Register direct debit accounts</label>
-            <label lang="de-DE">Lastschrift-Konten registrieren</label>
         </input-field>
     </card>
 

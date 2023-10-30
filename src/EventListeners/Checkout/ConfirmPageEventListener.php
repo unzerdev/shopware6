@@ -18,7 +18,6 @@ use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
-use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
@@ -59,17 +58,13 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
-    /** @var CustomerResourceHydratorInterface */
-    private $customerResource;
-
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
         ConfigReaderInterface $configReader,
         PaymentFrameFactoryInterface $paymentFrameFactory,
         SystemConfigService $systemConfigReader,
         EntityRepository $languageRepository,
-        ClientFactoryInterface $clientFactory,
-        CustomerResourceHydratorInterface $customerResource
+        ClientFactoryInterface $clientFactory
     ) {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
@@ -77,7 +72,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $this->systemConfigReader  = $systemConfigReader;
         $this->languageRepository  = $languageRepository;
         $this->clientFactory       = $clientFactory;
-        $this->customerResource    = $customerResource;
     }
 
     /**
@@ -97,32 +91,25 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return;
         }
 
-        $salesChannelContext    = $event->getSalesChannelContext();
-        $this->configData       = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $registerCreditCards    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_CARD, false);
-        $registerPayPalAccounts = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_PAYPAL, false);
-        $registerDirectDebit    = (bool) $this->configData->get(ConfigReader::CONFIG_KEY_REGISTER_DIRECT_DEBIT, false);
+        $salesChannelContext = $event->getSalesChannelContext();
+        $this->configData    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
-        if ($registerCreditCards &&
-            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
         ) {
             $this->addCreditCardExtension($event);
         }
 
-        if ($registerPayPalAccounts &&
-            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYPAL
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYPAL
         ) {
             $this->addPayPalExtension($event);
         }
 
-        if ($registerDirectDebit &&
-            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT
         ) {
             $this->addDirectDebitExtension($event);
         }
 
-        if ($registerDirectDebit &&
-            $salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED
         ) {
             $this->addDirectDebitSecuredExtension($event);
         }
@@ -174,10 +161,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return null;
         }
 
-        // Backwards compatibility to Shopware < 6.3.5.0
-        $salesChannelId = !method_exists($event->getSalesChannelContext(), 'getSalesChannelId')
-            ? $event->getSalesChannelContext()->getSalesChannel()->getId()
-            : $event->getSalesChannelContext()->getSalesChannelId();
+        $salesChannelId = $event->getSalesChannelContext()->getSalesChannelId();
 
         $client         = $this->clientFactory->createClient($salesChannelId);
         $customerNumber = $customer->getCustomerNumber();
@@ -225,7 +209,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $creditCards = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD);
-        $extension   = (new CreditCardPageExtension())->setDisplayCreditCardSelection(true);
+        $extension   = new CreditCardPageExtension();
 
         /** @var UnzerPaymentDeviceEntity $creditCard */
         foreach ($creditCards as $creditCard) {
@@ -244,7 +228,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $payPalAccounts = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL);
-        $extension      = (new PayPalPageExtension())->setDisplaypayPalAccountselection(true);
+        $extension      = new PayPalPageExtension();
 
         /** @var UnzerPaymentDeviceEntity $payPalAccount */
         foreach ($payPalAccounts as $payPalAccount) {
@@ -263,7 +247,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT);
-        $extension          = (new DirectDebitPageExtension())->setDisplayDirectDebitDeviceSelection(true);
+        $extension          = new DirectDebitPageExtension();
 
         /** @var UnzerPaymentDeviceEntity $directDebitDevice */
         foreach ($directDebitDevices as $directDebitDevice) {

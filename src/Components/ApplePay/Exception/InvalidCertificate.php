@@ -9,8 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InvalidCertificate extends ShopwareHttpException
 {
-    /** @var string */
-    private $certificateType;
+    private string $certificateType;
 
     public function __construct(string $certificateType)
     {

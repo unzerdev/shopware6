@@ -18,11 +18,8 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_EXTENDED_LOGGING = 'extendedLogging';
 
     public const CONFIG_KEY_BOOKING_MODE_CARD                                = 'bookingModeCreditCard';
-    public const CONFIG_KEY_REGISTER_CARD                                    = 'registerCreditCard';
     public const CONFIG_KEY_BOOKING_MODE_PAYPAL                              = 'bookingModePayPal';
-    public const CONFIG_KEY_REGISTER_PAYPAL                                  = 'registerPayPal';
     public const CONFIG_KEY_INSTALLMENT_SECURED_INTEREST                     = 'installmentSecuredEffectiveInterest';
-    public const CONFIG_KEY_REGISTER_DIRECT_DEBIT                            = 'registerDirectDebit';
     public const CONFIG_KEY_BOOKING_MODE_APPLE_PAY                           = 'bookingModeApplePay';
     public const CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID      = 'applePayPaymentProcessingCertificateId';
     public const CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID = 'applePayMerchantIdentificationCertificateId';
@@ -30,8 +27,7 @@ class ConfigReader implements ConfigReaderInterface
 
     public const CONFIG_KEY_SHIPPING_STATUS = 'statusForAutomaticShippingNotification';
 
-    /** @var SystemConfigService */
-    private $systemConfigService;
+    private SystemConfigService $systemConfigService;
 
     public function __construct(SystemConfigService $systemConfigService)
     {
@@ -51,8 +47,7 @@ class ConfigReader implements ConfigReaderInterface
         foreach ($values as $key => $value) {
             $property = substr($key, strlen(self::SYSTEM_CONFIG_DOMAIN));
 
-            if ($property) {
-                /** @var string $property */
+            if (!empty($property)) {
                 $config[$property] = $value;
             }
         }

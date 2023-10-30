@@ -111,10 +111,6 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
         try {
             $orderTransactions = $this->orderTransactionRepository->search($criteria, $context);
 
-            if (empty($orderTransactions)) {
-                return null;
-            }
-
             return $orderTransactions->first();
         } catch (InvalidUuidException $exception) {
             $this->logger->error($exception->getMessage(), $exception->getTrace());

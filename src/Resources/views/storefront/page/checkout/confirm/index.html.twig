@@ -43,27 +43,24 @@
             {% endblock %}
 
             {% block unzer_payment_checkout_confirm_frame_card %}
-                {% if 'paypal' in page.extensions.unzerPaymentFrame.paymentFrame and page.extensions.unzerPayPal.displayPayPalAccountSelection
-                    or 'paypal' not in page.extensions.unzerPaymentFrame.paymentFrame %}
-                    <div class="unzer-payment-base"
-                         id="unzer-payment-base"
-                         data-unzer-payment-base="true"
-                         data-unzer-payment-base-options='{
-                         "publicKey": "{{ page.extensions[paymentDataExtensionName].publicKey }}",
-                         "shopLocale": "{{ page.extensions[paymentDataExtensionName].locale }}",
-                         "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
-                     }'>
-                        <div class="unzer-payment-base-body">
-                            {% block unzer_payment_checkout_confirm_frame_card_body %}
-                                {% block unzer_payment_checkout_confirm_frame_card_body_frame %}
-                                    <div class="unzer-payment-frame">
-                                        {% sw_include page.extensions[paymentFrameExtensionName].paymentFrame ignore missing %}
-                                    </div>
-                                {% endblock %}
+                <div class="unzer-payment-base"
+                     id="unzer-payment-base"
+                     data-unzer-payment-base="true"
+                     data-unzer-payment-base-options='{
+                     "publicKey": "{{ page.extensions[paymentDataExtensionName].publicKey }}",
+                     "shopLocale": "{{ page.extensions[paymentDataExtensionName].locale }}",
+                     "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
+                 }'>
+                    <div class="unzer-payment-base-body">
+                        {% block unzer_payment_checkout_confirm_frame_card_body %}
+                            {% block unzer_payment_checkout_confirm_frame_card_body_frame %}
+                                <div class="unzer-payment-frame">
+                                    {% sw_include page.extensions[paymentFrameExtensionName].paymentFrame ignore missing %}
+                                </div>
                             {% endblock %}
-                        </div>
+                        {% endblock %}
                     </div>
-                {% endif %}
+                </div>
             {% endblock %}
         {% endblock %}
     {% endif %}
@@ -103,8 +100,8 @@
                 currency: context.currency.isoCode,
                 shopName: page.extensions[paymentFrameExtensionName].shopName,
                 amount: summary.price.rawTotal ?: summary.price.totalPrice,
-                authorizePaymentUrl: path('unzer.apple_pay.authorize_payment'),
-                merchantValidationUrl: path('unzer.apple_pay.validate_merchant'),
+                authorizePaymentUrl: path('frontend.unzer.apple_pay.authorize_payment'),
+                merchantValidationUrl: path('frontend.unzer.apple_pay.validate_merchant'),
                 noApplePayMessage: "UnzerPayment.frame.applePay.missingMessage" | trans,
                 supportedNetworks: page.extensions[applePayExtensionName].supportedNetworks,
             }|json_encode }}">

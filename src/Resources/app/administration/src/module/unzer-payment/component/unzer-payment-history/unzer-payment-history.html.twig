@@ -16,11 +16,53 @@
                                         :transactionResource="item.resource"
                                         :paymentResource="paymentResource"
                                         :decimalPrecision="decimalPrecision"
-                                        @reload="reloadPaymentDetails">
+                                        @reload="reload"
+                                        @cancel="(cancelAmount) => { openCancelModal(item, cancelAmount) }">
                                     </unzer-payment-actions>
                                 {% endblock %}
                             </template>
                         {% endblock %}
+
+                        {% block unzer_payment_history_actions_modals %}
+                            <template #action-modals="{ item }">
+                                <sw-modal
+                                        v-if="showCancelModal === item.resource.id"
+                                        :showHeader="false"
+                                        :isLoading="isCancelLoading"
+                                >
+                                    <p>
+                                        {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.text') }}<br/>
+                                        {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.amountLabel') }} {{ cancelAmount|currency }}
+                                    </p>
+
+                                    <template #modal-footer>
+
+                                        {% block sw_confirm_modal_footer_cancel %}
+                                            <sw-button
+                                                    class="sw-confirm-modal__button-cancel"
+                                                    size="small"
+                                                    @click="closeCancelModal"
+                                            >
+                                                {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.noButton') }}
+                                            </sw-button>
+                                        {% endblock %}
+
+                                        {% block sw_confirm_modal_footer_confirm %}
+                                            <sw-button
+                                                    class="sw-confirm-modal__button-confirm"
+                                                    variant="danger"
+                                                    size="small"
+                                                    @click="cancel"
+                                            >
+                                                {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.yesButton') }}
+                                            </sw-button>
+                                        {% endblock %}
+
+                                    </template>
+                                </sw-modal>
+                            </template>
+                        {% endblock %}
+
                     </sw-data-grid>
                 {% endblock %}
             </template>

@@ -2,7 +2,7 @@ stages:
   - common-style
   - common-quality
   - common-test
-  - common-package
+  - package
 
 cache:
   key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -17,7 +17,6 @@ variables:
 
 include:
   - project: 'kellerkinder/pipeline-common'
-    ref: feature/INT-1279
     file:
       - '/plugin/codestyle.yml'
       - '/plugin/phpstan/k10r/sw-63.yml'
@@ -29,7 +28,6 @@ include:
       - '/plugin/install/sw-63.yml'
       - '/plugin/install/sw-64.yml'
       - '/plugin/install/sw-65.yml'
-      - '/plugin/build-package.yml'
 
 k10r-phpstan-65:
   parallel:
@@ -54,3 +52,32 @@ install-65:
     matrix:
       -   PHP_VERSION: [ "8.1" ]
           SW_VERSION: [ "6.5.0.0" ]
+
+build-65:
+    stage: package
+    image:
+        name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.5.0
+        entrypoint: [""]
+    before_script:
+        - echo ""
+    only:
+        - tags
+        - master
+        - /^integration.*$/
+        - /^fix.*$/
+    except:
+        variables: [ $DISABLE_PACKAGE == "1" ]
+    script:
+        - start-mysql
+        - ln -s "$(pwd)" "/plugins/${CI_PROJECT_NAME}"
+        - jq '.version = .version + "65"' /plugins/${CI_PROJECT_NAME}/composer.json > /plugins/${CI_PROJECT_NAME}/composer.tmp && mv /plugins/${CI_PROJECT_NAME}/composer.tmp /plugins/${CI_PROJECT_NAME}/composer.json
+        - sed '1 s_$_65_' /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.md > /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.tmp && mv /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.tmp /plugins/${CI_PROJECT_NAME}/CHANGELOG_en-GB.md
+        - sed '1 s_$_65_' /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.md > /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.tmp && mv /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.tmp /plugins/${CI_PROJECT_NAME}/CHANGELOG_de-DE.md
+        - plugin-uploader ext:prepare "/plugins/${CI_PROJECT_NAME}"
+        - rm -rf $( cat .sw-zip-blocklist ) && rm -rf .sw-zip-blocklist
+        - pack-plugin ${CI_PROJECT_NAME}
+        - plugin-uploader ext:validate "$(realpath "$(find . -type f -name "*.zip" -print0 -maxdepth 1)")"
+    artifacts:
+        paths:
+            - "*.zip"
+        expire_in: 1 week
