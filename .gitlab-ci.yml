@@ -1,92 +1,30 @@
 stages:
-    - style
-    - quality
-    - test
-    - package
-    - deployment
+  - common-style
+  - common-quality
+  - common-test
+  - package
 
 cache:
-    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
 
 variables:
-    DOCKER_DRIVER: overlay2
-    COMPOSER_COMMAND: "/var/www/html/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
-    COMPOSER_HOME: '/var/www/html/.composer'
+  DOCKER_DRIVER: overlay2
+  CODESTYLE_VERSION: "6.4.20.0"
+  DEFAULT_SW_VERSION: "v6.2.0"
+  PLUGIN_NAME: 'UnzerPayment6'
+  COMPOSER_HOME: '/var/www/html/.composer'
+  COMPOSER_COMMAND: "/var/www/html/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
 
 include:
-    - '/.gitlab/shopware-6-4.yml'
-
-before_script:
-    - curl https://getcomposer.org/download/2.4.4/composer.phar -o /var/www/html/composer
-    - chmod +x /var/www/html/composer
-    - ${COMPOSER_COMMAND}
-    - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
-
-k10r-phpstan-65:
-    stage: quality
-    image: "dockware/dev:${SW_VERSION}"
-    parallel:
-        matrix:
-            -   PHP_VERSION: [ "8.1", "8.2" ]
-                SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
-    needs: [ ]
-    except:
-        variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
-    script:
-        - cd /var/www/html
-        - /var/www/html/composer config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
-        - /var/www/html/composer require --dev --no-interaction code-quality bamarni/composer-bin-plugin
-        - "jq '.extra += {\"bamarni-bin\": {\"bin-links\": false, \"forward-command\": true}}' composer.json > composer.tmp && mv composer.tmp composer.json"
-        - /var/www/html/composer install --no-interaction
-        - vendor-bin/phpstan/vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan_shopware-6-5.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
-    cache:
-        key: global
-        paths:
-            - vendor
-
-sw-phpstan-65:
-    stage: quality
-    image: "dockware/dev:${SW_VERSION}"
-    parallel:
-        matrix:
-            -   PHP_VERSION: [ "8.1", "8.2" ]
-                SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
-    needs: [ ]
-    except:
-        variables: [ $DISABLE_PHPSTAN_SW == "1" ]
-    script:
-        - cd /var/www/html
-        - /var/www/html/composer config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
-        - /var/www/html/composer require --dev --no-interaction code-quality bamarni/composer-bin-plugin
-        - "jq '.extra += {\"bamarni-bin\": {\"bin-links\": false, \"forward-command\": true}}' composer.json > composer.tmp && mv composer.tmp composer.json"
-        - /var/www/html/composer install --no-interaction
-        - vendor-bin/phpstan/vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/shopware_store_phpstan.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
-    cache:
-        key: global
-        paths:
-            - vendor
-
-install-65:
-    stage: test
-    image: "dockware/dev:${SW_VERSION}"
-    parallel:
-        matrix:
-            -   PHP_VERSION: [ "8.1", "8.2" ]
-                SW_VERSION: [ "6.5.0.0", "6.5.2.1" ]
-    needs: [ ]
-    except:
-        variables: [ $DISABLE_PHPUNIT == "1" ]
-    script:
-        - sudo rm -rf /var/run/mysqld/mysqld.sock.lock
-        - sudo chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
-        - sudo service mysql start
-        - cd /var/www/html/ && php bin/console plugin:refresh -nq && php bin/console plugin:install --activate -c ${CI_PROJECT_NAME} -nq
-        - cd /var/www/html/ && /var/www/html/composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
-        - cd /var/www/html/ && php bin/console plugin:list
-    cache:
-        key: global
-        paths:
-            - vendor
+  - project: 'kellerkinder/pipeline-common'
+    file:
+      - '/plugin/codestyle.yml'
+      - '/plugin/phpstan/k10r/sw-64.yml'
+      - '/plugin/phpstan/k10r/sw-65.yml'
+      - '/plugin/phpstan/sw/sw-64.yml'
+      - '/plugin/phpstan/sw/sw-65.yml'
+      - '/plugin/install/sw-64.yml'
+      - '/plugin/install/sw-65.yml'
 
 build-65:
     stage: package
@@ -100,7 +38,6 @@ build-65:
         - master
         - /^integration.*$/
         - /^fix.*$/
-        - feature/HEIDELPAYSUPPORT-302
     except:
         variables: [ $DISABLE_PACKAGE == "1" ]
     script:
