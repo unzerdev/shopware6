@@ -29,29 +29,11 @@ include:
       - '/plugin/install/sw-64.yml'
       - '/plugin/install/sw-65.yml'
 
-k10r-phpstan-65:
-  parallel:
-    matrix:
-      -   PHP_VERSION: [ "8.1" ]
-          SW_VERSION: [ "6.5.0.0" ]
-
-sw-phpstan-65:
-  parallel:
-    matrix:
-      -   PHP_VERSION: [ "8.1" ]
-          SW_VERSION: [ "6.5.0.0" ]
-
 install-63:
   parallel:
     matrix:
       -   PHP_VERSION: [ "7.2", "7.3" ]
           SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
-
-install-65:
-  parallel:
-    matrix:
-      -   PHP_VERSION: [ "8.1" ]
-          SW_VERSION: [ "6.5.0.0" ]
 
 build-65:
     stage: package
