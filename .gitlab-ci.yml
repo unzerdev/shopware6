@@ -19,21 +19,12 @@ include:
   - project: 'kellerkinder/pipeline-common'
     file:
       - '/plugin/codestyle.yml'
-      - '/plugin/phpstan/k10r/sw-63.yml'
       - '/plugin/phpstan/k10r/sw-64.yml'
       - '/plugin/phpstan/k10r/sw-65.yml'
-      - '/plugin/phpstan/sw/sw-63.yml'
       - '/plugin/phpstan/sw/sw-64.yml'
       - '/plugin/phpstan/sw/sw-65.yml'
-      - '/plugin/install/sw-63.yml'
       - '/plugin/install/sw-64.yml'
       - '/plugin/install/sw-65.yml'
-
-install-63:
-  parallel:
-    matrix:
-      -   PHP_VERSION: [ "7.2", "7.3" ]
-          SW_VERSION: [ "6.3.4.0", "6.3.5.0" ]
 
 build-65:
     stage: package
