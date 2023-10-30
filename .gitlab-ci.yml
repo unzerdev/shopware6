@@ -16,6 +16,7 @@ variables:
   COMPOSER_COMMAND: "/var/www/html/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
 
 include:
+  - '/.gitlab/shopware-6-4.yml'
   - project: 'kellerkinder/pipeline-common'
     file:
       - '/plugin/codestyle.yml'
