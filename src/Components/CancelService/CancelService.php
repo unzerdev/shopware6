@@ -88,6 +88,29 @@ class CancelService implements CancelServiceInterface
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function cancelAuthorizationById(string $orderTransactionId, string $authorizationId, float $amountGross, Context $context): void
+    {
+        $transaction = $this->getOrderTransaction($orderTransactionId, $context);
+
+        if ($transaction === null || $transaction->getOrder() === null) {
+            throw new InvalidTransactionException($orderTransactionId);
+        }
+
+        $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
+
+        if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
+            $client->cancelAuthorizedPayment($authorizationId, new Cancellation($amountGross));
+
+            return;
+        }
+
+        $authorization = $client->fetchAuthorization($authorizationId);
+        $authorization->cancel($amountGross);
+    }
+
     protected function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
     {
         $criteria = new Criteria([$orderTransactionId]);

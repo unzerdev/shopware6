@@ -1,20 +1,7 @@
-// reduced padding to ensure the whole input is visible
-.unzer-payment-actions--button .sw-button {
-    padding: 2px 14px;
-}
-
-.unzer-payment-actions--input input {
-    padding: 12px 10px;
-}
-
-.unzer-payment-actions--reason-code {
-    grid-column: span 2;
-
-    .sw-select {
-        margin: 8px 0 0;
-    }
-}
-
 .unzer-payment-actions--popover-options {
     z-index: 10000 !important;
+}
+
+.unzer-payment-actions--button .sw-field {
+    margin-bottom: 0;
 }
