@@ -29,6 +29,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     private const TRANSACTION_TYPE_CANCELLATION  = 'cancellation';
     private const TRANSACTION_TYPE_CHARGE        = 'charge';
     private const TRANSACTION_TYPE_SHIPMENT      = 'shipment';
+    private const TRANSACTION_TYPE_REFUND        = 'refund';
 
     /** @var LoggerInterface */
     protected $logger;
@@ -126,6 +127,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
     {
         $this->hydrateCharges($data, $payment, $decimalPrecision);
         $this->hydrateRefunds($data, $payment, $decimalPrecision, $client);
+        $this->hydrateCancellations($data, $payment, $decimalPrecision);
         $totalShippingAmount = $this->hydrateShipments($data, $payment, $decimalPrecision);
 
         if ($totalShippingAmount === round($payment->getAmount()->getTotal() * (10 ** $decimalPrecision))) {
@@ -171,7 +173,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
                 $data['transactions'][$this->getTransactionKey($cancellation)] = $this->hydrateTransactionItem(
                     $cancellation,
-                    self::TRANSACTION_TYPE_CANCELLATION,
+                    self::TRANSACTION_TYPE_REFUND,
                     $decimalPrecision
                 );
             }
@@ -192,7 +194,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
 
             $item = $this->hydrateTransactionItem(
                 $cancellation,
-                self::TRANSACTION_TYPE_CANCELLATION,
+                self::TRANSACTION_TYPE_REFUND,
                 $decimalPrecision
             );
 
@@ -205,6 +207,24 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
                 $transaction['remainingAmount'] = round($payment->getAmount()->getCharged() * (10 ** $decimalPrecision));
             }
             unset($transaction);
+
+            $data['transactions'][$this->getTransactionKey($cancellation)] = $item;
+        }
+    }
+
+    protected function hydrateCancellations(array &$data, Payment $payment, int $decimalPrecision): void
+    {
+        /** @var Cancellation $cancellation */
+        foreach ($payment->getCancellations() as $cancellation) {
+            if ($cancellation->isError()) {
+                continue;
+            }
+
+            $item = $this->hydrateTransactionItem(
+                $cancellation,
+                self::TRANSACTION_TYPE_CANCELLATION,
+                $decimalPrecision
+            );
 
             $data['transactions'][$this->getTransactionKey($cancellation)] = $item;
         }

@@ -3,6 +3,8 @@ parameters:
     paths:
         - src
         - tests
+    bootstrapFiles:
+        - vendor/autoload.php
     reportUnmatchedIgnoredErrors: false
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false

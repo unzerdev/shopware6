@@ -162,6 +162,10 @@ Component.register('unzer-payment-actions', {
 
                 this.isLoading = false;
             });
-        }
+        },
+
+        startCancel() {
+            this.$emit('cancel', this.transactionAmount);
+        },
     }
 });
