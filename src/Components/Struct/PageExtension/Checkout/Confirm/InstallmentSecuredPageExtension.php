@@ -16,9 +16,6 @@ class InstallmentSecuredPageExtension extends Struct
     /** @var string */
     private $currency = 'EUR';
 
-    /** @var float */
-    private $effectiveInterest = 4.5;
-
     /** @var string */
     private $orderDate = '';
 
@@ -42,18 +39,6 @@ class InstallmentSecuredPageExtension extends Struct
     public function setCurrency(string $currency): self
     {
         $this->currency = $currency;
-
-        return $this;
-    }
-
-    public function getEffectiveInterest(): float
-    {
-        return $this->effectiveInterest;
-    }
-
-    public function setEffectiveInterest(float $effectiveInterest): self
-    {
-        $this->effectiveInterest = $effectiveInterest;
 
         return $this;
     }

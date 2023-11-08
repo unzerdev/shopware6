@@ -35,8 +35,6 @@ use UnzerSDK\Resources\Customer;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
 {
-    private const INSTALLMENT_SECURED_EFFECTIVE_INTEREST_DEFAULT = 4.5;
-
     /** @var Configuration */
     protected $configData;
 
@@ -280,7 +278,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     {
         $extension = new InstallmentSecuredPageExtension();
         $extension->setCurrency($event->getSalesChannelContext()->getCurrency()->getIsoCode());
-        $extension->setEffectiveInterest((float) $this->configData->get(ConfigReader::CONFIG_KEY_INSTALLMENT_SECURED_INTEREST, self::INSTALLMENT_SECURED_EFFECTIVE_INTEREST_DEFAULT));
 
         if ($event instanceof CheckoutConfirmPageLoadedEvent) {
             $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());

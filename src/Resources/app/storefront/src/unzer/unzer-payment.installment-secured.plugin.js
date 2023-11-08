@@ -5,7 +5,6 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
     static options = {
         installmentSecuredAmount: 0.0,
         installmentSecuredCurrency: '',
-        installmentSecuredEffectiveInterest: 0.0,
         installmentSecuredOrderDate: '',
         installmentsTotalValueElementId: 'unzer-payment-installments-total',
         installmentsInterestValueElementId: 'unzer-payment-installments-interest',
@@ -76,7 +75,6 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
             containerId: 'unzer-payment-installment-secured-container',
             amount: this.options.installmentSecuredAmount.toFixed(4),
             currency: this.options.installmentSecuredCurrency,
-            effectiveInterest: this.options.installmentSecuredEffectiveInterest,
             orderDate: this.options.installmentSecuredOrderDate
         }).then(() => {
             // Hide the loading indicator
