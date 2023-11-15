@@ -1,3 +1,6 @@
+# 5.5.1
+* Korrektur des Bestellabschluss, wenn die AGBs zuerst nicht akzeptiert wurden
+
 # 5.5.0
 * Die Bestellung wird nun nach den Aktionen im Unzer Tab neu geladen, damit unter anderem der Zahlungsstatus korrekt angezeigt wird
 * Ergänzung der Stornierung einer Autorisierung
