@@ -38,7 +38,7 @@ class MetadataResourceHydrator implements ResourceHydratorInterface
         $unzerMetadata = new Metadata();
         $unzerMetadata->setShopType('Shopware 6');
         $unzerMetadata->setShopVersion($this->shopwareVersion);
-        $unzerMetadata->addMetadata('pluginType', self::PLUGIN_NAME);
+        $unzerMetadata->addMetadata('pluginType', 'unzerdev/shopware6');
 
         if ($pluginData !== null) {
             $unzerMetadata->addMetadata('pluginVersion', $pluginData->getVersion());
