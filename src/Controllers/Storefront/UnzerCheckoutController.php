@@ -19,7 +19,10 @@ use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessExcepti
  */
 class UnzerCheckoutController extends StorefrontController
 {
-    /** @var CheckoutController */
+    /**
+     * For compatibility to other plugins, we set StorefrontController as the type hint for the argument.
+     * @var StorefrontController|CheckoutController
+     */
     protected $innerService;
 
     private CheckoutFinishPageLoader $finishPageLoader;
