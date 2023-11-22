@@ -21,7 +21,8 @@ class UnzerCheckoutController extends StorefrontController
 {
     /**
      * For compatibility to other plugins, we set StorefrontController as the type hint for the argument.
-     * @var StorefrontController|CheckoutController
+     *
+     * @var CheckoutController|StorefrontController
      */
     protected $innerService;
 
