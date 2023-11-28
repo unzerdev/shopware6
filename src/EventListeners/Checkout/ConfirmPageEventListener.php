@@ -25,6 +25,7 @@ use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPa
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\FraudPreventionPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\InstallmentSecuredPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaylaterInstallmentPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\UnzerDataPageExtension;
@@ -58,12 +59,13 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
-        ConfigReaderInterface $configReader,
-        PaymentFrameFactoryInterface $paymentFrameFactory,
-        SystemConfigService $systemConfigReader,
-        EntityRepository $languageRepository,
-        ClientFactoryInterface $clientFactory
-    ) {
+        ConfigReaderInterface                 $configReader,
+        PaymentFrameFactoryInterface          $paymentFrameFactory,
+        SystemConfigService                   $systemConfigReader,
+        EntityRepository                      $languageRepository,
+        ClientFactoryInterface                $clientFactory
+    )
+    {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
         $this->paymentFrameFactory = $paymentFrameFactory;
@@ -122,6 +124,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_APPLE_PAY) {
             $this->addApplePayExtension($event);
+        }
+
+        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT) {
+            $this->addPaylaterInstallmentExtension($event);
         }
 
         if (in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS)) {
@@ -292,6 +298,20 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     private function addApplePayExtension(PageLoadedEvent $event): void
     {
         $event->getPage()->addExtension(ApplePayPageExtension::EXTENSION_NAME, new ApplePayPageExtension());
+    }
+
+    private function addPaylaterInstallmentExtension(PageLoadedEvent $event): void
+    {
+        $extension = new PaylaterInstallmentPageExtension();
+        $extension->setCurrency($event->getSalesChannelContext()->getCurrency()->getIsoCode());
+
+        if ($event instanceof CheckoutConfirmPageLoadedEvent) {
+            $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());
+        } elseif ($event instanceof AccountEditOrderPageLoadedEvent) {
+            $extension->setAmount($event->getPage()->getOrder()->getPrice()->getTotalPrice());
+        }
+
+        $event->getPage()->addExtension(PaylaterInstallmentPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function getLocaleByLanguageId(string $languageId, Context $context): string

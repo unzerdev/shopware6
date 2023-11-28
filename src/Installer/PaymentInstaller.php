@@ -23,6 +23,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerEpsPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerGiropayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInstallmentSecuredPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInstallmentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler;
@@ -32,6 +33,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerSofortPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerWeChatPaymentHandler;
+use UnzerPayment6\Core\Rule\UnzerPaylaterInstallmentPreconditionRule;
 use UnzerPayment6\UnzerPayment6;
 
 class PaymentInstaller implements InstallerInterface
@@ -55,6 +57,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_BANCONTACT           = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
     public const PAYMENT_ID_PAYLATER_INVOICE     = '09588ffee8064f168e909ff31889dd7f';
     public const PAYMENT_ID_APPLE_PAY            = '62490bda54fa48fbb29ed6b9368bafe1';
+    public const PAYMENT_ID_PAYLATER_INSTALLMENT  = '12fbfbce271a43a89b3783453b88e9a6';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -64,7 +67,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_EPS,
         self::PAYMENT_ID_FLEXIPAY,
         self::PAYMENT_ID_GIROPAY,
-        self::PAYMENT_ID_INSTALLMENT_SECURED,
+        self::PAYMENT_ID_PAYLATER_INSTALLMENT,
         self::PAYMENT_ID_INVOICE,
         self::PAYMENT_ID_INVOICE_SECURED,
         self::PAYMENT_ID_IDEAL,
@@ -202,14 +205,31 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INSTALLMENT_SECURED,
             'handlerIdentifier' => UnzerInstallmentSecuredPaymentHandler::class,
-            'name'              => 'Unzer Installment',
+            'name'              => 'Unzer Installment (deprecated)',
+            'active'            => false,
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer Ratenzahlung',
+                    'name'        => 'Unzer Ratenzahlung (veraltet)',
                     'description' => 'Unzer Ratenzahlung',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer Installment',
+                    'name'        => 'Unzer Installment (deprecated)',
+                    'description' => 'Unzer Installment',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_PAYLATER_INSTALLMENT,
+            'handlerIdentifier' => UnzerPaylaterInstallmentPaymentHandler::class,
+            'name'              => 'Unzer Installment (Paylater)',
+            'availabilityRuleId' => RuleInstaller::RULE_ID_PAYLATER_INSTALLMENT_PRECONDITION,
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Unzer Ratenzahlung (Paylater)',
+                    'description' => 'Unzer Ratenzahlung',
+                ],
+                'en-GB' => [
+                    'name'        => 'Unzer Installment (Paylater)',
                     'description' => 'Unzer Installment',
                 ],
             ],
