@@ -103,10 +103,7 @@ export default class UnzerPaymentPaylaterInstallmentPlugin extends Plugin {
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
         this.paylaterInstallment.createResource()
-            .then(function(resource) {
-                let typeId = resource.id;
-                this._unzerPaymentPlugin.submitResource(resource)
-        })
+            .then((resource) => this._unzerPaymentPlugin.submitResource(resource))
             .catch((error) => this._unzerPaymentPlugin.showError(error));
     }
 
