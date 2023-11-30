@@ -147,6 +147,8 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         event.preventDefault();
 
         if (!this._validateForm()) {
+            this.submitting = false;
+
             this.setSubmitButtonActive(true);
 
             return;

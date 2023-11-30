@@ -13,3 +13,4 @@ parameters:
         - '#invalid type .*PaymentMethodRepositoryDecorator#'
         - '#Parameter .*? expects .*?\|null given#'
         - '#Property .*? does not accept (.*?\|null|UnzerSDK\\Resources\\AbstractUnzerResource)#'
+        - '#Call to an undefined method Shopware\\Storefront\\Controller\\StorefrontController::(cartPage|confirmPage|info|offcanvas|order|finishPage)#'
