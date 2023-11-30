@@ -57,6 +57,13 @@
                     "birthday": "Birthday"
                 }
             },
+            "installmentPaylater": {
+                "testData": {
+                    "accountHolder": "Account holder",
+                    "iban": "IBAN",
+                    "birthday": "Birthday"
+                }
+            },
             "paypal": {
                 "new": "New account",
                 "choose": "Please select a saved account or use another account.",
