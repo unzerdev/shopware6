@@ -7,19 +7,19 @@ use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Throwable;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasRiskDataTrait;
-use UnzerPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
 use UnzerPayment6\UnzerPayment6;
+use UnzerSDK\Constants\RecurrenceTypes;
 use UnzerSDK\Exceptions\UnzerApiException;
 
 class UnzerPaylaterInstallmentPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use CanAuthorize;
     use HasRiskDataTrait;
-    use HasTransferInfoTrait;
 
     /**
      * {@inheritdoc}
@@ -36,25 +36,27 @@ class UnzerPaylaterInstallmentPaymentHandler extends AbstractUnzerPaymentHandler
 
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
-        $birthday = $currentRequest->get('unzerPaymentBirthday', '');
-
         try {
-            if (!empty($birthday)
-                && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
-                $this->unzerCustomer->setBirthDate($birthday);
-                $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
+            $this->updateUnzerCustomer($currentRequest);
+
+            $riskData = $this->generateRiskDataResource($transaction, $salesChannelContext);
+
+            if (null === $riskData) {
+                throw new \RuntimeException('fraud prevention session id is missing from the current request');
             }
+
+            $returnUrl = $this->authorize(
+                $transaction->getReturnUrl(),
+                $transaction->getOrderTransaction()->getAmount()->getTotalPrice(),
+                RecurrenceTypes::SCHEDULED,
+                $riskData
+            );
 
             /** @var int $currencyPrecision */
             $currencyPrecision = $transaction->getOrder()->getCurrency() !== null ? min(
                 $transaction->getOrder()->getCurrency()->getItemRounding()->getDecimals(),
                 UnzerPayment6::MAX_DECIMAL_PRECISION
             ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
-
-            $returnUrl = $this->authorize(
-                $transaction->getReturnUrl(),
-                round($transaction->getOrder()->getAmountTotal(), $currencyPrecision)
-            );
 
             /** @phpstan-ignore-next-line */
             $this->payment->charge(round($transaction->getOrder()->getAmountTotal(), $currencyPrecision));
@@ -88,5 +90,17 @@ class UnzerPaylaterInstallmentPaymentHandler extends AbstractUnzerPaymentHandler
 
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
+    }
+
+    private function updateUnzerCustomer(Request $request): void
+    {
+        $birthday = $request->get('unzerPaymentBirthday', '');
+
+        if (empty($birthday) || (!empty($this->unzerCustomer->getBirthDate()) && $birthday === $this->unzerCustomer->getBirthDate())) {
+            return;
+        }
+
+        $this->unzerCustomer->setBirthDate($birthday);
+        $this->unzerCustomer = $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
     }
 }
