@@ -10,7 +10,6 @@ export default class UnzerPaymentPaylaterInstallmentPlugin extends Plugin {
         paylaterInstallmentCurrency: '',
         currencyIso: 'EUR',
         countryIso: 'DE',
-        threatMetrixId: ''
     };
 
     /**
@@ -74,7 +73,6 @@ export default class UnzerPaymentPaylaterInstallmentPlugin extends Plugin {
             currency: this.options.paylaterInstallmentCurrency,
             country: this.options.countryIso,
         }).then(() => {
-            // Hide the loading indicator
             loadingIndicatorElement.hidden = true;
         }).catch((error) => {
             this._unzerPaymentPlugin.renderErrorToElement(error, loadingIndicatorElement);
@@ -121,14 +119,6 @@ export default class UnzerPaymentPaylaterInstallmentPlugin extends Plugin {
                 this._unzerPaymentPlugin.setSubmitButtonActive(false);
             }
         }
-
-        /*if (event.currentStep === 'plan-detail') {
-            const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId);
-            const installmentInterestElement = document.getElementById(this.options.installmentsInterestValueElementId);
-
-            installmentAmountTotalElement.innerText = this._formatCurrency(this.paylaterInstallment.selectedInstallmentPlan.totalAmount) + this.options.starSymbol;
-            installmentInterestElement.innerText = this._formatCurrency(this.paylaterInstallment.selectedInstallmentPlan.totalInterestAmount) + this.options.starSymbol;
-        }*/
 
         switch (event.currentStep) {
             case 'plan-list':
