@@ -128,6 +128,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT) {
             $this->addPaylaterInstallmentExtension($event);
+            $this->addFraudPreventionExtension($event);
         }
 
         if (in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS)) {
