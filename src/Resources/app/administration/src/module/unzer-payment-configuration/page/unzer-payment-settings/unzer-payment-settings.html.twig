@@ -34,17 +34,6 @@
                         {{ $tc('unzer-payment-settings.form.testButton') }}
                     </sw-button-process>
                 {% endblock %}
-
-                {% block unzer_payment_settings_actions_register_webhooks %}
-                    <unzer-payment-register-webhook
-                        :isLoading="isLoading"
-                        :isDisabled="isLoading || isLoadingWebhooks || !getConfigValue('privateKey')"
-                        :webhooks="webhooks"
-                        :selectedSalesChannelId="selectedSalesChannelId"
-                        @webhook-registered="onWebhookRegistered">
-                    </unzer-payment-register-webhook>
-                {% endblock %}
-
             </template>
         {% endblock %}
 
@@ -59,6 +48,16 @@
                         @loading-changed="onLoadingChanged"
                         @sales-channel-changed="onSalesChannelChanged"
                         domain="UnzerPayment6.settings">
+                            <template #afterElements="props">
+                                <unzer-payment-register-webhook
+                                    v-if="props.index==0"
+                                    :isLoading="isLoading"
+                                    :isDisabled="isLoading || isLoadingWebhooks || !getConfigValue('privateKey')"
+                                    :webhooks="webhooks"
+                                    :selectedSalesChannelId="selectedSalesChannelId"
+                                    @webhook-registered="onWebhookRegistered">
+                                </unzer-payment-register-webhook>
+                            </template>
                     </sw-system-config>
 
                     <sw-card
