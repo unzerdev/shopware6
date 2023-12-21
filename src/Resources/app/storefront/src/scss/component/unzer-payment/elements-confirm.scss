@@ -48,6 +48,13 @@
     height: unset;
 }
 
+.unzerUI.left.icon.message.multiline {
+    height: unset;
+    width: unset;
+    overflow: initial;
+    margin-bottom: 1rem;
+}
+
 .unzer-payment-birthday {
   .unzer-payment-birthday-error {
     display: none;
