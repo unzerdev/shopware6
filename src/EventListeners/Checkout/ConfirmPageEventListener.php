@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
@@ -54,6 +55,9 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var EntityRepository */
     private $languageRepository;
 
+    /** @var EntityRepository */
+    private $currencyRepository;
+
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
@@ -63,6 +67,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         PaymentFrameFactoryInterface          $paymentFrameFactory,
         SystemConfigService                   $systemConfigReader,
         EntityRepository                      $languageRepository,
+        EntityRepository                      $currencyRepository,
         ClientFactoryInterface                $clientFactory
     )
     {
@@ -71,6 +76,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $this->paymentFrameFactory = $paymentFrameFactory;
         $this->systemConfigReader  = $systemConfigReader;
         $this->languageRepository  = $languageRepository;
+        $this->currencyRepository  = $currencyRepository;
         $this->clientFactory       = $clientFactory;
     }
 
@@ -150,7 +156,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $context = $event->getSalesChannelContext()->getContext();
 
         $extension = new UnzerDataPageExtension();
-        $extension->setPublicKey($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY));
+        $extension->setPublicKey($this->getPublicKey($event, $context));
         $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
         $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
         $extension->setUnzerCustomer($this->getUnzerCustomer($event));
@@ -328,5 +334,48 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         return $searchResult->getLocale()->getCode();
+    }
+
+    private function getCurrencyByCurrencyId(string $currencyId, Context $context): ?CurrencyEntity
+    {
+        $critera = new Criteria([$currencyId]);
+
+        return  $this->currencyRepository->search($critera, $context)->first();
+    }
+
+    private function getPublicKey(PageLoadedEvent $event, Context $context): string
+    {
+        $publicKey = $this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY);
+
+        $currency       = $this->getCurrencyByCurrencyId($context->getCurrencyId(), $context);
+        $customer       = $event->getSalesChannelContext()->getCustomer();
+        $billingAddress = $customer ? $customer->getActiveBillingAddress() : null;
+
+        if (!$currency || !$customer || !$billingAddress) {
+            return $publicKey;
+        }
+
+        $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
+        $isB2B         = !empty($billingAddress->getCompany());
+
+        if ($paymentMethod->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT) {
+            $configKey = ConfigReader::CONFIG_KEY_PAYLATER_INSTALLMENT;
+        } elseif ($paymentMethod->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
+            $configKey = ConfigReader::CONFIG_KEY_PAYLATER_INVOICE;
+        }
+
+        if (!isset($configKey))
+            return $publicKey;
+
+        $keyPairConfigs = $this->configData->get($configKey);
+
+        foreach ($keyPairConfigs as $keyPairConfig) {
+            if ($keyPairConfig['key'] === $isB2B ? 'b2b-' : 'b2c-' . $currency->getIsoCode()) {
+                $publicKey = $keyPairConfig['publicKey'];
+                break;
+            }
+        }
+
+        return $publicKey;
     }
 }
