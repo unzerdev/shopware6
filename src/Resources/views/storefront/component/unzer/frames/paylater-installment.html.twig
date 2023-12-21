@@ -29,7 +29,7 @@
         {% endblock %}
 
         {% block unzer_payment_frame_installment_paylater_birthday_container %}
-            <div id="unzerPaymentBirthdayContainer" class="unzer-payment-birthday">
+            <div id="unzerPaymentBirthdayContainer" class="unzer-payment-birthday unzer-payment-frame-row">
                 {% block unzer_payment_frame_installment_paylater_birthday %}
                     <label for="unzerPaymentBirthday" class="unzer-payment-label">
                         {{ "account.personalBirthdayLabel"|trans }}
@@ -54,12 +54,15 @@
         {% block unzer_payment_frame_installment_paylater_consent_container %}
             <div id="unzerPaymentConsentContainer" class="unzer-payment-consent">
                 {% block unzer_payment_frame_installment_paylater_consent %}
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="checkout-confirm-unzer-payment-consent-checkbox custom-control-input" required="required" id="unzerPaymentConsent" form="confirmOrderForm" name="unzerPaymentConsent">
-
-                        <label for="unzerPaymentConsent" class="checkout-confirm-unzer-payment-consent-label custom-control-label">
-                            {{ "UnzerPayment.personalConsentLabel"|trans({'%consentUrl%': path('frontend.home.page')})|sw_sanitize }}
-                        </label>
+                    <div class="unzer-payment-frame-row custom-control custom-checkbox">
+                        <input type="checkbox"
+                               required="required"
+                               class="custom-control-input"
+                               form="confirmOrderForm"
+                               name="unzerPaymentConsent"
+                               id="unzerPaymentConsent"
+                        />
+                        <label for="unzerPaymentConsent" class="custom-control-label"> {{ "UnzerPayment.personalConsentLabel"|trans({'%consentUrl%': path('frontend.home.page')})|sw_sanitize }}</label>
                     </div>
                 {% endblock %}
             </div>
