@@ -16,22 +16,11 @@
                     <sw-button-process
                         class="sw-settings-login-registration__save-action"
                         :isLoading="isLoading"
-                        :disabled="isLoading || isTesting"
+                        :disabled="isLoading || selectedKeyPairForTesting"
                         :processSuccess="isSaveSuccessful"
                         variant="primary"
                         @click="onSave">
                         {{ $tc('global.default.save') }}
-                    </sw-button-process>
-                {% endblock %}
-
-                {% block unzer_payment_settings_actions_test %}
-                    <sw-button-process
-                        :isLoading="isTesting || isLoading"
-                        :disabled="isLoading || isTesting || !getConfigValue('privateKey')"
-                        :processSuccess="isTestSuccessful"
-                        @process-finish="onTestFinished()"
-                        @click="onValidateCredentials">
-                        {{ $tc('unzer-payment-settings.form.testButton') }}
                     </sw-button-process>
                 {% endblock %}
             </template>
@@ -48,16 +37,7 @@
                         @loading-changed="onLoadingChanged"
                         @sales-channel-changed="onSalesChannelChanged"
                         domain="UnzerPayment6.settings">
-                            <template #afterElements="props">
-                                <unzer-payment-register-webhook
-                                    v-if="props.index==0"
-                                    :isLoading="isLoading"
-                                    :isDisabled="isLoading || isLoadingWebhooks || !getConfigValue('privateKey')"
-                                    :webhooks="webhooks"
-                                    :selectedSalesChannelId="selectedSalesChannelId"
-                                    @webhook-registered="onWebhookRegistered">
-                                </unzer-payment-register-webhook>
-                            </template>
+                        <template #card-element="element"></template>
                     </sw-system-config>
 
                     <sw-card
@@ -73,39 +53,82 @@
                         </unzer-payment-apple-pay-certificates>
                     </sw-card>
 
-                    <sw-card :title="$tc(`unzer-payment-settings.modal.webhook.title`)" class="unzer--webhook-card">
-                        <sw-alert
-                            v-if="!isLoadingWebhooks && (!webhooks.length || webhooks.length === 0)"
-                            variant="warning"
-                            appearance="default"
-                            :showIcon="true"
-                            :closable="false">
-                            {{ $tc('unzer-payment-settings.webhook.empty') }}
-                        </sw-alert>
+                    <template v-for="keyPairSetting in keyPairSettings" :key="keyPairSetting.key">
+                        <sw-card :title="keyPairSettingTitle(keyPairSetting)">
+                            <sw-text-field
+                                :label="$tc('unzer-payment-settings.form.publicKey')"
+                                class="sw-field sw-block-field"
+                                v-model="keyPairSetting.publicKey"
+                            ></sw-text-field>
+                            <sw-text-field
+                                :label="$tc('unzer-payment-settings.form.privateKey')"
+                                class="sw-field sw-block-field"
+                                v-model="keyPairSetting.privateKey"
+                            ></sw-text-field>
 
-                        <div v-else>
+                            <sw-button
+                                @click="openModalKeyPair = keyPairSetting"
+                                :disabled="!isShowWebhooksButtonEnabled(keyPairSetting)"
+                            >
+                                {{ $tc('unzer-payment-settings.webhook.show') }}
+                            </sw-button>
 
-                            <sw-data-grid
-                                ref="webhookDataGrid"
-                                v-on:select-item="onSelectWebhook"
-                                :showActions="false"
-                                :showSelection="true"
-                                :dataSource="webhooks"
-                                :isLoading="isLoadingWebhooks"
-                                :columns="webhookColumns">
-                            </sw-data-grid>
+                            <unzer-payment-register-webhook
+                                :isLoading="isLoading"
+                                :isDisabled="!isRegisterWebhooksButtonEnabled(keyPairSetting)"
+                                :webhooks="webhooks"
+                                :selectedSalesChannelId="selectedSalesChannelId"
+                                @webhook-registered="onWebhookRegistered(keyPairSetting.privateKey)">
+                            </unzer-payment-register-webhook>
 
                             <sw-button-process
-                                @click="clearWebhooks"
-                                @process-finish="onClearingFinished()"
-                                :isLoading="isLoadingWebhooks || isClearing"
-                                :processSuccess="isClearingSuccessful"
-                                :disabled="isLoadingWebhooks || isClearing || webhookSelectionLength == 0"
-                                variant="danger">
-                                {{ $tc('unzer-payment-settings.modal.webhook.submit.clear', webhookSelectionLength, {count: webhookSelectionLength}) }}
+                                :isLoading="selectedKeyPairForTesting === keyPairSetting || isLoading"
+                                :disabled="selectedKeyPairForTesting === keyPairSetting || !isRegisterWebhooksButtonEnabled(keyPairSetting)"
+                                :processSuccess="selectedKeyPairForTesting === keyPairSetting && isTestSuccessful"
+                                @process-finish="onTestFinished()"
+                                @click="onValidateCredentials(keyPairSetting)">
+                                {{ $tc('unzer-payment-settings.form.testButton') }}
                             </sw-button-process>
-                        </div>
-                    </sw-card>
+
+                            <sw-modal
+                                :title="$tc(`unzer-payment-settings.modal.webhook.title`)"
+                                class="unzer--webhook-card"
+                                v-if="openModalKeyPair && openModalKeyPair == keyPairSetting"
+                                @modal-close="onModalClose"
+                            >
+                                <sw-alert
+                                    v-if="!isLoadingWebhooks && (!webhooks.length || webhooks.length === 0)"
+                                    variant="warning"
+                                    appearance="default"
+                                    :showIcon="true"
+                                    :closable="false">
+                                    {{ $tc('unzer-payment-settings.webhook.empty') }}
+                                </sw-alert>
+
+                                 <div v-else>
+                                    <sw-data-grid
+                                        ref="webhookDataGrid"
+                                        v-on:select-item="onSelectWebhook"
+                                        :showActions="false"
+                                        :showSelection="true"
+                                        :dataSource="webhooks"
+                                        :isLoading="isLoadingWebhooks"
+                                        :columns="webhookColumns">
+                                    </sw-data-grid>
+
+                                    <sw-button-process
+                                        @click="clearWebhooks(keyPairSetting.privateKey)"
+                                        @process-finish="onClearingFinished()"
+                                        :isLoading="isLoadingWebhooks || isClearing"
+                                        :processSuccess="isClearingSuccessful"
+                                        :disabled="isLoadingWebhooks || isClearing || webhookSelectionLength == 0"
+                                        variant="danger">
+                                        {{ $tc('unzer-payment-settings.modal.webhook.submit.clear', webhookSelectionLength, {count: webhookSelectionLength}) }}
+                                    </sw-button-process>
+                                </div>
+                            </sw-modal>
+                        </sw-card>
+                    </template>
                 </sw-card-view>
             </template>
         {% endblock %}
