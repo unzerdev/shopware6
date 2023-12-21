@@ -25,10 +25,6 @@ Component.register('unzer-payment-settings', {
             isSaveSuccessful: false,
             config: {},
             webhooks: [],
-            webhookSelection: null,
-            webhookSelectionLength: 0,
-            isClearing: false,
-            isClearingSuccessful: false,
             selectedSalesChannelId: null,
             keyPairSettings: [
                 {
@@ -71,21 +67,6 @@ Component.register('unzer-payment-settings', {
             return this.repositoryFactory.create('payment_method');
         },
 
-        webhookColumns() {
-            return [
-                {
-                    property: 'event',
-                    dataIndex: 'event',
-                    label: 'Event'
-                },
-                {
-                    property: 'url',
-                    dataIndex: 'url',
-                    label: 'URL'
-                }
-            ];
-        },
-
         arrowIconName() {
             const match = Context.app.config.version.match(/((\d+)\.?(\d+?)\.?(\d+)?\.?(\d*))-?([A-z]+?\d+)?/i);
 
@@ -95,24 +76,23 @@ Component.register('unzer-payment-settings', {
 
             return 'small-arrow-medium-right';
         },
+
+        defaultKeyPair() {
+            return {
+                privateKey: this.getConfigValue('privateKey'),
+                publicKey: this.getConfigValue('publicKey'),
+            }
+        }
     },
 
     watch: {
         openModalKeyPair(val) {
             this.openModalKeyPair = val;
 
-            if (!val) {
-                this.webhooks = [];
-                this.webhookSelection = null;
-                this.webhookSelectionLength= 0;
+            if (val) {
+                this.loadWebhooks(val.privateKey);
             }
-
-            let keyPairSetting = this.keyPairSettings.find(function(element) {
-                return element.key === val.key && element.group === val.group;
-            });
-
-            this.loadWebhooks(keyPairSetting?.privateKey);
-        }
+        },
     },
 
     methods: {
@@ -177,6 +157,8 @@ Component.register('unzer-payment-settings', {
             }, this.config);
 
             this.$refs.systemConfig.saveAll().then(() => {
+                this.isSaveSuccessful = true;
+
                 let messageSaveSuccess = this.$tc('sw-plugin-config.messageSaveSuccess');
 
                 if (messageSaveSuccess === 'sw-plugin-config.messageSaveSuccess') {
@@ -192,6 +174,8 @@ Component.register('unzer-payment-settings', {
                     this.isLoading = false;
                 });
             }).catch((err) => {
+                this.isSaveSuccessful = false;
+
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
                     message: err
@@ -230,50 +214,15 @@ Component.register('unzer-payment-settings', {
             this.UnzerPaymentConfigurationService.getWebhooks(privateKey)
                 .then((response) => {
                     this.webhooks = response;
+                    this.webhookSelection = null;
+                    this.webhookSelectionLength= 0;
+                })
+                .catch(() => {
+                    this.webhooks = [];
                 })
                 .finally(() => {
                     this.isLoadingWebhooks = false;
                     this.isClearingSuccessful = false;
-                });
-        },
-
-        onSelectWebhook(selectedItems) {
-            this.webhookSelectionLength = Object.keys(selectedItems).length;
-            this.webhookSelection = selectedItems;
-        },
-
-        clearWebhooks(privateKey) {
-            const me = this;
-            this.isClearingSuccessful = false;
-            this.isClearing = true;
-            this.isLoading = true;
-
-            this.UnzerPaymentConfigurationService.clearWebhooks({
-                privateKey: privateKey,
-                selection: this.webhookSelection
-            })
-                .then((response) => {
-                    me.isClearingSuccessful = true;
-                    me.isLoadingWebhooks = true;
-                    me.webhookSelection = [];
-                    me.webhookSelectionLength = 0;
-
-                    me.$refs.webhookDataGrid.resetSelection();
-
-                    this.loadWebhooks(privateKey);
-                    if (undefined !== response) {
-                        me.messageGeneration(response);
-                    }
-                })
-                .catch(() => {
-                    this.createNotificationError({
-                        title: this.$tc('unzer-payment-settings.webhook.globalError.title'),
-                        message: this.$tc('unzer-payment-settings.webhook.globalError.message')
-                    });
-                })
-                .finally(() => {
-                    me.isLoading = false;
-                    me.isClearing = false;
                 });
         },
 
@@ -295,11 +244,6 @@ Component.register('unzer-payment-settings', {
             });
         },
 
-        onClearingFinished() {
-            this.isClearingSuccessful = false;
-            this.isClearing = false;
-        },
-
         getBind(element, config) {
             let originalElement;
 
@@ -317,10 +261,6 @@ Component.register('unzer-payment-settings', {
             });
 
             return originalElement || element;
-        },
-
-        onModalClose() {
-            this.openModalKeyPair = false;
         },
 
         keyPairSettingTitle(keyPairSetting) {
