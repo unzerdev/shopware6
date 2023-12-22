@@ -25,6 +25,7 @@ Component.register('unzer-payment-settings', {
             isSaveSuccessful: false,
             config: {},
             webhooks: [],
+            loadedWebhooksPrivateKey: false,
             selectedSalesChannelId: null,
             keyPairSettings: [
                 {
@@ -87,9 +88,7 @@ Component.register('unzer-payment-settings', {
 
     watch: {
         openModalKeyPair(val) {
-            this.openModalKeyPair = val;
-
-            if (val) {
+            if (val && val.privateKey !== this.loadedWebhooksPrivateKey) {
                 this.loadWebhooks(val.privateKey);
             }
         },
@@ -216,9 +215,11 @@ Component.register('unzer-payment-settings', {
                     this.webhooks = response;
                     this.webhookSelection = null;
                     this.webhookSelectionLength= 0;
+                    this.loadedWebhooksPrivateKey = privateKey;
                 })
                 .catch(() => {
                     this.webhooks = [];
+                    this.loadedWebhooksPrivateKey = false;
                 })
                 .finally(() => {
                     this.isLoadingWebhooks = false;

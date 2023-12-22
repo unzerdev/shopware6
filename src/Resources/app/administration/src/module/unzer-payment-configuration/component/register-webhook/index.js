@@ -81,6 +81,7 @@ Shopware.Component.register('unzer-payment-register-webhook', {
         },
 
         openModal() {
+            this.$emit('modal-open');
             this.isModalActive = true;
         },
 
