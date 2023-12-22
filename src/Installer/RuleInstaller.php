@@ -54,23 +54,23 @@ class RuleInstaller
 
         return [
             [
-                'id'              => self::RULE_ID_PAYLATER_INSTALLMENT_PRECONDITION,
-                'name'            => 'DACH-Region mit EUR oder CHF',
-                'moduleTypes'     => [
+                'id'          => self::RULE_ID_PAYLATER_INSTALLMENT_PRECONDITION,
+                'name'        => 'DACH-Region mit EUR oder CHF',
+                'moduleTypes' => [
                     'types' => ['payment'],
                 ],
-                'priority'        => 10,
-                'translations'    => [
+                'priority'     => 10,
+                'translations' => [
                     'de-DE' => [
-                        'name' => 'DACH-Region mit EUR oder CHF',
+                        'name'        => 'DACH-Region mit EUR oder CHF',
                         'description' => 'Unzer Ratenzahlung (Paylater) steht nur in den angegebenen Regionen und Währungen zur Verfügung.',
                     ],
                     'en-GB' => [
-                        'name' => 'DACH region and EUR or CHF',
+                        'name'        => 'DACH region and EUR or CHF',
                         'description' => 'Unzer Installment (Paylater) is only available in the named regions and currencies.',
                     ],
                 ],
-                'conditions'      => [
+                'conditions' => [
                     [
                         'id'       => '0ddc611908e14c42a62b618f28a3c3ad',
                         'type'     => 'andContainer',

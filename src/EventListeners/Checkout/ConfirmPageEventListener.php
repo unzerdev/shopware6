@@ -63,14 +63,13 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
-        ConfigReaderInterface                 $configReader,
-        PaymentFrameFactoryInterface          $paymentFrameFactory,
-        SystemConfigService                   $systemConfigReader,
-        EntityRepository                      $languageRepository,
-        EntityRepository                      $currencyRepository,
-        ClientFactoryInterface                $clientFactory
-    )
-    {
+        ConfigReaderInterface $configReader,
+        PaymentFrameFactoryInterface $paymentFrameFactory,
+        SystemConfigService $systemConfigReader,
+        EntityRepository $languageRepository,
+        EntityRepository $currencyRepository,
+        ClientFactoryInterface $clientFactory
+    ) {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
         $this->paymentFrameFactory = $paymentFrameFactory;
@@ -340,7 +339,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     {
         $critera = new Criteria([$currencyId]);
 
-        return  $this->currencyRepository->search($critera, $context)->first();
+        return $this->currencyRepository->search($critera, $context)->first();
     }
 
     private function getPublicKey(PageLoadedEvent $event, Context $context): string
@@ -373,6 +372,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         foreach ($keyPairConfigs as $keyPairConfig) {
             if ($keyPairConfig['key'] === $isB2B ? 'b2b-' : 'b2c-' . $currency->getIsoCode()) {
                 $publicKey = $keyPairConfig['publicKey'];
+
                 break;
             }
         }

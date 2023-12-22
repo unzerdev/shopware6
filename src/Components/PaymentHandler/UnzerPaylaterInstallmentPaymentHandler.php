@@ -28,10 +28,9 @@ class UnzerPaylaterInstallmentPaymentHandler extends AbstractUnzerPaymentHandler
      */
     public function pay(
         AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag                $dataBag,
-        SalesChannelContext           $salesChannelContext
-    ): RedirectResponse
-    {
+        RequestDataBag $dataBag,
+        SalesChannelContext $salesChannelContext
+    ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         $this->unzerBasket->setTotalValueGross($this->unzerBasket->getTotalValueGross());

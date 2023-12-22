@@ -23,9 +23,9 @@ use UnzerPayment6\Components\PaymentHandler\UnzerEpsPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerGiropayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInstallmentSecuredPaymentHandler;
-use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInstallmentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceSecuredPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInstallmentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPisPaymentHandler;
@@ -56,7 +56,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_BANCONTACT           = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
     public const PAYMENT_ID_PAYLATER_INVOICE     = '09588ffee8064f168e909ff31889dd7f';
     public const PAYMENT_ID_APPLE_PAY            = '62490bda54fa48fbb29ed6b9368bafe1';
-    public const PAYMENT_ID_PAYLATER_INSTALLMENT  = '12fbfbce271a43a89b3783453b88e9a6';
+    public const PAYMENT_ID_PAYLATER_INSTALLMENT = '12fbfbce271a43a89b3783453b88e9a6';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -218,11 +218,11 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
         [
-            'id'                => self::PAYMENT_ID_PAYLATER_INSTALLMENT,
-            'handlerIdentifier' => UnzerPaylaterInstallmentPaymentHandler::class,
-            'name'              => 'Unzer Installment (Paylater)',
+            'id'                 => self::PAYMENT_ID_PAYLATER_INSTALLMENT,
+            'handlerIdentifier'  => UnzerPaylaterInstallmentPaymentHandler::class,
+            'name'               => 'Unzer Installment (Paylater)',
             'availabilityRuleId' => RuleInstaller::RULE_ID_PAYLATER_INSTALLMENT_PRECONDITION,
-            'translations'      => [
+            'translations'       => [
                 'de-DE' => [
                     'name'        => 'Unzer Ratenzahlung (Paylater)',
                     'description' => 'Unzer Ratenzahlung',
