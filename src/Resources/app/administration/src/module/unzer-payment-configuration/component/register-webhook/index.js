@@ -124,6 +124,10 @@ Shopware.Component.register('unzer-payment-register-webhook', {
 
 
         onSelectItem(domainId, domain) {
+            if (!domain) {
+                return;
+            }
+
             this.entitySelection[domain.salesChannelId] = domain;
         },
 
