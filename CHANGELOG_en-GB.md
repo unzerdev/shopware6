@@ -2,13 +2,17 @@
 * Add Paylater Installment as new payment method
 * Mark exisiting Secured Installment as deprecated
 
+# 5.5.1
+* Fixed the order completion if the TOS was not initially accepted
+* Fixed compatibility to other plugins that decorate the CheckoutController
+
 # 5.5.0
 * The order will now be reloaded after the actions in the Unzer tab so that the payment status is displayed correctly.
 * Added the cancel of an authorization
 * Fixed an additional parameter in the transfer of payment data to Unzer when credit card information is saved in checkout for the first time
 
 # 5.4.1
-* Fixed the payment via PayPal with a guest account 
+* Fixed the payment via PayPal with a guest account
 
 # 5.4.0
 * Removed the settings for registering the payment details in the plugin configuration
