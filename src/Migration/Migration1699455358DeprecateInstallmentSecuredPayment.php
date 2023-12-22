@@ -6,6 +6,7 @@ namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Result;
 use Shopware\Core\Framework\Migration\MigrationStep;
 use UnzerPayment6\Installer\PaymentInstaller;
 
@@ -50,14 +51,19 @@ SQL;
 
     private function appendDeprecationToPaymentMethodNameInGerman(Connection $connection): void
     {
-        $germanLanguageIds = $connection->createQueryBuilder()
+        $result = $connection->createQueryBuilder()
             ->select('lang.id')
             ->from('language', 'lang')
             ->innerJoin('lang', 'locale', 'loc', 'lang.translation_code_id = loc.id')
             ->where('loc.code LIKE :germanLanguagePart')
             ->setParameter('germanLanguagePart', 'de-%')
-            ->execute()
-            ->fetchFirstColumn();
+            ->execute();
+
+        if (!$result instanceof Result) {
+            return;
+        }
+
+        $germanLanguageIds = $result->fetchFirstColumn();
 
         $sql = <<<SQL
             UPDATE `payment_method_translation`
@@ -74,14 +80,19 @@ SQL;
 
     private function appendDeprecationToPaymentMethodNameInEnglish(Connection $connection): void
     {
-        $englishLanguageIds = $connection->createQueryBuilder()
+        $result = $connection->createQueryBuilder()
             ->select('lang.id')
             ->from('language', 'lang')
             ->innerJoin('lang', 'locale', 'loc', 'lang.translation_code_id = loc.id')
             ->where('loc.code LIKE :englishLanguagePart')
             ->setParameter('englishLanguagePart', 'en-%')
-            ->execute()
-            ->fetchFirstColumn();
+            ->execute();
+
+        if (!$result instanceof Result) {
+            return;
+        }
+
+        $englishLanguageIds = $result->fetchFirstColumn();
 
         $sql = <<<SQL
             UPDATE `payment_method_translation`
