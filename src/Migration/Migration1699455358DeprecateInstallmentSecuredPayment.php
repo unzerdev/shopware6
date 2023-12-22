@@ -2,7 +2,6 @@
 
 namespace UnzerPayment6\Migration;
 
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Framework\Migration\MigrationStep;

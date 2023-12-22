@@ -7,7 +7,6 @@ namespace UnzerPayment6\Components\PaymentTransitionMapper;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
-use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
 use UnzerSDK\Resources\PaymentTypes\PaylaterInstallment;
 
 class PaylaterInstallmentTransitionMapper extends AbstractTransitionMapper

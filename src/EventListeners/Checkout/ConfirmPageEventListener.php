@@ -364,8 +364,9 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $configKey = ConfigReader::CONFIG_KEY_PAYLATER_INVOICE;
         }
 
-        if (!isset($configKey))
+        if (!isset($configKey)) {
             return $publicKey;
+        }
 
         $keyPairConfigs = $this->configData->get($configKey);
 

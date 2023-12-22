@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UnzerPayment6\Installer;
 
 use Doctrine\DBAL\Connection;

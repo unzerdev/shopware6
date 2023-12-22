@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UnzerPayment6\Components\PaymentHandler;
 
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;

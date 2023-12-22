@@ -33,7 +33,6 @@ use UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerSofortPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerWeChatPaymentHandler;
-use UnzerPayment6\Core\Rule\UnzerPaylaterInstallmentPreconditionRule;
 use UnzerPayment6\UnzerPayment6;
 
 class PaymentInstaller implements InstallerInterface
