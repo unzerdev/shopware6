@@ -1,7 +1,17 @@
 import template from './unzer-webhooks-modal.html.twig';
 
-Shopware.Component.register('unzer-webhooks-modal', {
+const { Component, Mixin, Context } = Shopware;
+
+Component.register('unzer-webhooks-modal', {
     template,
+
+    mixins: [
+        Mixin.getByName('notification'),
+    ],
+
+    inject: [
+        'UnzerPaymentConfigurationService'
+    ],
 
     props: {
         keyPair: {
@@ -56,13 +66,13 @@ Shopware.Component.register('unzer-webhooks-modal', {
             })
                 .then((response) => {
                     me.isClearingSuccessful = true;
-                    me.isLoadingWebhooks = true;
                     me.webhookSelection = [];
                     me.webhookSelectionLength = 0;
 
                     me.$refs.webhookDataGrid.resetSelection();
 
-                    this.loadWebhooks(privateKey);
+                    me.$emit('load-webhooks', privateKey);
+
                     if (undefined !== response) {
                         me.messageGeneration(response);
                     }
@@ -87,6 +97,24 @@ Shopware.Component.register('unzer-webhooks-modal', {
         onSelectWebhook(selectedItems) {
             this.webhookSelectionLength = Object.keys(selectedItems).length;
             this.webhookSelection = selectedItems;
+        },
+
+        messageGeneration(data) {
+            const domainAmount = data.length;
+
+            Object.keys(data).forEach((url) => {
+                if (data[url].success) {
+                    this.createNotificationSuccess({
+                        title: this.$tc(data[url].message, domainAmount),
+                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + url
+                    });
+                } else {
+                    this.createNotificationError({
+                        title: this.$tc(data[url].message, domainAmount),
+                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + url
+                    });
+                }
+            });
         },
     }
 });

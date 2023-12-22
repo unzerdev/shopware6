@@ -226,24 +226,6 @@ Component.register('unzer-payment-settings', {
                 });
         },
 
-        messageGeneration(data) {
-            const domainAmount = data.length;
-
-            Object.keys(data).forEach((url) => {
-                if (data[url].success) {
-                    this.createNotificationSuccess({
-                        title: this.$tc(data[url].message, domainAmount),
-                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + url
-                    });
-                } else {
-                    this.createNotificationError({
-                        title: this.$tc(data[url].message, domainAmount),
-                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + url
-                    });
-                }
-            });
-        },
-
         getBind(element, config) {
             let originalElement;
 
