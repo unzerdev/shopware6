@@ -1,3 +1,7 @@
+# 5.6.0
+* Add Paylater Installment as new payment method
+* Mark exisiting Secured Installment as deprecated
+
 # 5.5.0
 * The order will now be reloaded after the actions in the Unzer tab so that the payment status is displayed correctly.
 * Added the cancel of an authorization

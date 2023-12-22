@@ -1,3 +1,7 @@
+# 5.6.0
+* Paylater Ratenzahlung als weitere Zahlungsart hinzugefügt
+* Bisherige Ratenzahlung als veraltet markiert 
+
 # 5.5.0
 * Die Bestellung wird nun nach den Aktionen im Unzer Tab neu geladen, damit unter anderem der Zahlungsstatus korrekt angezeigt wird
 * Ergänzung der Stornierung einer Autorisierung
