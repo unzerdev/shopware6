@@ -371,9 +371,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         foreach ($keyPairConfigs as $keyPairConfig) {
             if ($keyPairConfig['key'] === $isB2B ? 'b2b-' : 'b2c-' . $currency->getIsoCode()) {
-                $publicKey = $keyPairConfig['publicKey'];
-
-                break;
+                return $keyPairConfig['publicKey'];
             }
         }
 

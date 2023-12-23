@@ -23,13 +23,13 @@
                 <div>
                     {% block document_payment_shipping_unzer_paymenttransfer_info_title %}
                         <div class="unzer-payment-document--title">
-                            {{ "UnzerPayment.transferInformation.title" | trans  }}
+                            {{ "UnzerPayment.transferInformation.title" | trans }}
                         </div>
                     {% endblock %}
 
                     {% block document_payment_shipping_unzer_paymenttransfer_info_message %}
                         <h4 class="unzer-payment-document--message">
-                            {{ "UnzerPayment.transferInformation.message"|trans({'%amount%': (transferInfo.amount|currency(currencyIsoCode))})  }}
+                            {{ "UnzerPayment.transferInformation.message"|trans({'%amount%': (transferInfo.amount|currency(currencyIsoCode))}) }}
                         </h4>
                     {% endblock %}
 
@@ -37,28 +37,34 @@
                         <table class="unzer-payment-document--table">
                             <tbody>
                             <tr>
-                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.iban" | trans  }}</td>
+                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.iban" | trans }}</td>
                                 <td>{{ transferInfo.iban }}</td>
                             </tr>
                             <tr>
-                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.bic" | trans  }}</td>
+                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.bic" | trans }}</td>
                                 <td>{{ transferInfo.bic }}</td>
                             </tr>
                             <tr>
-                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.holder" | trans  }}</td>
+                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.holder" | trans }}</td>
                                 <td>{{ transferInfo.holder }}</td>
                             </tr>
                             <tr>
-                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.descriptor" | trans  }}</td>
+                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.descriptor" | trans }}</td>
                                 <td>{{ transferInfo.descriptor }}</td>
                             </tr>
                             <tr>
-                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.amount" | trans  }}</td>
+                                <td class="unzer-payment-document-table--main-column">{{ "UnzerPayment.transferInformation.amount" | trans }}</td>
                                 <td>{{ transferInfo.amount|currency(currencyIsoCode) }}</td>
                             </tr>
                             </tbody>
                         </table>
                     {% endblock %}
+
+                    {% if transaction.paymentMethodId == constant('UnzerPayment6\\Installer\\PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT') %}
+                        {% block document_payment_shipping_unzer_paymenttransfer_installment_info %}
+                            <h4>{{ "UnzerPayment.transferInformation.installmentInfo" | trans }}</h4>
+                        {% endblock %}
+                    {% endif %}
                 </div>
             </div>
         {% endif %}
