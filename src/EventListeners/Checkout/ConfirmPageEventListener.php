@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\EventListeners\Checkout;
 
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -95,7 +96,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $salesChannelContext = $event->getSalesChannelContext();
         $paymentMethod       = $salesChannelContext->getPaymentMethod();
 
-        if (!($event instanceof CheckoutConfirmPageLoadedEvent) || !($event instanceof AccountEditOrderPageLoadedEvent) || ($event instanceof AccountEditOrderPageLoadedEvent && !$paymentMethod->getAfterOrderEnabled())) {
+        if (!$this->isActionRequired($event, $paymentMethod)) {
             return;
         }
 
@@ -377,5 +378,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         return $publicKey;
+    }
+
+    public function isActionRequired(PageLoadedEvent $event, PaymentMethodEntity $paymentMethod): bool
+    {
+        return $event instanceof CheckoutConfirmPageLoadedEvent || ($event instanceof AccountEditOrderPageLoadedEvent && $paymentMethod->getAfterOrderEnabled());
     }
 }
