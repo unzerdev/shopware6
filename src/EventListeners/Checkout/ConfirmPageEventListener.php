@@ -92,51 +92,50 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     public function onCheckoutConfirm(PageLoadedEvent $event): void
     {
-        if (!($event instanceof CheckoutConfirmPageLoadedEvent) && !($event instanceof AccountEditOrderPageLoadedEvent)) {
+        $salesChannelContext = $event->getSalesChannelContext();
+        $paymentMethod       = $salesChannelContext->getPaymentMethod();
+
+        if (!($event instanceof CheckoutConfirmPageLoadedEvent) || !($event instanceof AccountEditOrderPageLoadedEvent) || ($event instanceof AccountEditOrderPageLoadedEvent && !$paymentMethod->getAfterOrderEnabled())) {
             return;
         }
 
-        $salesChannelContext = $event->getSalesChannelContext();
-        $this->configData    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $paymentMethodId  = $paymentMethod->getId();
+        $this->configData = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
-        ) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_CREDIT_CARD) {
             $this->addCreditCardExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYPAL
-        ) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_PAYPAL) {
             $this->addPayPalExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT
-        ) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT) {
             $this->addDirectDebitExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED
-        ) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED) {
             $this->addDirectDebitSecuredExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
             $this->addFraudPreventionExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED) {
             $this->addInstallmentSecuredExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_APPLE_PAY) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_APPLE_PAY) {
             $this->addApplePayExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT) {
             $this->addPaylaterInstallmentExtension($event);
             $this->addFraudPreventionExtension($event);
         }
 
-        if (in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS)) {
+        if (in_array($paymentMethodId, PaymentInstaller::PAYMENT_METHOD_IDS)) {
             $this->addPaymentFrameExtension($event);
             $this->addUnzerDataExtension($event);
         }
