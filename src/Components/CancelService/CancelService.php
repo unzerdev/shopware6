@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Constants\CancelReasonCodes;
@@ -64,7 +65,7 @@ class CancelService implements CancelServiceInterface
         $amountNet          = $roundedAmountNet / (10 ** $decimalPrecision);
         $amountVat          = $roundedAmountVat / (10 ** $decimalPrecision);
 
-        $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
+        $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
 
         if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
             $cancellation = new Cancellation($amountGross);
@@ -99,7 +100,7 @@ class CancelService implements CancelServiceInterface
             throw new InvalidTransactionException($orderTransactionId);
         }
 
-        $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
+        $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
 
         if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
             $client->cancelAuthorizedPayment($authorizationId, new Cancellation($amountGross));

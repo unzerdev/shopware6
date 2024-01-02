@@ -17,8 +17,8 @@
             <argument type="service" id="UnzerPayment6\Components\PaymentFrame\PaymentFrameFactory"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="language.repository"/>
-            <argument type="service" id="currency.repository"/>
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\PaylaterKeyPairConfigReader"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

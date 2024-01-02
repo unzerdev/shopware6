@@ -9,7 +9,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
@@ -19,8 +19,10 @@ use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\ConfigReader\PaylaterKeyPairConfigReader;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
 use UnzerPayment6\Components\Struct\Configuration;
+use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
@@ -56,11 +58,11 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var EntityRepository */
     private $languageRepository;
 
-    /** @var EntityRepository */
-    private $currencyRepository;
-
     /** @var ClientFactoryInterface */
     private $clientFactory;
+
+    /** @var PaylaterKeyPairConfigReader */
+    private $paylaterKeyPairConfigReader;
 
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
@@ -68,16 +70,16 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         PaymentFrameFactoryInterface $paymentFrameFactory,
         SystemConfigService $systemConfigReader,
         EntityRepository $languageRepository,
-        EntityRepository $currencyRepository,
-        ClientFactoryInterface $clientFactory
+        ClientFactoryInterface $clientFactory,
+        PaylaterKeyPairConfigReader $paylaterKeyPairConfigReader
     ) {
-        $this->deviceRepository    = $deviceRepository;
-        $this->configReader        = $configReader;
-        $this->paymentFrameFactory = $paymentFrameFactory;
-        $this->systemConfigReader  = $systemConfigReader;
-        $this->languageRepository  = $languageRepository;
-        $this->currencyRepository  = $currencyRepository;
-        $this->clientFactory       = $clientFactory;
+        $this->deviceRepository            = $deviceRepository;
+        $this->configReader                = $configReader;
+        $this->paymentFrameFactory         = $paymentFrameFactory;
+        $this->systemConfigReader          = $systemConfigReader;
+        $this->languageRepository          = $languageRepository;
+        $this->clientFactory               = $clientFactory;
+        $this->paylaterKeyPairConfigReader = $paylaterKeyPairConfigReader;
     }
 
     /**
@@ -142,6 +144,11 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
     }
 
+    public function isActionRequired(PageLoadedEvent $event, PaymentMethodEntity $paymentMethod): bool
+    {
+        return $event instanceof CheckoutConfirmPageLoadedEvent || ($event instanceof AccountEditOrderPageLoadedEvent && $paymentMethod->getAfterOrderEnabled());
+    }
+
     private function addFraudPreventionExtension(PageLoadedEvent $event): void
     {
         $extension = new FraudPreventionPageExtension();
@@ -155,7 +162,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $context = $event->getSalesChannelContext()->getContext();
 
         $extension = new UnzerDataPageExtension();
-        $extension->setPublicKey($this->getPublicKey($event, $context));
+        $extension->setPublicKey($this->getPublicKey($event->getSalesChannelContext()));
         $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
         $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
         $extension->setUnzerCustomer($this->getUnzerCustomer($event));
@@ -171,9 +178,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return null;
         }
 
-        $salesChannelId = $event->getSalesChannelContext()->getSalesChannelId();
-
-        $client         = $this->clientFactory->createClient($salesChannelId);
+        $client         = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($event->getSalesChannelContext()));
         $customerNumber = $customer->getCustomerNumber();
         $billingAddress = $customer->getActiveBillingAddress();
 
@@ -335,51 +340,14 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         return $searchResult->getLocale()->getCode();
     }
 
-    private function getCurrencyByCurrencyId(string $currencyId, Context $context): ?CurrencyEntity
+    private function getPublicKey(SalesChannelContext $salesChannelContext): string
     {
-        $critera = new Criteria([$currencyId]);
+        $keyPairContext = KeyPairContext::createFromSalesChannelContext($salesChannelContext);
 
-        return $this->currencyRepository->search($critera, $context)->first();
-    }
-
-    private function getPublicKey(PageLoadedEvent $event, Context $context): string
-    {
-        $publicKey = $this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY);
-
-        $currency       = $this->getCurrencyByCurrencyId($context->getCurrencyId(), $context);
-        $customer       = $event->getSalesChannelContext()->getCustomer();
-        $billingAddress = $customer ? $customer->getActiveBillingAddress() : null;
-
-        if (!$currency || !$customer || !$billingAddress) {
-            return $publicKey;
+        if (!$keyPairContext) {
+            return $this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY);
         }
 
-        $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
-        $isB2B         = !empty($billingAddress->getCompany());
-
-        if ($paymentMethod->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT) {
-            $configKey = ConfigReader::CONFIG_KEY_PAYLATER_INSTALLMENT;
-        } elseif ($paymentMethod->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
-            $configKey = ConfigReader::CONFIG_KEY_PAYLATER_INVOICE;
-        }
-
-        if (!isset($configKey)) {
-            return $publicKey;
-        }
-
-        $keyPairConfigs = $this->configData->get($configKey);
-
-        foreach ($keyPairConfigs as $keyPairConfig) {
-            if ($keyPairConfig['key'] === $isB2B ? 'b2b-' : 'b2c-' . $currency->getIsoCode()) {
-                return $keyPairConfig['publicKey'];
-            }
-        }
-
-        return $publicKey;
-    }
-
-    public function isActionRequired(PageLoadedEvent $event, PaymentMethodEntity $paymentMethod): bool
-    {
-        return $event instanceof CheckoutConfirmPageLoadedEvent || ($event instanceof AccountEditOrderPageLoadedEvent && $paymentMethod->getAfterOrderEnabled());
+        return $this->paylaterKeyPairConfigReader->getPublicKey($keyPairContext);
     }
 }

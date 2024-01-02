@@ -23,6 +23,7 @@ use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentResourceHydratorInterface;
 use UnzerPayment6\Components\ShipService\ShipServiceInterface;
+use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\TransactionTypes\Charge;
@@ -84,7 +85,7 @@ class UnzerPaymentTransactionController extends AbstractController
             throw new InvalidTransactionException($orderTransactionId);
         }
 
-        $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
+        $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
 
         try {
             $payment = $client->fetchPaymentByOrderId($orderTransactionId);
@@ -136,7 +137,7 @@ class UnzerPaymentTransactionController extends AbstractController
             throw new InvalidTransactionException($orderTransactionId);
         }
 
-        $client = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
+        $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
 
         try {
             $charge = new Charge($amount);
