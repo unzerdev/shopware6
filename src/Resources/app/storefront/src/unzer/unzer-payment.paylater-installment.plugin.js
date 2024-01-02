@@ -10,6 +10,7 @@ export default class UnzerPaymentPaylaterInstallmentPlugin extends Plugin {
         paylaterInstallmentCurrency: '',
         currencyIso: 'EUR',
         countryIso: 'DE',
+        threatMetrixId: '',
     };
 
     /**
@@ -72,6 +73,7 @@ export default class UnzerPaymentPaylaterInstallmentPlugin extends Plugin {
             amount: this.options.paylaterInstallmentAmount.toFixed(4),
             currency: this.options.paylaterInstallmentCurrency,
             country: this.options.countryIso,
+            threatMetrixId: this.options.threatMetrixId,
         }).then(() => {
             loadingIndicatorElement.hidden = true;
         }).catch((error) => {

@@ -5,12 +5,15 @@
         </div>
     {% endblock %}
 
+    {% set fraudPreventionExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
+
     <div class="unzer-payment-paylater-installment-wrapper"
          data-unzer-payment-paylater-installment="true"
          data-unzer-payment-paylater-installment-options='{
             "paylaterInstallmentCurrency": "{{ page.extensions.unzerPaylaterInstallment.currency }}",
             "paylaterInstallmentAmount": {{ page.extensions.unzerPaylaterInstallment.amount }},
-            "currencyIso": "{{ context.currency.isoCode }}"
+            "currencyIso": "{{ context.currency.isoCode }}",
+            "threatMetrixId": "{{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"
          }'>
 
         <div id="element-loader" class="unzer-payment-loader">
