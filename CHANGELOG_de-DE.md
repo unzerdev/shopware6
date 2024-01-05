@@ -1,3 +1,6 @@
+# 5.5.2
+* Korrektur des Zahlungsstatus "Autorisiert" für PayPal
+
 # 5.5.1
 * Korrektur des Bestellabschluss, wenn die AGB zuerst nicht akzeptiert wurden
 * Korrektur der Kompatibilität zu anderen Plugins, die den CheckoutController dekorieren

@@ -68,7 +68,7 @@ class PayPalTransitionMapper extends AbstractTransitionMapper
         }
 
         if ($this->stateMachineTransitionExists(AbstractTransitionMapper::CONST_KEY_AUTHORIZE)) {
-            if ($paymentObject->isPending() && !empty($paymentObject->getAuthorization())) {
+            if ($paymentObject->isPending() && !empty($paymentObject->getAuthorization()) && $paymentObject->getAuthorization()->isSuccess()) {
                 return constant(sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
             }
         }
