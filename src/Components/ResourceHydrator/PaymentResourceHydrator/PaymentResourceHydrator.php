@@ -123,7 +123,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         );
     }
 
-    protected function hydrateTransactions(array & $data, Payment $payment, int $decimalPrecision, Unzer $client): void
+    protected function hydrateTransactions(array &$data, Payment $payment, int $decimalPrecision, Unzer $client): void
     {
         $this->hydrateCharges($data, $payment, $decimalPrecision);
         $this->hydrateRefunds($data, $payment, $decimalPrecision, $client);
@@ -145,7 +145,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         ksort($data['transactions']);
     }
 
-    protected function hydrateCharges(array & $data, Payment $payment, int $decimalPrecision): void
+    protected function hydrateCharges(array &$data, Payment $payment, int $decimalPrecision): void
     {
         /** @var Charge $lazyCharge */
         foreach ($payment->getCharges() as $lazyCharge) {
@@ -180,7 +180,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         }
     }
 
-    protected function hydrateRefunds(array & $data, Payment $payment, int $decimalPrecision, Unzer $client): void
+    protected function hydrateRefunds(array &$data, Payment $payment, int $decimalPrecision, Unzer $client): void
     {
         /** @var Cancellation $lazyRefund */
         foreach ($payment->getRefunds() as $lazyRefund) {
@@ -212,7 +212,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         }
     }
 
-    protected function hydrateCancellations(array & $data, Payment $payment, int $decimalPrecision): void
+    protected function hydrateCancellations(array &$data, Payment $payment, int $decimalPrecision): void
     {
         /** @var Cancellation $cancellation */
         foreach ($payment->getCancellations() as $cancellation) {
@@ -230,7 +230,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         }
     }
 
-    protected function hydrateShipments(array & $data, Payment $payment, int $decimalPrecision): float
+    protected function hydrateShipments(array &$data, Payment $payment, int $decimalPrecision): float
     {
         $totalShippingAmount = 0;
 
@@ -259,7 +259,7 @@ class PaymentResourceHydrator implements PaymentResourceHydratorInterface
         return $totalShippingAmount;
     }
 
-    protected function validateIsShipmentAllowed(array & $data, ?OrderEntity $orderEntity): void
+    protected function validateIsShipmentAllowed(array &$data, ?OrderEntity $orderEntity): void
     {
         if ($data['isShipmentAllowed'] === false) {
             return;
