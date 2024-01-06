@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ForwardCompatibility\Result;
 use Doctrine\DBAL\ParameterType;
-use Doctrine\DBAL\Result;
 use Shopware\Core\Framework\Migration\MigrationStep;
 use UnzerPayment6\Installer\PaymentInstaller;
 
