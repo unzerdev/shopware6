@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\ForwardCompatibility\Result;
 use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Framework\Migration\MigrationStep;
 use UnzerPayment6\Installer\PaymentInstaller;
@@ -59,7 +58,7 @@ SQL;
             ->setParameter('germanLanguagePart', 'de-%')
             ->execute();
 
-        if (!$result instanceof Result) {
+        if (!in_array(get_class($result), ['Doctrine\DBAL\ForwardCompatibility\Result', 'Doctrine\DBAL\Result'])) {
             return;
         }
 
@@ -88,7 +87,7 @@ SQL;
             ->setParameter('englishLanguagePart', 'en-%')
             ->execute();
 
-        if (!$result instanceof Result) {
+        if (!in_array(get_class($result), ['Doctrine\DBAL\ForwardCompatibility\Result', 'Doctrine\DBAL\Result'])) {
             return;
         }
 
