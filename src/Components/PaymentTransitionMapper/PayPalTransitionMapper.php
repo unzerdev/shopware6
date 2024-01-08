@@ -14,6 +14,7 @@ use UnzerPayment6\Components\PaymentTransitionMapper\Traits\HasBookingMode;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Paypal;
+use UnzerSDK\Resources\TransactionTypes\Authorization;
 
 class PayPalTransitionMapper extends AbstractTransitionMapper
 {
@@ -67,8 +68,10 @@ class PayPalTransitionMapper extends AbstractTransitionMapper
             throw new TransitionMapperException($this->getResourceName());
         }
 
-        if ($this->stateMachineTransitionExists(AbstractTransitionMapper::CONST_KEY_AUTHORIZE)) {
-            if ($paymentObject->isPending() && !empty($paymentObject->getAuthorization())) {
+        if ($this->stateMachineTransitionExists(AbstractTransitionMapper::CONST_KEY_AUTHORIZE) && $paymentObject->isPending()) {
+            $authorization = $paymentObject->getAuthorization();
+
+            if ($authorization instanceof Authorization && $authorization->isSuccess()) {
                 return constant(sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
             }
         }

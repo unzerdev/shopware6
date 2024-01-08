@@ -1,3 +1,6 @@
+# 5.5.2
+* Fixed the payment status "Authorized" for PayPal orders
+
 # 5.5.1
 * Fixed the order completion if the TOS was not initially accepted
 * Fixed compatibility to other plugins that decorate the CheckoutController
