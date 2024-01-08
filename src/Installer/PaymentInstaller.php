@@ -99,14 +99,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_FLEXIPAY,
             'handlerIdentifier' => UnzerPisPaymentHandler::class,
-            'name'              => 'Unzer bank transfer',
+            'name'              => 'Bank transfer',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer bank transfer',
+                    'name'        => 'Bank transfer',
                     'description' => 'Unzer bank transfer Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer bank transfer',
+                    'name'        => 'Bank transfer',
                     'description' => 'Unzer bank transfer payments',
                 ],
             ],
@@ -174,14 +174,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE,
             'handlerIdentifier' => UnzerInvoicePaymentHandler::class,
-            'name'              => 'Invoice (Unzer payments, deprecated)',
+            'name'              => 'Invoice (deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice (veraltet)',
+                    'name'        => 'Rechnung (veraltet)',
                     'description' => 'Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice (deprecated)',
+                    'name'        => 'Invoice (deprecated)',
                     'description' => 'Invoice payments with Unzer payments',
                 ],
             ],
@@ -189,14 +189,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE_SECURED,
             'handlerIdentifier' => UnzerInvoiceSecuredPaymentHandler::class,
-            'name'              => 'Unzer invoice secured (deprecated)',
+            'name'              => 'Invoice secured (deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice secured (veraltet)',
+                    'name'        => 'Invoice secured (veraltet)',
                     'description' => 'Gesicherter Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice secured (deprecated)',
+                    'name'        => 'Invoice secured (deprecated)',
                     'description' => 'Invoice secured payments with Unzer payments',
                 ],
             ],
@@ -204,15 +204,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INSTALLMENT_SECURED,
             'handlerIdentifier' => UnzerInstallmentSecuredPaymentHandler::class,
-            'name'              => 'Unzer Installment (deprecated)',
+            'name'              => 'Installment (deprecated)',
             'active'            => false,
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer Ratenzahlung (veraltet)',
+                    'name'        => 'Ratenzahlung (veraltet)',
                     'description' => 'Unzer Ratenzahlung',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer Installment (deprecated)',
+                    'name'        => 'Installment (deprecated)',
                     'description' => 'Unzer Installment',
                 ],
             ],
@@ -220,15 +220,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                 => self::PAYMENT_ID_PAYLATER_INSTALLMENT,
             'handlerIdentifier'  => UnzerPaylaterInstallmentPaymentHandler::class,
-            'name'               => 'Unzer Installment',
+            'name'               => 'Installment',
             'availabilityRuleId' => RuleInstaller::RULE_ID_PAYLATER_INSTALLMENT_PRECONDITION,
             'translations'       => [
                 'de-DE' => [
-                    'name'        => 'Unzer Ratenzahlung',
+                    'name'        => 'Ratenzahlung',
                     'description' => 'Unzer Ratenzahlung',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer Installment',
+                    'name'        => 'Installment',
                     'description' => 'Unzer Installment',
                 ],
             ],
@@ -359,11 +359,11 @@ class PaymentInstaller implements InstallerInterface
             'name'              => 'Invoice',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice',
+                    'name'        => 'Rechnung',
                     'description' => 'Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice',
+                    'name'        => 'Invoice',
                     'description' => 'Invoice payments with Unzer payments',
                 ],
             ],
