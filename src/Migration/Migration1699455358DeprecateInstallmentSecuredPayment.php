@@ -58,7 +58,7 @@ SQL;
             ->setParameter('germanLanguagePart', 'de-%')
             ->execute();
 
-        if (!in_array(get_class($result), ['Doctrine\DBAL\ForwardCompatibility\Result', 'Doctrine\DBAL\Result'])) {
+        if (!is_object($result)) {
             return;
         }
 
@@ -87,7 +87,7 @@ SQL;
             ->setParameter('englishLanguagePart', 'en-%')
             ->execute();
 
-        if (!in_array(get_class($result), ['Doctrine\DBAL\ForwardCompatibility\Result', 'Doctrine\DBAL\Result'])) {
+        if (!is_object($result)) {
             return;
         }
 
