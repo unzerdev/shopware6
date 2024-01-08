@@ -90,14 +90,14 @@
         },
         "methods": {
             "paylaterInvoice": {
-                "b2b-eur": "Unzer Rechnung (Paylater) B2B-EUR",
-                "b2b-chf": "Unzer Rechnung (Paylater) B2B-CHF",
-                "b2c-eur": "Unzer Rechnung (Paylater) B2C-EUR",
-                "b2c-chf": "Unzer Rechnung (Paylater) B2C-CHF"
+                "b2b-eur": "Rechnung (Paylater) B2B-EUR",
+                "b2b-chf": "Rechnung (Paylater) B2B-CHF",
+                "b2c-eur": "Rechnung (Paylater) B2C-EUR",
+                "b2c-chf": "Rechnung (Paylater) B2C-CHF"
             },
             "paylaterInstallment": {
-                "b2c-eur": "Unzer Ratenzahlung (Paylater) B2C-EUR",
-                "b2c-chf": "Unzer Ratenzahlung (Paylater) B2C-CHF"
+                "b2c-eur": "Ratenzahlung (Paylater) B2C-EUR",
+                "b2c-chf": "Ratenzahlung (Paylater) B2C-CHF"
             }
         }
     },
