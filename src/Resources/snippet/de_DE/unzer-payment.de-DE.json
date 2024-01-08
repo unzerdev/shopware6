@@ -82,7 +82,6 @@
         },
         "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Zahlung ändern</a>",
         "birthdayInvalid": "Sie müssen mindestens 18 Jahre alt sein.",
-        "personalConsentLabel": "Mit der Überprpfung der für die Abwicklung des Ratenkaufes und einer Identitäts- und Bonitätsprüfung erforderlichen Daten bin ich einverstanden.\n\r<a href\"%consentUrl%\">Meine Einwilligungen</a> kann ich jederzeit mit Wirkung für die Zukunft widerrufen.",
         "companyType": {
             "label": "Art des Unternehmens",
             "placeholder": "Bitte auswählen",
