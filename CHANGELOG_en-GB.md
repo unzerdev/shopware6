@@ -1,5 +1,5 @@
 # 5.5.2
-* Fixed the payment status "Authorized" for PayPal orders
+* Fixed the payment status "Authorized" for PayPal and credit card 
 
 # 5.5.1
 * Fixed the order completion if the TOS was not initially accepted
