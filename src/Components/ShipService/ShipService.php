@@ -117,8 +117,10 @@ class ShipService implements ShipServiceInterface
         $criteria = new Criteria([$orderTransactionId]);
         $criteria->addAssociations([
             'order',
+            'order.billingAddress',
             'order.documents',
             'order.documents.documentType',
+            'order.paymentMethod',
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();

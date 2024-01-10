@@ -117,7 +117,9 @@ class CancelService implements CancelServiceInterface
         $criteria = new Criteria([$orderTransactionId]);
         $criteria->addAssociations([
             'order',
+            'order.billingAddress',
             'order.currency',
+            'order.paymentMethod',
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();

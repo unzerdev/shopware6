@@ -295,9 +295,11 @@ class UnzerPaymentTransactionController extends AbstractController
         $criteria = new Criteria([$orderTransactionId]);
         $criteria->addAssociations([
             'order',
+            'order.billingAddress',
             'order.currency',
             'order.documents',
             'order.documents.documentType',
+            'order.paymentMethod',
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();
