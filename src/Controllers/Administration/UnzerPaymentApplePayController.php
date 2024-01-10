@@ -248,8 +248,6 @@ class UnzerPaymentApplePayController extends AbstractController
         $criteria->addAssociation('currency');
         $criteria->addAssociation('paymentMethod');
 
-        $searchResult = $this->salesChannelRepository->search($criteria, Context::createDefaultContext());
-
-        return $searchResult->first();
+        return $this->salesChannelRepository->search($criteria, Context::createDefaultContext())->first();
     }
 }

@@ -130,9 +130,6 @@ export default class UnzerPaymentPaylaterInstallmentPlugin extends Plugin {
             case 'plan-detail':
                 this._unzerPaymentPlugin.setSubmitButtonActive(true);
                 break;
-
-            default:
-                break;
         }
     }
 

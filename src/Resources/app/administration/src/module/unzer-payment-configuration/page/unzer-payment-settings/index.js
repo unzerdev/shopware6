@@ -214,7 +214,7 @@ Component.register('unzer-payment-settings', {
                 .then((response) => {
                     this.webhooks = response;
                     this.webhookSelection = null;
-                    this.webhookSelectionLength= 0;
+                    this.webhookSelectionLength = 0;
                     this.loadedWebhooksPrivateKey = privateKey;
                 })
                 .catch(() => {

@@ -229,9 +229,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         $criteria->addAssociation('currency');
         $criteria->addAssociation('paymentMethod');
 
-        $searchResult = $this->salesChannelRepository->search($criteria, Context::createDefaultContext());
-
-        return $searchResult->first();
+        return $this->salesChannelRepository->search($criteria, Context::createDefaultContext())->first();
     }
 
     protected function getSalesChannelDomain(string $salesChannelId, string $url): ?SalesChannelDomainEntity
@@ -241,8 +239,6 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         $criteria->addFilter(new EqualsFilter('id', $salesChannelId));
         $criteria->addFilter(new EqualsFilter('url', $url));
 
-        $searchResult = $this->salesChannelDomainRepository->search($criteria, Context::createDefaultContext());
-
-        return $searchResult->first();
+        return $this->salesChannelDomainRepository->search($criteria, Context::createDefaultContext())->first();
     }
 }

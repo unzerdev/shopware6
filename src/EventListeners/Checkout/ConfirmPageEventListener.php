@@ -144,7 +144,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
     }
 
-    public function isActionRequired(PageLoadedEvent $event, PaymentMethodEntity $paymentMethod): bool
+    private function isActionRequired(PageLoadedEvent $event, PaymentMethodEntity $paymentMethod): bool
     {
         return $event instanceof CheckoutConfirmPageLoadedEvent || ($event instanceof AccountEditOrderPageLoadedEvent && $paymentMethod->getAfterOrderEnabled());
     }

@@ -53,15 +53,6 @@ class UnzerPaylaterInstallmentPaymentHandler extends AbstractUnzerPaymentHandler
                 $riskData
             );
 
-            /** @var int $currencyPrecision */
-            $currencyPrecision = $transaction->getOrder()->getCurrency() !== null ? min(
-                $transaction->getOrder()->getCurrency()->getItemRounding()->getDecimals(),
-                UnzerPayment6::MAX_DECIMAL_PRECISION
-            ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
-
-            /** @phpstan-ignore-next-line */
-            $this->payment->charge(round($transaction->getOrder()->getAmountTotal(), $currencyPrecision));
-
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(

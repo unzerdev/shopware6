@@ -221,7 +221,6 @@ class PaymentInstaller implements InstallerInterface
             'id'                 => self::PAYMENT_ID_PAYLATER_INSTALLMENT,
             'handlerIdentifier'  => UnzerPaylaterInstallmentPaymentHandler::class,
             'name'               => 'Installment',
-            'availabilityRuleId' => RuleInstaller::RULE_ID_PAYLATER_INSTALLMENT_PRECONDITION,
             'translations'       => [
                 'de-DE' => [
                     'name'        => 'Ratenzahlung',

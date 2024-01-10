@@ -20,7 +20,6 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use UnzerPayment6\Components\UnzerPaymentClassLoader;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerPayment6\Installer\PaymentInstaller;
-use UnzerPayment6\Installer\RuleInstaller;
 
 include_once 'Components/BackwardsCompatibility/RouteScope.php';
 include_once 'Components/BackwardsCompatibility/InvoiceGenerator.php';
@@ -34,6 +33,8 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
  */
 class UnzerPayment6 extends Plugin
 {
+    public const PLUGIN_NAME = 'UnzerPayment6';
+
     public const MAX_DECIMAL_PRECISION = 4;
 
     public function build(ContainerBuilder $container): void
@@ -49,22 +50,15 @@ class UnzerPayment6 extends Plugin
      */
     public function install(InstallContext $installContext): void
     {
-        /** @var EntityRepository $ruleRepository */
-        $ruleRepository = $this->container->get('rule.repository');
-
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
-        /** @var Connection $connection */
-        $connection = $this->container->get(Connection::class);
-
         /** @var PluginIdProvider $pluginIdProvider */
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
 
-        (new RuleInstaller($ruleRepository, $connection))->install($installContext);
         (new PaymentInstaller($paymentRepository, $pluginIdProvider))->install($installContext);
         (new CustomFieldInstaller($customFieldSetRepository))->install($installContext);
     }
@@ -74,22 +68,15 @@ class UnzerPayment6 extends Plugin
      */
     public function update(UpdateContext $updateContext): void
     {
-        /** @var EntityRepository $ruleRepository */
-        $ruleRepository = $this->container->get('rule.repository');
-
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
-        /** @var Connection $connection */
-        $connection = $this->container->get(Connection::class);
-
         /** @var PluginIdProvider $pluginIdProvider */
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
 
-        (new RuleInstaller($ruleRepository, $connection))->update($updateContext);
         (new PaymentInstaller($paymentRepository, $pluginIdProvider))->update($updateContext);
         (new CustomFieldInstaller($customFieldSetRepository))->update($updateContext);
     }
@@ -99,22 +86,15 @@ class UnzerPayment6 extends Plugin
      */
     public function activate(ActivateContext $activateContext): void
     {
-        /** @var EntityRepository $ruleRepository */
-        $ruleRepository = $this->container->get('rule.repository');
-
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
-        /** @var Connection $connection */
-        $connection = $this->container->get(Connection::class);
-
         /** @var PluginIdProvider $pluginIdProvider */
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
 
-        (new RuleInstaller($ruleRepository, $connection))->activate($activateContext);
         (new PaymentInstaller($paymentRepository, $pluginIdProvider))->activate($activateContext);
         (new CustomFieldInstaller($customFieldSetRepository))->activate($activateContext);
     }
@@ -124,22 +104,15 @@ class UnzerPayment6 extends Plugin
      */
     public function deactivate(DeactivateContext $deactivateContext): void
     {
-        /** @var EntityRepository $ruleRepository */
-        $ruleRepository = $this->container->get('rule.repository');
-
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
-        /** @var Connection $connection */
-        $connection = $this->container->get(Connection::class);
-
         /** @var PluginIdProvider $pluginIdProvider */
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
 
-        (new RuleInstaller($ruleRepository, $connection))->deactivate($deactivateContext);
         (new PaymentInstaller($paymentRepository, $pluginIdProvider))->deactivate($deactivateContext);
         (new CustomFieldInstaller($customFieldSetRepository))->deactivate($deactivateContext);
     }
@@ -149,9 +122,6 @@ class UnzerPayment6 extends Plugin
      */
     public function uninstall(UninstallContext $uninstallContext): void
     {
-        /** @var EntityRepository $ruleRepository */
-        $ruleRepository = $this->container->get('rule.repository');
-
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
@@ -164,7 +134,6 @@ class UnzerPayment6 extends Plugin
         /** @var PluginIdProvider $pluginIdProvider */
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
 
-        (new RuleInstaller($ruleRepository, $connection))->uninstall($uninstallContext);
         (new PaymentInstaller($paymentRepository, $pluginIdProvider))->uninstall($uninstallContext);
 
         if (!$uninstallContext->keepUserData()) {
