@@ -120,7 +120,7 @@ class ShipService implements ShipServiceInterface
             'order.billingAddress',
             'order.documents',
             'order.documents.documentType',
-            'order.paymentMethod',
+            'paymentMethod',
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();

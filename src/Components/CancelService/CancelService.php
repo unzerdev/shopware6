@@ -119,7 +119,7 @@ class CancelService implements CancelServiceInterface
             'order',
             'order.billingAddress',
             'order.currency',
-            'order.paymentMethod',
+            'paymentMethod',
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();
