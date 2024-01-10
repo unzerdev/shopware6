@@ -1,5 +1,6 @@
 # 5.5.2
-* Korrektur des Zahlungsstatus "Autorisiert" für PayPal und Kreditkarte
+* Korrektur des Zahlungsstatus "Autorisiert" für PayPal und Kreditkarte im Modus "Autorisierung"
+* Korrektur des Zahlungsstatus "Fehlgeschlagen" für PayPal und Kreditkarte im Modus "Direkt"
 
 # 5.5.1
 * Korrektur des Bestellabschluss, wenn die AGB zuerst nicht akzeptiert wurden
