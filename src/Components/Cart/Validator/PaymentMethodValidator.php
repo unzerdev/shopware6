@@ -48,6 +48,10 @@ class PaymentMethodValidator implements CartValidatorInterface
             return;
         }
 
+        if (!$context->getCustomer() || !$context->getCustomer()->getActiveBillingAddress() || !$context->getCustomer()->getActiveBillingAddress()->getCountry()) {
+            return;
+        }
+
         if (!in_array($context->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(), ['DE', 'AT', 'CH'])) {
             $errors->add(new PaymentMethodBlockedError((string) $context->getPaymentMethod()->getTranslation('name')));
         }

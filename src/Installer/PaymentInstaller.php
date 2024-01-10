@@ -218,10 +218,10 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
         [
-            'id'                 => self::PAYMENT_ID_PAYLATER_INSTALLMENT,
-            'handlerIdentifier'  => UnzerPaylaterInstallmentPaymentHandler::class,
-            'name'               => 'Installment',
-            'translations'       => [
+            'id'                => self::PAYMENT_ID_PAYLATER_INSTALLMENT,
+            'handlerIdentifier' => UnzerPaylaterInstallmentPaymentHandler::class,
+            'name'              => 'Installment',
+            'translations'      => [
                 'de-DE' => [
                     'name'        => 'Ratenzahlung',
                     'description' => 'Unzer Ratenzahlung',
