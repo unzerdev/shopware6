@@ -1,5 +1,5 @@
 # 5.5.2
-* Korrektur des Zahlungsstatus "Autorisiert" für PayPal und Kreditkarte im Modus "Autorisierung"
+* Korrektur des Zahlungsstatus "Autorisiert" für Apple Pay, PayPal und Kreditkarte im Modus "Autorisierung"
 * Korrektur des Zahlungsstatus "Fehlgeschlagen" für PayPal und Kreditkarte im Modus "Direkt"
 
 # 5.5.1
