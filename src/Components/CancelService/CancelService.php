@@ -67,7 +67,7 @@ class CancelService implements CancelServiceInterface
 
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
 
-        if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
+        if ($this->isPaylaterPaymentMethod($transaction->getPaymentMethodId())) {
             $cancellation = new Cancellation($amountGross);
 
             $client->cancelChargedPayment(
@@ -102,7 +102,7 @@ class CancelService implements CancelServiceInterface
 
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
 
-        if ($transaction->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
+        if ($this->isPaylaterPaymentMethod($transaction->getPaymentMethodId())) {
             $client->cancelAuthorizedPayment($authorizationId, new Cancellation($amountGross));
 
             return;
@@ -128,5 +128,10 @@ class CancelService implements CancelServiceInterface
     protected function getCancelReasonCode(?string $reasonCode): string
     {
         return $reasonCode ?? CancelReasonCodes::REASON_CODE_CANCEL;
+    }
+
+    protected function isPaylaterPaymentMethod(string $paymentMethodId): bool
+    {
+        return in_array($paymentMethodId, [PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE, PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT]);
     }
 }
