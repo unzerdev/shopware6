@@ -46,7 +46,7 @@ class PaylaterKeyPairConfigReader
 
         foreach ($keyPairConfigs as $keyPairConfig) {
             $customerType = $keyPairContext->isB2B() ? 'b2b' : 'b2c';
-            $currentKey   = sprintf('%s-%s', $customerType, $keyPairContext->getCurrencyIsoCode());
+            $currentKey   = sprintf('%s-%s', $customerType, strtolower($keyPairContext->getCurrencyIsoCode()));
 
             if ($keyPairConfig['key'] === $currentKey) {
                 return $keyPairConfig[$keyPairConfigKey];
