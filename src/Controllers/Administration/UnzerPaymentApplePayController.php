@@ -242,9 +242,14 @@ class UnzerPaymentApplePayController extends AbstractController
         );
     }
 
-    protected function getSalesChannel(string $salesChannelId): ?SalesChannelEntity
+    protected function getSalesChannel(?string $salesChannelId): ?SalesChannelEntity
     {
-        $criteria = new Criteria([$salesChannelId]);
+        $criteria = new Criteria();
+
+        if ($salesChannelId) {
+            $criteria->setIds([$salesChannelId]);
+        }
+
         $criteria->addAssociation('currency');
         $criteria->addAssociation('paymentMethod');
 
