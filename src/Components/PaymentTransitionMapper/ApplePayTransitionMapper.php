@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
+use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use UnzerPayment6\Components\PaymentTransitionMapper\Traits\HasBookingMode;
 use UnzerSDK\Resources\Payment;
@@ -20,6 +22,12 @@ class ApplePayTransitionMapper extends AbstractTransitionMapper
 
     private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_BOOKING_MODE_APPLE_PAY;
     private const DEFAULT_MODE     = BookingMode::CHARGE;
+
+    public function __construct(ConfigReaderInterface $configReader, EntityRepository $orderTransactionRepository)
+    {
+        $this->configReader               = $configReader;
+        $this->orderTransactionRepository = $orderTransactionRepository;
+    }
 
     public function supports(BasePaymentType $paymentType): bool
     {
