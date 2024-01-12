@@ -13,7 +13,6 @@ use Shopware\Core\Framework\Uuid\Exception\InvalidUuidException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
-use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\Struct\Webhook;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerSDK\Resources\Payment;
@@ -65,7 +64,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
      */
     public function execute(Webhook $webhook, SalesChannelContext $context): void
     {
-        $client  = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($context));
+        $client  = $this->clientFactory->createClientFromPublicKey($webhook->getPublicKey(), $context->getSalesChannelId());
         $payment = $client->getResourceService()->fetchResourceByUrl($webhook->getRetrieveUrl());
 
         if (!$payment instanceof Payment) {

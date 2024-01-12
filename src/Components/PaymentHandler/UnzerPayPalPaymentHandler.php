@@ -181,12 +181,15 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         SalesChannelContext $salesChannelContext
     ): void {
         $this->pluginConfig = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $this->unzerClient  = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($salesChannelContext));
 
         $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
 
         $transactionCustomFields = $transaction->getOrderTransaction()->getCustomFields();
         $registerAccounts        = !empty($transactionCustomFields[self::REMEMBER_PAYPAL_ACCOUNT_KEY]);
+
+        $this->unzerClient = $this->clientFactory->createClient(
+            KeyPairContext::createFromOrderTransaction($transaction->getOrderTransaction())
+        );
 
         if (!$registerAccounts) {
             parent::finalize($transaction, $request, $salesChannelContext);

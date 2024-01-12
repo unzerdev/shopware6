@@ -53,7 +53,7 @@ class FinishPageEventListener implements EventSubscriberInterface
         }
 
         try {
-            $unzerClient = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($salesChannelContext));
+            $unzerClient = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($unzerTransaction));
         } catch (\RuntimeException $ex) {
             $this->logger->error($ex->getMessage());
 

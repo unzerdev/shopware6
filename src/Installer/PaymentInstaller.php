@@ -66,7 +66,6 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_EPS,
         self::PAYMENT_ID_FLEXIPAY,
         self::PAYMENT_ID_GIROPAY,
-        self::PAYMENT_ID_PAYLATER_INSTALLMENT,
         self::PAYMENT_ID_INVOICE,
         self::PAYMENT_ID_INVOICE_SECURED,
         self::PAYMENT_ID_IDEAL,
@@ -78,6 +77,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_BANCONTACT,
         self::PAYMENT_ID_PAYLATER_INVOICE,
         self::PAYMENT_ID_APPLE_PAY,
+        self::PAYMENT_ID_PAYLATER_INSTALLMENT,
     ];
 
     public const PAYMENT_METHODS = [

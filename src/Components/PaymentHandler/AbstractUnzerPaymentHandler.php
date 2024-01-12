@@ -180,8 +180,10 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     ): void {
         try {
             $this->pluginConfig = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-            $this->unzerClient  = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($salesChannelContext));
-            $this->payment      = $this->unzerClient->fetchPaymentByOrderId(
+            $this->unzerClient  = $this->clientFactory->createClient(
+                KeyPairContext::createFromOrderTransaction($transaction->getOrderTransaction())
+            );
+            $this->payment = $this->unzerClient->fetchPaymentByOrderId(
                 $transaction->getOrderTransaction()->getId()
             );
 

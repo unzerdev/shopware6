@@ -28,6 +28,10 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             type: String,
             required: false
         },
+        privateKey: {
+            type: String,
+            required: true
+        },
         isDisabled: {
             type: Boolean,
             required: false
@@ -127,6 +131,8 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             if (!domain) {
                 return;
             }
+
+            domain['privateKey'] = this.privateKey;
 
             this.entitySelection[domain.salesChannelId] = domain;
         },

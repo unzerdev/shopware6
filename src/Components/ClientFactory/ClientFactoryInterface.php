@@ -14,5 +14,7 @@ interface ClientFactoryInterface
 
     public function createClient(KeyPairContext $keyPairContext, string $locale = self::DEFAULT_LOCALE): Unzer;
 
-    public function createClientFromPrivateKey(string $privateKey, string $locale = self::DEFAULT_LOCALE): Unzer;
+    public function createClientFromPrivateKey(string $privateKey, string $salesChannelId = '', string $locale = self::DEFAULT_LOCALE): Unzer;
+
+    public function createClientFromPublicKey(string $publicKey, string $salesChannelId = '', string $locale = self::DEFAULT_LOCALE): Unzer;
 }

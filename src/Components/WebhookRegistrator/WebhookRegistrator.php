@@ -12,13 +12,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelDomain\SalesChannelDomainEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
 use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
-use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerSDK\Exceptions\UnzerApiException;
 
 class WebhookRegistrator implements WebhookRegistratorInterface
@@ -38,9 +36,6 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     private $router;
 
     /** @var EntityRepository */
-    private $salesChannelRepository;
-
-    /** @var EntityRepository */
     private $salesChannelDomainRepository;
 
     /** @var LoggerInterface */
@@ -49,13 +44,11 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     public function __construct(
         ClientFactoryInterface $clientFactory,
         Router $router,
-        EntityRepository $salesChannelRepository,
         EntityRepository $salesChannelDomainRepository,
         LoggerInterface $logger
     ) {
         $this->clientFactory                = $clientFactory;
         $this->router                       = $router;
-        $this->salesChannelRepository       = $salesChannelRepository;
         $this->salesChannelDomainRepository = $salesChannelDomainRepository;
         $this->logger                       = $logger;
     }
@@ -69,6 +62,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
             $salesChannelId    = $salesChannelDomain->get('salesChannelId');
             $preparationResult = $this->prepare($salesChannelDomain);
             $domainUrl         = $salesChannelDomain->get('url', '');
+            $privateKey        = $salesChannelDomain->get('privateKey');
 
             if (!empty($preparationResult)) {
                 $returnData[$preparationResult['key']] = $preparationResult['value'];
@@ -81,7 +75,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                 $url          = $domainUrl . $relativePath;
 
                 $result = $this->clientFactory
-                    ->createClient(KeyPairContext::createFromSalesChannel($this->getSalesChannel($salesChannelId)))
+                    ->createClientFromPrivateKey($privateKey, $salesChannelId)
                     ->createWebhook($url, 'payment');
 
                 $returnData[$domainUrl] = [
@@ -221,15 +215,6 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         }
 
         $this->context = $context;
-    }
-
-    protected function getSalesChannel(string $salesChannelId): ?SalesChannelEntity
-    {
-        $criteria = new Criteria([$salesChannelId]);
-        $criteria->addAssociation('currency');
-        $criteria->addAssociation('paymentMethod');
-
-        return $this->salesChannelRepository->search($criteria, Context::createDefaultContext())->first();
     }
 
     protected function getSalesChannelDomain(string $salesChannelId, string $url): ?SalesChannelDomainEntity

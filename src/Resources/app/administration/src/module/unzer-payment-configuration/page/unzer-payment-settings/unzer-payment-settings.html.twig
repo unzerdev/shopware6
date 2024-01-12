@@ -52,6 +52,7 @@
                                     :isDisabled="!isRegisterWebhooksButtonEnabled(defaultKeyPair)"
                                     :webhooks="webhooks"
                                     :selectedSalesChannelId="selectedSalesChannelId"
+                                    :privateKey="defaultKeyPair.privateKey"
                                     @modal-open="loadWebhooks(defaultKeyPair.privateKey)"
                                     @webhook-registered="onWebhookRegistered(defaultKeyPair.privateKey)">
                                 </unzer-payment-register-webhook>
@@ -107,6 +108,7 @@
                                     :isDisabled="!isRegisterWebhooksButtonEnabled(keyPairSetting)"
                                     :webhooks="webhooks"
                                     :selectedSalesChannelId="selectedSalesChannelId"
+                                    :privateKey="keyPairSetting.privateKey"
                                     @modal-open="loadWebhooks(keyPairSetting.privateKey)"
                                     @webhook-registered="onWebhookRegistered(keyPairSetting.privateKey)">
                                 </unzer-payment-register-webhook>

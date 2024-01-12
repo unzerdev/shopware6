@@ -19,7 +19,7 @@ use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
-use UnzerPayment6\Components\ConfigReader\PaylaterKeyPairConfigReader;
+use UnzerPayment6\Components\ConfigReader\KeyPairConfigReader;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\KeyPairContext;
@@ -61,8 +61,8 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
-    /** @var PaylaterKeyPairConfigReader */
-    private $paylaterKeyPairConfigReader;
+    /** @var KeyPairConfigReader */
+    private $keyPairConfigReader;
 
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
@@ -71,15 +71,15 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         SystemConfigService $systemConfigReader,
         EntityRepository $languageRepository,
         ClientFactoryInterface $clientFactory,
-        PaylaterKeyPairConfigReader $paylaterKeyPairConfigReader
+        KeyPairConfigReader $keyPairConfigReader
     ) {
-        $this->deviceRepository            = $deviceRepository;
-        $this->configReader                = $configReader;
-        $this->paymentFrameFactory         = $paymentFrameFactory;
-        $this->systemConfigReader          = $systemConfigReader;
-        $this->languageRepository          = $languageRepository;
-        $this->clientFactory               = $clientFactory;
-        $this->paylaterKeyPairConfigReader = $paylaterKeyPairConfigReader;
+        $this->deviceRepository    = $deviceRepository;
+        $this->configReader        = $configReader;
+        $this->paymentFrameFactory = $paymentFrameFactory;
+        $this->systemConfigReader  = $systemConfigReader;
+        $this->languageRepository  = $languageRepository;
+        $this->clientFactory       = $clientFactory;
+        $this->keyPairConfigReader = $keyPairConfigReader;
     }
 
     /**
@@ -348,6 +348,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return $this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY);
         }
 
-        return $this->paylaterKeyPairConfigReader->getPublicKey($keyPairContext);
+        return $this->keyPairConfigReader->getPublicKey($keyPairContext);
     }
 }

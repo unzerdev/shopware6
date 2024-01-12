@@ -12,7 +12,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
         </service>
 
-        <service id="UnzerPayment6\Components\ConfigReader\PaylaterKeyPairConfigReader">
+        <service id="UnzerPayment6\Components\ConfigReader\KeyPairConfigReader">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
         </service>
 
@@ -38,7 +38,7 @@
         <service id="UnzerPayment6\Components\ClientFactory\ClientFactory">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="UnzerPayment6\Components\UnzerPaymentDebugHandler"/>
-            <argument type="service" id="UnzerPayment6\Components\ConfigReader\PaylaterKeyPairConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\KeyPairConfigReader"/>
         </service>
 
         <service id="UnzerPayment6\Components\UnzerPaymentDebugHandler">
@@ -59,7 +59,6 @@
         <service id="UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator">
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
             <argument type="service" id="router.default"/>
-            <argument type="service" id="sales_channel.repository"/>
             <argument type="service" id="sales_channel_domain.repository"/>
             <argument type="service" id="unzer_payment.logger"/>
         </service>
