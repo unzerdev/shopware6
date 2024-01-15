@@ -188,7 +188,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         $registerAccounts        = !empty($transactionCustomFields[self::REMEMBER_PAYPAL_ACCOUNT_KEY]);
 
         $this->unzerClient = $this->clientFactory->createClient(
-            KeyPairContext::createFromOrderTransaction($transaction->getOrderTransaction())
+            KeyPairContext::createFromSalesChannelContext($salesChannelContext)
         );
 
         if (!$registerAccounts) {
