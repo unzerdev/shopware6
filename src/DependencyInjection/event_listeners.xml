@@ -18,6 +18,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="language.repository"/>
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\KeyPairConfigReader"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

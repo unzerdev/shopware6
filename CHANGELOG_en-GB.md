@@ -1,3 +1,7 @@
+# 5.6.0
+* Add Paylater Installment as new payment method
+* Mark exisiting Secured Installment as deprecated
+
 # 5.5.1
 * Fixed the order completion if the TOS was not initially accepted
 * Fixed compatibility to other plugins that decorate the CheckoutController

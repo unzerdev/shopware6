@@ -1,3 +1,7 @@
+# 5.6.0
+* Paylater Ratenzahlung als weitere Zahlungsart hinzugefügt
+* Bisherige Ratenzahlung als veraltet markiert 
+
 # 5.5.1
 * Korrektur des Bestellabschluss, wenn die AGB zuerst nicht akzeptiert wurden
 * Korrektur der Kompatibilität zu anderen Plugins, die den CheckoutController dekorieren

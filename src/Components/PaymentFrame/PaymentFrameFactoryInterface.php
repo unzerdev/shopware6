@@ -20,6 +20,7 @@ interface PaymentFrameFactoryInterface
         PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED  => '@Storefront/storefront/component/unzer/frames/installment-secured.html.twig',
         PaymentInstaller::PAYMENT_ID_PAYPAL               => '@Storefront/storefront/component/unzer/frames/paypal.html.twig',
         PaymentInstaller::PAYMENT_ID_APPLE_PAY            => '@Storefront/storefront/component/unzer/frames/apple-pay.html.twig',
+        PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT => '@Storefront/storefront/component/unzer/frames/paylater-installment.html.twig',
     ];
 
     public function getPaymentFrame(string $paymentMethodId): ?string;

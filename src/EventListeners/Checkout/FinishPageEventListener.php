@@ -9,6 +9,7 @@ use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\InstallmentSecured\InstallmentInfo;
+use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
 use UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelperInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
@@ -52,7 +53,7 @@ class FinishPageEventListener implements EventSubscriberInterface
         }
 
         try {
-            $unzerClient = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
+            $unzerClient = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($salesChannelContext));
         } catch (\RuntimeException $ex) {
             $this->logger->error($ex->getMessage());
 

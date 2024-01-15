@@ -1,4 +1,5 @@
 import './component/register-webhook';
+import './component/unzer-webhooks-modal';
 import './component/unzer-entity-single-select-delivery-status';
 import './component/unzer-payment-apple-pay-certificates';
 import './component/unzer-payment-plugin-icon';

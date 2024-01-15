@@ -7,8 +7,12 @@ namespace UnzerPayment6\Controllers\Administration;
 use Exception;
 use League\Flysystem\Filesystem;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,6 +28,7 @@ use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Resource\ApplePayCertificate;
 use UnzerPayment6\Components\Resource\ApplePayPrivateKey;
+use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerSDK\Exceptions\UnzerApiException;
 
 /**
@@ -51,6 +56,8 @@ class UnzerPaymentApplePayController extends AbstractController
     private $configReader;
     /** @var CertificateManager */
     private $certificateManager;
+    /** @var EntityRepository */
+    private $salesChannelRepository;
 
     public function __construct(
         ClientFactoryInterface $clientFactory,
@@ -58,14 +65,16 @@ class UnzerPaymentApplePayController extends AbstractController
         SystemConfigService $systemConfigService,
         Filesystem $filesystem,
         ConfigReaderInterface $configReader,
-        CertificateManager $certificateManager
+        CertificateManager $certificateManager,
+        EntityRepository $salesChannelRepository
     ) {
-        $this->clientFactory       = $clientFactory;
-        $this->logger              = $logger;
-        $this->systemConfigService = $systemConfigService;
-        $this->filesystem          = $filesystem;
-        $this->configReader        = $configReader;
-        $this->certificateManager  = $certificateManager;
+        $this->clientFactory          = $clientFactory;
+        $this->logger                 = $logger;
+        $this->systemConfigService    = $systemConfigService;
+        $this->filesystem             = $filesystem;
+        $this->configReader           = $configReader;
+        $this->certificateManager     = $certificateManager;
+        $this->salesChannelRepository = $salesChannelRepository;
     }
 
     /**
@@ -74,7 +83,7 @@ class UnzerPaymentApplePayController extends AbstractController
      */
     public function updateApplePayCertificates(?string $salesChannelId, RequestDataBag $dataBag): JsonResponse
     {
-        $client = $this->clientFactory->createClient((string) $salesChannelId);
+        $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannel($this->getSalesChannel($salesChannelId)));
 
         if ($dataBag->has(self::INHERIT_PAYMENT_PROCESSING_PARAMETER)) {
             $this->logger->debug(sprintf('Payment Processing reference for sales channel %s cleared', $salesChannelId));
@@ -231,5 +240,19 @@ class UnzerPaymentApplePayController extends AbstractController
             new CertificateInformation($paymentProcessingValid, $paymentProcessingInherited, $merchantIdentificationValid, $merchantIdentificationInherited, $merchantIdentificationValidUntil),
             Response::HTTP_OK
         );
+    }
+
+    protected function getSalesChannel(?string $salesChannelId): ?SalesChannelEntity
+    {
+        $criteria = new Criteria();
+
+        if ($salesChannelId) {
+            $criteria->setIds([$salesChannelId]);
+        }
+
+        $criteria->addAssociation('currency');
+        $criteria->addAssociation('paymentMethod');
+
+        return $this->salesChannelRepository->search($criteria, Context::createDefaultContext())->first();
     }
 }

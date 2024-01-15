@@ -24,6 +24,7 @@ use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessExcepti
 use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
+use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
@@ -126,7 +127,10 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
 
             $this->pluginConfig = $this->configReader->read($salesChannelId);
-            $this->unzerClient  = $this->clientFactory->createClient($salesChannelId, empty($currentRequest->getLocale()) ? $currentRequest->getDefaultLocale() : $currentRequest->getLocale());
+            $this->unzerClient  = $this->clientFactory->createClient(
+                KeyPairContext::createFromSalesChannelContext($salesChannelContext),
+                empty($currentRequest->getLocale()) ? $currentRequest->getDefaultLocale() : $currentRequest->getLocale()
+            );
 
             $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
             $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
@@ -176,8 +180,10 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     ): void {
         try {
             $this->pluginConfig = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-            $this->unzerClient  = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
-            $this->payment      = $this->unzerClient->fetchPaymentByOrderId(
+            $this->unzerClient  = $this->clientFactory->createClient(
+                KeyPairContext::createFromSalesChannelContext($salesChannelContext)
+            );
+            $this->payment = $this->unzerClient->fetchPaymentByOrderId(
                 $transaction->getOrderTransaction()->getId()
             );
 

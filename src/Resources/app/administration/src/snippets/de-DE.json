@@ -87,6 +87,18 @@
         },
         "order-list": {
             "transactionId": "Unzer Transaktions ID"
+        },
+        "methods": {
+            "paylaterInvoice": {
+                "b2b-eur": "Rechnung (Paylater) B2B-EUR",
+                "b2b-chf": "Rechnung (Paylater) B2B-CHF",
+                "b2c-eur": "Rechnung (Paylater) B2C-EUR",
+                "b2c-chf": "Rechnung (Paylater) B2C-CHF"
+            },
+            "paylaterInstallment": {
+                "b2c-eur": "Ratenzahlung (Paylater) B2C-EUR",
+                "b2c-chf": "Ratenzahlung (Paylater) B2C-CHF"
+            }
         }
     },
     "unzer-payment-settings": {
@@ -154,7 +166,9 @@
                 }
             },
             "testButton": "API Zugangsdaten testen",
-            "webhookButton": "Webhooks registrieren"
+            "webhookButton": "Webhooks registrieren",
+            "privateKey": "Private Key",
+            "publicKey": "Public Key"
         },
         "modal": {
             "close": "Schließen",
@@ -191,7 +205,8 @@
                 "title": "Ein Fehler ist aufgetreten",
                 "message": "Bitte kontaktieren sie uns für mehr Informationen"
             },
-            "empty": "Für diesen Private Key sind keine Webhooks registriert. Bitte prüfen Sie ob dieser valide ist und ob Konfigurationen für dedizierte Verkaufskanäle vorgenommen wurden."
+            "empty": "Für diesen Private Key sind keine Webhooks registriert. Bitte prüfen Sie ob dieser valide ist und ob Konfigurationen für dedizierte Verkaufskanäle vorgenommen wurden.",
+            "show": "Webhooks anzeigen"
         }
     }
 }
