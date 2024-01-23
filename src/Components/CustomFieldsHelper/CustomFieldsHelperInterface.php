@@ -10,4 +10,6 @@ use Shopware\Core\Framework\Context;
 interface CustomFieldsHelperInterface
 {
     public function setOrderTransactionCustomFields(OrderTransactionEntity $transaction, Context $context): void;
+
+    public function setOrderTransactionUnzerFlag(OrderTransactionEntity $transaction, Context $context): void;
 }

@@ -26,6 +26,7 @@ use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Basket;
@@ -142,6 +143,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 $this->paymentType = $this->unzerClient->fetchPaymentType($resourceId);
             }
 
+            $this->customFieldsHelper->setOrderTransactionUnzerFlag($transaction->getOrderTransaction(), $salesChannelContext->getContext());
             return new RedirectResponse($transaction->getReturnUrl());
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
