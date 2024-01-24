@@ -8,7 +8,7 @@
             "holder": "Kontoinhaber",
             "descriptor": "Verwendungszweck",
             "amount": "Betrag",
-            "installmentInfo": "Alle weiteren Informationen für die Ratenzahlung werden von Unzer versendet werden."
+            "installmentInfo": "Alle weiteren Informationen für die Ratenzahlung werden von Unzer versendet."
         },
         "frame": {
             "applePay": {

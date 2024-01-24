@@ -146,7 +146,7 @@ Component.register('unzer-payment-settings', {
             });
 
             this.keyPairSettings.reduce((config, keyPairSetting) => {
-                if (!keyPairSetting?.privateKey || !keyPairSetting?.publicKey) {
+                if (!keyPairSetting || !keyPairSetting.privateKey || !keyPairSetting.publicKey) {
                     return config;
                 }
 
@@ -251,17 +251,20 @@ Component.register('unzer-payment-settings', {
         },
 
         isShowWebhooksButtonEnabled(keyPairSetting) {
-            return keyPairSetting?.privateKey && keyPairSetting?.publicKey;
+            return keyPairSetting && keyPairSetting.privateKey && keyPairSetting.publicKey;
         },
 
         isRegisterWebhooksButtonEnabled(keyPairSetting) {
-            return !this.isLoading && keyPairSetting?.privateKey;
+            return !this.isLoading && keyPairSetting && keyPairSetting.privateKey;
         },
 
         syncKeyPairConfig() {
             const me = this;
             ['paylaterInvoice', 'paylaterInstallment'].forEach((group) => {
-                this.config[`UnzerPayment6.settings.${group}`]?.forEach((configKeyPairSetting) => {
+                if (!this.config[`UnzerPayment6.settings.${group}`]) {
+                    return;
+                }
+                this.config[`UnzerPayment6.settings.${group}`].forEach((configKeyPairSetting) => {
                     me.keyPairSettings.forEach((keyPairSetting, index, collection) => {
                         if (keyPairSetting.group === configKeyPairSetting.group && keyPairSetting.key === configKeyPairSetting.key) {
                             collection[index] = configKeyPairSetting;
