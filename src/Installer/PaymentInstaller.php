@@ -295,14 +295,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT_SECURED,
             'handlerIdentifier' => UnzerDirectDebitSecuredPaymentHandler::class,
-            'name'              => 'SEPA Direct Debit Secured (Deprecated)',
+            'name'              => 'SEPA Direct Debit Secured',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA Lastschrift Gesichert (Veraltet)',
+                    'name'        => 'SEPA Lastschrift Gesichert',
                     'description' => 'Gesicherte SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'SEPA Direct Debit Secured (Deprecated)',
+                    'name'        => 'SEPA Direct Debit Secured',
                     'description' => 'Secured SEPA Direct Debit payments with Unzer payments',
                 ],
             ],
