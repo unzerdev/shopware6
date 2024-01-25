@@ -1,7 +1,7 @@
 # 5.6.0
 * Add Paylater Installment as new payment method
 * Mark existing Secured Installment as deprecated
-* Correction of displaying the Unzer tab in the administration
+* Fixed the display of the Unzer tab in the administration
 
 # 5.5.1
 * Fixed the order completion if the TOS was not initially accepted
