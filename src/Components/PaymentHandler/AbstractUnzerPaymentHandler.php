@@ -142,6 +142,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 $this->paymentType = $this->unzerClient->fetchPaymentType($resourceId);
             }
 
+            $this->customFieldsHelper->setOrderTransactionUnzerFlag($transaction->getOrderTransaction(), $salesChannelContext->getContext());
+
             return new RedirectResponse($transaction->getReturnUrl());
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
