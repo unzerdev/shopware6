@@ -13,6 +13,7 @@
             "paylaterInstallmentCurrency": "{{ page.extensions.unzerPaylaterInstallment.currency }}",
             "paylaterInstallmentAmount": {{ page.extensions.unzerPaylaterInstallment.amount }},
             "currencyIso": "{{ context.currency.isoCode }}",
+            "countryIso": "{{ context.customer.activeBillingAddress.country.iso }}",
             "threatMetrixId": "{{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"
          }'>
 
