@@ -103,11 +103,11 @@ class PaymentInstaller implements InstallerInterface
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Bank Transfer (Veraltet)',
-                    'description' => 'Unzer bank transfer Zahlungen mit Unzer payments',
+                    'description' => 'Unzer Bank Transfer Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
                     'name'        => 'Bank Transfer (Deprecated)',
-                    'description' => 'Unzer bank transfer payments',
+                    'description' => 'Unzer Bank Transfer payments',
                 ],
             ],
         ],
