@@ -197,7 +197,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
                 'en-GB' => [
                     'name'        => 'Invoice Secured (Deprecated)',
-                    'description' => 'Secured invoice payment with Unzer payments',
+                    'description' => 'Invoice Secured payments with Unzer payments',
                 ],
             ],
         ],
