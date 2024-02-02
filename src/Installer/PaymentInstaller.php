@@ -103,11 +103,11 @@ class PaymentInstaller implements InstallerInterface
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Bank Transfer (Veraltet)',
-                    'description' => 'Unzer bank transfer Zahlungen mit Unzer payments',
+                    'description' => 'Unzer Bank Transfer Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
                     'name'        => 'Bank Transfer (Deprecated)',
-                    'description' => 'Unzer bank transfer payments',
+                    'description' => 'Unzer Bank Transfer payments',
                 ],
             ],
         ],
@@ -197,7 +197,7 @@ class PaymentInstaller implements InstallerInterface
                 ],
                 'en-GB' => [
                     'name'        => 'Invoice Secured (Deprecated)',
-                    'description' => 'Secured invoice payment with Unzer payments',
+                    'description' => 'Invoice Secured payments with Unzer payments',
                 ],
             ],
         ],
@@ -428,7 +428,7 @@ class PaymentInstaller implements InstallerInterface
             }, self::PAYMENT_METHODS);
             $this->paymentMethodRepository->upsert($update, $context->getContext());
         } elseif ($context->getUpdatePluginVersion() === self::PLUGIN_VERSION_PAYLATER_INSTALLMENT) {
-            $this->removeUnzerAndPaylaterFromPaymentMethodNames($context);
+            $this->updatePaymentMethodNamesAndTranslations($context);
         }
     }
 
@@ -447,7 +447,7 @@ class PaymentInstaller implements InstallerInterface
         $this->setAllPaymentMethodsActive(false, $context);
     }
 
-    protected function removeUnzerAndPaylaterFromPaymentMethodNames(UpdateContext $context): void
+    protected function updatePaymentMethodNamesAndTranslations(UpdateContext $context): void
     {
         $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(UnzerPayment6::class, $context->getContext());
 
@@ -456,14 +456,7 @@ class PaymentInstaller implements InstallerInterface
                 'pluginId'     => $pluginId,
                 'id'           => $paymentMethod['id'],
                 'name'         => $paymentMethod['name'],
-                'translations' => [
-                    'de-DE' => [
-                        'name' => $paymentMethod['translations']['de-DE']['name'],
-                    ],
-                    'en-GB' => [
-                        'name' => $paymentMethod['translations']['en-GB']['name'],
-                    ],
-                ],
+                'translations' => $paymentMethod['translations'],
             ];
         }, self::PAYMENT_METHODS);
 
