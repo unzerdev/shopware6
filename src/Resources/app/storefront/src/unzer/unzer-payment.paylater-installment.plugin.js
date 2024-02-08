@@ -1,19 +1,16 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import ElementLoadingIndicatorUtil from 'src/utility/loading-indicator/element-loading-indicator.util';
 
-export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
+export default class UnzerPaymentPaylaterInstallmentPlugin extends Plugin {
     static options = {
-        installmentSecuredAmount: 0.0,
-        installmentSecuredCurrency: '',
-        installmentSecuredOrderDate: '',
-        installmentsTotalValueElementId: 'unzer-payment-installments-total',
-        installmentsInterestValueElementId: 'unzer-payment-installments-interest',
         formLoadingIndicatorElementId: 'element-loader',
-        currencyIso: 'EUR',
-        currencyFormatLocale: 'en-GB',
-        starSymbol: '*',
         birthdateInputIdSelector: 'unzerPaymentBirthday',
-        birthdateContainerIdSelector: 'unzerPaymentBirthdayContainer'
+        birthdateContainerIdSelector: 'unzerPaymentBirthdayContainer',
+        paylaterInstallmentAmount: 0.0,
+        paylaterInstallmentCurrency: '',
+        currencyIso: 'EUR',
+        countryIso: 'DE',
+        threatMetrixId: '',
     };
 
     /**
@@ -21,7 +18,7 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
      *
      * @public
      */
-    static installmentSecured;
+    static paylaterInstallment;
 
     /**
      * @type {Object}
@@ -53,7 +50,7 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
 
     init() {
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.installmentSecured = this._unzerPaymentPlugin.unzerInstance.InstallmentSecured();
+        this.paylaterInstallment = this._unzerPaymentPlugin.unzerInstance.PaylaterInstallment();
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
         this.birthdateContainer = document.getElementById(this.options.birthdateContainerIdSelector);
         this.birthdateInput = document.getElementById(this.options.birthdateInputIdSelector);
@@ -71,13 +68,13 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
 
         ElementLoadingIndicatorUtil.create(loadingIndicatorElement);
 
-        this.installmentSecured.create({
-            containerId: 'unzer-payment-installment-secured-container',
-            amount: this.options.installmentSecuredAmount.toFixed(4),
-            currency: this.options.installmentSecuredCurrency,
-            orderDate: this.options.installmentSecuredOrderDate
+        this.paylaterInstallment.create({
+            containerId: 'unzer-payment-paylater-installment-container',
+            amount: this.options.paylaterInstallmentAmount.toFixed(4),
+            currency: this.options.paylaterInstallmentCurrency,
+            country: this.options.countryIso,
+            threatMetrixId: this.options.threatMetrixId,
         }).then(() => {
-            // Hide the loading indicator
             loadingIndicatorElement.hidden = true;
         }).catch((error) => {
             this._unzerPaymentPlugin.renderErrorToElement(error, loadingIndicatorElement);
@@ -95,7 +92,7 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
             scope: this
         });
 
-        this.installmentSecured.addEventListener('installmentSecuredEvent', (event) => this._onChangeInstallmentSecuredForm(event));
+        this.paylaterInstallment.addEventListener('paylaterInstallmentEvent', (event) => this._onChangeInstallmentSecuredForm(event));
         this.birthdateInput.addEventListener('change', this._onBirthdateInputChange.bind(this))
     }
 
@@ -105,7 +102,7 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
     _onCreateResource() {
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
-        this.installmentSecured.createResource()
+        this.paylaterInstallment.createResource()
             .then((resource) => this._unzerPaymentPlugin.submitResource(resource))
             .catch((error) => this._unzerPaymentPlugin.showError(error));
     }
@@ -125,12 +122,14 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
             }
         }
 
-        if (event.currentStep === 'plan-detail') {
-            const installmentAmountTotalElement = document.getElementById(this.options.installmentsTotalValueElementId);
-            const installmentInterestElement = document.getElementById(this.options.installmentsInterestValueElementId);
+        switch (event.currentStep) {
+            case 'plan-list':
+                this._unzerPaymentPlugin.setSubmitButtonActive(false);
+                break;
 
-            installmentAmountTotalElement.innerText = this._formatCurrency(this.installmentSecured.selectedInstallmentPlan.totalAmount) + this.options.starSymbol;
-            installmentInterestElement.innerText = this._formatCurrency(this.installmentSecured.selectedInstallmentPlan.totalInterestAmount) + this.options.starSymbol;
+            case 'plan-detail':
+                this._unzerPaymentPlugin.setSubmitButtonActive(true);
+                break;
         }
     }
 
@@ -160,9 +159,9 @@ export default class UnzerPaymentInstallmentSecuredPlugin extends Plugin {
         ;
 
         //normalize times
-        birthdate.setHours(0,0,0,0);
-        maxDate.setHours(0,0,0,0);
-        minAge.setHours(0,0,0,0);
+        birthdate.setHours(0, 0, 0, 0);
+        maxDate.setHours(0, 0, 0, 0);
+        minAge.setHours(0, 0, 0, 0);
 
         //update maxDate and minAge to relevant values
         maxDate.setDate(maxDate.getDate() + 1);

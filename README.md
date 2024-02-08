@@ -39,6 +39,6 @@ This will automatically generate all files required for the plugin to work corre
 
 ## Configuration
 After the actual plugin installation it is necessary to add the new payment methods to the desired sales channel. 
-Currently the only sales channel that is supported is the Storefront.
+Currently, the only sales channel that is supported is the Storefront.
 
 Further information and configuration you can find within the <a href="https://docs.unzer.com/plugins/shopware-6/" target="_blank">manual</a>

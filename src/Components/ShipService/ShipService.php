@@ -15,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use UnzerPayment6\Components\BackwardsCompatibility\InvoiceGenerator;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\Payment;
@@ -92,7 +93,7 @@ class ShipService implements ShipServiceInterface
             ];
         }
 
-        $client  = $this->clientFactory->createClient($transaction->getOrder()->getSalesChannelId());
+        $client  = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
         $payment = $this->getPayment($orderTransactionId, $documentDate, $client);
 
         if ($payment === null) {
@@ -116,8 +117,10 @@ class ShipService implements ShipServiceInterface
         $criteria = new Criteria([$orderTransactionId]);
         $criteria->addAssociations([
             'order',
+            'order.billingAddress',
             'order.documents',
             'order.documents.documentType',
+            'paymentMethod',
         ]);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();

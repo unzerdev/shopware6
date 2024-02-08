@@ -28,6 +28,7 @@ use UnzerPayment6\Components\PaymentHandler\Traits\CanRecur;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
 use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
+use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
@@ -180,12 +181,15 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         SalesChannelContext $salesChannelContext
     ): void {
         $this->pluginConfig = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $this->unzerClient  = $this->clientFactory->createClient($salesChannelContext->getSalesChannel()->getId());
 
         $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
 
         $transactionCustomFields = $transaction->getOrderTransaction()->getCustomFields();
         $registerAccounts        = !empty($transactionCustomFields[self::REMEMBER_PAYPAL_ACCOUNT_KEY]);
+
+        $this->unzerClient = $this->clientFactory->createClient(
+            KeyPairContext::createFromSalesChannelContext($salesChannelContext)
+        );
 
         if (!$registerAccounts) {
             parent::finalize($transaction, $request, $salesChannelContext);

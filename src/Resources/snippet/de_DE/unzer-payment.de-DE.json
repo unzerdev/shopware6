@@ -7,7 +7,8 @@
             "iban": "IBAN",
             "holder": "Kontoinhaber",
             "descriptor": "Verwendungszweck",
-            "amount": "Betrag"
+            "amount": "Betrag",
+            "installmentInfo": "Alle weiteren Informationen für die Ratenzahlung werden von Unzer versendet."
         },
         "frame": {
             "applePay": {
@@ -52,6 +53,13 @@
             "installmentSecured": {
                 "totalAmount": "Gesamtsumme inkl. Zinsen",
                 "totalInterest": "Zinsen für Ratenkauf",
+                "testData": {
+                    "accountHolder": "Kontoinhaber",
+                    "iban": "IBAN",
+                    "birthday": "Geburtsdatum"
+                }
+            },
+            "installmentPaylater": {
                 "testData": {
                     "accountHolder": "Kontoinhaber",
                     "iban": "IBAN",

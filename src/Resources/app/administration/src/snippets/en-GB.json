@@ -87,6 +87,18 @@
         },
         "order-list": {
             "transactionId": "Unzer transaction ID"
+        },
+        "methods": {
+            "paylaterInvoice": {
+                "b2b-eur": "Invoice B2B EUR",
+                "b2b-chf": "Invoice B2B CHF",
+                "b2c-eur": "Invoice B2C EUR",
+                "b2c-chf": "Invoice B2C CHF"
+            },
+            "paylaterInstallment": {
+                "b2c-eur": "Installment B2C EUR",
+                "b2c-chf": "Installment B2C CHF"
+            }
         }
     },
     "unzer-payment-settings": {
@@ -154,7 +166,9 @@
                 }
             },
             "testButton": "Test API credentials",
-            "webhookButton": "Register webhooks"
+            "webhookButton": "Register webhooks",
+            "privateKey": "Private Key",
+            "publicKey": "Public Key"
         },
         "modal": {
             "close": "Close",
@@ -191,7 +205,8 @@
                 "title": "An error has occurred!",
                 "message": "Please contact us for more information"
             },
-            "empty": "There are no webhooks registered for this private key. Make sure the private key is valid and check for other specific sales channel configurations."
+            "empty": "There are no webhooks registered for this private key. Make sure the private key is valid and check for other specific sales channel configurations.",
+            "show": "Show webhooks"
         }
     }
 }

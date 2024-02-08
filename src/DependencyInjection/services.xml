@@ -12,6 +12,10 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
         </service>
 
+        <service id="UnzerPayment6\Components\ConfigReader\KeyPairConfigReader">
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+        </service>
+
         <service id="UnzerPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
 
         <service id="UnzerPayment6\Components\Validator\AutomaticShippingValidator">
@@ -34,6 +38,7 @@
         <service id="UnzerPayment6\Components\ClientFactory\ClientFactory">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="UnzerPayment6\Components\UnzerPaymentDebugHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\KeyPairConfigReader"/>
         </service>
 
         <service id="UnzerPayment6\Components\UnzerPaymentDebugHandler">
@@ -66,6 +71,12 @@
 
         <service id="UnzerPayment6\Components\ApplePay\CertificateManager">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+        </service>
+
+        <service id="UnzerPayment6\Components\Cart\Validator\PaymentMethodValidator">
+            <argument type="service" id="plugin.repository"/>
+
+            <tag name="shopware.cart.validator"/>
         </service>
     </services>
 </container>

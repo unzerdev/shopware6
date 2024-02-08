@@ -1,0 +1,36 @@
+<sw-modal
+    :title="$tc(`unzer-payment-settings.modal.webhook.title`)"
+    class="unzer--webhook-card"
+    @modal-close="$emit('modal-close')"
+>
+    <sw-alert
+        v-if="!isLoadingWebhooks && (!webhooks.length || webhooks.length === 0)"
+        variant="warning"
+        appearance="default"
+        :showIcon="true"
+        :closable="false">
+        {{ $tc('unzer-payment-settings.webhook.empty') }}
+    </sw-alert>
+
+    <div v-else>
+        <sw-data-grid
+            ref="webhookDataGrid"
+            v-on:select-item="onSelectWebhook"
+            :showActions="false"
+            :showSelection="true"
+            :dataSource="webhooks"
+            :isLoading="isLoadingWebhooks"
+            :columns="webhookColumns">
+        </sw-data-grid>
+
+        <sw-button-process
+            @click="clearWebhooks(keyPair.privateKey)"
+            @process-finish="onClearingFinished()"
+            :isLoading="isLoadingWebhooks || isClearing"
+            :processSuccess="isClearingSuccessful"
+            :disabled="isLoadingWebhooks || isClearing || webhookSelectionLength == 0"
+            variant="danger">
+            {{ $tc('unzer-payment-settings.modal.webhook.submit.clear', webhookSelectionLength, {count: webhookSelectionLength}) }}
+        </sw-button-process>
+    </div>
+</sw-modal>

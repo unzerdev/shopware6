@@ -25,6 +25,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInstallmentSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceSecuredPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInstallmentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPisPaymentHandler;
@@ -55,6 +56,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_BANCONTACT           = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
     public const PAYMENT_ID_PAYLATER_INVOICE     = '09588ffee8064f168e909ff31889dd7f';
     public const PAYMENT_ID_APPLE_PAY            = '62490bda54fa48fbb29ed6b9368bafe1';
+    public const PAYMENT_ID_PAYLATER_INSTALLMENT = '12fbfbce271a43a89b3783453b88e9a6';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -64,7 +66,6 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_EPS,
         self::PAYMENT_ID_FLEXIPAY,
         self::PAYMENT_ID_GIROPAY,
-        self::PAYMENT_ID_INSTALLMENT_SECURED,
         self::PAYMENT_ID_INVOICE,
         self::PAYMENT_ID_INVOICE_SECURED,
         self::PAYMENT_ID_IDEAL,
@@ -76,20 +77,21 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_BANCONTACT,
         self::PAYMENT_ID_PAYLATER_INVOICE,
         self::PAYMENT_ID_APPLE_PAY,
+        self::PAYMENT_ID_PAYLATER_INSTALLMENT,
     ];
 
     public const PAYMENT_METHODS = [
         [
             'id'                => self::PAYMENT_ID_ALIPAY,
             'handlerIdentifier' => UnzerAlipayPaymentHandler::class,
-            'name'              => 'Alipay (Unzer payments)',
+            'name'              => 'Alipay',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Alipay (Unzer payments)',
+                    'name'        => 'Alipay',
                     'description' => 'Alipay Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Alipay (Unzer payments)',
+                    'name'        => 'Alipay',
                     'description' => 'Alipay payments with Unzer payments',
                 ],
             ],
@@ -97,29 +99,29 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_FLEXIPAY,
             'handlerIdentifier' => UnzerPisPaymentHandler::class,
-            'name'              => 'Unzer bank transfer',
+            'name'              => 'Bank Transfer (Deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer bank transfer',
-                    'description' => 'Unzer bank transfer Zahlungen mit Unzer payments',
+                    'name'        => 'Bank Transfer (Veraltet)',
+                    'description' => 'Unzer Bank Transfer Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer bank transfer',
-                    'description' => 'Unzer bank transfer payments',
+                    'name'        => 'Bank Transfer (Deprecated)',
+                    'description' => 'Unzer Bank Transfer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_CREDIT_CARD,
             'handlerIdentifier' => UnzerCreditCardPaymentHandler::class,
-            'name'              => 'Credit card (Unzer payments)',
+            'name'              => 'Credit card',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Kreditkarte (Unzer payments)',
+                    'name'        => 'Kreditkarte',
                     'description' => 'Kreditkartenzahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Credit card (Unzer payments)',
+                    'name'        => 'Credit card',
                     'description' => 'Credit card payments with Unzer payments',
                 ],
             ],
@@ -127,14 +129,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_EPS,
             'handlerIdentifier' => UnzerEpsPaymentHandler::class,
-            'name'              => 'EPS (Unzer payments)',
+            'name'              => 'EPS',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'EPS (Unzer payments)',
+                    'name'        => 'EPS',
                     'description' => 'EPS Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'EPS (Unzer payments)',
+                    'name'        => 'EPS',
                     'description' => 'EPS payments with Unzer payments',
                 ],
             ],
@@ -142,14 +144,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_GIROPAY,
             'handlerIdentifier' => UnzerGiropayPaymentHandler::class,
-            'name'              => 'Giropay (Unzer payments)',
+            'name'              => 'Giropay',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Giropay (Unzer payments)',
+                    'name'        => 'Giropay',
                     'description' => 'Giropay Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Giropay (Unzer payments)',
+                    'name'        => 'Giropay',
                     'description' => 'Giropay payments with Unzer payments',
                 ],
             ],
@@ -157,14 +159,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_IDEAL,
             'handlerIdentifier' => UnzerIdealPaymentHandler::class,
-            'name'              => 'iDEAL (Unzer payments)',
+            'name'              => 'iDEAL',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'iDEAL (Unzer payments)',
+                    'name'        => 'iDEAL',
                     'description' => 'iDEAL Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'iDEAL (Unzer payments)',
+                    'name'        => 'iDEAL',
                     'description' => 'iDEAL payments with Unzer payments',
                 ],
             ],
@@ -172,14 +174,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE,
             'handlerIdentifier' => UnzerInvoicePaymentHandler::class,
-            'name'              => 'Invoice (Unzer payments, deprecated)',
+            'name'              => 'Invoice (Deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice (veraltet)',
+                    'name'        => 'Rechnungskauf (Veraltet)',
                     'description' => 'Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice (deprecated)',
+                    'name'        => 'Invoice (Deprecated)',
                     'description' => 'Invoice payments with Unzer payments',
                 ],
             ],
@@ -187,29 +189,45 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_INVOICE_SECURED,
             'handlerIdentifier' => UnzerInvoiceSecuredPaymentHandler::class,
-            'name'              => 'Unzer invoice secured (deprecated)',
+            'name'              => 'Invoice Secured (Deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice secured (veraltet)',
+                    'name'        => 'Rechnungskauf Gesichert (Veraltet)',
                     'description' => 'Gesicherter Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice secured (deprecated)',
-                    'description' => 'Invoice secured payments with Unzer payments',
+                    'name'        => 'Invoice Secured (Deprecated)',
+                    'description' => 'Invoice Secured payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_INSTALLMENT_SECURED,
             'handlerIdentifier' => UnzerInstallmentSecuredPaymentHandler::class,
-            'name'              => 'Unzer Installment',
+            'name'              => 'Installment (Deprecated)',
+            'active'            => false,
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer Ratenzahlung',
-                    'description' => 'Unzer Ratenzahlung',
+                    'name'        => 'Ratenkauf (Veraltet)',
+                    'description' => 'Unzer Ratenkauf',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer Installment',
+                    'name'        => 'Installment (Deprecated)',
+                    'description' => 'Unzer Installment',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_PAYLATER_INSTALLMENT,
+            'handlerIdentifier' => UnzerPaylaterInstallmentPaymentHandler::class,
+            'name'              => 'Installment',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Ratenkauf',
+                    'description' => 'Unzer Ratenkauf',
+                ],
+                'en-GB' => [
+                    'name'        => 'Installment',
                     'description' => 'Unzer Installment',
                 ],
             ],
@@ -217,14 +235,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_PAYPAL,
             'handlerIdentifier' => UnzerPayPalPaymentHandler::class,
-            'name'              => 'PayPal (Unzer payments)',
+            'name'              => 'PayPal',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'PayPal (Unzer payments)',
+                    'name'        => 'PayPal',
                     'description' => 'PayPal Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'PayPal (Unzer payments)',
+                    'name'        => 'PayPal',
                     'description' => 'PayPal payments with Unzer payments',
                 ],
             ],
@@ -232,14 +250,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_PRE_PAYMENT,
             'handlerIdentifier' => UnzerPrePaymentPaymentHandler::class,
-            'name'              => 'Prepayment (Unzer payments)',
+            'name'              => 'Prepayment',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Vorkasse (Unzer payments)',
+                    'name'        => 'Vorkasse',
                     'description' => 'Zahlung auf Vorkasse mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Prepayment (Unzer payments)',
+                    'name'        => 'Prepayment',
                     'description' => 'Prepayment with Unzer payments',
                 ],
             ],
@@ -247,14 +265,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_PRZELEWY24,
             'handlerIdentifier' => UnzerPrzelewyHandler::class,
-            'name'              => 'Przelewy24 (Unzer payments)',
+            'name'              => 'Przelewy24',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Przelewy24 (Unzer payments)',
+                    'name'        => 'Przelewy24',
                     'description' => 'Przelewy24 Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Przelewy24 (Unzer payments)',
+                    'name'        => 'Przelewy24',
                     'description' => 'Przelewy24 payments with Unzer payments',
                 ],
             ],
@@ -262,44 +280,44 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
             'handlerIdentifier' => UnzerDirectDebitPaymentHandler::class,
-            'name'              => 'SEPA direct debit (Unzer payments)',
+            'name'              => 'SEPA Direct Debit',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA Lastschrift (Unzer payments)',
+                    'name'        => 'SEPA Lastschrift',
                     'description' => 'SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'SEPA direct debit (Unzer payments)',
-                    'description' => 'SEPA direct debit payments with Unzer payments',
+                    'name'        => 'SEPA Direct Debit',
+                    'description' => 'SEPA Direct Debit payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT_SECURED,
             'handlerIdentifier' => UnzerDirectDebitSecuredPaymentHandler::class,
-            'name'              => 'SEPA direct debit secured (Unzer payments)',
+            'name'              => 'SEPA Direct Debit Secured',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA Lastschrift gesichert (Unzer payments)',
+                    'name'        => 'SEPA Lastschrift Gesichert',
                     'description' => 'Gesicherte SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'SEPA direct debit secured (Unzer payments)',
-                    'description' => 'Secured SEPA direct debit payments with Unzer payments',
+                    'name'        => 'SEPA Direct Debit Secured',
+                    'description' => 'Secured SEPA Direct Debit payments with Unzer payments',
                 ],
             ],
         ],
         [
             'id'                => self::PAYMENT_ID_SOFORT,
             'handlerIdentifier' => UnzerSofortPaymentHandler::class,
-            'name'              => 'Sofort (Unzer payments)',
+            'name'              => 'Sofort',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Sofort (Unzer payments)',
+                    'name'        => 'Sofort',
                     'description' => 'Sofort mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Sofort (Unzer payments)',
+                    'name'        => 'Sofort',
                     'description' => 'Sofort with Unzer payments',
                 ],
             ],
@@ -307,14 +325,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_WE_CHAT,
             'handlerIdentifier' => UnzerWeChatPaymentHandler::class,
-            'name'              => 'WeChat (Unzer payments)',
+            'name'              => 'WeChat',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'WeChat (Unzer payments)',
+                    'name'        => 'WeChat',
                     'description' => 'WeChat Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'WeChat (Unzer payments)',
+                    'name'        => 'WeChat',
                     'description' => 'WeChat payments with Unzer payments',
                 ],
             ],
@@ -322,14 +340,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_BANCONTACT,
             'handlerIdentifier' => UnzerBancontactHandler::class,
-            'name'              => 'Bancontact (Unzer payments)',
+            'name'              => 'Bancontact',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Bancontact (Unzer payments)',
+                    'name'        => 'Bancontact',
                     'description' => 'Bancontact Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Bancontact (Unzer payments)',
+                    'name'        => 'Bancontact',
                     'description' => 'Bancontact payments with Unzer payments',
                 ],
             ],
@@ -337,14 +355,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_PAYLATER_INVOICE,
             'handlerIdentifier' => UnzerPaylaterInvoicePaymentHandler::class,
-            'name'              => 'Invoice (Unzer payments)',
+            'name'              => 'Invoice',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Unzer invoice',
+                    'name'        => 'Rechnungskauf',
                     'description' => 'Rechnungskauf mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Unzer invoice',
+                    'name'        => 'Invoice',
                     'description' => 'Invoice payments with Unzer payments',
                 ],
             ],
@@ -352,20 +370,21 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_APPLE_PAY,
             'handlerIdentifier' => UnzerApplePayPaymentHandler::class,
-            'name'              => 'Apple Pay (Unzer payments)',
+            'name'              => 'Apple Pay',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'Apple Pay (Unzer payments)',
+                    'name'        => 'Apple Pay',
                     'description' => 'Apple Pay mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'Apple Pay (Unzer payments)',
+                    'name'        => 'Apple Pay',
                     'description' => 'Apple Pay with Unzer payments',
                 ],
             ],
         ],
     ];
-    private const PLUGIN_VERSION_PAYLATER_INVOICE = '5.0.0';
+    private const PLUGIN_VERSION_PAYLATER_INVOICE     = '5.0.0';
+    private const PLUGIN_VERSION_PAYLATER_INSTALLMENT = '5.6.0';
 
     // TODO: Adjust this if compatibility is at least 6.5.0.0
     /** @var EntityRepository|\Shopware\Core\Checkout\Payment\DataAbstractionLayer\PaymentMethodRepositoryDecorator */
@@ -408,6 +427,8 @@ class PaymentInstaller implements InstallerInterface
                 ];
             }, self::PAYMENT_METHODS);
             $this->paymentMethodRepository->upsert($update, $context->getContext());
+        } elseif ($context->getUpdatePluginVersion() === self::PLUGIN_VERSION_PAYLATER_INSTALLMENT) {
+            $this->updatePaymentMethodNamesAndTranslations($context);
         }
     }
 
@@ -424,6 +445,22 @@ class PaymentInstaller implements InstallerInterface
     public function deactivate(DeactivateContext $context): void
     {
         $this->setAllPaymentMethodsActive(false, $context);
+    }
+
+    protected function updatePaymentMethodNamesAndTranslations(UpdateContext $context): void
+    {
+        $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(UnzerPayment6::class, $context->getContext());
+
+        $update = array_map(static function ($paymentMethod) use ($pluginId) {
+            return [
+                'pluginId'     => $pluginId,
+                'id'           => $paymentMethod['id'],
+                'name'         => $paymentMethod['name'],
+                'translations' => $paymentMethod['translations'],
+            ];
+        }, self::PAYMENT_METHODS);
+
+        $this->paymentMethodRepository->upsert($update, $context->getContext());
     }
 
     private function upsertPaymentMethods(InstallContext $context): void

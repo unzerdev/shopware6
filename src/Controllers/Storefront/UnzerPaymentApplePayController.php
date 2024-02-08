@@ -21,6 +21,7 @@ use UnzerPayment6\Components\ApplePay\Exception\MissingCertificateFiles;
 use UnzerPayment6\Components\ClientFactory\ClientFactory;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerSDK\Adapter\ApplepayAdapter;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\ExternalResources\ApplepaySession;
@@ -137,9 +138,8 @@ class UnzerPaymentApplePayController extends StorefrontController
      */
     public function authorizePayment(Request $request, SalesChannelContext $salesChannelContext): Response
     {
-        $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
-        $client         = $this->clientFactory->createClient($salesChannelId);
-        $typeId         = $request->get('id');
+        $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($salesChannelContext));
+        $typeId = $request->get('id');
 
         $response = ['transactionStatus' => 'error'];
 
