@@ -1,3 +1,8 @@
+# 5.6.0
+* Add Paylater Installment as new payment method
+* Mark existing Secured Installment as deprecated
+* Fixed the display of the Unzer tab in the administration
+
 # 5.5.2
 * Fixed the payment status "Authorized" for Apple Pay, PayPal and credit card in authorize mode
 * Fixed the payment status "Failed" for PayPal and credit card in charge mode

@@ -291,5 +291,20 @@
 
             <tag name="shopware.payment.method.async" />
         </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInstallmentPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
     </services>
 </container>

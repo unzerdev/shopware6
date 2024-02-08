@@ -28,6 +28,10 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             type: String,
             required: false
         },
+        privateKey: {
+            type: String,
+            required: true
+        },
         isDisabled: {
             type: Boolean,
             required: false
@@ -81,6 +85,7 @@ Shopware.Component.register('unzer-payment-register-webhook', {
         },
 
         openModal() {
+            this.$emit('modal-open');
             this.isModalActive = true;
         },
 
@@ -123,6 +128,12 @@ Shopware.Component.register('unzer-payment-register-webhook', {
 
 
         onSelectItem(domainId, domain) {
+            if (!domain) {
+                return;
+            }
+
+            domain['privateKey'] = this.privateKey;
+
             this.entitySelection[domain.salesChannelId] = domain;
         },
 

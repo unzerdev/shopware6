@@ -76,13 +76,6 @@
                 </option>
             </options>
         </input-field>
-
-        <input-field type="float">
-            <name>installmentSecuredEffectiveInterest</name>
-            <label>Installment secured: effective interest</label>
-            <label lang="de-DE">Ratenzahlung: effektive Verzinsung</label>
-            <defaultValue>4.5</defaultValue>
-        </input-field>
     </card>
 
     <card>

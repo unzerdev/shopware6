@@ -62,6 +62,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
             $salesChannelId    = $salesChannelDomain->get('salesChannelId');
             $preparationResult = $this->prepare($salesChannelDomain);
             $domainUrl         = $salesChannelDomain->get('url', '');
+            $privateKey        = $salesChannelDomain->get('privateKey');
 
             if (!empty($preparationResult)) {
                 $returnData[$preparationResult['key']] = $preparationResult['value'];
@@ -73,7 +74,9 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                 $relativePath = $this->router->generate('frontend.unzer.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_PATH);
                 $url          = $domainUrl . $relativePath;
 
-                $result = $this->clientFactory->createClient($salesChannelId)->createWebhook($url, 'payment');
+                $result = $this->clientFactory
+                    ->createClientFromPrivateKey($privateKey, $salesChannelId)
+                    ->createWebhook($url, 'payment');
 
                 $returnData[$domainUrl] = [
                     'success' => true,
@@ -221,8 +224,6 @@ class WebhookRegistrator implements WebhookRegistratorInterface
         $criteria->addFilter(new EqualsFilter('id', $salesChannelId));
         $criteria->addFilter(new EqualsFilter('url', $url));
 
-        $searchResult = $this->salesChannelDomainRepository->search($criteria, Context::createDefaultContext());
-
-        return $searchResult->first();
+        return $this->salesChannelDomainRepository->search($criteria, Context::createDefaultContext())->first();
     }
 }

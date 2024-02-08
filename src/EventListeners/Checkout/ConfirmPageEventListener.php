@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\EventListeners\Checkout;
 
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
@@ -17,14 +19,17 @@ use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\ConfigReader\KeyPairConfigReader;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
 use UnzerPayment6\Components\Struct\Configuration;
+use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\FraudPreventionPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\InstallmentSecuredPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaylaterInstallmentPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\UnzerDataPageExtension;
@@ -35,8 +40,6 @@ use UnzerSDK\Resources\Customer;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
 {
-    private const INSTALLMENT_SECURED_EFFECTIVE_INTEREST_DEFAULT = 4.5;
-
     /** @var Configuration */
     protected $configData;
 
@@ -58,13 +61,17 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     /** @var ClientFactoryInterface */
     private $clientFactory;
 
+    /** @var KeyPairConfigReader */
+    private $keyPairConfigReader;
+
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
         ConfigReaderInterface $configReader,
         PaymentFrameFactoryInterface $paymentFrameFactory,
         SystemConfigService $systemConfigReader,
         EntityRepository $languageRepository,
-        ClientFactoryInterface $clientFactory
+        ClientFactoryInterface $clientFactory,
+        KeyPairConfigReader $keyPairConfigReader
     ) {
         $this->deviceRepository    = $deviceRepository;
         $this->configReader        = $configReader;
@@ -72,6 +79,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $this->systemConfigReader  = $systemConfigReader;
         $this->languageRepository  = $languageRepository;
         $this->clientFactory       = $clientFactory;
+        $this->keyPairConfigReader = $keyPairConfigReader;
     }
 
     /**
@@ -87,49 +95,58 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     public function onCheckoutConfirm(PageLoadedEvent $event): void
     {
-        if (!($event instanceof CheckoutConfirmPageLoadedEvent) && !($event instanceof AccountEditOrderPageLoadedEvent)) {
+        $salesChannelContext = $event->getSalesChannelContext();
+        $paymentMethod       = $salesChannelContext->getPaymentMethod();
+
+        if (!$this->isActionRequired($event, $paymentMethod)) {
             return;
         }
 
-        $salesChannelContext = $event->getSalesChannelContext();
-        $this->configData    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $paymentMethodId  = $paymentMethod->getId();
+        $this->configData = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_CREDIT_CARD
-        ) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_CREDIT_CARD) {
             $this->addCreditCardExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYPAL
-        ) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_PAYPAL) {
             $this->addPayPalExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT
-        ) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT) {
             $this->addDirectDebitExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED
-        ) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED) {
             $this->addDirectDebitSecuredExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
             $this->addFraudPreventionExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED) {
             $this->addInstallmentSecuredExtension($event);
         }
 
-        if ($salesChannelContext->getPaymentMethod()->getId() === PaymentInstaller::PAYMENT_ID_APPLE_PAY) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_APPLE_PAY) {
             $this->addApplePayExtension($event);
         }
 
-        if (in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS)) {
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT) {
+            $this->addPaylaterInstallmentExtension($event);
+            $this->addFraudPreventionExtension($event);
+        }
+
+        if (in_array($paymentMethodId, PaymentInstaller::PAYMENT_METHOD_IDS)) {
             $this->addPaymentFrameExtension($event);
             $this->addUnzerDataExtension($event);
         }
+    }
+
+    private function isActionRequired(PageLoadedEvent $event, PaymentMethodEntity $paymentMethod): bool
+    {
+        return $event instanceof CheckoutConfirmPageLoadedEvent || ($event instanceof AccountEditOrderPageLoadedEvent && $paymentMethod->getAfterOrderEnabled());
     }
 
     private function addFraudPreventionExtension(PageLoadedEvent $event): void
@@ -145,7 +162,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $context = $event->getSalesChannelContext()->getContext();
 
         $extension = new UnzerDataPageExtension();
-        $extension->setPublicKey($this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY));
+        $extension->setPublicKey($this->getPublicKey($event->getSalesChannelContext()));
         $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
         $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
         $extension->setUnzerCustomer($this->getUnzerCustomer($event));
@@ -161,9 +178,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return null;
         }
 
-        $salesChannelId = $event->getSalesChannelContext()->getSalesChannelId();
-
-        $client         = $this->clientFactory->createClient($salesChannelId);
+        $client         = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($event->getSalesChannelContext()));
         $customerNumber = $customer->getCustomerNumber();
         $billingAddress = $customer->getActiveBillingAddress();
 
@@ -280,7 +295,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     {
         $extension = new InstallmentSecuredPageExtension();
         $extension->setCurrency($event->getSalesChannelContext()->getCurrency()->getIsoCode());
-        $extension->setEffectiveInterest((float) $this->configData->get(ConfigReader::CONFIG_KEY_INSTALLMENT_SECURED_INTEREST, self::INSTALLMENT_SECURED_EFFECTIVE_INTEREST_DEFAULT));
 
         if ($event instanceof CheckoutConfirmPageLoadedEvent) {
             $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());
@@ -297,6 +311,20 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension(ApplePayPageExtension::EXTENSION_NAME, new ApplePayPageExtension());
     }
 
+    private function addPaylaterInstallmentExtension(PageLoadedEvent $event): void
+    {
+        $extension = new PaylaterInstallmentPageExtension();
+        $extension->setCurrency($event->getSalesChannelContext()->getCurrency()->getIsoCode());
+
+        if ($event instanceof CheckoutConfirmPageLoadedEvent) {
+            $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());
+        } elseif ($event instanceof AccountEditOrderPageLoadedEvent) {
+            $extension->setAmount($event->getPage()->getOrder()->getPrice()->getTotalPrice());
+        }
+
+        $event->getPage()->addExtension(PaylaterInstallmentPageExtension::EXTENSION_NAME, $extension);
+    }
+
     private function getLocaleByLanguageId(string $languageId, Context $context): string
     {
         $critera = new Criteria([$languageId]);
@@ -310,5 +338,16 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         return $searchResult->getLocale()->getCode();
+    }
+
+    private function getPublicKey(SalesChannelContext $salesChannelContext): string
+    {
+        $keyPairContext = KeyPairContext::createFromSalesChannelContext($salesChannelContext);
+
+        if (!$keyPairContext) {
+            return $this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY);
+        }
+
+        return $this->keyPairConfigReader->getPublicKey($keyPairContext);
     }
 }

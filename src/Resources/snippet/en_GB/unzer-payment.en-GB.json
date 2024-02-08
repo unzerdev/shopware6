@@ -7,7 +7,8 @@
             "iban": "IBAN",
             "holder": "Holder",
             "descriptor": "Descriptor",
-            "amount": "Amount"
+            "amount": "Amount",
+            "installmentInfo": "For Installment payment method, Unzer will send all the details for the rate plan."
         },
         "frame": {
             "applePay": {
@@ -51,6 +52,13 @@
             "installmentSecured": {
                 "totalAmount": "Total incl. interest",
                 "totalInterest": "Interest on installment",
+                "testData": {
+                    "accountHolder": "Account holder",
+                    "iban": "IBAN",
+                    "birthday": "Birthday"
+                }
+            },
+            "installmentPaylater": {
                 "testData": {
                     "accountHolder": "Account holder",
                     "iban": "IBAN",

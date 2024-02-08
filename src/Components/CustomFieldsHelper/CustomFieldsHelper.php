@@ -42,4 +42,19 @@ class CustomFieldsHelper implements CustomFieldsHelperInterface
 
         $this->orderTransactionRepository->update([$update], $context);
     }
+
+    public function setOrderTransactionUnzerFlag(OrderTransactionEntity $transaction, Context $context): void
+    {
+        $customFields = $transaction->getCustomFields() ?? [];
+        $customFields = array_merge($customFields, [
+            CustomFieldInstaller::UNZER_PAYMENT_IS_TRANSACTION => true,
+        ]);
+
+        $update = [
+            'id'           => $transaction->getId(),
+            'customFields' => $customFields,
+        ];
+
+        $this->orderTransactionRepository->update([$update], $context);
+    }
 }

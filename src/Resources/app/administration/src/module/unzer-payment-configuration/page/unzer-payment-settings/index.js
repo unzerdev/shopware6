@@ -20,17 +20,40 @@ Component.register('unzer-payment-settings', {
         return {
             isLoading: true,
             isLoadingWebhooks: true,
-            isTesting: false,
+            selectedKeyPairForTesting: false,
             isTestSuccessful: false,
             isSaveSuccessful: false,
             config: {},
-            showWebhookModal: false,
             webhooks: [],
-            webhookSelection: null,
-            webhookSelectionLength: 0,
-            isClearing: false,
-            isClearingSuccessful: false,
-            selectedSalesChannelId: null
+            loadedWebhooksPrivateKey: false,
+            selectedSalesChannelId: null,
+            keyPairSettings: [
+                {
+                    key: 'b2b-eur',
+                    group: 'paylaterInvoice',
+                },
+                {
+                    key: 'b2b-chf',
+                    group: 'paylaterInvoice',
+                },
+                {
+                    key: 'b2c-eur',
+                    group: 'paylaterInvoice',
+                },
+                {
+                    key: 'b2c-chf',
+                    group: 'paylaterInvoice',
+                },
+                {
+                    key: 'b2c-eur',
+                    group: 'paylaterInstallment',
+                },
+                {
+                    key: 'b2c-chf',
+                    group: 'paylaterInstallment',
+                }
+            ],
+            openModalKeyPair: null,
         };
     },
 
@@ -45,21 +68,6 @@ Component.register('unzer-payment-settings', {
             return this.repositoryFactory.create('payment_method');
         },
 
-        webhookColumns() {
-            return [
-                {
-                    property: 'event',
-                    dataIndex: 'event',
-                    label: 'Event'
-                },
-                {
-                    property: 'url',
-                    dataIndex: 'url',
-                    label: 'URL'
-                }
-            ];
-        },
-
         arrowIconName() {
             const match = Context.app.config.version.match(/((\d+)\.?(\d+?)\.?(\d+)?\.?(\d*))-?([A-z]+?\d+)?/i);
 
@@ -68,7 +76,22 @@ Component.register('unzer-payment-settings', {
             }
 
             return 'small-arrow-medium-right';
+        },
+
+        defaultKeyPair() {
+            return {
+                privateKey: this.getConfigValue('privateKey'),
+                publicKey: this.getConfigValue('publicKey'),
+            }
         }
+    },
+
+    watch: {
+        openModalKeyPair(val) {
+            if (val && val.privateKey !== this.loadedWebhooksPrivateKey) {
+                this.loadWebhooks(val.privateKey);
+            }
+        },
     },
 
     methods: {
@@ -83,13 +106,13 @@ Component.register('unzer-payment-settings', {
                 || defaultConfig[`UnzerPayment6.settings.${field}`];
         },
 
-        onValidateCredentials() {
+        onValidateCredentials(keyPairSetting) {
             this.isTestSuccessful = false;
-            this.isTesting = true;
+            this.selectedKeyPairForTesting = keyPairSetting;
 
             const credentials = {
-                publicKey: this.getConfigValue('publicKey'),
-                privateKey: this.getConfigValue('privateKey'),
+                publicKey: keyPairSetting.publicKey,
+                privateKey: keyPairSetting.privateKey,
                 salesChannel: this.$refs.systemConfig.currentSalesChannelId
             };
 
@@ -100,24 +123,41 @@ Component.register('unzer-payment-settings', {
                 });
 
                 this.isTestSuccessful = true;
-                this.isTesting = false;
             }).catch(() => {
                 this.createNotificationError({
                     title: this.$tc('unzer-payment-settings.form.message.error.title'),
                     message: this.$tc('unzer-payment-settings.form.message.error.message')
                 });
-                this.isTesting = false;
+
+                this.onTestFinished();
             });
         },
 
         onTestFinished() {
+            this.selectedKeyPairForTesting = false;
             this.isTestSuccessful = false;
         },
 
         onSave() {
             this.isLoading = true;
 
+            ['paylaterInvoice', 'paylaterInstallment'].forEach((group) => {
+                this.config[`UnzerPayment6.settings.${group}`] = [];
+            });
+
+            this.keyPairSettings.reduce((config, keyPairSetting) => {
+                if (!keyPairSetting || !keyPairSetting.privateKey || !keyPairSetting.publicKey) {
+                    return config;
+                }
+
+                config[`UnzerPayment6.settings.${keyPairSetting.group}`].push(keyPairSetting);
+
+                return config;
+            }, this.config);
+
             this.$refs.systemConfig.saveAll().then(() => {
+                this.isSaveSuccessful = true;
+
                 let messageSaveSuccess = this.$tc('sw-plugin-config.messageSaveSuccess');
 
                 if (messageSaveSuccess === 'sw-plugin-config.messageSaveSuccess') {
@@ -133,6 +173,8 @@ Component.register('unzer-payment-settings', {
                     this.isLoading = false;
                 });
             }).catch((err) => {
+                this.isSaveSuccessful = false;
+
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
                     message: err
@@ -145,7 +187,7 @@ Component.register('unzer-payment-settings', {
         onConfigChange(config) {
             this.config = config;
             this.isLoading = false;
-            this.loadWebhooks();
+            this.syncKeyPairConfig();
             this.$refs.applePayCertificates.loadData();
         },
 
@@ -161,84 +203,28 @@ Component.register('unzer-payment-settings', {
             this.selectedSalesChannelId = salesChannelId;
         },
 
-        onWebhookRegistered() {
-            this.loadWebhooks();
+        onWebhookRegistered(privateKey) {
+            this.loadWebhooks(privateKey);
         },
 
-        loadWebhooks() {
+        loadWebhooks(privateKey) {
             this.isLoadingWebhooks = true;
 
-            this.UnzerPaymentConfigurationService.getWebhooks(this.getConfigValue('privateKey'))
+            this.UnzerPaymentConfigurationService.getWebhooks(privateKey)
                 .then((response) => {
                     this.webhooks = response;
+                    this.webhookSelection = null;
+                    this.webhookSelectionLength = 0;
+                    this.loadedWebhooksPrivateKey = privateKey;
+                })
+                .catch(() => {
+                    this.webhooks = [];
+                    this.loadedWebhooksPrivateKey = false;
                 })
                 .finally(() => {
                     this.isLoadingWebhooks = false;
                     this.isClearingSuccessful = false;
                 });
-        },
-
-        onSelectWebhook(selectedItems) {
-            this.webhookSelectionLength = Object.keys(selectedItems).length;
-            this.webhookSelection = selectedItems;
-        },
-
-        clearWebhooks() {
-            const me = this;
-            this.isClearingSuccessful = false;
-            this.isClearing = true;
-            this.isLoading = true;
-
-            this.UnzerPaymentConfigurationService.clearWebhooks({
-                privateKey: this.getConfigValue('privateKey'),
-                selection: this.webhookSelection
-            })
-                .then((response) => {
-                    me.isClearingSuccessful = true;
-                    me.isLoadingWebhooks = true;
-                    me.webhookSelection = [];
-                    me.webhookSelectionLength = 0;
-
-                    me.$refs.webhookDataGrid.resetSelection();
-
-                    this.loadWebhooks();
-                    if (undefined !== response) {
-                        me.messageGeneration(response);
-                    }
-                })
-                .catch(() => {
-                    this.createNotificationError({
-                        title: this.$tc('unzer-payment-settings.webhook.globalError.title'),
-                        message: this.$tc('unzer-payment-settings.webhook.globalError.message')
-                    });
-                })
-                .finally(() => {
-                    me.isLoading = false;
-                    me.isClearing = false;
-                });
-        },
-
-        messageGeneration(data) {
-            const domainAmount = data.length;
-
-            Object.keys(data).forEach((url) => {
-                if (data[url].success) {
-                    this.createNotificationSuccess({
-                        title: this.$tc(data[url].message, domainAmount),
-                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + url
-                    });
-                } else {
-                    this.createNotificationError({
-                        title: this.$tc(data[url].message, domainAmount),
-                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + url
-                    });
-                }
-            });
-        },
-
-        onClearingFinished() {
-            this.isClearingSuccessful = false;
-            this.isClearing = false;
         },
 
         getBind(element, config) {
@@ -260,12 +246,32 @@ Component.register('unzer-payment-settings', {
             return originalElement || element;
         },
 
-        openWebhookModal() {
-            this.showWebhookModal = true;
+        keyPairSettingTitle(keyPairSetting) {
+            return this.$tc(`unzer-payment.methods.${keyPairSetting.group}.${keyPairSetting.key}`);
         },
 
-        closeWebhookModal() {
-            this.showWebhookModal = false;
+        isShowWebhooksButtonEnabled(keyPairSetting) {
+            return keyPairSetting && keyPairSetting.privateKey && keyPairSetting.publicKey;
+        },
+
+        isRegisterWebhooksButtonEnabled(keyPairSetting) {
+            return !this.isLoading && keyPairSetting && keyPairSetting.privateKey;
+        },
+
+        syncKeyPairConfig() {
+            const me = this;
+            ['paylaterInvoice', 'paylaterInstallment'].forEach((group) => {
+                if (!this.config[`UnzerPayment6.settings.${group}`]) {
+                    return;
+                }
+                this.config[`UnzerPayment6.settings.${group}`].forEach((configKeyPairSetting) => {
+                    me.keyPairSettings.forEach((keyPairSetting, index, collection) => {
+                        if (keyPairSetting.group === configKeyPairSetting.group && keyPairSetting.key === configKeyPairSetting.key) {
+                            collection[index] = configKeyPairSetting;
+                        }
+                    });
+                });
+            });
         }
     }
 });

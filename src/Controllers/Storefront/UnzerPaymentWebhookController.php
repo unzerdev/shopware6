@@ -15,6 +15,7 @@ use Throwable;
 use Traversable;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\Webhook;
 use UnzerPayment6\Components\WebhookHandler\WebhookHandlerInterface;
 
@@ -57,7 +58,7 @@ class UnzerPaymentWebhookController extends StorefrontController
         $webhook = new Webhook($requestContent);
         $config  = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
-        if ($webhook->getPublicKey() !== $config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY)) {
+        if (!$this->isValidPublicKey($webhook, $config)) {
             $this->logger->error('The provided public key does not match the configured public key');
 
             return new Response('The provided public key does not match the configured public key.', Response::HTTP_FORBIDDEN);
@@ -92,5 +93,26 @@ class UnzerPaymentWebhookController extends StorefrontController
         }
 
         return new Response();
+    }
+
+    public function isValidPublicKey(Webhook $webhook, Configuration $config): bool
+    {
+        if ($webhook->getPublicKey() === $config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY)) {
+            return true;
+        }
+
+        foreach ($config->get(ConfigReader::CONFIG_KEY_PAYLATER_INVOICE) as $keyPairConfig) {
+            if ($keyPairConfig['publicKey'] === $webhook->getPublicKey()) {
+                return true;
+            }
+        }
+
+        foreach ($config->get(ConfigReader::CONFIG_KEY_PAYLATER_INSTALLMENT) as $keyPairConfig) {
+            if ($keyPairConfig['publicKey'] === $webhook->getPublicKey()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -6,18 +6,13 @@ namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
 use Shopware\Core\Framework\Struct\Struct;
 
-class InstallmentSecuredPageExtension extends Struct
+class PaylaterInstallmentPageExtension extends Struct
 {
-    public const EXTENSION_NAME = 'unzerInstallmentSecured';
+    public const EXTENSION_NAME = 'unzerPaylaterInstallment';
 
-    /** @var float */
-    private $amount = 0.0;
+    private float $amount = 0.0;
 
-    /** @var string */
-    private $currency = 'EUR';
-
-    /** @var string */
-    private $orderDate = '';
+    private string $currency = 'EUR';
 
     public function getAmount(): float
     {
@@ -39,18 +34,6 @@ class InstallmentSecuredPageExtension extends Struct
     public function setCurrency(string $currency): self
     {
         $this->currency = $currency;
-
-        return $this;
-    }
-
-    public function getOrderDate(): string
-    {
-        return $this->orderDate;
-    }
-
-    public function setOrderDate(string $orderDate): self
-    {
-        $this->orderDate = $orderDate;
 
         return $this;
     }

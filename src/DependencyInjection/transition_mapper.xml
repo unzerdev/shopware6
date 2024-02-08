@@ -91,5 +91,9 @@
         <service id="UnzerPayment6\Components\PaymentTransitionMapper\PaylaterInvoiceTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>
+
+        <service id="UnzerPayment6\Components\PaymentTransitionMapper\PaylaterInstallmentTransitionMapper">
+            <tag name="unzer.transition_mapper"/>
+        </service>
     </services>
 </container>

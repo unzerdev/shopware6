@@ -10,13 +10,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\PluginEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Metadata;
 
 class MetadataResourceHydrator implements ResourceHydratorInterface
 {
-    public const PLUGIN_NAME = 'UnzerPayment6';
-
     /** @var string */
     private $shopwareVersion;
 
@@ -50,7 +49,7 @@ class MetadataResourceHydrator implements ResourceHydratorInterface
     protected function getPluginData(Context $context): ?PluginEntity
     {
         $pluginSearchCriteria = new Criteria();
-        $pluginSearchCriteria->addFilter(new EqualsFilter('name', self::PLUGIN_NAME));
+        $pluginSearchCriteria->addFilter(new EqualsFilter('name', UnzerPayment6::PLUGIN_NAME));
 
         return $this->pluginRepository->search($pluginSearchCriteria, $context)->first();
     }

@@ -1,39 +1,40 @@
-{% block unzer_payment_frame_installment_secured %}
+{% block unzer_payment_frame_installment_paylater %}
     {% block unzer_payment_checkout_confirm_frame_card_body_title %}
         <div class="card-title">
             {{ context.paymentMethod.translated.name }}
         </div>
     {% endblock %}
 
-    <div class="unzer-payment-installment-secured-wrapper"
-         data-unzer-payment-installment-secured="true"
-         data-unzer-payment-installment-secured-options='{
-            "installmentSecuredCurrency": "{{ page.extensions.unzerInstallmentSecured.currency }}",
-            "installmentSecuredAmount": {{ page.extensions.unzerInstallmentSecured.amount }},
-            "installmentSecuredOrderDate": "{{ page.extensions.unzerInstallmentSecured.orderDate }}",
+    {% set fraudPreventionExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
+
+    <div class="unzer-payment-paylater-installment-wrapper"
+         data-unzer-payment-paylater-installment="true"
+         data-unzer-payment-paylater-installment-options='{
+            "paylaterInstallmentCurrency": "{{ page.extensions.unzerPaylaterInstallment.currency }}",
+            "paylaterInstallmentAmount": {{ page.extensions.unzerPaylaterInstallment.amount }},
             "currencyIso": "{{ context.currency.isoCode }}",
-            "currencyFormatLocale": "{{ app.request.locale }}",
-            "starSymbol": "{{ "general.star"|trans }}"
+            "countryIso": "{{ context.customer.activeBillingAddress.country.iso }}",
+            "threatMetrixId": "{{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"
          }'>
 
         <div id="element-loader" class="unzer-payment-loader">
             {# Placeholder for the loader element. #}
         </div>
 
-        {% block unzer_payment_frame_installment_secured_test_data %}
+        {% block unzer_payment_frame_installment_paylater_test_data %}
             {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
             {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
-                {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/installment-secured.html.twig' %}
+                {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/paylater-installment.html.twig' %}
             {% endif %}
         {% endblock %}
 
-        {% block unzer_payment_frame_installment_secured_container %}
-            <div id="unzer-payment-installment-secured-container"></div>
+        {% block unzer_payment_frame_installment_paylater_container %}
+            <div id="unzer-payment-paylater-installment-container"></div>
         {% endblock %}
 
-        {% block unzer_payment_frame_installment_secured_birthday_container %}
-            <div id="unzerPaymentBirthdayContainer" class="unzer-payment-birthday">
-                {% block unzer_payment_frame_installment_secured_birthday %}
+        {% block unzer_payment_frame_installment_paylater_birthday_container %}
+            <div id="unzerPaymentBirthdayContainer" class="unzer-payment-birthday unzer-payment-frame-row">
+                {% block unzer_payment_frame_installment_paylater_birthday %}
                     <label for="unzerPaymentBirthday" class="unzer-payment-label">
                         {{ "account.personalBirthdayLabel"|trans }}
                     </label>
