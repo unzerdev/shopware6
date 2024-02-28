@@ -25,6 +25,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInstallmentSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceSecuredPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterDirectDebitSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInstallmentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler;
@@ -57,6 +58,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_PAYLATER_INVOICE     = '09588ffee8064f168e909ff31889dd7f';
     public const PAYMENT_ID_APPLE_PAY            = '62490bda54fa48fbb29ed6b9368bafe1';
     public const PAYMENT_ID_PAYLATER_INSTALLMENT = '12fbfbce271a43a89b3783453b88e9a6';
+    public const PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED = '6d6adcd4b7bf40499873c294a85f32ed';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -78,6 +80,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_PAYLATER_INVOICE,
         self::PAYMENT_ID_APPLE_PAY,
         self::PAYMENT_ID_PAYLATER_INSTALLMENT,
+        self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
     ];
 
     public const PAYMENT_METHODS = [
@@ -175,6 +178,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_INVOICE,
             'handlerIdentifier' => UnzerInvoicePaymentHandler::class,
             'name'              => 'Invoice (Deprecated)',
+            'active'            => false,
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Rechnungskauf (Veraltet)',
@@ -190,6 +194,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_INVOICE_SECURED,
             'handlerIdentifier' => UnzerInvoiceSecuredPaymentHandler::class,
             'name'              => 'Invoice Secured (Deprecated)',
+            'active'            => false,
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Rechnungskauf Gesichert (Veraltet)',
@@ -229,6 +234,21 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name'        => 'Installment',
                     'description' => 'Unzer Installment',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
+            'handlerIdentifier' => UnzerPaylaterDirectDebitSecuredPaymentHandler::class,
+            'name'              => 'Direct Debit Secured',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Direct Debit Gesichert',
+                    'description' => 'Unzer Direct Debit Gesichert',
+                ],
+                'en-GB' => [
+                    'name'        => 'Direct Debit Secured',
+                    'description' => 'Unzer Direct Debit Secured',
                 ],
             ],
         ],
@@ -280,14 +300,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
             'handlerIdentifier' => UnzerDirectDebitPaymentHandler::class,
-            'name'              => 'SEPA Direct Debit',
+            'name'              => 'SEPA Direct Debit (Deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA Lastschrift',
+                    'name'        => 'SEPA Lastschrift (Veraltet)',
                     'description' => 'SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'SEPA Direct Debit',
+                    'name'        => 'SEPA Direct Debit (Deprecated)',
                     'description' => 'SEPA Direct Debit payments with Unzer payments',
                 ],
             ],
@@ -295,14 +315,14 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT_SECURED,
             'handlerIdentifier' => UnzerDirectDebitSecuredPaymentHandler::class,
-            'name'              => 'SEPA Direct Debit Secured',
+            'name'              => 'SEPA Direct Debit Secured (Deprecated)',
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA Lastschrift Gesichert',
+                    'name'        => 'SEPA Lastschrift Gesichert (Veraltet)',
                     'description' => 'Gesicherte SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'SEPA Direct Debit Secured',
+                    'name'        => 'SEPA Direct Debit Secured (Deprecated)',
                     'description' => 'Secured SEPA Direct Debit payments with Unzer payments',
                 ],
             ],
