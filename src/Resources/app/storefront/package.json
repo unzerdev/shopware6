@@ -1,0 +1,12 @@
+{
+  "name": "unzer-shopware6-storefront",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Kellerkinder",
+  "devDependencies": {
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "shopware-storefront-sdk": "^0.0.2"
+  }
+}
