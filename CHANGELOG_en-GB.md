@@ -1,3 +1,6 @@
+# 5.6.1
+* Fixed decoration of CheckoutController for compatibility to other plugins
+
 # 5.6.0
 * Add Paylater Installment as new payment method
 * Mark existing Secured Installment as deprecated
