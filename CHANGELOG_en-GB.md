@@ -1,3 +1,6 @@
+# 5.7.0
+* Changed the release process for building one plugin version that is compatible with Shopware 6.4 and Shopware 6.5
+
 # 5.6.0
 * Add Paylater Installment as new payment method
 * Mark existing Secured Installment as deprecated
