@@ -124,23 +124,6 @@
     </card>
 
     <card>
-        <title>Direct Debit Secured</title>
-        <title lang="de-DE">Direct Debit Gesichert</title>
-
-        <input-field>
-            <name>paylaterDirectDebitSecuredPublicKey</name>
-            <label>Public key</label>
-            <label lang="de-DE">Public key</label>
-        </input-field>
-
-        <input-field>
-            <name>paylaterDirectDebitSecuredPrivateKey</name>
-            <label>Private key</label>
-            <label lang="de-DE">Private key</label>
-        </input-field>
-    </card>
-
-    <card>
         <title>Advanced settings</title>
         <title lang="de-DE">Erweiterte Einstellungen</title>
 

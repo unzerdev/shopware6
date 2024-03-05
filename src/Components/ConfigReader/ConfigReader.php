@@ -25,8 +25,7 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFIER                    = 'applePayMerchantIdentifier';
     public const CONFIG_KEY_PAYLATER_INSTALLMENT                             = 'paylaterInstallment';
     public const CONFIG_KEY_PAYLATER_INVOICE                                 = 'paylaterInvoice';
-    public const CONFIG_KEY_PAYLATER_DIRECT_DEBIT_SECURED_PUBLIC_KEY                           = 'paylaterDirectDebitSecuredPublicKey';
-    public const CONFIG_KEY_PAYLATER_DIRECT_DEBIT_SECURED_PRIVATE_KEY                           = 'paylaterDirectDebitSecuredPrivateKey';
+    public const CONFIG_KEY_PAYLATER_DIRECT_DEBIT_SECURED                    = 'paylaterDirectDebitSecured';
 
     public const CONFIG_KEY_SHIPPING_STATUS = 'statusForAutomaticShippingNotification';
 

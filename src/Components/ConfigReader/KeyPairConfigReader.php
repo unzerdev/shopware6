@@ -71,6 +71,8 @@ class KeyPairConfigReader
             $configKey = ConfigReader::CONFIG_KEY_PAYLATER_INSTALLMENT;
         } elseif ($keyPairContext->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
             $configKey = ConfigReader::CONFIG_KEY_PAYLATER_INVOICE;
+        } elseif ($keyPairContext->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED) {
+            $configKey = ConfigReader::CONFIG_KEY_PAYLATER_DIRECT_DEBIT_SECURED;
         }
 
         if (!isset($configKey)) {

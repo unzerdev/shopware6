@@ -29,6 +29,7 @@ use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPa
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\FraudPreventionPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\InstallmentSecuredPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaylaterDirectDebitSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaylaterInstallmentPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
@@ -135,6 +136,11 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT) {
             $this->addPaylaterInstallmentExtension($event);
+            $this->addFraudPreventionExtension($event);
+        }
+
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED) {
+            $this->addPaylaterDirectDebitSecuredExtension($event);
             $this->addFraudPreventionExtension($event);
         }
 
@@ -323,6 +329,20 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $event->getPage()->addExtension(PaylaterInstallmentPageExtension::EXTENSION_NAME, $extension);
+    }
+
+    private function addPaylaterDirectDebitSecuredExtension(PageLoadedEvent $event): void
+    {
+        $extension = new PaylaterDirectDebitSecuredPageExtension();
+        $extension->setCurrency($event->getSalesChannelContext()->getCurrency()->getIsoCode());
+
+        if ($event instanceof CheckoutConfirmPageLoadedEvent) {
+            $extension->setAmount($event->getPage()->getCart()->getPrice()->getTotalPrice());
+        } elseif ($event instanceof AccountEditOrderPageLoadedEvent) {
+            $extension->setAmount($event->getPage()->getOrder()->getPrice()->getTotalPrice());
+        }
+
+        $event->getPage()->addExtension(PaylaterDirectDebitSecuredPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function getLocaleByLanguageId(string $languageId, Context $context): string

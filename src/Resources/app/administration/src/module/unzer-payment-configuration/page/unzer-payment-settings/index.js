@@ -51,6 +51,10 @@ Component.register('unzer-payment-settings', {
                 {
                     key: 'b2c-chf',
                     group: 'paylaterInstallment',
+                },
+                {
+                    key: 'b2c-eur',
+                    group: 'paylaterDirectDebitSecured',
                 }
             ],
             openModalKeyPair: null,
@@ -141,7 +145,7 @@ Component.register('unzer-payment-settings', {
         onSave() {
             this.isLoading = true;
 
-            ['paylaterInvoice', 'paylaterInstallment'].forEach((group) => {
+            ['paylaterInvoice', 'paylaterInstallment', 'paylaterDirectDebitSecured'].forEach((group) => {
                 this.config[`UnzerPayment6.settings.${group}`] = [];
             });
 
