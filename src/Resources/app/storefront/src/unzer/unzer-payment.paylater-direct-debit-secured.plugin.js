@@ -35,6 +35,13 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
     static birthdateInput;
 
     /**
+     * @type {boolean}
+     *
+     * @public
+     */
+    static unzerInputsValid;
+
+    /**
      * @type {UnzerPaymentBasePlugin}
      *
      * @private
@@ -47,6 +54,7 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
         this.birthdateContainer = document.getElementById(this.options.birthdateContainerIdSelector);
         this.birthdateInput = document.getElementById(this.options.birthdateInputIdSelector);
+        this.unzerInputsValid = false;
 
         this._createForm();
         this._registerEvents();
@@ -61,7 +69,7 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
             amount: this.options.paylaterDirectDebitSecuredAmount.toFixed(4),
             currency: this.options.paylaterDirectDebitSecuredCurrency,
             country: this.options.countryIso,
-            threatMetrixId: this.options.threatMetrixId,
+            threatMetrixId: this.options.threatMetrixId
         });
     }
 
@@ -71,9 +79,18 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
     _registerEvents() {
         this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
-        });
+        })
 
+        this.paylaterDirectDebitSecured.sepaEventHandler = this._handleSepaDataChange.bind(this);
         this.birthdateInput.addEventListener('change', this._onBirthdateInputChange.bind(this))
+    }
+
+    _handleSepaDataChange(event) {
+        this.unzerInputsValid = this.paylaterDirectDebitSecured.isHolderValidated
+            && this.paylaterDirectDebitSecured.isIbanValidated
+            && this._validateBirthdate();
+
+        this._unzerPaymentPlugin.setSubmitButtonActive(this.unzerInputsValid);
     }
 
     /**
@@ -85,7 +102,6 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
 
         ElementLoadingIndicatorUtil.create(loadingIndicatorElement);
 
-        console.log('test');
         this.paylaterDirectDebitSecured.createResource()
             .then(function(resource) {
                 this._submitPayment(resource);
@@ -114,7 +130,7 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
     }
 
     _onBirthdateInputChange() {
-        if (this._validateBirthdate()) {
+        if (this._validateBirthdate() && this.unzerInputsValid) {
             this._unzerPaymentPlugin.setSubmitButtonActive(true);
         } else {
             this._unzerPaymentPlugin.setSubmitButtonActive(false);
@@ -122,7 +138,6 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
     }
 
     _validateBirthdate() {
-        console.log('validating birthdate');
         if (this.birthdateInput.value === '') {
             return false;
         }
