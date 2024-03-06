@@ -264,7 +264,7 @@ Component.register('unzer-payment-settings', {
 
         syncKeyPairConfig() {
             const me = this;
-            ['paylaterInvoice', 'paylaterInstallment'].forEach((group) => {
+            ['paylaterInvoice', 'paylaterInstallment', 'paylaterDirectDebitSecured'].forEach((group) => {
                 if (!this.config[`UnzerPayment6.settings.${group}`]) {
                     return;
                 }

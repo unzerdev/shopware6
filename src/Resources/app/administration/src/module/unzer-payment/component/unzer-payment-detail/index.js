@@ -17,7 +17,8 @@ Component.register('unzer-payment-detail', {
             isSuccessful: false,
             paylaterPaymentMethods: [
                 '09588ffee8064f168e909ff31889dd7f', // see \UnzerPayment6\Installer\PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE
-                '12fbfbce271a43a89b3783453b88e9a6' // see \UnzerPayment6\Installer\PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT
+                '12fbfbce271a43a89b3783453b88e9a6', // see \UnzerPayment6\Installer\PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT
+                '6d6adcd4b7bf40499873c294a85f32ed' // see \UnzerPayment6\Installer\PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED
             ]
         };
     },
