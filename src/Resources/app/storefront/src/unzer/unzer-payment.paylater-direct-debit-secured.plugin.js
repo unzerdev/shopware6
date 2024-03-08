@@ -87,10 +87,9 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
 
     _handleSepaDataChange(event) {
         this.unzerInputsValid = this.paylaterDirectDebitSecured.isHolderValidated
-            && this.paylaterDirectDebitSecured.isIbanValidated
-            && this._validateBirthdate();
+            && this.paylaterDirectDebitSecured.isIbanValidated;
 
-        this._unzerPaymentPlugin.setSubmitButtonActive(this.unzerInputsValid);
+        this._unzerPaymentPlugin.setSubmitButtonActive(this.unzerInputsValid && this._validateBirthdate());
     }
 
     /**
