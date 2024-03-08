@@ -98,6 +98,9 @@
             "paylaterInstallment": {
                 "b2c-eur": "Installment B2C EUR",
                 "b2c-chf": "Installment B2C CHF"
+            },
+            "paylaterDirectDebitSecured": {
+                "b2c-eur": "Paylater Direct Debit Secured B2C EUR"
             }
         }
     },

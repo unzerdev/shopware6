@@ -65,6 +65,14 @@
                     "birthday": "Birthday"
                 }
             },
+            "paylaterDirectDebitSecured": {
+                "testData": {
+                    "accountHolder": "Account holder",
+                    "iban": "IBAN",
+                    "birthday": "Birthday",
+                    "address": "Address"
+                }
+            },
             "paypal": {
                 "new": "New account",
                 "choose": "Please select a saved account or use another account.",
