@@ -17,7 +17,7 @@ use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessExcepti
 /**
  * @RouteScope(scopes={"storefront"})
  */
-class UnzerCheckoutController extends StorefrontController
+class UnzerCheckoutController extends CheckoutController
 {
     /**
      * For compatibility to other plugins, we set StorefrontController as the type hint for the argument.
