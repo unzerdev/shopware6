@@ -100,7 +100,7 @@
                 "b2c-chf": "Installment B2C CHF"
             },
             "paylaterDirectDebitSecured": {
-                "b2c-eur": "Paylater Direct Debit Secured B2C EUR"
+                "b2c-eur": "Direct Debit B2C EUR"
             }
         }
     },

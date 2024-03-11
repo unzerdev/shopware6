@@ -111,10 +111,9 @@ class UnzerPaymentWebhookController extends StorefrontController
             }
         }
 
-
         $paylaterInstallmentKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_INSTALLMENT);
 
-        if(is_array($paylaterInstallmentKeys)) {
+        if (is_array($paylaterInstallmentKeys)) {
             foreach ($paylaterInstallmentKeys as $keyPairConfig) {
                 if ($keyPairConfig['publicKey'] === $webhook->getPublicKey()) {
                     return true;
@@ -124,7 +123,7 @@ class UnzerPaymentWebhookController extends StorefrontController
 
         $paylaterDirectDebitKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_DIRECT_DEBIT_SECURED);
 
-        if(is_array($paylaterDirectDebitKeys)) {
+        if (is_array($paylaterDirectDebitKeys)) {
             foreach ($paylaterDirectDebitKeys as $keyPairConfig) {
                 if ($keyPairConfig['publicKey'] === $webhook->getPublicKey()) {
                     return true;

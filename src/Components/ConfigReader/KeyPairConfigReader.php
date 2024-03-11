@@ -39,6 +39,7 @@ class KeyPairConfigReader
         }
 
         $paylaterInvoiceKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_INVOICE);
+
         if (is_array($paylaterInvoiceKeys)) {
             foreach ($paylaterInvoiceKeys as $keyPairConfig) {
                 if ($keyPairConfig['publicKey'] === $key) {
@@ -52,7 +53,8 @@ class KeyPairConfigReader
         }
 
         $paylaterInstallmentKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_INSTALLMENT);
-        if(is_array($paylaterInstallmentKeys)) {
+
+        if (is_array($paylaterInstallmentKeys)) {
             foreach ($paylaterInstallmentKeys as $keyPairConfig) {
                 if ($keyPairConfig['publicKey'] === $key) {
                     return $keyPairConfig['privateKey'];
@@ -65,7 +67,8 @@ class KeyPairConfigReader
         }
 
         $paylaterDirectDebitSecuredKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_DIRECT_DEBIT_SECURED);
-        if(is_array($paylaterDirectDebitSecuredKeys)) {
+
+        if (is_array($paylaterDirectDebitSecuredKeys)) {
             foreach ($paylaterDirectDebitSecuredKeys as $keyPairConfig) {
                 if ($keyPairConfig['publicKey'] === $key) {
                     return $keyPairConfig['privateKey'];
