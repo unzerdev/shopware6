@@ -1,3 +1,6 @@
+# 5.7.0
+* Paylater Lastschrift als weitere Zahlungsart hinzugefügt
+
 # 5.6.0
 * Paylater Ratenzahlung als weitere Zahlungsart hinzugefügt
 * Bisherige Ratenzahlung als veraltet markiert

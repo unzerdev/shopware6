@@ -1,3 +1,6 @@
+# 5.7.0
+* Add Paylater Direct Debit as new payment method
+
 # 5.6.0
 * Add Paylater Installment as new payment method
 * Mark existing Secured Installment as deprecated
