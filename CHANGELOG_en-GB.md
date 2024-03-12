@@ -1,5 +1,6 @@
 # 5.7.0
 * Changed the release process for building one plugin version that is compatible with Shopware 6.4 and Shopware 6.5
+* Fixed the shipping notice for payments with "Invoice Secured (Deprecated)"
 
 # 5.6.0
 * Add Paylater Installment as new payment method

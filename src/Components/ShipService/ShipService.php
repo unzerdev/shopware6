@@ -120,6 +120,7 @@ class ShipService implements ShipServiceInterface
             'order.billingAddress',
             'order.documents',
             'order.documents.documentType',
+            'order.currency',
             'paymentMethod',
         ]);
 
