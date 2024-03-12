@@ -71,7 +71,8 @@
                     "accountHolder": "Kontoinhaber",
                     "iban": "IBAN",
                     "birthday": "Geburtsdatum",
-                    "address": "Adresse"
+                    "address": "Adresse",
+                    "alternateAddress": "Abweichende Adresse"
                 }
             },
             "paypal": {

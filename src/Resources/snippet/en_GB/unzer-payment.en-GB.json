@@ -70,7 +70,8 @@
                     "accountHolder": "Account holder",
                     "iban": "IBAN",
                     "birthday": "Birthday",
-                    "address": "Address"
+                    "address": "Address",
+                    "alternateAddress": "Alternate Address"
                 }
             },
             "paypal": {
