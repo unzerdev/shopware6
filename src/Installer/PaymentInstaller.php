@@ -402,8 +402,8 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
     ];
-    private const PLUGIN_VERSION_PAYLATER_INVOICE     = '5.0.0';
-    private const PLUGIN_VERSION_PAYLATER_INSTALLMENT = '5.6.0';
+    private const PLUGIN_VERSION_PAYLATER_INVOICE      = '5.0.0';
+    private const PLUGIN_VERSION_PAYLATER_INSTALLMENT  = '5.6.0';
     private const PLUGIN_VERSION_PAYLATER_DIRECT_DEBIT = '5.7.0';
 
     // TODO: Adjust this if compatibility is at least 6.5.0.0
@@ -451,7 +451,7 @@ class PaymentInstaller implements InstallerInterface
             $this->updatePaymentMethodNamesAndTranslations($context);
         } elseif ($context->getUpdatePluginVersion() === self::PLUGIN_VERSION_PAYLATER_DIRECT_DEBIT) {
             $this->paymentMethodRepository->upsert([
-                $this->getPaymentMethod(self::PAYMENT_ID_DIRECT_DEBIT_SECURED)
+                $this->getPaymentMethod(self::PAYMENT_ID_DIRECT_DEBIT_SECURED),
             ], $context->getContext());
         }
     }
