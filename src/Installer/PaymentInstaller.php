@@ -178,7 +178,6 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_INVOICE,
             'handlerIdentifier' => UnzerInvoicePaymentHandler::class,
             'name'              => 'Invoice (Deprecated)',
-            'active'            => false,
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Rechnungskauf (Veraltet)',
@@ -194,7 +193,6 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_INVOICE_SECURED,
             'handlerIdentifier' => UnzerInvoiceSecuredPaymentHandler::class,
             'name'              => 'Invoice Secured (Deprecated)',
-            'active'            => false,
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Rechnungskauf Gesichert (Veraltet)',
@@ -316,6 +314,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT_SECURED,
             'handlerIdentifier' => UnzerDirectDebitSecuredPaymentHandler::class,
             'name'              => 'SEPA Direct Debit Secured (Deprecated)',
+            'active'            => false,
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'SEPA Lastschrift Gesichert (Veraltet)',
@@ -405,6 +404,7 @@ class PaymentInstaller implements InstallerInterface
     ];
     private const PLUGIN_VERSION_PAYLATER_INVOICE     = '5.0.0';
     private const PLUGIN_VERSION_PAYLATER_INSTALLMENT = '5.6.0';
+    private const PLUGIN_VERSION_PAYLATER_DIRECT_DEBIT = '5.7.0';
 
     // TODO: Adjust this if compatibility is at least 6.5.0.0
     /** @var EntityRepository|\Shopware\Core\Checkout\Payment\DataAbstractionLayer\PaymentMethodRepositoryDecorator */
@@ -449,6 +449,10 @@ class PaymentInstaller implements InstallerInterface
             $this->paymentMethodRepository->upsert($update, $context->getContext());
         } elseif ($context->getUpdatePluginVersion() === self::PLUGIN_VERSION_PAYLATER_INSTALLMENT) {
             $this->updatePaymentMethodNamesAndTranslations($context);
+        } elseif ($context->getUpdatePluginVersion() === self::PLUGIN_VERSION_PAYLATER_DIRECT_DEBIT) {
+            $this->paymentMethodRepository->upsert([
+                $this->getPaymentMethod(self::PAYMENT_ID_DIRECT_DEBIT_SECURED)
+            ], $context->getContext());
         }
     }
 
