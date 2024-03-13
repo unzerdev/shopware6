@@ -1,0 +1,58 @@
+{% block unzer_payment_frame_direct_debit_secured_paylater %}
+    {% block unzer_payment_checkout_confirm_frame_card_body_title %}
+        <div class="card-title">
+            {{ context.paymentMethod.translated.name }}
+        </div>
+    {% endblock %}
+
+    {% set fraudPreventionExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
+
+    <div class="unzer-payment-paylater-direct-debit-secured-wrapper"
+         data-unzer-payment-paylater-direct-debit-secured="true"
+         data-unzer-payment-paylater-direct-debit-secured-options='{
+            "paylaterDirectDebitSecuredCurrency": "{{ page.extensions.unzerPaylaterDirectDebitSecured.currency }}",
+            "paylaterDirectDebitSecuredAmount": {{ page.extensions.unzerPaylaterDirectDebitSecured.amount }},
+            "currencyIso": "{{ context.currency.isoCode }}",
+            "countryIso": "{{ context.customer.activeBillingAddress.country.iso }}",
+            "threatMetrixId": "{{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"
+         }'>
+
+        <div id="element-loader" class="unzer-payment-loader">
+            {# Placeholder for the loader element. #}
+        </div>
+
+        {% block unzer_payment_frame_installment_paylater_test_data %}
+            {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
+            {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
+                {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/paylater-direct-debit-secured.html.twig' %}
+            {% endif %}
+        {% endblock %}
+
+        {% block unzer_payment_frame_installment_paylater_container %}
+            <div id="unzer-payment-paylater-direct-debit-secured-container"></div>
+        {% endblock %}
+
+        {% block unzer_payment_frame_installment_paylater_birthday_container %}
+            <div id="unzerPaymentBirthdayContainer" class="unzer-payment-birthday unzer-payment-frame-row">
+                {% block unzer_payment_frame_installment_paylater_birthday %}
+                    <label for="unzerPaymentBirthday" class="unzer-payment-label">
+                        {{ "account.personalBirthdayLabel"|trans }}
+                    </label>
+
+                    <input type="date"
+                           id="unzerPaymentBirthday"
+                           name="unzerPaymentBirthday"
+                           class="form-control unzer-payment-date-input"
+                           form="confirmOrderForm"
+                           required="required"
+                           max="{{ 'now -18 years'|date('Y-m-d') }}"
+                           {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}/>
+                {% endblock %}
+
+                <div id="unzerPaymentBirthdayError" class="unzer-payment-birthday-error">
+                    {{ "UnzerPayment.birthdayInvalid"|trans }}
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

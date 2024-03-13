@@ -25,6 +25,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInstallmentSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceSecuredPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterDirectDebitSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInstallmentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler;
@@ -37,26 +38,27 @@ use UnzerPayment6\UnzerPayment6;
 
 class PaymentInstaller implements InstallerInterface
 {
-    public const PAYMENT_ID_ALIPAY               = 'bc4c2cbfb5fda0bf549e4807440d0a54';
-    public const PAYMENT_ID_CREDIT_CARD          = '4673044aff79424a938d42e9847693c3';
-    public const PAYMENT_ID_DIRECT_DEBIT         = '713c7a332b432dcd4092701eda522a7e';
-    public const PAYMENT_ID_DIRECT_DEBIT_SECURED = '5123af5ce94a4a286641973e8de7eb60';
-    public const PAYMENT_ID_EPS                  = '17830aa7e6a00b99eab27f0e45ac5e0d';
-    public const PAYMENT_ID_FLEXIPAY             = '4ebb99451f36ba01f13d5871a30bce2c';
-    public const PAYMENT_ID_GIROPAY              = 'd4b90a17af62c1bb2f6c3b1fed339425';
-    public const PAYMENT_ID_INSTALLMENT_SECURED  = '4b9f8d08b46a83839fd0eb14fe00efe6';
-    public const PAYMENT_ID_INVOICE              = '08fb8d9a72ab4ca62b811e74f2eca79f';
-    public const PAYMENT_ID_INVOICE_SECURED      = '6cc3b56ce9b0f80bd44039c047282a41';
-    public const PAYMENT_ID_IDEAL                = '614ad722a03ee96baa2446793143215b';
-    public const PAYMENT_ID_PAYPAL               = '409fe641d6d62a4416edd6307d758791';
-    public const PAYMENT_ID_PRE_PAYMENT          = '085b64d0028a8bd447294e03c4eb411a';
-    public const PAYMENT_ID_PRZELEWY24           = 'cd6f59d572e6c90dff77a48ce16b44db';
-    public const PAYMENT_ID_SOFORT               = '95aa098aac8f11e9a2a32a2ae2dbcce4';
-    public const PAYMENT_ID_WE_CHAT              = 'fd96d03535a46d197f5adac17c9f8bac';
-    public const PAYMENT_ID_BANCONTACT           = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
-    public const PAYMENT_ID_PAYLATER_INVOICE     = '09588ffee8064f168e909ff31889dd7f';
-    public const PAYMENT_ID_APPLE_PAY            = '62490bda54fa48fbb29ed6b9368bafe1';
-    public const PAYMENT_ID_PAYLATER_INSTALLMENT = '12fbfbce271a43a89b3783453b88e9a6';
+    public const PAYMENT_ID_ALIPAY                        = 'bc4c2cbfb5fda0bf549e4807440d0a54';
+    public const PAYMENT_ID_CREDIT_CARD                   = '4673044aff79424a938d42e9847693c3';
+    public const PAYMENT_ID_DIRECT_DEBIT                  = '713c7a332b432dcd4092701eda522a7e';
+    public const PAYMENT_ID_DIRECT_DEBIT_SECURED          = '5123af5ce94a4a286641973e8de7eb60';
+    public const PAYMENT_ID_EPS                           = '17830aa7e6a00b99eab27f0e45ac5e0d';
+    public const PAYMENT_ID_FLEXIPAY                      = '4ebb99451f36ba01f13d5871a30bce2c';
+    public const PAYMENT_ID_GIROPAY                       = 'd4b90a17af62c1bb2f6c3b1fed339425';
+    public const PAYMENT_ID_INSTALLMENT_SECURED           = '4b9f8d08b46a83839fd0eb14fe00efe6';
+    public const PAYMENT_ID_INVOICE                       = '08fb8d9a72ab4ca62b811e74f2eca79f';
+    public const PAYMENT_ID_INVOICE_SECURED               = '6cc3b56ce9b0f80bd44039c047282a41';
+    public const PAYMENT_ID_IDEAL                         = '614ad722a03ee96baa2446793143215b';
+    public const PAYMENT_ID_PAYPAL                        = '409fe641d6d62a4416edd6307d758791';
+    public const PAYMENT_ID_PRE_PAYMENT                   = '085b64d0028a8bd447294e03c4eb411a';
+    public const PAYMENT_ID_PRZELEWY24                    = 'cd6f59d572e6c90dff77a48ce16b44db';
+    public const PAYMENT_ID_SOFORT                        = '95aa098aac8f11e9a2a32a2ae2dbcce4';
+    public const PAYMENT_ID_WE_CHAT                       = 'fd96d03535a46d197f5adac17c9f8bac';
+    public const PAYMENT_ID_BANCONTACT                    = '87aa7a4e786c43ec9d4b9c1fd2aa51eb';
+    public const PAYMENT_ID_PAYLATER_INVOICE              = '09588ffee8064f168e909ff31889dd7f';
+    public const PAYMENT_ID_APPLE_PAY                     = '62490bda54fa48fbb29ed6b9368bafe1';
+    public const PAYMENT_ID_PAYLATER_INSTALLMENT          = '12fbfbce271a43a89b3783453b88e9a6';
+    public const PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED = '6d6adcd4b7bf40499873c294a85f32ed';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -78,6 +80,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_PAYLATER_INVOICE,
         self::PAYMENT_ID_APPLE_PAY,
         self::PAYMENT_ID_PAYLATER_INSTALLMENT,
+        self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
     ];
 
     public const PAYMENT_METHODS = [
@@ -233,6 +236,21 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
         [
+            'id'                => self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
+            'handlerIdentifier' => UnzerPaylaterDirectDebitSecuredPaymentHandler::class,
+            'name'              => 'Direct Debit',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Lastschrift',
+                    'description' => 'Unzer Lastschrift',
+                ],
+                'en-GB' => [
+                    'name'        => 'Direct Debit',
+                    'description' => 'Unzer Direct Debit',
+                ],
+            ],
+        ],
+        [
             'id'                => self::PAYMENT_ID_PAYPAL,
             'handlerIdentifier' => UnzerPayPalPaymentHandler::class,
             'name'              => 'PayPal',
@@ -295,14 +313,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT_SECURED,
             'handlerIdentifier' => UnzerDirectDebitSecuredPaymentHandler::class,
-            'name'              => 'SEPA Direct Debit Secured',
+            'name'              => 'SEPA Direct Debit Secured (Deprecated)',
+            'active'            => false,
             'translations'      => [
                 'de-DE' => [
-                    'name'        => 'SEPA Lastschrift Gesichert',
+                    'name'        => 'SEPA Lastschrift Gesichert (Veraltet)',
                     'description' => 'Gesicherte SEPA Lastschrift Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name'        => 'SEPA Direct Debit Secured',
+                    'name'        => 'SEPA Direct Debit Secured (Deprecated)',
                     'description' => 'Secured SEPA Direct Debit payments with Unzer payments',
                 ],
             ],
@@ -383,8 +402,9 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
     ];
-    private const PLUGIN_VERSION_PAYLATER_INVOICE     = '5.0.0';
-    private const PLUGIN_VERSION_PAYLATER_INSTALLMENT = '5.6.0';
+    private const PLUGIN_VERSION_PAYLATER_INVOICE      = '5.0.0';
+    private const PLUGIN_VERSION_PAYLATER_INSTALLMENT  = '5.6.0';
+    private const PLUGIN_VERSION_PAYLATER_DIRECT_DEBIT = '5.7.0';
 
     // TODO: Adjust this if compatibility is at least 6.5.0.0
     /** @var EntityRepository|\Shopware\Core\Checkout\Payment\DataAbstractionLayer\PaymentMethodRepositoryDecorator */
@@ -429,6 +449,10 @@ class PaymentInstaller implements InstallerInterface
             $this->paymentMethodRepository->upsert($update, $context->getContext());
         } elseif ($context->getUpdatePluginVersion() === self::PLUGIN_VERSION_PAYLATER_INSTALLMENT) {
             $this->updatePaymentMethodNamesAndTranslations($context);
+        } elseif ($context->getUpdatePluginVersion() === self::PLUGIN_VERSION_PAYLATER_DIRECT_DEBIT) {
+            $this->paymentMethodRepository->upsert([
+                $this->getPaymentMethod(self::PAYMENT_ID_DIRECT_DEBIT_SECURED),
+            ], $context->getContext());
         }
     }
 

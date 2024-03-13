@@ -98,6 +98,9 @@
             "paylaterInstallment": {
                 "b2c-eur": "Ratenkauf B2C EUR",
                 "b2c-chf": "Ratenkauf B2C CHF"
+            },
+            "paylaterDirectDebitSecured": {
+                "b2c-eur": "Lastschrift B2C EUR"
             }
         }
     },
