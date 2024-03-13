@@ -1,5 +1,5 @@
 # 5.7.0
-* Paylater Lastschrift als weitere Zahlungsart hinzugefügt
+* Lastschrift als weitere Zahlungsart hinzugefügt
 * Änderung an dem Veröffentlichungsprozess zur Erstellung einer Plugin-Version, die mit Shopware 6.4 und Shopware 6.5 kompatibel ist
 * Korrektur für die Versandmitteilung von Zahlungen mit "Rechnungskauf Gesichert (Veraltet)"
 
