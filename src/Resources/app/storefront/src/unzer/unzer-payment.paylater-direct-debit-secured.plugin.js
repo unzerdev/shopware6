@@ -83,6 +83,10 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
 
         this.paylaterDirectDebitSecured.sepaEventHandler = this._handleSepaDataChange.bind(this);
         this.birthdateInput.addEventListener('change', this._onBirthdateInputChange.bind(this))
+        
+        if (this.birthdateInput.value !== '') {
+            this._onBirthdateInputChange();
+        }
     }
 
     _handleSepaDataChange(event) {
