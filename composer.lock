@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2fb8cf95792634bcbaec72c2437ab3ef",
+    "content-hash": "04cf072da98981617e6a53a1d1536582",
     "packages": [
         {
             "name": "unzerdev/php-sdk",
-            "version": "3.2.0",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unzerdev/php-sdk.git",
-                "reference": "c49dbb63dfa46ad22da62130b6b885db2b2de16f"
+                "reference": "df721cabfcfb7a95160de720ec3239bd3d6177da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/c49dbb63dfa46ad22da62130b6b885db2b2de16f",
-                "reference": "c49dbb63dfa46ad22da62130b6b885db2b2de16f",
+                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/df721cabfcfb7a95160de720ec3239bd3d6177da",
+                "reference": "df721cabfcfb7a95160de720ec3239bd3d6177da",
                 "shasum": ""
             },
             "require": {
@@ -45,9 +45,9 @@
             "description": "This is the php sdk to connect to the Unzer rest api.",
             "support": {
                 "email": "support@unzer.com",
-                "source": "https://github.com/unzerdev/php-sdk/tree/3.2.0"
+                "source": "https://github.com/unzerdev/php-sdk/tree/3.4.1"
             },
-            "time": "2023-07-05T13:42:56+00:00"
+            "time": "2023-12-04T14:05:49+00:00"
         }
     ],
     "packages-dev": [
@@ -99,16 +99,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.21",
+            "version": "1.10.59",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5"
+                "reference": "e607609388d3a6d418a50a49f7940e8086798281"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5",
-                "reference": "b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e607609388d3a6d418a50a49f7940e8086798281",
+                "reference": "e607609388d3a6d418a50a49f7940e8086798281",
                 "shasum": ""
             },
             "require": {
@@ -157,7 +157,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-21T20:07:58+00:00"
+            "time": "2024-02-20T13:59:13+00:00"
         }
     ],
     "aliases": [],

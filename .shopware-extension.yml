@@ -1,0 +1,18 @@
+build:
+  zip:
+    assets:
+      enabled: false
+    pack:
+      excludes:
+        paths:
+          - .eslintignore
+          - .eslintrc.js
+          - .gitlab
+          - .shopware-extension.yml
+          - bin
+          - cypress.json.dist
+          - package.json
+          - phpmd.xml
+          - phpstan.neon
+          - phpstan_shopware-6-5.neon
+          - shopware_store_phpstan.neon

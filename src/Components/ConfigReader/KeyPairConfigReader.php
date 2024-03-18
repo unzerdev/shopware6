@@ -38,23 +38,45 @@ class KeyPairConfigReader
             return $config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY);
         }
 
-        foreach ($config->get(ConfigReader::CONFIG_KEY_PAYLATER_INVOICE) as $keyPairConfig) {
-            if ($keyPairConfig['publicKey'] === $key) {
-                return $keyPairConfig['privateKey'];
-            }
+        $paylaterInvoiceKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_INVOICE);
 
-            if ($keyPairConfig['privateKey'] === $key) {
-                return $keyPairConfig['publicKey'];
+        if (is_array($paylaterInvoiceKeys)) {
+            foreach ($paylaterInvoiceKeys as $keyPairConfig) {
+                if ($keyPairConfig['publicKey'] === $key) {
+                    return $keyPairConfig['privateKey'];
+                }
+
+                if ($keyPairConfig['privateKey'] === $key) {
+                    return $keyPairConfig['publicKey'];
+                }
             }
         }
 
-        foreach ($config->get(ConfigReader::CONFIG_KEY_PAYLATER_INSTALLMENT) as $keyPairConfig) {
-            if ($keyPairConfig['publicKey'] === $key) {
-                return $keyPairConfig['privateKey'];
-            }
+        $paylaterInstallmentKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_INSTALLMENT);
 
-            if ($keyPairConfig['privateKey'] === $key) {
-                return $keyPairConfig['publicKey'];
+        if (is_array($paylaterInstallmentKeys)) {
+            foreach ($paylaterInstallmentKeys as $keyPairConfig) {
+                if ($keyPairConfig['publicKey'] === $key) {
+                    return $keyPairConfig['privateKey'];
+                }
+
+                if ($keyPairConfig['privateKey'] === $key) {
+                    return $keyPairConfig['publicKey'];
+                }
+            }
+        }
+
+        $paylaterDirectDebitSecuredKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_DIRECT_DEBIT_SECURED);
+
+        if (is_array($paylaterDirectDebitSecuredKeys)) {
+            foreach ($paylaterDirectDebitSecuredKeys as $keyPairConfig) {
+                if ($keyPairConfig['publicKey'] === $key) {
+                    return $keyPairConfig['privateKey'];
+                }
+
+                if ($keyPairConfig['privateKey'] === $key) {
+                    return $keyPairConfig['publicKey'];
+                }
             }
         }
 
@@ -71,6 +93,8 @@ class KeyPairConfigReader
             $configKey = ConfigReader::CONFIG_KEY_PAYLATER_INSTALLMENT;
         } elseif ($keyPairContext->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE) {
             $configKey = ConfigReader::CONFIG_KEY_PAYLATER_INVOICE;
+        } elseif ($keyPairContext->getPaymentMethodId() === PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED) {
+            $configKey = ConfigReader::CONFIG_KEY_PAYLATER_DIRECT_DEBIT_SECURED;
         }
 
         if (!isset($configKey)) {

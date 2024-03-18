@@ -19,6 +19,12 @@ use UnzerSDK\Resources\TransactionTypes\Cancellation;
 
 class CancelService implements CancelServiceInterface
 {
+    private const PAYLATER_PAYMENT_METHODS = [
+        PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE,
+        PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT,
+        PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
+    ];
+
     private EntityRepository $orderTransactionRepository;
 
     private ClientFactoryInterface $clientFactory;
@@ -132,6 +138,6 @@ class CancelService implements CancelServiceInterface
 
     protected function isPaylaterPaymentMethod(string $paymentMethodId): bool
     {
-        return in_array($paymentMethodId, [PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE, PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT]);
+        return in_array($paymentMethodId, self::PAYLATER_PAYMENT_METHODS);
     }
 }
