@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelEntityIdSearchResultLoadedEvent;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelEntitySearchResultLoadedEvent;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -45,8 +46,18 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
         $salesChannelContext = $event->getSalesChannelContext();
 
         if (!$this->isConfigurationValid($salesChannelContext->getSalesChannel()->getId())) {
-            $this->removePaymentMethodsFromIdResult($result);
+            $this->removePaymentMethodsFromIdResult($result, PaymentInstaller::PAYMENT_METHOD_IDS);
+
+            return;
         }
+
+        $blockedPaymentMethods = $this->getBlockedPaymentMethods($salesChannelContext);
+
+        if ($blockedPaymentMethods === []) {
+            return;
+        }
+
+        $this->removePaymentMethodsFromIdResult($result, $blockedPaymentMethods);
     }
 
     public function onSalesChannelSearchResultLoaded(SalesChannelEntitySearchResultLoadedEvent $event): void
@@ -55,8 +66,18 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
         $salesChannelContext = $event->getSalesChannelContext();
 
         if (!$this->isConfigurationValid($salesChannelContext->getSalesChannel()->getId())) {
-            $this->removePaymentMethodsFromResult($result);
+            $this->removePaymentMethodsFromResult($result, PaymentInstaller::PAYMENT_METHOD_IDS);
+
+            return;
         }
+
+        $blockedPaymentMethods = $this->getBlockedPaymentMethods($salesChannelContext);
+
+        if ($blockedPaymentMethods === []) {
+            return;
+        }
+
+        $this->removePaymentMethodsFromResult($result, $blockedPaymentMethods);
     }
 
     public function onAccountEditOrderPageLoaded(AccountEditOrderPageLoadedEvent $pageLoadedEvent): void
@@ -96,10 +117,10 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
         }
     }
 
-    protected function removePaymentMethodsFromIdResult(IdSearchResult $result): void
+    protected function removePaymentMethodsFromIdResult(IdSearchResult $result, array $paymentIdsToBeRemoved): void
     {
-        $filteredPaymentMethods = array_filter($result->getIds(), static function ($paymentMethod) {
-            return !in_array($paymentMethod, PaymentInstaller::PAYMENT_METHOD_IDS, true);
+        $filteredPaymentMethods = array_filter($result->getIds(), static function ($paymentMethod) use ($paymentIdsToBeRemoved) {
+            return !in_array($paymentMethod, $paymentIdsToBeRemoved, true);
         });
 
         $result->assign([
@@ -110,10 +131,10 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
         ]);
     }
 
-    protected function removePaymentMethodsFromResult(EntitySearchResult $result): void
+    protected function removePaymentMethodsFromResult(EntitySearchResult $result, array $paymentIdsToBeRemoved): void
     {
-        $filteredResult = $result->getEntities()->filter(static function (PaymentMethodEntity $entity) {
-            return !in_array($entity->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true);
+        $filteredResult = $result->getEntities()->filter(static function (PaymentMethodEntity $entity) use ($paymentIdsToBeRemoved) {
+            return !in_array($entity->getId(), $paymentIdsToBeRemoved, true);
         });
 
         $result->assign([
@@ -136,5 +157,34 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
         $roundedAmountTotal = (int) round($totalAmount * (10 ** $currencyPrecision));
 
         return $roundedAmountTotal <= 0;
+    }
+
+    protected function getBlockedPaymentMethods(SalesChannelContext $salesChannelContext): array
+    {
+        $paymentMethodIdsToBeRemoved = [];
+
+        if ($salesChannelContext->getCurrency()->getIsoCode() !== 'EUR') {
+            $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED;
+        }
+
+        $customer = $salesChannelContext->getCustomer();
+
+        if ($customer === null) {
+            return $paymentMethodIdsToBeRemoved;
+        }
+
+        $billingAddress = $customer->getActiveBillingAddress();
+
+        if ($billingAddress === null) {
+            return $paymentMethodIdsToBeRemoved;
+        }
+
+        $invoiceCountry = $billingAddress->getCountry();
+
+        if ($invoiceCountry !== null && $invoiceCountry->getIso() !== 'DE' && $invoiceCountry->getIso() !== 'AT') {
+            $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED;
+        }
+
+        return $paymentMethodIdsToBeRemoved;
     }
 }
