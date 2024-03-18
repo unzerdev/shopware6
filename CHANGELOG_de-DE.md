@@ -3,6 +3,9 @@
 * Änderung an dem Veröffentlichungsprozess zur Erstellung einer Plugin-Version, die mit Shopware 6.4 und Shopware 6.5 kompatibel ist
 * Korrektur für die Versandmitteilung von Zahlungen mit "Rechnungskauf Gesichert (Veraltet)"
 
+# 5.6.1
+* Dekoration des CheckoutController für die Kompatibilität zu anderen Plugins angepasst
+
 # 5.6.0
 * Paylater Ratenzahlung als weitere Zahlungsart hinzugefügt
 * Bisherige Ratenzahlung als veraltet markiert
@@ -26,7 +29,7 @@
 
 # 5.4.0
 * Entfernung der Einstellungen für die Registrierung von Zahlungsdaten aus der Plugin-Konfiguration
-* Ergänzung und Anpassung der Registrierung von Zahlungsdaten im Checkout 
+* Ergänzung und Anpassung der Registrierung von Zahlungsdaten im Checkout
 
 # 5.3.0
 * Korrektur der Namen für die Routen im Frontend
@@ -65,7 +68,7 @@
 
 # 3.2.0
 * Korrektur der Validierung der AGB-Checkbox im Checkout mit Unzer Zahlungsarten
-* Korrektur der Fehler-Logik innerhalb der Zahlungsarten, um das Shopware-Standard-Handling aufzugreifen 
+* Korrektur der Fehler-Logik innerhalb der Zahlungsarten, um das Shopware-Standard-Handling aufzugreifen
 * Kompatibilität zu Shopware 6.4.10.0 hergestellt
 
 # 3.1.0
