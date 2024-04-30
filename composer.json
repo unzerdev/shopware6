@@ -1,24 +1,27 @@
 {
     "name": "unzerdev/shopware6",
     "description": "Unzer payment integration for Shopware 6",
-    "version": "5.7.0",
+    "version": "5.7.1",
     "type": "shopware-platform-plugin",
     "license": "Apache-2.0",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [
         {
-            "name": "Unzer GmbH, Kellerkinder GmbH",
+            "name": "Unzer GmbH",
             "email": "info@unzer.com",
             "homepage": "https://www.unzer.com"
         }
     ],
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/runtime": true
+        }
     },
     "require": {
-        "php": ">=7.4 || <=8.2",
-        "unzerdev/php-sdk": "~3.4.0",
+        "php": ">=7.4 || <=8.3",
+        "unzerdev/php-sdk": "~3.6.0",
         "shopware/core": "~6.4.0 || ~6.5.0",
         "shopware/administration": "~6.4.0 || ~6.5.0",
         "shopware/storefront": "~6.4.0 || ~6.5.0"

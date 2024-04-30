@@ -88,6 +88,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_ALIPAY,
             'handlerIdentifier' => UnzerAlipayPaymentHandler::class,
             'name'              => 'Alipay',
+            'technicalName' => 'unzer_alipay',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Alipay',
@@ -103,6 +104,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_FLEXIPAY,
             'handlerIdentifier' => UnzerPisPaymentHandler::class,
             'name'              => 'Bank Transfer (Deprecated)',
+            'technicalName' => 'unzer_banktransfer_deorecated',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Bank Transfer (Veraltet)',
@@ -118,6 +120,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_CREDIT_CARD,
             'handlerIdentifier' => UnzerCreditCardPaymentHandler::class,
             'name'              => 'Credit card',
+            'technicalName' => 'unzer_creditcard',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Kreditkarte',
@@ -133,6 +136,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_EPS,
             'handlerIdentifier' => UnzerEpsPaymentHandler::class,
             'name'              => 'EPS',
+            'technicalName' => 'unzer_eps',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'EPS',
@@ -148,6 +152,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_GIROPAY,
             'handlerIdentifier' => UnzerGiropayPaymentHandler::class,
             'name'              => 'Giropay',
+            'technicalName' => 'unzer_giropay',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Giropay',
@@ -163,6 +168,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_IDEAL,
             'handlerIdentifier' => UnzerIdealPaymentHandler::class,
             'name'              => 'iDEAL',
+            'technicalName' => 'unzer_ideal',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'iDEAL',
@@ -178,6 +184,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_INVOICE,
             'handlerIdentifier' => UnzerInvoicePaymentHandler::class,
             'name'              => 'Invoice (Deprecated)',
+            'technicalName' => 'unzer_invoice_deprecated',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Rechnungskauf (Veraltet)',
@@ -193,6 +200,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_INVOICE_SECURED,
             'handlerIdentifier' => UnzerInvoiceSecuredPaymentHandler::class,
             'name'              => 'Invoice Secured (Deprecated)',
+            'technicalName' => 'unzer_invoicesecured_deprecated',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Rechnungskauf Gesichert (Veraltet)',
@@ -208,6 +216,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_INSTALLMENT_SECURED,
             'handlerIdentifier' => UnzerInstallmentSecuredPaymentHandler::class,
             'name'              => 'Installment (Deprecated)',
+            'technicalName' => 'unzer_installment_deprecated',
             'active'            => false,
             'translations'      => [
                 'de-DE' => [
@@ -224,6 +233,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_PAYLATER_INSTALLMENT,
             'handlerIdentifier' => UnzerPaylaterInstallmentPaymentHandler::class,
             'name'              => 'Installment',
+            'technicalName' => 'unzer_installment',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Ratenkauf',
@@ -239,6 +249,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
             'handlerIdentifier' => UnzerPaylaterDirectDebitSecuredPaymentHandler::class,
             'name'              => 'Direct Debit',
+            'technicalName' => 'unzer_directdebit',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Lastschrift',
@@ -254,6 +265,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_PAYPAL,
             'handlerIdentifier' => UnzerPayPalPaymentHandler::class,
             'name'              => 'PayPal',
+            'technicalName' => 'unzer_paypal',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'PayPal',
@@ -269,6 +281,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_PRE_PAYMENT,
             'handlerIdentifier' => UnzerPrePaymentPaymentHandler::class,
             'name'              => 'Prepayment',
+            'technicalName' => 'unzer_prepayment',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Vorkasse',
@@ -284,6 +297,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_PRZELEWY24,
             'handlerIdentifier' => UnzerPrzelewyHandler::class,
             'name'              => 'Przelewy24',
+            'technicalName' => 'unzer_przelewy24',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Przelewy24',
@@ -299,6 +313,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
             'handlerIdentifier' => UnzerDirectDebitPaymentHandler::class,
             'name'              => 'SEPA Direct Debit',
+            'technicalName' => 'unzer_directdebitsecured',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'SEPA Lastschrift',
@@ -314,6 +329,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT_SECURED,
             'handlerIdentifier' => UnzerDirectDebitSecuredPaymentHandler::class,
             'name'              => 'SEPA Direct Debit Secured (Deprecated)',
+            'technicalName' => 'unzer_directdebitsecured_deprecated',
             'active'            => false,
             'translations'      => [
                 'de-DE' => [
@@ -330,6 +346,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_SOFORT,
             'handlerIdentifier' => UnzerSofortPaymentHandler::class,
             'name'              => 'Sofort',
+            'technicalName' => 'unzer_sofort',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Sofort',
@@ -345,6 +362,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_WE_CHAT,
             'handlerIdentifier' => UnzerWeChatPaymentHandler::class,
             'name'              => 'WeChat',
+            'technicalName' => 'unzer_wechatpay',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'WeChat',
@@ -360,6 +378,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_BANCONTACT,
             'handlerIdentifier' => UnzerBancontactHandler::class,
             'name'              => 'Bancontact',
+            'technicalName' => 'unzer_bancontact',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Bancontact',
@@ -375,6 +394,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_PAYLATER_INVOICE,
             'handlerIdentifier' => UnzerPaylaterInvoicePaymentHandler::class,
             'name'              => 'Invoice',
+            'technicalName' => 'unzer_invoice',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Rechnungskauf',
@@ -390,6 +410,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_APPLE_PAY,
             'handlerIdentifier' => UnzerApplePayPaymentHandler::class,
             'name'              => 'Apple Pay',
+            'technicalName' => 'unzer_applepay',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Apple Pay',
@@ -496,6 +517,12 @@ class PaymentInstaller implements InstallerInterface
                 $paymentMethod['pluginId'] = $pluginId;
 
                 $this->paymentMethodRepository->upsert([$paymentMethod], $context->getContext());
+            } else {
+                $upsertPayload = [
+                    'id'     => $paymentMethod['id'],
+                    'technicalName' => $paymentMethod['technicalName']
+                ];
+                $this->paymentMethodRepository->upsert([$upsertPayload], $context->getContext());
             }
         }
     }
