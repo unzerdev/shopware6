@@ -33,6 +33,9 @@
     width: 90%;
     display: inline-block;
     margin-left: 8px;
+    @media screen and (max-width: 339px) {
+      width: calc(90% - 10px);
+    }
 }
 
 .unzer-payment-loader {
