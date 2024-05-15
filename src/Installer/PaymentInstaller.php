@@ -249,7 +249,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
             'handlerIdentifier' => UnzerPaylaterDirectDebitSecuredPaymentHandler::class,
             'name'              => 'Direct Debit',
-            'technicalName' => 'unzer_directdebit',
+            'technicalName' => 'unzer_directdebitsecured',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'Lastschrift',
@@ -313,7 +313,7 @@ class PaymentInstaller implements InstallerInterface
             'id'                => self::PAYMENT_ID_DIRECT_DEBIT,
             'handlerIdentifier' => UnzerDirectDebitPaymentHandler::class,
             'name'              => 'SEPA Direct Debit',
-            'technicalName' => 'unzer_directdebitsecured',
+            'technicalName' => 'unzer_directdebit',
             'translations'      => [
                 'de-DE' => [
                     'name'        => 'SEPA Lastschrift',
