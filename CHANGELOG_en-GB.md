@@ -1,3 +1,9 @@
+# 5.7.1
+* Added compatability for PHP 8.3
+* Removed Kellerkinder name from the plugin and payment method descriptions
+* Added the Technical names for the payment methods
+* Fixed the card number field for mobile devices
+
 # 5.7.0
 * Add Direct Debit as new payment method
 * Changed the release process for building one plugin version that is compatible with Shopware 6.4 and Shopware 6.5
