@@ -1,3 +1,9 @@
+# 5.7.1
+* Kompatibilität zu PHP 8.3 hergestellt
+* Kellerkinder Name entfernt von Plugin und Zahlungsartbeschreibung
+* Technical Names für Zahlungsarten hinzugefügt
+* Korrektur des Kartennummernfeldes für mobile Endgeräte
+
 # 5.7.0
 * Lastschrift als weitere Zahlungsart hinzugefügt
 * Änderung an dem Veröffentlichungsprozess zur Erstellung einer Plugin-Version, die mit Shopware 6.4 und Shopware 6.5 kompatibel ist

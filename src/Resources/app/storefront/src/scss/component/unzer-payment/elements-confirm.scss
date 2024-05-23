@@ -28,11 +28,13 @@
 #unzer-payment-credit-card-icon {
     float: left;
 }
-
+#unzer-payment-credit-card-number {
+    display:  flex;
+    flex-direction: row;
+}
 #unzer-payment-credit-card-number-input {
-    width: 90%;
-    display: inline-block;
-    margin-left: 8px;
+    width: unset;
+    flex: 1;
 }
 
 .unzer-payment-loader {
