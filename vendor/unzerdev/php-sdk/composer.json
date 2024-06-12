@@ -1,0 +1,31 @@
+{
+  "name": "unzerdev/php-sdk",
+  "description": "This is the php sdk to connect to the Unzer rest API.",
+  "minimum-stability": "stable",
+  "license": "Apache-2.0",
+  "require": {
+    "php": "~7.4.0|~8.0.0|~8.1.0|~8.2.0|~8.3.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": ">6.5 <10.0",
+    "friendsofphp/php-cs-fixer": "^3.0"
+  },
+  "suggest": {
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "UnzerSDK\\": "src",
+      "UnzerSDK\\examples\\": "examples"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "UnzerSDK\\test\\": "test"
+    }
+  },
+  "support": {
+    "email": "support@unzer.com"
+  }
+}

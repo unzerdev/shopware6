@@ -1,0 +1,17 @@
+# Trigger security scans in Checkmarx
+
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore: [ '.github/**', 'docs/**', 'tools/**', 'README.md', 'test/**', 'examples/**' ]
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  security-scan:
+    uses: unzerdev/unzer-tech-toolbox/.github/workflows/security-scan.yaml@main
+    secrets:
+      CX_CLIENT_ID: ${{ secrets.CX_CONN_EXT_CLIENT_ID }}
+      CX_CLIENT_SECRET: ${{ secrets.CX_CONN_EXT_CLIENT_SECRET }}

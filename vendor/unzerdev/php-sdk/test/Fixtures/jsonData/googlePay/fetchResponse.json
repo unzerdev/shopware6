@@ -1,0 +1,16 @@
+{
+  "id": "s-gop-q0nucec6itwe",
+  "method": "card",
+  "recurring": false,
+  "geoLocation": {
+    "clientIp": "0:0:0:0:0:0:0:1",
+    "countryIsoA2": ""
+  },
+  "number": "518834******0003",
+  "expiryDate": "10/2025",
+  "processing": {
+    "uniqueId": "31HA07BC8127DC45EE6946C3B070FF71",
+    "shortId": "5550.0369.6888",
+    "traceId": "24c0a2ecbe3d54a838c76444d4bdcd1f"
+  }
+}

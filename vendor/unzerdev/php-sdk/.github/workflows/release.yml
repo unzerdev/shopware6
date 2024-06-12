@@ -1,0 +1,47 @@
+name: Release
+on:
+  release:
+    types: [ published ]
+jobs:
+  send-email:
+    name: Send release Email
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Decode configuration
+        env:
+          CONFIG: ${{ secrets.RELEASE_AUTOMATOR_BASE64_CONFIG }}
+        run: |
+          echo $CONFIG | base64 --decode > release.yaml
+      - name: Run release-automator
+        uses: unzerdev/unzer-tech-toolbox/.github/actions/release-changelog@main
+        with:
+          command: mail
+          version: ${{github.ref_name}}
+
+  generate-tweet:
+    name: Generate tweet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Decode configuration
+        env:
+          CONFIG: ${{ secrets.RELEASE_AUTOMATOR_BASE64_CONFIG }}
+        run: |
+          echo $CONFIG | base64 --decode > release.yaml
+      - name: Run release-automator
+        uses: unzerdev/unzer-tech-toolbox/.github/actions/release-changelog@main
+        with:
+          command: tweet
+          version: ${{github.ref_name}}
+      - name: Copy out tweet file
+        run: |
+          sudo cp target/tweet.txt tweet.txt
+      - name: Attach release notes
+        uses: actions/upload-artifact@v3
+        with:
+          name: tweet
+          path: tweet.txt
+          retention-days: 5

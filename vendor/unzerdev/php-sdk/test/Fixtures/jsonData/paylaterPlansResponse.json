@@ -1,0 +1,277 @@
+{
+  "id": "Tx-xyz",
+  "amount": "99.99",
+  "currency": "EUR",
+  "plans": [
+    {
+      "numberOfRates": 3,
+      "totalAmount": "101.31",
+      "nominalInterestRate": 9.95,
+      "effectiveInterestRate": 10.43,
+      "minimumInstallmentFee": "0.00",
+      "secciUrl": "https://test-payment.paylater.unzer.com/payolution-payment/infoport/creditagreementdraft/Tx-xyz?duration=3",
+      "installmentRates": [
+        {
+          "date": "2023-06-20",
+          "rate": "33.77"
+        },
+        {
+          "date": "2023-07-20",
+          "rate": "33.77"
+        },
+        {
+          "date": "2023-08-20",
+          "rate": "33.77"
+        }
+      ]
+    },
+    {
+      "numberOfRates": 6,
+      "totalAmount": "102.60",
+      "nominalInterestRate": 9.95,
+      "effectiveInterestRate": 10.53,
+      "minimumInstallmentFee": "0.00",
+      "secciUrl": "https://test-payment.paylater.unzer.com/payolution-payment/infoport/creditagreementdraft/Tx-xyz?duration=6",
+      "installmentRates": [
+        {
+          "date": "2023-06-20",
+          "rate": "17.10"
+        },
+        {
+          "date": "2023-07-20",
+          "rate": "17.10"
+        },
+        {
+          "date": "2023-08-20",
+          "rate": "17.10"
+        },
+        {
+          "date": "2023-09-20",
+          "rate": "17.10"
+        },
+        {
+          "date": "2023-10-20",
+          "rate": "17.10"
+        },
+        {
+          "date": "2023-11-20",
+          "rate": "17.10"
+        }
+      ]
+    },
+    {
+      "numberOfRates": 9,
+      "totalAmount": "103.86",
+      "nominalInterestRate": 9.95,
+      "effectiveInterestRate": 10.46,
+      "minimumInstallmentFee": "0.00",
+      "secciUrl": "https://test-payment.paylater.unzer.com/payolution-payment/infoport/creditagreementdraft/Tx-xyz?duration=9",
+      "installmentRates": [
+        {
+          "date": "2023-06-20",
+          "rate": "11.54"
+        },
+        {
+          "date": "2023-07-20",
+          "rate": "11.54"
+        },
+        {
+          "date": "2023-08-20",
+          "rate": "11.54"
+        },
+        {
+          "date": "2023-09-20",
+          "rate": "11.54"
+        },
+        {
+          "date": "2023-10-20",
+          "rate": "11.54"
+        },
+        {
+          "date": "2023-11-20",
+          "rate": "11.54"
+        },
+        {
+          "date": "2023-12-20",
+          "rate": "11.54"
+        },
+        {
+          "date": "2024-01-20",
+          "rate": "11.54"
+        },
+        {
+          "date": "2024-02-20",
+          "rate": "11.54"
+        }
+      ]
+    },
+    {
+      "numberOfRates": 12,
+      "totalAmount": "105.12",
+      "nominalInterestRate": 9.95,
+      "effectiveInterestRate": 10.41,
+      "minimumInstallmentFee": "0.00",
+      "secciUrl": "https://test-payment.paylater.unzer.com/payolution-payment/infoport/creditagreementdraft/Tx-xyz?duration=12",
+      "installmentRates": [
+        {
+          "date": "2023-06-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2023-07-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2023-08-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2023-09-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2023-10-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2023-11-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2023-12-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2024-01-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2024-02-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2024-03-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2024-04-20",
+          "rate": "8.76"
+        },
+        {
+          "date": "2024-05-20",
+          "rate": "8.76"
+        }
+      ]
+    },
+    {
+      "numberOfRates": 24,
+      "totalAmount": "110.40",
+      "nominalInterestRate": 9.95,
+      "effectiveInterestRate": 10.48,
+      "minimumInstallmentFee": "0.00",
+      "secciUrl": "https://test-payment.paylater.unzer.com/payolution-payment/infoport/creditagreementdraft/Tx-xyz?duration=24",
+      "installmentRates": [
+        {
+          "date": "2023-06-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2023-07-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2023-08-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2023-09-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2023-10-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2023-11-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2023-12-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-01-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-02-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-03-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-04-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-05-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-06-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-07-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-08-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-09-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-10-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-11-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2024-12-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2025-01-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2025-02-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2025-03-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2025-04-20",
+          "rate": "4.60"
+        },
+        {
+          "date": "2025-05-20",
+          "rate": "4.60"
+        }
+      ]
+    }
+  ],
+  "isSuccess": true,
+  "isPending": false,
+  "isResumed": false,
+  "isError": false
+}

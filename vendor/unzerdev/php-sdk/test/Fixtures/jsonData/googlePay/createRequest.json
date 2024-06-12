@@ -1,0 +1,18 @@
+{
+  "protocolVersion": "ECv2",
+  "signature": "signature-xyz\u003d",
+  "intermediateSigningKey": {
+    "signedKey": {
+      "keyExpiration": "1542394027316",
+      "keyValue": "key-value-xyz\\u003d\\u003d\"}"
+    },
+    "signatures": [
+      "signature1"
+    ]
+  },
+  "signedMessage": {
+    "tag": "001 Cryptogram 3ds",
+    "ephemeralPublicKey": "ephemeralPublicKey-xyz\\u003d\"",
+    "encryptedMessage": "encryptedMessage-xyz\""
+  }
+}

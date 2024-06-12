@@ -1,0 +1,9 @@
+exclude_paths:
+  - test/**
+  - examples/**
+  - vendor/**
+  - build/**
+
+engines:
+  coverage:
+    enabled: true

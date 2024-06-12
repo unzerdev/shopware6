@@ -1,0 +1,15 @@
+name: Validate Pull-Request
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+
+jobs:
+  validate_pr:
+    uses: unzerdev/unzer-tech-toolbox/.github/workflows/validate-pull-request.yaml@main
+    with:
+      jira_alias: ${{ vars.JIRA_ALIAS }}

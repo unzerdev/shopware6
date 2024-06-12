@@ -1,0 +1,12 @@
+{
+  "id": "s-sft-123",
+  "method": "sofort",
+  "recurring": false,
+  "geoLocation": {
+    "clientIp": "111.111.111.111",
+    "countryIsoA2": "DE"
+  },
+  "iban": "DE-IBAN",
+  "bic": "test-bin",
+  "holder": "holder"
+}

@@ -5,7 +5,6 @@
 cypress.json
 node_modules
 package-lock.json
-vendor
 /src/Resources/public/administration/*.hot-update.js
 /src/Resources/public/administration/css/
 /src/Resources/public/administration/js/

@@ -1,0 +1,41 @@
+language: php
+matrix:
+  fast_finish: true
+  include:
+    - name: "php 7.1 (install) - unit"
+      php: 7.1
+      env:
+        - DEPS=NO
+        - LEVEL=UNIT
+    - name: "php 7.1 (install) - integration"
+      php: 7.1
+      env:
+        - DEPS=NO
+        - LEVEL=INTEGRATION
+    - name: "php 7.2 (install) - unit"
+      php: 7.2
+      env:
+        - DEPS=NO
+        - LEVEL=UNIT
+    - name: "php 7.3 (install) - unit"
+      php: 7.3
+      env:
+        - DEPS=NO
+        - LEVEL=UNIT
+    - name: "php 7.4 (install) - unit"
+      php: 7.4
+      env:
+        - DEPS=NO
+        - LEVEL=UNIT
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.local
+before_install:
+    - ./test/script/travis_before_install.sh
+install:
+    - ./test/script/travis_install.sh
+script:
+    - ./test/script/travis_script.sh
+after_success:
+    - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l PHP -r build/coverage/xml

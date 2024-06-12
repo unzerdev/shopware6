@@ -1,0 +1,33 @@
+{
+  "id": "s-cbk-1",
+  "isSuccess": true,
+  "isPending": false,
+  "isResumed": false,
+  "isError": false,
+  "card3ds": true,
+  "redirectUrl": "",
+  "message": {
+    "code": "COR.000.100.200",
+    "merchant": "Transaction succeeded",
+    "customer": "Your payments have been successfully processed."
+  },
+  "amount": "119.0000",
+  "currency": "EUR",
+  "date": "2023-02-28 08:00:00",
+  "resources": {
+    "customerId": "",
+    "paymentId": "s-pay-123",
+    "basketId": "",
+    "metadataId": "",
+    "payPageId": "",
+    "traceId": "trace-123",
+    "typeId": "s-crd-123"
+  },
+  "paymentReference": "",
+  "processing": {
+    "uniqueId": "31HA0xyz",
+    "shortId": "1234.1234.1234",
+    "3dsEci": "3DS_SUCCESS",
+    "traceId": "trace-123"
+  }
+}

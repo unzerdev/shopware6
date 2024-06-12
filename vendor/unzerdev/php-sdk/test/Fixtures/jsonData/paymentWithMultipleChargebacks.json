@@ -1,0 +1,51 @@
+{
+  "id": "s-pay-123",
+  "state": {
+    "id": 5,
+    "name": "chargeback"
+  },
+  "amount": {
+    "total": "1.0000",
+    "charged": "0.0000",
+    "canceled": "1.0000",
+    "remaining": "0.0000"
+  },
+  "currency": "EUR",
+  "transactions": [
+    {
+      "date": "2023-08-01 13:37:21",
+      "type": "authorize",
+      "status": "success",
+      "url": "https://api.unzer.com/v1/payments/s-pay-123/authorize/s-aut-1",
+      "amount": "1.0000"
+    },
+    {
+      "date": "2023-08-01 13:56:05",
+      "type": "charge",
+      "status": "success",
+      "url": "https://api.unzer.com/v1/payments/s-pay-123/charges/s-chg-1",
+      "amount": "0.5000"
+    },
+    {
+      "date": "2023-08-01 13:56:05",
+      "type": "charge",
+      "status": "success",
+      "url": "https://api.unzer.com/v1/payments/s-pay-123/charges/s-chg-2",
+      "amount": "0.5000"
+    },
+    {
+      "date": "2023-08-01 13:57:15",
+      "type": "chargeback",
+      "status": "success",
+      "url": "https://api.unzer.com/v1/payments/s-pay-123/charges/s-chg-1/chargebacks/s-cbk-1",
+      "amount": "0.5000"
+    },
+    {
+      "date": "2023-08-01 13:57:36",
+      "type": "chargeback",
+      "status": "success",
+      "url": "https://api.unzer.com/v1/payments/s-pay-123/charges/s-chg-2/chargebacks/s-cbk-1",
+      "amount": "0.5000"
+    }
+  ]
+}
