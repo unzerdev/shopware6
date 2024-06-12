@@ -51,6 +51,7 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             isRegistrationSuccessful: false,
             isDataLoading: false,
             selection: {},
+            selectedDomain:null,
             entitySelection: {},
             salesChannels: {}
         };
@@ -128,6 +129,7 @@ Shopware.Component.register('unzer-payment-register-webhook', {
 
 
         onSelectItem(domainId, domain) {
+            console.log(domainId, domain);
             if (!domain) {
                 return;
             }

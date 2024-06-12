@@ -17,24 +17,20 @@ Component.register('unzer-payment-basket', {
             const data = [];
 
             this.paymentResource.basket.basketItems.forEach((basketItem) => {
-                let amountGross = this.$options.filters.currency(
-                    parseFloat(basketItem.amountGross.toFixed(2)),
-                    this.paymentResource.currency
+                let amountGross = this.formatCurrency(
+                    parseFloat(basketItem.amountGross.toFixed(2))
                 );
-                let amountNet = this.$options.filters.currency(
-                    parseFloat(basketItem.amountNet.toFixed(2)),
-                    this.paymentResource.currency
+                let amountNet = this.formatCurrency(
+                    parseFloat(basketItem.amountNet.toFixed(2))
                 );
 
                 if (basketItem.amountDiscount > 0) {
-                    amountGross = this.$options.filters.currency(
-                        parseFloat(basketItem.amountDiscount.toFixed(2)) * -1,
-                        this.paymentResource.currency
+                    amountGross = this.formatCurrency(
+                        parseFloat(basketItem.amountDiscount.toFixed(2)) * -1
                     );
 
-                    amountNet = this.$options.filters.currency(
-                        parseFloat((basketItem.amountDiscount - basketItem.amountVat).toFixed(2)) * -1,
-                        this.paymentResource.currency
+                    amountNet = this.formatCurrency(
+                        parseFloat((basketItem.amountDiscount - basketItem.amountVat).toFixed(2)) * -1
                     );
                 }
 
@@ -73,5 +69,15 @@ Component.register('unzer-payment-basket', {
                 }
             ];
         }
+    },
+    methods:{
+
+    formatCurrency(value) {
+        return Shopware.Utils.format.currency(
+            value || 0.0,
+            this.paymentResource.currency
+        );
+    }
+
     }
 });

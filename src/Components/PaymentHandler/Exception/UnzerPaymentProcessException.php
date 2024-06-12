@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler\Exception;
 
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
+use Symfony\Component\HttpFoundation\Response;
 use UnzerSDK\Exceptions\UnzerApiException;
 
-class UnzerPaymentProcessException extends AsyncPaymentProcessException
+class UnzerPaymentProcessException extends PaymentException
 {
     /** @var string */
-    protected $orderId;
+    protected string $orderId;
 
     /** @var UnzerApiException */
     protected $originalException;
@@ -21,8 +22,13 @@ class UnzerPaymentProcessException extends AsyncPaymentProcessException
         $this->originalException = $apiException;
 
         parent::__construct(
-            $orderTransactionId,
-            $apiException->getMerchantMessage()
+            Response::HTTP_BAD_REQUEST,
+            self::PAYMENT_ASYNC_PROCESS_INTERRUPTED,
+            'The asynchronous payment process was interrupted due to the following error:' . \PHP_EOL . '{{ errorMessage }}',
+            [
+                'errorMessage' => $apiException->getMerchantMessage(),
+                'orderTransactionId' => $orderTransactionId,
+            ]
         );
     }
 

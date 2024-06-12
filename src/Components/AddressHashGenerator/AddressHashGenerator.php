@@ -8,29 +8,26 @@ use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEnt
 
 class AddressHashGenerator implements AddressHashGeneratorInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function generateHash(CustomerAddressEntity $billingAddress, CustomerAddressEntity $shippingAddress): string
     {
         $data = [
             'billing' => [
                 'countryId' => $billingAddress->getCountryId(),
                 'firstName' => $billingAddress->getFirstName(),
-                'lastName'  => $billingAddress->getLastName(),
-                'zipCode'   => $billingAddress->getZipcode(),
-                'city'      => $billingAddress->getCity(),
-                'street'    => $billingAddress->getStreet(),
-                'company'   => $billingAddress->getCompany(),
+                'lastName' => $billingAddress->getLastName(),
+                'zipCode' => $billingAddress->getZipcode(),
+                'city' => $billingAddress->getCity(),
+                'street' => $billingAddress->getStreet(),
+                'company' => $billingAddress->getCompany(),
             ],
             'shipping' => [
                 'countryId' => $shippingAddress->getCountryId(),
                 'firstName' => $shippingAddress->getFirstName(),
-                'lastName'  => $shippingAddress->getLastName(),
-                'zipCode'   => $shippingAddress->getZipcode(),
-                'city'      => $shippingAddress->getCity(),
-                'street'    => $shippingAddress->getStreet(),
-                'company'   => $shippingAddress->getCompany(),
+                'lastName' => $shippingAddress->getLastName(),
+                'zipCode' => $shippingAddress->getZipcode(),
+                'city' => $shippingAddress->getCity(),
+                'street' => $shippingAddress->getStreet(),
+                'company' => $shippingAddress->getCompany(),
             ],
         ];
 

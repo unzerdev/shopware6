@@ -32,7 +32,7 @@
                                 >
                                     <p>
                                         {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.text') }}<br/>
-                                        {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.amountLabel') }} {{ cancelAmount|currency }}
+                                        {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.amountLabel') }} {{ formatCurrency(cancelAmount) }}
                                     </p>
 
                                     <template #modal-footer>

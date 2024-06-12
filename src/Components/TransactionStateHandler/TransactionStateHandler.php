@@ -20,23 +20,11 @@ use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 
 class TransactionStateHandler implements TransactionStateHandlerInterface
 {
-    /** @var StateMachineRegistry */
-    private $stateMachineRegistry;
-
-    /** @var PaymentTransitionMapperFactory */
-    private $transitionMapperFactory;
-
-    /** @var LoggerInterface */
-    private $logger;
-
     public function __construct(
-        StateMachineRegistry $stateMachineRegistry,
-        PaymentTransitionMapperFactory $transitionMapperFactory,
-        LoggerInterface $logger
+        private readonly StateMachineRegistry $stateMachineRegistry,
+        private readonly PaymentTransitionMapperFactory $transitionMapperFactory,
+        private readonly LoggerInterface $logger
     ) {
-        $this->stateMachineRegistry    = $stateMachineRegistry;
-        $this->transitionMapperFactory = $transitionMapperFactory;
-        $this->logger                  = $logger;
     }
 
     /**

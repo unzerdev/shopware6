@@ -1,3 +1,6 @@
+# 6.0.0
+* Kompatibilität shopware 6.6
+
 # 5.7.1
 * Kompatibilität zu PHP 8.3 hergestellt
 * Kellerkinder Name entfernt von Plugin und Zahlungsartbeschreibung

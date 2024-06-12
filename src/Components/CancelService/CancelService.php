@@ -6,7 +6,7 @@ namespace UnzerPayment6\Components\CancelService;
 
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -47,7 +47,7 @@ class CancelService implements CancelServiceInterface
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
         if ($transaction === null || $transaction->getOrder() === null) {
-            throw new InvalidTransactionException($orderTransactionId);
+            throw PaymentException::invalidTransaction($orderTransactionId);
         }
 
         if ($transaction->getOrder()->getCurrency()) {
@@ -103,7 +103,7 @@ class CancelService implements CancelServiceInterface
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
         if ($transaction === null || $transaction->getOrder() === null) {
-            throw new InvalidTransactionException($orderTransactionId);
+            throw PaymentException::invalidTransaction($orderTransactionId);
         }
 
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));

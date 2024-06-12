@@ -87,12 +87,14 @@
                             <sw-text-field
                                 :label="$tc('unzer-payment-settings.form.publicKey')"
                                 class="sw-field sw-block-field"
-                                v-model="keyPairSetting.publicKey"
+                                :value="keyPairSetting.publicKey"
+                                @update:value="setPublicKey(keyPairSetting, $event)"
                             ></sw-text-field>
                             <sw-text-field
                                 :label="$tc('unzer-payment-settings.form.privateKey')"
                                 class="sw-field sw-block-field"
-                                v-model="keyPairSetting.privateKey"
+                                :value="keyPairSetting.privateKey"
+                                @update:value="setPrivateKey(keyPairSetting, $event)"
                             ></sw-text-field>
 
                             <template #footer>

@@ -10,14 +10,22 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
+use UnzerPayment6\Components\BookingMode;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
+use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerSDK\Exceptions\UnzerApiException;
-use UnzerSDK\Resources\PaymentTypes\Giropay;
+use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
+use UnzerSDK\Resources\PaymentTypes\Card;
 
-class UnzerGiropayPaymentHandler extends AbstractUnzerPaymentHandler
+class UnzerGooglePayPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use CanCharge;
+    use CanAuthorize;
+
+    /** @var BasePaymentType|Card */
+    protected $paymentType;
 
     /**
      * {@inheritdoc}
@@ -30,10 +38,16 @@ class UnzerGiropayPaymentHandler extends AbstractUnzerPaymentHandler
     {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        try {
-            $this->paymentType = $this->unzerClient->createPaymentType(new Giropay());
+        if ($this->paymentType === null) {
+            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), 'Can not process payment without a valid payment resource.');
+        }
 
-            $returnUrl = $this->charge($transaction->getReturnUrl());
+        $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_BOOKING_MODE, BookingMode::CHARGE);
+
+        try {
+            $returnUrl = $bookingMode === BookingMode::CHARGE
+                ? $this->charge($transaction->getReturnUrl())
+                : $this->authorize($transaction->getReturnUrl(), $this->unzerBasket->getTotalValueGross());
 
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {

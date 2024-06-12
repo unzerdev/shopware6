@@ -22,46 +22,20 @@ use UnzerSDK\Resources\Payment;
  */
 class PaymentStatusWebhookHandler implements WebhookHandlerInterface
 {
-    /** @var TransactionStateHandlerInterface */
-    private $transactionStateHandler;
-
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
-
-    /** @var EntityRepository */
-    private $orderTransactionRepository;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var CustomFieldsHelperInterface */
-    private $customFieldsHelper;
-
     public function __construct(
-        TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactoryInterface $clientFactory,
-        EntityRepository $orderTransactionRepository,
-        LoggerInterface $logger,
-        CustomFieldsHelperInterface $customFieldsHelper
+        private readonly TransactionStateHandlerInterface $transactionStateHandler,
+        private readonly ClientFactoryInterface $clientFactory,
+        private readonly EntityRepository $orderTransactionRepository,
+        private readonly LoggerInterface $logger,
+        private readonly CustomFieldsHelperInterface $customFieldsHelper
     ) {
-        $this->transactionStateHandler    = $transactionStateHandler;
-        $this->clientFactory              = $clientFactory;
-        $this->orderTransactionRepository = $orderTransactionRepository;
-        $this->logger                     = $logger;
-        $this->customFieldsHelper         = $customFieldsHelper;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supports(Webhook $webhook, SalesChannelContext $context): bool
     {
         return stripos($webhook->getEvent(), 'payment.') !== false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function execute(Webhook $webhook, SalesChannelContext $context): void
     {
         $client  = $this->clientFactory->createClientFromPublicKey($webhook->getPublicKey(), $context->getSalesChannelId());

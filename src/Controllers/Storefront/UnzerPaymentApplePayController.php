@@ -8,14 +8,13 @@ use Exception;
 use League\Flysystem\Filesystem;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use UnzerPayment6\Components\ApplePay\CertificateManager;
 use UnzerPayment6\Components\ApplePay\Exception\MissingCertificateFiles;
 use UnzerPayment6\Components\ClientFactory\ClientFactory;
@@ -25,53 +24,28 @@ use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerSDK\Adapter\ApplepayAdapter;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\ExternalResources\ApplepaySession;
-use UnzerSDK\Resources\PaymentTypes\Applepay;
-use UnzerSDK\Unzer;
 
-/**
- * @RouteScope(scopes={"storefront"})
- * @Route(defaults={"_routeScope": {"storefront"}})
- */
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class UnzerPaymentApplePayController extends StorefrontController
 {
     private const MERCHANT_VALIDATION_URL_PARAM = 'merchantValidationUrl';
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
-    /** @var Filesystem */
-    private $filesystem;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var CertificateManager */
-    private $certificateManager;
-    /** @var ClientFactory */
-    private $clientFactory;
-    /** @var SystemConfigService */
-    private $systemConfigService;
-
     public function __construct(
-        ConfigReaderInterface $configReader,
-        Filesystem $filesystem,
-        LoggerInterface $logger,
-        CertificateManager $certificateManager,
-        ClientFactory $clientFactory,
-        SystemConfigService $systemConfigService
-    ) {
-        $this->configReader        = $configReader;
-        $this->filesystem          = $filesystem;
-        $this->logger              = $logger;
-        $this->certificateManager  = $certificateManager;
-        $this->clientFactory       = $clientFactory;
-        $this->systemConfigService = $systemConfigService;
+        private readonly ConfigReaderInterface $configReader,
+        private readonly Filesystem            $filesystem,
+        private readonly LoggerInterface       $logger,
+        private readonly CertificateManager    $certificateManager,
+        private readonly ClientFactory         $clientFactory,
+        private readonly SystemConfigService   $systemConfigService
+    )
+    {
     }
 
-    /**
-     * @Route("/unzer/applePay/validateMerchant", name="frontend.unzer.apple_pay.validate_merchant", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false})
-     */
+    #[Route(path: '/unzer/applePay/validateMerchant', name: 'frontend.unzer.apple_pay.validate_merchant', defaults: ['XmlHttpRequest' => true, 'csrf_protected' => false], methods: ['POST'])]
     public function validateMerchant(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
-        $configuration  = $this->configReader->read($salesChannelId, true);
+        $configuration = $this->configReader->read($salesChannelId, true);
 
         $displayName = $this->systemConfigService->get('core.basicInformation.shopName', $salesChannelId);
 
@@ -87,12 +61,12 @@ class UnzerPaymentApplePayController extends StorefrontController
         $appleAdapter = new ApplepayAdapter();
 
         $certificatePath = $this->certificateManager->getMerchantIdentificationCertificatePath($salesChannelId);
-        $keyPath         = $this->certificateManager->getMerchantIdentificationKeyPath($salesChannelId);
+        $keyPath = $this->certificateManager->getMerchantIdentificationKeyPath($salesChannelId);
 
         if (!$this->filesystem->has($certificatePath) || !$this->filesystem->has($keyPath)) {
             // Try for fallback configuration
             $certificatePath = $this->certificateManager->getMerchantIdentificationCertificatePath('');
-            $keyPath         = $this->certificateManager->getMerchantIdentificationKeyPath('');
+            $keyPath = $this->certificateManager->getMerchantIdentificationKeyPath('');
 
             if (!$this->filesystem->has($certificatePath) || !$this->filesystem->has($keyPath)) {
                 throw new MissingCertificateFiles('Merchant Identification');
@@ -101,7 +75,7 @@ class UnzerPaymentApplePayController extends StorefrontController
 
         // ApplepayAdapter requires certificate as local files
         $certificateTempPath = tempnam(sys_get_temp_dir(), 'UnzerPayment6');
-        $keyTempPath         = tempnam(sys_get_temp_dir(), 'UnzerPayment6');
+        $keyTempPath = tempnam(sys_get_temp_dir(), 'UnzerPayment6');
 
         if (!$certificateTempPath || !$keyTempPath) {
             throw new RuntimeException('Error on temporary file creation');
@@ -133,9 +107,7 @@ class UnzerPaymentApplePayController extends StorefrontController
         }
     }
 
-    /**
-     * @Route("/unzer/applePay/authorizePayment", name="frontend.unzer.apple_pay.authorize_payment", methods={"POST"}, defaults={"XmlHttpRequest": true, "csrf_protected": false})
-     */
+    #[Route(path: '/unzer/applePay/authorizePayment', name: 'frontend.unzer.apple_pay.authorize_payment', defaults: ['XmlHttpRequest' => true, 'csrf_protected' => false], methods: ['POST'])]
     public function authorizePayment(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($salesChannelContext));
@@ -145,11 +117,11 @@ class UnzerPaymentApplePayController extends StorefrontController
 
         try {
             // Charge/Authorize is done in payment handler, return pending to satisfy Apple Pay widget
-            $paymentType                   = $client->fetchPaymentType($typeId);
+            $paymentType = $client->fetchPaymentType($typeId);
             $response['transactionStatus'] = 'pending';
         } catch (UnzerApiException $e) {
             return new JsonResponse([
-                'clientMessage'   => $e->getClientMessage(),
+                'clientMessage' => $e->getClientMessage(),
                 'merchantMessage' => $e->getMerchantMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         } catch (Exception $e) {

@@ -29,28 +29,13 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     /** @var null|RequestContext */
     protected $context;
 
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
-
-    /** @var Router */
-    private $router;
-
-    /** @var EntityRepository */
-    private $salesChannelDomainRepository;
-
-    /** @var LoggerInterface */
-    private $logger;
 
     public function __construct(
-        ClientFactoryInterface $clientFactory,
-        Router $router,
-        EntityRepository $salesChannelDomainRepository,
-        LoggerInterface $logger
+        private readonly ClientFactoryInterface $clientFactory,
+        private readonly Router $router,
+        private readonly EntityRepository $salesChannelDomainRepository,
+        private readonly LoggerInterface $logger
     ) {
-        $this->clientFactory                = $clientFactory;
-        $this->router                       = $router;
-        $this->salesChannelDomainRepository = $salesChannelDomainRepository;
-        $this->logger                       = $logger;
     }
 
     public function registerWebhook(RequestDataBag $salesChannelDomains): array

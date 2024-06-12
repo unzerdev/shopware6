@@ -127,6 +127,7 @@ Component.register('unzer-payment-settings', {
                 });
 
                 this.isTestSuccessful = true;
+                this.selectedKeyPairForTesting = false;
             }).catch(() => {
                 this.createNotificationError({
                     title: this.$tc('unzer-payment-settings.form.message.error.title'),
@@ -142,13 +143,27 @@ Component.register('unzer-payment-settings', {
             this.isTestSuccessful = false;
         },
 
+        setPublicKey(keyPairSetting, value) {
+            this.keyPairSettings[this.getArrayKeyOfKeyPairSetting(keyPairSetting)].publicKey = value;
+        },
+
+        setPrivateKey(keyPairSetting, value) {
+            this.keyPairSettings[this.getArrayKeyOfKeyPairSetting(keyPairSetting)].privateKey = value;
+        },
+
+        getArrayKeyOfKeyPairSetting(keyPairSetting) {
+            return this.keyPairSettings.findIndex((keyPairSettingItem) => {
+                return keyPairSettingItem.key === keyPairSetting.key && keyPairSettingItem.group === keyPairSetting.group;
+            });
+
+        },
+
         onSave() {
             this.isLoading = true;
 
             ['paylaterInvoice', 'paylaterInstallment', 'paylaterDirectDebitSecured'].forEach((group) => {
                 this.config[`UnzerPayment6.settings.${group}`] = [];
             });
-
             this.keyPairSettings.reduce((config, keyPairSetting) => {
                 if (!keyPairSetting || !keyPairSetting.privateKey || !keyPairSetting.publicKey) {
                     return config;

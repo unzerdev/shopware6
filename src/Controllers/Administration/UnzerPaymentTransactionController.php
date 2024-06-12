@@ -6,16 +6,16 @@ namespace UnzerPayment6\Controllers\Administration;
 
 use DateTime;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Checkout\Document\Renderer\InvoiceRenderer;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 use UnzerPayment6\Components\BackwardsCompatibility\InvoiceGenerator;
 use UnzerPayment6\Components\BasketConverter\BasketConverterInterface;
@@ -28,61 +28,28 @@ use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
-/**
- * @RouteScope(scopes={"api"})
- * @Route(defaults={"_routeScope": {"api"}})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class UnzerPaymentTransactionController extends AbstractController
 {
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
-
-    /** @var EntityRepository */
-    private $orderTransactionRepository;
-
-    /** @var PaymentResourceHydratorInterface */
-    private $hydrator;
-
-    /** @var CancelServiceInterface */
-    private $cancelService;
-
-    /** @var ShipServiceInterface */
-    private $shipService;
-
-    /** @var BasketConverterInterface */
-    private $basketConverter;
-
-    /** @var LoggerInterface */
-    private $logger;
-
     public function __construct(
-        ClientFactoryInterface $clientFactory,
-        EntityRepository $orderTransactionRepository,
-        PaymentResourceHydratorInterface $hydrator,
-        CancelServiceInterface $cancelService,
-        ShipServiceInterface $shipService,
-        BasketConverterInterface $basketConverter,
-        LoggerInterface $logger
-    ) {
-        $this->clientFactory              = $clientFactory;
-        $this->orderTransactionRepository = $orderTransactionRepository;
-        $this->hydrator                   = $hydrator;
-        $this->cancelService              = $cancelService;
-        $this->shipService                = $shipService;
-        $this->basketConverter            = $basketConverter;
-        $this->logger                     = $logger;
+        private readonly ClientFactoryInterface           $clientFactory,
+        private readonly EntityRepository                 $orderTransactionRepository,
+        private readonly PaymentResourceHydratorInterface $hydrator,
+        private readonly CancelServiceInterface           $cancelService,
+        private readonly ShipServiceInterface             $shipService,
+        private readonly BasketConverterInterface         $basketConverter,
+        private readonly LoggerInterface                  $logger
+    )
+    {
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/details", name="api.action.unzer.transaction.details", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/details", name="api.action.unzer.transaction.details.version", methods={"GET"})
-     */
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/details', name: 'api.action.unzer.transaction.details', methods: ['GET'])]
     public function fetchTransactionDetails(string $orderTransactionId, Context $context): JsonResponse
     {
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
         if ($transaction === null || $transaction->getOrder() === null) {
-            throw new InvalidTransactionException($orderTransactionId);
+            throw PaymentException::invalidTransaction($orderTransactionId);
         }
 
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
@@ -93,48 +60,25 @@ class UnzerPaymentTransactionController extends AbstractController
 
             $data = $this->hydrator->hydrateArray($payment, $transaction, $client);
 
-            /* Basket V2 since Version 1.1.5 */
             if (!empty($data['basket']['totalValueGross'])) {
                 $data['basket'] = $this->basketConverter->populateDeprecatedVariables($data['basket']);
             }
-        } catch (UnzerApiException $exception) {
-            $this->logger->error(sprintf('Error while executing fetching transaction details for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return new JsonResponse(
-                [
-                    'status' => false,
-                    'errors' => [$exception->getMerchantMessage()],
-                ],
-                Response::HTTP_BAD_REQUEST);
-        } catch (Throwable $exception) {
-            $this->logger->error(sprintf('Error while executing fetching transaction details for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return new JsonResponse(
-                [
-                    'status' => false,
-                    'errors' => ['generic-error'],
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+        } catch (UnzerApiException|Throwable $exception) {
+            $exceptionReturnValues = $this->handleException($exception, sprintf('Error while executing fetching transaction details for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
+            return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
         }
 
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/charge/{amount}", name="api.action.unzer.transaction.charge", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/charge/{amount}", name="api.action.unzer.transaction.charge.version", methods={"GET"})
-     */
+    // TODO: evaluate if GET is the correct method here
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/charge/{amount}', name: 'api.action.unzer.transaction.charge', methods: ['GET'])]
     public function chargeTransaction(string $orderTransactionId, float $amount, Context $context): JsonResponse
     {
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
         if ($transaction === null || $transaction->getOrder() === null) {
-            throw new InvalidTransactionException($orderTransactionId);
+            throw PaymentException::invalidTransaction($orderTransactionId);
         }
 
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
@@ -147,7 +91,7 @@ class UnzerPaymentTransactionController extends AbstractController
 
                 if ($invoiceNumber === null) {
                     return new JsonResponse(
-                            [
+                        [
                             'status' => false,
                             'errors' => ['paylater-invoice-document-required'],
                         ],
@@ -159,135 +103,70 @@ class UnzerPaymentTransactionController extends AbstractController
             }
 
             $client->performChargeOnPayment($orderTransactionId, $charge);
-        } catch (UnzerApiException $exception) {
-            $this->logger->error(sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return new JsonResponse(
-                [
-                    'status' => false,
-                    'errors' => [$exception->getMerchantMessage()],
-                ],
-                Response::HTTP_BAD_REQUEST);
-        } catch (Throwable $exception) {
-            $this->logger->error(sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return new JsonResponse(
-                [
-                    'status' => false,
-                    'errors' => ['generic-error'],
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+        } catch (UnzerApiException|Throwable $exception) {
+            $exceptionReturnValues = $this->handleException($exception, sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
+            return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
         }
 
         return new JsonResponse(['status' => true]);
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund", methods={"GET"})
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}/{reasonCode}", name="api.action.unzer.transaction.refund.reason", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund.version", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}/{reasonCode}", name="api.action.unzer.transaction.refund.version.reason", methods={"GET"})
-     */
+    // TODO: evaluate if GET is the correct method here
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}', name: 'api.action.unzer.transaction.refund', methods: ['GET'])]
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}/{reasonCode}', name: 'api.action.unzer.transaction.refund.reason', methods: ['GET'])]
     public function refundTransaction(string $orderTransactionId, string $chargeId, float $amount, ?string $reasonCode, Context $context): JsonResponse
     {
         try {
             $this->cancelService->cancelChargeById($orderTransactionId, $chargeId, $amount, $reasonCode, $context);
-        } catch (UnzerApiException $exception) {
-            $this->logger->error(sprintf('Error while executing refund transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return new JsonResponse(
-                [
-                    'status' => false,
-                    'errors' => [$exception->getMerchantMessage()],
-                ],
-                Response::HTTP_BAD_REQUEST);
-        } catch (Throwable $exception) {
-            $this->logger->error(sprintf('Error while executing refund transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return new JsonResponse(
-                [
-                    'status' => false,
-                    'errors' => ['generic-error'],
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+        } catch (UnzerApiException|Throwable $exception) {
+            $exceptionReturnValues = $this->handleException($exception, sprintf('Error while executing refund transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
+            return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
         }
 
         return new JsonResponse(['status' => true]);
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/cancel/{authorizationId}/{amount}", name="api.action.unzer.transaction.cancel", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/cancel/{authorizationId}/{amount}", name="api.action.unzer.transaction.cancel.version", methods={"GET"})
-     */
+    // TODO: evaluate if GET is the correct method here
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/cancel/{authorizationId}/{amount}', name: 'api.action.unzer.transaction.cancel', methods: ['GET'])]
     public function cancelTransaction(string $orderTransactionId, string $authorizationId, float $amount, Context $context): JsonResponse
     {
         try {
             $this->cancelService->cancelAuthorizationById($orderTransactionId, $authorizationId, $amount, $context);
-        } catch (UnzerApiException $exception) {
-            $this->logger->error(sprintf('Error while executing cancel transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return new JsonResponse(
-                [
-                    'status' => false,
-                    'errors' => [$exception->getMerchantMessage()],
-                ],
-                Response::HTTP_BAD_REQUEST);
-        } catch (Throwable $exception) {
-            $this->logger->error(sprintf('Error while executing cancel transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return new JsonResponse(
-                [
-                    'status' => false,
-                    'errors' => ['generic-error'],
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+        } catch (UnzerApiException|Throwable $exception) {
+            $exceptionReturnValues = $this->handleException($exception, sprintf('Error while executing cancel transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
+            return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
         }
 
         return new JsonResponse(['status' => true]);
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/ship", name="api.action.unzer.transaction.ship", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/ship", name="api.action.unzer.transaction.ship.version", methods={"GET"})
-     */
+    // TODO: evaluate if GET is the correct method here
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/ship', name: 'api.action.unzer.transaction.ship', methods: ['GET'])]
     public function shipTransaction(string $orderTransactionId, Context $context): JsonResponse
     {
         try {
             $result = $this->shipService->shipTransaction($orderTransactionId, $context);
-        } catch (UnzerApiException $exception) {
-            $this->logger->error(sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-            $result = [
-                'status' => false,
-                'errors' => [$exception->getMerchantMessage()],
-            ];
-        } catch (Throwable $exception) {
-            $this->logger->error(sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-            $result = [
-                    'status' => false,
-                    'errors' => ['generic-error'],
-                ];
+        } catch (UnzerApiException|Throwable $exception) {
+            $exceptionReturnValues = $this->handleException($exception, sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
+            return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
         }
 
-        return new JsonResponse($result, $result['status'] === false ? Response::HTTP_BAD_REQUEST : Response::HTTP_OK);
+        return new JsonResponse($result);
+    }
+
+    protected function handleException(Throwable|UnzerApiException $exception, string $logMessage): array
+    {
+        $this->logger->error($logMessage, [
+            'trace' => $exception->getTraceAsString(),
+        ]);
+
+        return [
+            [
+                'status' => false,
+                'errors' => [$exception instanceof UnzerApiException ? $exception->getMerchantMessage() : 'generic-error'],
+            ],
+            Response::HTTP_BAD_REQUEST,
+        ];
     }
 
     protected function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
@@ -311,17 +190,17 @@ class UnzerPaymentTransactionController extends AbstractController
             return null;
         }
 
-        $documents     = $transaction->getOrder()->getDocuments()->getElements();
+        $documents = $transaction->getOrder()->getDocuments()->getElements();
         $invoiceNumber = null;
-        $documentDate  = null;
+        $documentDate = null;
 
         // get latest invoice document
         foreach ($documents as $document) {
-            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::getInvoiceTechnicalName()) {
+            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceRenderer::TYPE) {
                 $newDocumentDate = new DateTime($document->getConfig()['documentDate']);
 
                 if ($documentDate === null || $newDocumentDate->getTimestamp() > $documentDate->getTimestamp()) {
-                    $documentDate  = $newDocumentDate;
+                    $documentDate = $newDocumentDate;
                     $invoiceNumber = $document->getConfig()['documentNumber'];
                 }
             }

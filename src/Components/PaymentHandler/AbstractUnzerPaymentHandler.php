@@ -7,8 +7,7 @@ namespace UnzerPayment6\Components\PaymentHandler;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -171,7 +170,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
 
@@ -206,7 +205,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 ]
             );
 
-            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $apiException->getMessage());
+            throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransaction()->getId(), $apiException->getMessage());
         } catch (Throwable $exception) {
             $this->logger->error(
                 sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
@@ -217,7 +216,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 ]
             );
 
-            throw new AsyncPaymentFinalizeException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+            throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
 
@@ -239,7 +238,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         $currentRequest = $this->requestStack->getCurrentRequest();
 
         if ($currentRequest === null) {
-            throw new AsyncPaymentProcessException($orderTransactionId, 'No request found');
+            throw PaymentException::asyncProcessInterrupted($orderTransactionId, 'No request found');
         }
 
         return $currentRequest;

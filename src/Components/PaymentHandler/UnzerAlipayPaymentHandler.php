@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\PaymentHandler;
 
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,9 +24,10 @@ class UnzerAlipayPaymentHandler extends AbstractUnzerPaymentHandler
      */
     public function pay(
         AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
-        SalesChannelContext $salesChannelContext
-    ): RedirectResponse {
+        RequestDataBag                $dataBag,
+        SalesChannelContext           $salesChannelContext
+    ): RedirectResponse
+    {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         try {
@@ -39,9 +40,9 @@ class UnzerAlipayPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'dataBag' => $dataBag,
                     'transaction' => $transaction,
-                    'exception'   => $apiException,
+                    'exception' => $apiException,
                 ]
             );
 
@@ -55,13 +56,13 @@ class UnzerAlipayPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'dataBag' => $dataBag,
                     'transaction' => $transaction,
-                    'exception'   => $exception,
+                    'exception' => $exception,
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
 }

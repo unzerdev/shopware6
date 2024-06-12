@@ -21,8 +21,6 @@ use UnzerPayment6\Components\UnzerPaymentClassLoader;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerPayment6\Installer\PaymentInstaller;
 
-include_once 'Components/BackwardsCompatibility/RouteScope.php';
-include_once 'Components/BackwardsCompatibility/InvoiceGenerator.php';
 
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     (new UnzerPaymentClassLoader())->register();

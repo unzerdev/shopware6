@@ -6,7 +6,7 @@
                 <sw-inherit-wrapper
                     ref="inheritWrapperPaymentProcessingCertificate"
                     :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingCertificate.label')"
-                    v-model="parentConfigData['UnzerPayment6.settings.applePayPaymentProcessingCertificateId']"
+                    v-model:value="parentConfigData['UnzerPayment6.settings.applePayPaymentProcessingCertificateId']"
                     :inheritedValue="getInheritedValue('applePayPaymentProcessingCertificateId')"
                     :hasParent="isNotDefaultSalesChannel"
                     >
@@ -16,8 +16,16 @@
                             :variant="paymentProcessingValid ? 'success' : 'danger'"
                             appearance="pill"
                             v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingValid.' + paymentProcessingValid.toString())">
-                            <sw-icon :name="paymentProcessingValid ? 'default-basic-checkmark-circle' : 'default-badge-alert'" :small="true"></sw-icon>
+                            <sw-icon :name="paymentProcessingValid ? 'regular-checkmark-s' : 'regular-exclamation-circle'" :small="true"></sw-icon>
                             <span v-html="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingValid.' + paymentProcessingValid.toString())"></span>
+                        </sw-label><br>
+                        <sw-label
+                                v-if="!isDataLoading"
+                                :variant="paymentProcessingActive ? 'success' : 'danger'"
+                                appearance="pill"
+                                v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingActive.' + paymentProcessingActive.toString())">
+                            <sw-icon :name="paymentProcessingActive ? 'regular-checkmark-s' : 'regular-exclamation-circle'" :small="true"></sw-icon>
+                            <span v-html="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingActive.' + paymentProcessingActive.toString())"></span>
                         </sw-label>
                         <sw-loader size="10px" v-else></sw-loader>
                         <br>
@@ -26,7 +34,7 @@
                         <sw-file-input
                             ref="paymentProcessingCertificateInput"
                             class="sw-field sw-block-field"
-                            v-model="paymentProcessingCertificate"
+                            v-model:value="paymentProcessingCertificate"
                             @change="onInputChangePaymentProcessing"
                         >
                         </sw-file-input>
@@ -36,7 +44,7 @@
                 <sw-inherit-wrapper
                     ref="inheritWrapperPaymentProcessingKey"
                     :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingKey.label')"
-                    v-model="parentConfigData['UnzerPayment6.settings.applePayPaymentProcessingCertificateId']"
+                    v-model:value="parentConfigData['UnzerPayment6.settings.applePayPaymentProcessingCertificateId']"
                     :inheritedValue="getInheritedValue('applePayPaymentProcessingCertificateId')"
                     :hasParent="isNotDefaultSalesChannel"
                 >
@@ -44,7 +52,7 @@
                         <sw-file-input
                             ref="paymentProcessingKeyInput"
                             class="sw-field sw-block-field"
-                            v-model="paymentProcessingKey"
+                            v-model:value="paymentProcessingKey"
                             @change="onInputChangePaymentProcessing"
                         >
                         </sw-file-input>
@@ -54,7 +62,7 @@
                 <sw-inherit-wrapper
                     ref="inheritWrapperMerchantIdentificationCertificate"
                     :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationCertificate.label')"
-                    v-model="parentConfigData['UnzerPayment6.settings.applePayMerchantIdentificationCertificateId']"
+                    v-model:value="parentConfigData['UnzerPayment6.settings.applePayMerchantIdentificationCertificateId']"
                     :inheritedValue="getInheritedValue('applePayMerchantIdentificationCertificateId')"
                     :hasParent="isNotDefaultSalesChannel"
                 >
@@ -64,7 +72,7 @@
                             :variant="merchantIdentificationValid ? 'success' : 'danger'"
                             appearance="pill"
                             v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValid.' + merchantIdentificationValid.toString())">
-                            <sw-icon :name="merchantIdentificationValid ? 'default-basic-checkmark-circle' : 'default-badge-alert'" :small="true"></sw-icon>
+                            <sw-icon :name="merchantIdentificationValid ? 'regular-checkmark-s' : 'regular-exclamation-circle'" :small="true"></sw-icon>
                             <span v-html="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValid.' + merchantIdentificationValid.toString())"></span>
                         </sw-label>
                         <sw-loader size="10px" v-else></sw-loader>
@@ -74,7 +82,7 @@
                             :variant="(merchantIdentificationValidUntil > now) ? 'success' : 'warning'"
                             appearance="pill"
                             v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValidUntil.' + (merchantIdentificationValidUntil > now).toString())">
-                            <sw-icon name="default-time-clock" :small="true"></sw-icon>
+                            <sw-icon name="regular-clock" :small="true"></sw-icon>
                             <span v-html="$tc('unzer-payment-settings.apple-pay.certificates.check.merchantIdentificationValidUntil.' + (merchantIdentificationValidUntil > now).toString())"></span>
                         </sw-label>
                         <br>
@@ -83,7 +91,7 @@
                         <sw-file-input
                             ref="merchantIdentificationCertificateInput"
                             class="sw-field sw-block-field"
-                            v-model="merchantIdentificationCertificate"
+                            v-model:value="merchantIdentificationCertificate"
                             @change="onInputChangeMerchantIdentification"
                         >
                         </sw-file-input>
@@ -93,7 +101,7 @@
                 <sw-inherit-wrapper
                     ref="inheritWrapperMerchantIdentificationKey"
                     :label="$tc('unzer-payment-settings.apple-pay.merchantIdentificationKey.label')"
-                    v-model="parentConfigData['UnzerPayment6.settings.applePayMerchantIdentificationCertificateId']"
+                    v-model:value="parentConfigData['UnzerPayment6.settings.applePayMerchantIdentificationCertificateId']"
                     :inheritedValue="getInheritedValue('applePayMerchantIdentificationCertificateId')"
                     :hasParent="isNotDefaultSalesChannel"
                 >
@@ -101,7 +109,7 @@
                         <sw-file-input
                             ref="merchantIdentificationKeyInput"
                             class="sw-field sw-block-field"
-                            v-model="merchantIdentificationKey"
+                            v-model:value="merchantIdentificationKey"
                             @change="onInputChangeMerchantIdentification"
                         >
                         </sw-file-input>

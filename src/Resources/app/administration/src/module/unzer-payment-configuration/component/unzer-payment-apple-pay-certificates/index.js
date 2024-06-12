@@ -38,6 +38,7 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
             merchantIdentificationValid: false,
             merchantIdentificationValidUntil: null,
             paymentProcessingValid: false,
+            paymentProcessingActive: false,
         };
     },
 
@@ -79,6 +80,7 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                         this.merchantIdentificationValid = response.merchantIdentificationValid;
                         this.merchantIdentificationValidUntil = response.merchantIdentificationValidUntil ? new Date(response.merchantIdentificationValidUntil) : null;
                         this.paymentProcessingValid = response.paymentProcessingValid;
+                        this.paymentProcessingActive = response.paymentProcessingActive;
                     }
                 })
                 .finally(() => {

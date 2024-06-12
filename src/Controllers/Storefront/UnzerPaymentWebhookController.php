@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace UnzerPayment6\Controllers\Storefront;
 
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 use Traversable;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
@@ -19,20 +18,15 @@ use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\Webhook;
 use UnzerPayment6\Components\WebhookHandler\WebhookHandlerInterface;
 
-/**
- * @RouteScope(scopes={"storefront"})
- * @Route(defaults={"_routeScope": {"storefront"}})
- */
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class UnzerPaymentWebhookController extends StorefrontController
 {
     /** @var Traversable|WebhookHandlerInterface[] */
-    private $handlers;
+    private Traversable $handlers;
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
     public function __construct(Traversable $handlers, ConfigReaderInterface $configReader, LoggerInterface $logger)
     {
@@ -41,9 +35,7 @@ class UnzerPaymentWebhookController extends StorefrontController
         $this->logger       = $logger;
     }
 
-    /**
-     * @Route("/unzer/webhook", name="frontend.unzer.webhook.execute", methods={"POST", "GET"}, defaults={"csrf_protected": false})
-     */
+    #[Route(path: '/unzer/webhook', name: 'frontend.unzer.webhook.execute', defaults: ['csrf_protected' => false], methods: ['POST', 'GET'])]
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         /** @var false|string $requestContent */
@@ -95,7 +87,7 @@ class UnzerPaymentWebhookController extends StorefrontController
         return new Response();
     }
 
-    public function isValidPublicKey(Webhook $webhook, Configuration $config): bool
+    protected function isValidPublicKey(Webhook $webhook, Configuration $config): bool
     {
         if ($webhook->getPublicKey() === $config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY)) {
             return true;

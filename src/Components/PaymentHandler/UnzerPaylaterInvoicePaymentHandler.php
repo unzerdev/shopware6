@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\PaymentHandler;
 
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,9 +31,10 @@ class UnzerPaylaterInvoicePaymentHandler extends AbstractUnzerPaymentHandler
      */
     public function pay(
         AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
-        SalesChannelContext $salesChannelContext
-    ): RedirectResponse {
+        RequestDataBag                $dataBag,
+        SalesChannelContext           $salesChannelContext
+    ): RedirectResponse
+    {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
@@ -61,9 +62,9 @@ class UnzerPaylaterInvoicePaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => $this->getLoggableRequest($currentRequest),
+                    'request' => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'exception'   => $apiException,
+                    'exception' => $apiException,
                 ]
             );
 
@@ -77,20 +78,20 @@ class UnzerPaylaterInvoicePaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => $this->getLoggableRequest($currentRequest),
+                    'request' => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'exception'   => $exception,
+                    'exception' => $exception,
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
 
     private function updateUnzerCustomer(Request $request): void
     {
-        $birthday       = $request->get('unzerPaymentBirthday', '');
-        $companyType    = $request->get('unzerPaymentCompanyType', '');
+        $birthday = $request->get('unzerPaymentBirthday', '');
+        $companyType = $request->get('unzerPaymentCompanyType', '');
         $createOrUpdate = false;
 
         if (!empty($birthday)

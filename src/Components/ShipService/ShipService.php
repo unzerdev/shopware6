@@ -8,8 +8,10 @@ use DateInterval;
 use DateTime;
 use DateTimeInterface;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Checkout\Document\Renderer\InvoiceRenderer;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -24,28 +26,14 @@ use UnzerSDK\Unzer;
 
 class ShipService implements ShipServiceInterface
 {
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
 
-    /** @var TransactionStateHandlerInterface */
-    private $transactionStateHandler;
-
-    /** @var EntityRepository */
-    private $orderTransactionRepository;
-
-    /** @var LoggerInterface */
-    private $logger;
 
     public function __construct(
-        ClientFactoryInterface $clientFactory,
-        TransactionStateHandlerInterface $transactionStateHandler,
-        EntityRepository $orderTransactionRepository,
-        LoggerInterface $logger
+        private readonly ClientFactoryInterface $clientFactory,
+        private readonly TransactionStateHandlerInterface $transactionStateHandler,
+        private readonly EntityRepository $orderTransactionRepository,
+        private readonly LoggerInterface $logger
     ) {
-        $this->clientFactory              = $clientFactory;
-        $this->transactionStateHandler    = $transactionStateHandler;
-        $this->orderTransactionRepository = $orderTransactionRepository;
-        $this->logger                     = $logger;
     }
 
     /**
@@ -56,7 +44,7 @@ class ShipService implements ShipServiceInterface
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
         if ($transaction === null || $transaction->getOrder() === null || $transaction->getOrder()->getDocuments() === null) {
-            throw new InvalidTransactionException($orderTransactionId);
+            throw PaymentException::invalidTransaction($orderTransactionId);
         }
 
         $order         = $transaction->getOrder();
@@ -65,7 +53,7 @@ class ShipService implements ShipServiceInterface
         $documentDate  = null;
 
         foreach ($documents as $document) {
-            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::getInvoiceTechnicalName()) {
+            if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceRenderer::TYPE) {
                 $newDocumentDate = new DateTime($document->getConfig()['documentDate']);
 
                 if ($documentDate === null || $newDocumentDate->getTimestamp() > $documentDate->getTimestamp()) {

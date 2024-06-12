@@ -9,23 +9,15 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class CertificateInformation extends Struct
 {
-    protected bool $paymentProcessingValid;
-
-    protected bool $paymentProcessingInherited;
-
-    protected bool $merchantIdentificationValid;
-
-    protected bool $merchantIdentificationInherited;
-
-    protected ?DateTimeInterface $merchantIdentificationValidUntil;
-
-    public function __construct(bool $paymentProcessingValid, bool $paymentProcessingInherited, bool $merchantIdentificationValid, bool $merchantIdentificationInherited, ?DateTimeInterface $merchantIdentificationValidUntil)
+    public function __construct(
+        protected readonly bool               $paymentProcessingValid,
+        protected readonly bool               $paymentProcessingActive,
+        protected readonly bool               $paymentProcessingInherited,
+        protected readonly bool               $merchantIdentificationValid,
+        protected readonly bool               $merchantIdentificationInherited,
+        protected readonly ?DateTimeInterface $merchantIdentificationValidUntil = null
+    )
     {
-        $this->paymentProcessingValid           = $paymentProcessingValid;
-        $this->paymentProcessingInherited       = $paymentProcessingInherited;
-        $this->merchantIdentificationValid      = $merchantIdentificationValid;
-        $this->merchantIdentificationInherited  = $merchantIdentificationInherited;
-        $this->merchantIdentificationValidUntil = $merchantIdentificationValidUntil;
     }
 
     public function isPaymentProcessingValid(): bool

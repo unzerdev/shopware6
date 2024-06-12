@@ -28,6 +28,7 @@ use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPag
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\FraudPreventionPageExtension;
+use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\GooglePayPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\InstallmentSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaylaterDirectDebitSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaylaterInstallmentPageExtension;
@@ -67,19 +68,20 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     public function __construct(
         UnzerPaymentDeviceRepositoryInterface $deviceRepository,
-        ConfigReaderInterface $configReader,
-        PaymentFrameFactoryInterface $paymentFrameFactory,
-        SystemConfigService $systemConfigReader,
-        EntityRepository $languageRepository,
-        ClientFactoryInterface $clientFactory,
-        KeyPairConfigReader $keyPairConfigReader
-    ) {
-        $this->deviceRepository    = $deviceRepository;
-        $this->configReader        = $configReader;
+        ConfigReaderInterface                 $configReader,
+        PaymentFrameFactoryInterface          $paymentFrameFactory,
+        SystemConfigService                   $systemConfigReader,
+        EntityRepository                      $languageRepository,
+        ClientFactoryInterface                $clientFactory,
+        KeyPairConfigReader                   $keyPairConfigReader
+    )
+    {
+        $this->deviceRepository = $deviceRepository;
+        $this->configReader = $configReader;
         $this->paymentFrameFactory = $paymentFrameFactory;
-        $this->systemConfigReader  = $systemConfigReader;
-        $this->languageRepository  = $languageRepository;
-        $this->clientFactory       = $clientFactory;
+        $this->systemConfigReader = $systemConfigReader;
+        $this->languageRepository = $languageRepository;
+        $this->clientFactory = $clientFactory;
         $this->keyPairConfigReader = $keyPairConfigReader;
     }
 
@@ -89,7 +91,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class  => 'onCheckoutConfirm',
+            CheckoutConfirmPageLoadedEvent::class => 'onCheckoutConfirm',
             AccountEditOrderPageLoadedEvent::class => 'onCheckoutConfirm',
         ];
     }
@@ -97,13 +99,12 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     public function onCheckoutConfirm(PageLoadedEvent $event): void
     {
         $salesChannelContext = $event->getSalesChannelContext();
-        $paymentMethod       = $salesChannelContext->getPaymentMethod();
+        $paymentMethod = $salesChannelContext->getPaymentMethod();
 
         if (!$this->isActionRequired($event, $paymentMethod)) {
             return;
         }
-
-        $paymentMethodId  = $paymentMethod->getId();
+        $paymentMethodId = $paymentMethod->getId();
         $this->configData = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
         if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_CREDIT_CARD) {
@@ -148,6 +149,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addPaymentFrameExtension($event);
             $this->addUnzerDataExtension($event);
         }
+
+        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_GOOGLE_PAY) {
+            $this->addGooglePayExtension($event);
+        }
     }
 
     private function isActionRequired(PageLoadedEvent $event, PaymentMethodEntity $paymentMethod): bool
@@ -170,7 +175,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension = new UnzerDataPageExtension();
         $extension->setPublicKey($this->getPublicKey($event->getSalesChannelContext()));
         $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
-        $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
+        $extension->setShowTestData((bool)$this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
         $extension->setUnzerCustomer($this->getUnzerCustomer($event));
 
         $event->getPage()->addExtension(UnzerDataPageExtension::EXTENSION_NAME, $extension);
@@ -184,7 +189,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             return null;
         }
 
-        $client         = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($event->getSalesChannelContext()));
+        $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($event->getSalesChannelContext()));
         $customerNumber = $customer->getCustomerNumber();
         $billingAddress = $customer->getActiveBillingAddress();
 
@@ -201,7 +206,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     private function addPaymentFrameExtension(PageLoadedEvent $event): void
     {
-        $paymentId           = $event->getSalesChannelContext()->getPaymentMethod()->getId();
+        $paymentId = $event->getSalesChannelContext()->getPaymentMethod()->getId();
         $mappedFrameTemplate = $this->paymentFrameFactory->getPaymentFrame($paymentId);
 
         if (!$mappedFrameTemplate) {
@@ -230,7 +235,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $creditCards = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_CREDIT_CARD);
-        $extension   = new CreditCardPageExtension();
+        $extension = new CreditCardPageExtension();
 
         /** @var UnzerPaymentDeviceEntity $creditCard */
         foreach ($creditCards as $creditCard) {
@@ -249,7 +254,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $payPalAccounts = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL);
-        $extension      = new PayPalPageExtension();
+        $extension = new PayPalPageExtension();
 
         /** @var UnzerPaymentDeviceEntity $payPalAccount */
         foreach ($payPalAccounts as $payPalAccount) {
@@ -268,7 +273,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT);
-        $extension          = new DirectDebitPageExtension();
+        $extension = new DirectDebitPageExtension();
 
         /** @var UnzerPaymentDeviceEntity $directDebitDevice */
         foreach ($directDebitDevices as $directDebitDevice) {
@@ -287,7 +292,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $directDebitDevices = $this->deviceRepository->getCollectionByCustomer($customer, $event->getContext(), UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_SECURED);
-        $extension          = (new DirectDebitSecuredPageExtension())->setDisplayDirectDebitDeviceSelection(true);
+        $extension = (new DirectDebitSecuredPageExtension())->setDisplayDirectDebitDeviceSelection(true);
 
         /** @var UnzerPaymentDeviceEntity $directDebitDevice */
         foreach ($directDebitDevices as $directDebitDevice) {
@@ -315,6 +320,47 @@ class ConfirmPageEventListener implements EventSubscriberInterface
     private function addApplePayExtension(PageLoadedEvent $event): void
     {
         $event->getPage()->addExtension(ApplePayPageExtension::EXTENSION_NAME, new ApplePayPageExtension());
+    }
+
+    private function addGooglePayExtension(PageLoadedEvent $event): void
+    {
+
+        $extension = new GooglePayPageExtension();
+        $extension->setPublicConfig([
+            'merchantName' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_MERCHANT_NAME),
+            'merchantId' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_MERCHANT_ID),
+            'gatewayMerchantId' => $this->fetchGooglePayChannelId($event),
+            'countryCode' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_COUNTRY_CODE),
+            'allowedCardNetworks' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_CARD_NETWORKS),
+            'allowCreditCards' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_CREDIT_CARDS_ALLOWED),
+            'allowPrepaidCards' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_PREPAID_CARDS_ALLOWED),
+            'buttonColor' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_BUTTON_COLOR),
+            'buttonSizeMode' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_BUTTON_SIZE_MODE),
+        ]);
+        $event->getPage()->addExtension(GooglePayPageExtension::EXTENSION_NAME, $extension);
+    }
+
+    /**
+     * TODO: cache the channel id
+     */
+    private function fetchGooglePayChannelId(PageLoadedEvent $event) {
+        try{
+        $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($event->getSalesChannelContext()));
+        $keyPair = $client->fetchKeyPair(true);
+
+            foreach ( $keyPair->getPaymentTypes() as $paymentType ) {
+                if ( $paymentType->type === 'googlepay' ) {
+                    $channelId = $paymentType->supports[0]->channel ?? null;
+                    if ( $channelId ) {
+                        return $channelId;
+                    }
+                }
+            }
+        } catch ( \Exception $e ) {
+
+        }
+        // will only be reached, if no channel id was found
+        return '';
     }
 
     private function addPaylaterInstallmentExtension(PageLoadedEvent $event): void

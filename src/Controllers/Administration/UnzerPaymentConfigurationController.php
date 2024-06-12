@@ -6,50 +6,32 @@ namespace UnzerPayment6\Controllers\Administration;
 
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistratorInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 
-/**
- * @RouteScope(scopes={"api"})
- * @Route(defaults={"_routeScope": {"api"}})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class UnzerPaymentConfigurationController extends AbstractController
 {
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var WebhookRegistratorInterface */
-    private $webhookRegistrator;
-
     public function __construct(
-        ClientFactoryInterface $clientFactory,
-        LoggerInterface $logger,
-        WebhookRegistratorInterface $webhookRegistrator
-    ) {
-        $this->clientFactory      = $clientFactory;
-        $this->logger             = $logger;
-        $this->webhookRegistrator = $webhookRegistrator;
+        private readonly ClientFactoryInterface      $clientFactory,
+        private readonly LoggerInterface             $logger,
+        private readonly WebhookRegistratorInterface $webhookRegistrator
+    )
+    {
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/validate-credentials", name="api.action.unzer.validate.credentials", methods={"POST"})
-     * @Route("/api/v{version}/_action/unzer-payment/validate-credentials", name="api.action.unzer.validate.credentials.version", methods={"POST"})
-     */
+    #[Route(path: '/api/_action/unzer-payment/validate-credentials', name: 'api.action.unzer.validate.credentials', methods: ['POST'])]
     public function validateCredentials(RequestDataBag $dataBag): JsonResponse
     {
-        $privateKey   = $dataBag->get('privateKey');
-        $publicKey    = $dataBag->get('publicKey');
+        $privateKey = $dataBag->get('privateKey');
+        $publicKey = $dataBag->get('publicKey');
         $responseCode = Response::HTTP_OK;
 
         if (empty($privateKey) || empty($publicKey)) {
@@ -57,15 +39,13 @@ class UnzerPaymentConfigurationController extends AbstractController
         }
 
         try {
-            $client        = $this->clientFactory->createClientFromPrivateKey($privateKey);
+            $client = $this->clientFactory->createClientFromPrivateKey($privateKey);
             $remoteKeypair = $client->fetchKeypair();
 
             if ($remoteKeypair->getPublicKey() !== $publicKey) {
                 $responseCode = Response::HTTP_BAD_REQUEST;
             }
-        } catch (UnzerApiException $apiException) {
-            $responseCode = Response::HTTP_BAD_REQUEST;
-        } catch (RuntimeException $ex) {
+        } catch (UnzerApiException|RuntimeException $apiException) {
             $responseCode = Response::HTTP_BAD_REQUEST;
         }
 
@@ -78,10 +58,7 @@ class UnzerPaymentConfigurationController extends AbstractController
         return new JsonResponse([], $responseCode);
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/register-webhooks", name="api.action.unzer.webhooks.register", methods={"POST"})
-     * @Route("/api/v{version}/_action/unzer-payment/register-webhooks", name="api.action.unzer.webhooks.register.version", methods={"POST"})
-     */
+    #[Route(path: '/api/_action/unzer-payment/register-webhooks', name: 'api.action.unzer.webhooks.register', methods: ['POST'])]
     public function registerWebhooks(RequestDataBag $dataBag): JsonResponse
     {
         /** @var DataBag $selection */
@@ -102,10 +79,7 @@ class UnzerPaymentConfigurationController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/clear-webhooks", name="api.action.unzer.webhooks.clear", methods={"POST"})
-     * @Route("/api/v{version}/_action/unzer-payment/clear-webhooks", name="api.action.unzer.webhooks.clear.version", methods={"POST"})
-     */
+    #[Route(path: '/api/_action/unzer-payment/clear-webhooks', name: 'api.action.unzer.webhooks.clear', methods: ['POST'])]
     public function clearWebhooks(RequestDataBag $dataBag): JsonResponse
     {
         /** @var DataBag $selection */
@@ -126,10 +100,7 @@ class UnzerPaymentConfigurationController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/get-webhooks", name="api.action.unzer.webhooks.get", methods={"POST"})
-     * @Route("/api/v{version}/_action/unzer-payment/get-webhooks", name="api.action.unzer.webhooks.get.version", methods={"POST"})
-     */
+    #[Route(path: '/api/_action/unzer-payment/get-webhooks', name: 'api.action.unzer.webhooks.get', methods: ['POST'])]
     public function getWebhooks(RequestDataBag $dataBag): JsonResponse
     {
         if (!$dataBag->has('privateKey') || empty($dataBag->get('privateKey'))) {

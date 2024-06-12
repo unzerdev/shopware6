@@ -4,8 +4,11 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service id="unzer_payment.logger" class="Monolog\Logger">
-            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+            <factory service="UnzerPayment6\Components\Logger\UnzerLoggerFactory" method="createLogger"/>
             <argument type="string">plugin_unzer_payment</argument>
+        </service>
+        <service id="UnzerPayment6\Components\Logger\UnzerLoggerFactory">
+            <argument type="string">%kernel.logs_dir%/%%s_%kernel.environment%.log</argument>
         </service>
 
         <service id="UnzerPayment6\Components\ConfigReader\ConfigReader">

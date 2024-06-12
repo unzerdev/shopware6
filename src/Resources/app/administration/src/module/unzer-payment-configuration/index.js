@@ -4,7 +4,6 @@ import './component/unzer-entity-single-select-delivery-status';
 import './component/unzer-payment-apple-pay-certificates';
 import './component/unzer-payment-plugin-icon';
 
-import './extension/sw-settings-index';
 import './extension/sw-system-config';
 
 import './page/unzer-payment-settings';
@@ -12,9 +11,9 @@ import './page/unzer-payment-settings';
 import deDE from '../../snippets/de-DE.json';
 import enGB from '../../snippets/en-GB.json';
 
-const { Module } = Shopware;
+const {Module} = Shopware;
 
-let configuration = {
+const configuration = {
     type: 'plugin',
     name: 'UnzerPayment',
     title: 'unzer-payment-settings.module.title',
@@ -35,21 +34,17 @@ let configuration = {
                 parentPath: 'sw.settings.index'
             }
         }
+    },
+    settingsItem: {
+        name: 'unzer-payment-configuration',
+        to: 'unzer.payment.configuration.settings',
+        label: 'unzer-payment-settings.module.title',
+        group: 'plugins',
+        iconComponent: 'unzer-payment-plugin-icon',
+        backgroundEnabled: false
     }
 };
 
-const version = Shopware.Context.app.config.version;
-const match = version.match(/((\d+)\.?(\d+?)\.?(\d+)?\.?(\d*))-?([A-z]+?\d+)?/i);
 
-if(match && parseInt(match[2]) === 6 && parseInt(match[3]) > 3) {
-    configuration.settingsItem = [{
-        name:   'unzer-payment-configuration',
-        to:     'unzer.payment.configuration.settings',
-        label:  'unzer-payment-settings.module.title',
-        group:  'plugins',
-        iconComponent: 'unzer-payment-plugin-icon',
-        backgroundEnabled: false
-    }]
-}
 
 Module.register('unzer-payment-configuration', configuration);

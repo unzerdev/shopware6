@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,6 +29,10 @@ use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Constants\ApiResponseCodes;
 use UnzerSDK\Exceptions\UnzerApiException;
 
+#[AsCommand(
+    name: 'unzer:send:shipping',
+    description: 'Send all shipping notifications for the necessary orders to Unzer.',
+)]
 class SendShippingNotificationCommand extends Command
 {
     private const EXIT_CODE_SUCCESS       = 0;
@@ -59,15 +64,6 @@ class SendShippingNotificationCommand extends Command
         $this->shipService           = $shipService;
 
         parent::__construct();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure(): void
-    {
-        $this->setName('unzer:send:shipping')
-            ->setDescription('Send all shipping notifications for the necessary orders to Unzer GmbH.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

@@ -36,13 +36,12 @@
 
                         <sw-entity-single-select
                             v-if="!isWebhookRegisteredForSalesChannel(salesChannel.id)"
-                            v-model="selection[salesChannel.id]"
-                            :disableSearchFunction="true"
+                            v-model:value="selection[salesChannel.id]"
                             :placeholder="$tc(`unzer-payment-settings.modal.webhook.placeholder`)"
                             :criteria="getSalesChannelDomainCriteria(salesChannel.id)"
                             entity="sales_channel_domain"
-                            labelProperty="url"
-                            @change="onSelectItem">
+                            label-property="url"
+                            @update:value="onSelectItem">
                         </sw-entity-single-select>
 
                         <sw-alert

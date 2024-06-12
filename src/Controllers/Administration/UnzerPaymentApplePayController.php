@@ -4,37 +4,35 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
+use DateTimeImmutable;
 use Exception;
 use League\Flysystem\Filesystem;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use UnzerPayment6\Components\ApplePay\CertificateManager;
 use UnzerPayment6\Components\ApplePay\Exception\InvalidCertificate;
 use UnzerPayment6\Components\ApplePay\Exception\MissingCertificateFiles;
 use UnzerPayment6\Components\ApplePay\Struct\CertificateInformation;
-use UnzerPayment6\Components\BackwardsCompatibility\Filesystem as BackwardsCompatibilityFilesystem;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Resource\ApplePayCertificate;
 use UnzerPayment6\Components\Resource\ApplePayPrivateKey;
 use UnzerPayment6\Components\Struct\KeyPairContext;
+use UnzerSDK\Adapter\HttpAdapterInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Unzer;
 
-/**
- * @RouteScope(scopes={"api"})
- * @Route(defaults={"_routeScope": {"api"}})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class UnzerPaymentApplePayController extends AbstractController
 {
     private const INHERIT_PAYMENT_PROCESSING_PARAMETER          = 'inheritPaymentProcessing';
@@ -44,46 +42,22 @@ class UnzerPaymentApplePayController extends AbstractController
     private const MERCHANT_IDENTIFICATION_CERTIFICATE_PARAMETER = 'merchantIdentificationCertificate';
     private const MERCHANT_IDENTIFICATION_KEY_PARAMETER         = 'merchantIdentificationKey';
 
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var SystemConfigService */
-    private $systemConfigService;
-    /** @var Filesystem */
-    private $filesystem;
-    /** @var ConfigReaderInterface */
-    private $configReader;
-    /** @var CertificateManager */
-    private $certificateManager;
-    /** @var EntityRepository */
-    private $salesChannelRepository;
+
 
     public function __construct(
-        ClientFactoryInterface $clientFactory,
-        LoggerInterface $logger,
-        SystemConfigService $systemConfigService,
-        Filesystem $filesystem,
-        ConfigReaderInterface $configReader,
-        CertificateManager $certificateManager,
-        EntityRepository $salesChannelRepository
+        private readonly ClientFactoryInterface $clientFactory,
+        private readonly LoggerInterface $logger,
+        private readonly SystemConfigService $systemConfigService,
+        private readonly Filesystem $filesystem,
+        private readonly ConfigReaderInterface $configReader,
+        private readonly CertificateManager $certificateManager,
+        private readonly EntityRepository $salesChannelRepository
     ) {
-        $this->clientFactory          = $clientFactory;
-        $this->logger                 = $logger;
-        $this->systemConfigService    = $systemConfigService;
-        $this->filesystem             = $filesystem;
-        $this->configReader           = $configReader;
-        $this->certificateManager     = $certificateManager;
-        $this->salesChannelRepository = $salesChannelRepository;
     }
-
-    /**
-     * @Route("/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.update-certificates", methods={"POST"}, defaults={"salesChannelId": null})
-     * @Route("/api/v{version}/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.update-certificates.version", methods={"POST"}, defaults={"salesChannelId": null, "_route_scope": {"api"}})
-     */
+    #[Route(path: '/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}', name: 'api.action.unzer.apple-pay.update-certificates', defaults: ['salesChannelId' => null], methods: ['POST'])]
     public function updateApplePayCertificates(?string $salesChannelId, RequestDataBag $dataBag): JsonResponse
     {
-        $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannel($this->getSalesChannel($salesChannelId)));
+
 
         if ($dataBag->has(self::INHERIT_PAYMENT_PROCESSING_PARAMETER)) {
             $this->logger->debug(sprintf('Payment Processing reference for sales channel %s cleared', $salesChannelId));
@@ -91,33 +65,7 @@ class UnzerPaymentApplePayController extends AbstractController
         }
 
         try {
-            if ($dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && $dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER)) {
-                $certificate = $dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER);
-
-                if (extension_loaded('openssl') && !openssl_x509_parse($certificate)) {
-                    $this->logger->error('Invalid Payment Processing certificate given');
-                    throw new InvalidCertificate('Payment Processing');
-                }
-
-                $privateKeyResource = new ApplePayPrivateKey();
-                $privateKeyResource->setCertificate($dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER));
-
-                $client->getResourceService()->createResource($privateKeyResource->setParentResource($client));
-                /** @var string $privateKeyId */
-                $privateKeyId = $privateKeyResource->getId();
-
-                $certificateResource = new ApplePayCertificate();
-                $certificateResource->setCertificate($certificate);
-                $certificateResource->setPrivateKey($privateKeyId);
-                $client->getResourceService()->createResource($certificateResource->setParentResource($client));
-
-                $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID), $certificateResource->getId(), $salesChannelId);
-                $this->logger->debug(sprintf('Payment Processing certificate for sales channel %s updated', $salesChannelId));
-            } elseif (($dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && !$dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER))
-                || (!$dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && $dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER))) {
-                $this->logger->error('Payment Processing certificate or key missing');
-                throw new MissingCertificateFiles('Payment Processing');
-            }
+            $this->updatePaymentProcessingCertificate($dataBag, $salesChannelId);
 
             if ($dataBag->has(self::INHERIT_MERCHANT_IDENTIFICATION_PARAMETER)) {
                 if ($this->filesystem->has($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId))) {
@@ -142,8 +90,8 @@ class UnzerPaymentApplePayController extends AbstractController
                     throw new InvalidCertificate('Merchant Identification');
                 }
 
-                BackwardsCompatibilityFilesystem::put($this->filesystem, $this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId), $certificate);
-                BackwardsCompatibilityFilesystem::put($this->filesystem, $this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId), $key);
+                $this->filesystem->write($this->certificateManager->getMerchantIdentificationCertificatePathForUpdate($salesChannelId), $certificate);
+                $this->filesystem->write($this->certificateManager->getMerchantIdentificationKeyPathForUpdate($salesChannelId), $key);
 
                 $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_MERCHANT_IDENTIFICATION_CERTIFICATE_ID), (string) $salesChannelId, $salesChannelId);
                 $this->logger->debug(sprintf('Merchant Identification certificate for sales channel %s updated', $salesChannelId));
@@ -188,14 +136,61 @@ class UnzerPaymentApplePayController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.check-certificates", methods={"GET"}, defaults={"salesChannelId": null})
-     * @Route("/api/v{version}/_action/unzer-payment/apple-pay/certificates/{salesChannelId}", name="api.action.unzer.apple-pay.check-certificates.version", methods={"GET"}, defaults={"salesChannelId": null, "_route_scope": {"api"}})
-     */
+    protected function updatePaymentProcessingCertificate(RequestDataBag $dataBag, ?string $salesChannelId):void{
+        if ($dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && $dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER)) {
+            $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannel($this->getSalesChannel($salesChannelId)));
+            $certificate = $dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER);
+
+            if (extension_loaded('openssl') && !openssl_x509_parse($certificate)) {
+                $this->logger->error('Invalid Payment Processing certificate given');
+                throw new InvalidCertificate('Payment Processing');
+            }
+
+            $privateKeyResource = new ApplePayPrivateKey();
+            $privateKeyResource->setCertificate($dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER));
+
+            $client->getResourceService()->createResource($privateKeyResource->setParentResource($client));
+            /** @var string $privateKeyId */
+            $privateKeyId = $privateKeyResource->getId();
+
+            $certificateResource = new ApplePayCertificate();
+            $certificateResource->setCertificate($certificate);
+            $certificateResource->setPrivateKey($privateKeyId);
+            $client->getResourceService()->createResource($certificateResource->setParentResource($client));
+
+            if($this->activateCertificate($certificateResource->getId(), $client)){
+                $this->systemConfigService->set(sprintf('%s%s', ConfigReader::SYSTEM_CONFIG_DOMAIN, ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID), $certificateResource->getId(), $salesChannelId);
+            }else{
+                $this->logger->error('Failed to activate Payment Processing certificate '.$certificateResource->getId());
+                throw new MissingCertificateFiles('Payment Processing');
+            }
+            $this->logger->debug(sprintf('Payment Processing certificate for sales channel %s updated and activated', $salesChannelId));
+        } elseif (($dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && !$dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER))
+            || (!$dataBag->get(self::PAYMENT_PROCESSING_CERTIFICATE_PARAMETER) && $dataBag->get(self::PAYMENT_PROCESSING_KEY_PARAMETER))) {
+            $this->logger->error('Payment Processing certificate or key missing');
+            throw new MissingCertificateFiles('Payment Processing');
+        }
+    }
+
+    public function activateCertificate( string $certificateId, Unzer $unzerClient ): bool {
+        $certificate  = ( new ApplePayCertificate() )
+            ->setId( $certificateId )
+            ->setParentResource( $unzerClient );
+        $responseJson = $unzerClient->getHttpService()->send(
+            '/keypair/applepay/certificates/' . $certificateId . '/activate',
+            $certificate,
+            HttpAdapterInterface::REQUEST_POST
+        );
+        $response     = json_decode( $responseJson, true );
+        return $response['active'] ?? false;
+    }
+
+    #[Route(path: '/api/_action/unzer-payment/apple-pay/certificates/{salesChannelId}', name: 'api.action.unzer.apple-pay.check-certificates', defaults: ['salesChannelId' => null], methods: ['GET'])]
     public function checkApplePayCertificates(RequestDataBag $dataBag): JsonResponse
     {
         $salesChannelId                   = $dataBag->get('salesChannelId', '');
         $paymentProcessingValid           = false;
+        $paymentProcessingActive          = false;
         $paymentProcessingInherited       = false;
         $merchantIdentificationValid      = false;
         $merchantIdentificationInherited  = false;
@@ -206,10 +201,10 @@ class UnzerPaymentApplePayController extends AbstractController
             $merchantIdentificationValid = true;
 
             if (extension_loaded('openssl')) {
-                $certificateData = openssl_x509_parse((string) $this->filesystem->read($this->certificateManager->getMerchantIdentificationCertificatePath($salesChannelId)));
+                $certificateData = openssl_x509_parse($this->filesystem->read($this->certificateManager->getMerchantIdentificationCertificatePath($salesChannelId)));
 
                 if (is_array($certificateData) && array_key_exists('validTo_time_t', $certificateData)) {
-                    $merchantIdentificationValidUntil = \DateTimeImmutable::createFromFormat('U', (string) $certificateData['validTo_time_t']) ?: null;
+                    $merchantIdentificationValidUntil = DateTimeImmutable::createFromFormat('U', (string) $certificateData['validTo_time_t']) ?: null;
                 }
             }
         } elseif ($this->filesystem->has($this->certificateManager->getMerchantIdentificationCertificatePath('')) &&
@@ -218,10 +213,10 @@ class UnzerPaymentApplePayController extends AbstractController
             $merchantIdentificationInherited = true;
 
             if (extension_loaded('openssl')) {
-                $certificateData = openssl_x509_parse((string) $this->filesystem->read($this->certificateManager->getMerchantIdentificationCertificatePath('')));
+                $certificateData = openssl_x509_parse($this->filesystem->read($this->certificateManager->getMerchantIdentificationCertificatePath('')));
 
                 if (is_array($certificateData) && array_key_exists('validTo_time_t', $certificateData)) {
-                    $merchantIdentificationValidUntil = \DateTimeImmutable::createFromFormat('U', (string) $certificateData['validTo_time_t']) ?: null;
+                    $merchantIdentificationValidUntil = DateTimeImmutable::createFromFormat('U', (string) $certificateData['validTo_time_t']) ?: null;
                 }
             }
         }
@@ -231,13 +226,33 @@ class UnzerPaymentApplePayController extends AbstractController
 
         if ($configuration->get(ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID)) {
             $paymentProcessingValid = true;
+            $certificateId = $configuration->get(ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID);
+            $unzerClient = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannel($this->getSalesChannel($salesChannelId)));
+
         } elseif ($baseConfiguration->get(ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID)) {
             $paymentProcessingValid     = true;
             $paymentProcessingInherited = true;
+            $certificateId = $baseConfiguration->get(ConfigReader::CONFIG_KEY_APPLE_PAY_PAYMENT_PROCESSING_CERTIFICATE_ID);
+            $unzerClient = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannel($this->getSalesChannel('')));
+        }
+
+        if(!empty($certificateId) && !empty($unzerClient) && $unzerClient instanceof Unzer) {
+            $certificateResource = new ApplePayCertificate();
+            $certificateResource->setId($certificateId);
+            $certificateResource->setParentResource($unzerClient);
+            $submittedCertificate = $unzerClient->getResourceService()->fetchResource($certificateResource);
+            $paymentProcessingActive = $submittedCertificate->getActive();
         }
 
         return new JsonResponse(
-            new CertificateInformation($paymentProcessingValid, $paymentProcessingInherited, $merchantIdentificationValid, $merchantIdentificationInherited, $merchantIdentificationValidUntil),
+            new CertificateInformation(
+                $paymentProcessingValid,
+                $paymentProcessingActive,
+                $paymentProcessingInherited,
+                $merchantIdentificationValid,
+                $merchantIdentificationInherited,
+                $merchantIdentificationValidUntil
+            ),
             Response::HTTP_OK
         );
     }

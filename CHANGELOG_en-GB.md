@@ -1,3 +1,6 @@
+# 6.0.0
+* Compatibility shopwarer 6.6
+
 # 5.7.1
 * Added compatability for PHP 8.3
 * Removed Kellerkinder name from the plugin and payment method descriptions

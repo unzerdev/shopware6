@@ -111,6 +111,13 @@ Component.register('unzer-payment-detail', {
             return cents / (10 ** Math.min(this.unzerMaxDigits, decimalPrecision));
         },
 
+        formatCurrency(value) {
+            return Shopware.Utils.format.currency(
+                value || 0.0,
+                this.paymentResource.currency
+            );
+        },
+
         isPaylaterPaymentMethod(paymentMethodId) {
             return this.paylaterPaymentMethods.indexOf(paymentMethodId) >= 0;
         }

@@ -53,12 +53,14 @@ Component.register('unzer-payment-history', {
             const data = [];
 
             Object.values(this.paymentResource.transactions).forEach((transaction) => {
-                const amount = this.$options.filters.currency(
+                // const amount = this.$options.filters.currency(
+                //     this.formatAmount(parseFloat(transaction.amount), this.decimalPrecision),
+                //     this.paymentResource.currency
+                // );
+                const amount = this.formatCurrency(
                     this.formatAmount(parseFloat(transaction.amount), this.decimalPrecision),
-                    this.paymentResource.currency
                 );
-
-                const date = this.$options.filters.date(
+                const date = Shopware.Filter.getByName('date')(
                     transaction.date,
                     {
                         hour: 'numeric',
@@ -164,6 +166,12 @@ Component.register('unzer-payment-history', {
 
                 this.isCancelLoading = false;
             });
+        },
+        formatCurrency(value) {
+            return Shopware.Utils.format.currency(
+                value || 0.0,
+                this.paymentResource.currency
+            );
         }
     }
 });

@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelDomain\SalesChannelDomainEntity;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +21,10 @@ use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistratorInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 
+#[AsCommand(
+    name: 'unzer:register-webhooks',
+    description: 'Register the unzer webhook',
+)]
 class RegisterWebhookCommand extends Command
 {
     private WebhookRegistratorInterface $webhookRegistrator;
@@ -39,8 +44,6 @@ class RegisterWebhookCommand extends Command
      */
     protected function configure(): void
     {
-        $this->setName('unzer:register-webhooks');
-        $this->setDescription('Register the unzer webhook');
         $this->addArgument('host', InputArgument::REQUIRED, 'Main Host of the shop. Example: http://www.domain.de');
     }
 

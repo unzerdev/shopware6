@@ -14,12 +14,8 @@ use UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo\UnzerPaymentTransferI
 
 class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransferInfoRepositoryInterface
 {
-    /** @var EntityRepository */
-    private $entityRepository;
-
-    public function __construct(EntityRepository $entityRepository)
+    public function __construct(private readonly EntityRepository $entityRepository)
     {
-        $this->entityRepository = $entityRepository;
     }
 
     /**

@@ -18,6 +18,9 @@ class PaymentTransitionMapperFactory
         $this->transitionMapperCollection = $transitionMapperCollection;
     }
 
+    /**
+     * @throws NoTransitionMapperFoundException
+     */
     public function getTransitionMapper(BasePaymentType $paymentType): AbstractTransitionMapper
     {
         foreach ($this->transitionMapperCollection as $transitionMapper) {

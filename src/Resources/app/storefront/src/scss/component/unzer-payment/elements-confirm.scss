@@ -1,60 +1,60 @@
 .unzer-payment-base {
-    &.has-margin-top {
-        margin-top: 32px;
-    }
-    margin-bottom: 32px;
+  &.has-margin-top {
+    margin-top: 32px;
+  }
+  margin-bottom: 32px;
 }
 
 .unzer-payment-frame-row {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .unzer-payment-error {
-    color: #f27f7f;
+  color: #f27f7f;
 }
 
 .unzer-payment-text-input {
-    height: 34px;
+  height: 34px;
 }
 
 .unzer-payment-saved-cards-wrapper {
-    margin-bottom: 24px;
+  margin-bottom: 24px;
 }
 
 .unzer-payment-date-input {
-    width: 33%;
+  width: 33%;
 }
 
 #unzer-payment-credit-card-icon {
-    float: left;
+  float: left;
 }
 #unzer-payment-credit-card-number {
-    display:  flex;
-    flex-direction: row;
+  display:  flex;
+  flex-direction: row;
 }
 #unzer-payment-credit-card-number-input {
-    width: unset;
-    flex: 1;
+  width: unset;
+  flex: 1;
 }
 
 .unzer-payment-loader {
-    height: 64px;
+  height: 64px;
 }
 
 .unzer-payment-sepa-wrapper-elements {
-    margin-top: 20px;
-    padding: 10px;
+  margin-top: 20px;
+  padding: 10px;
 }
 
 .unzerUI.left.icon.input {
-    height: unset;
+  height: unset;
 }
 
 .unzerUI.left.icon.message.multiline {
-    height: unset;
-    width: unset;
-    overflow: initial;
-    margin-bottom: 1rem;
+  height: unset;
+  width: unset;
+  overflow: initial;
+  margin-bottom: 1rem;
 }
 
 .unzer-payment-birthday {

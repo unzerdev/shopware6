@@ -117,6 +117,10 @@
                         "true": "The Payment Processing certificate is present and valid",
                         "false": "The Payment Processing certificate is missing"
                     },
+                    "paymentProcessingActive": {
+                        "true": "The Payment Processing certificate is active",
+                        "false": "The Payment Processing certificate is inactive"
+                    },
                     "merchantIdentificationValid": {
                         "true": "The Merchant Identification certificate is present",
                         "false": "The Merchant Identification certificate is missing"

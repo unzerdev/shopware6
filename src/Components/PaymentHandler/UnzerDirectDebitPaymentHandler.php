@@ -6,7 +6,7 @@ namespace UnzerPayment6\Components\PaymentHandler;
 
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -39,18 +39,19 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
     protected $paymentType;
 
     public function __construct(
-        ResourceHydratorInterface $basketHydrator,
-        CustomerResourceHydratorInterface $customerHydrator,
-        ResourceHydratorInterface $metadataHydrator,
-        EntityRepository $transactionRepository,
-        ConfigReaderInterface $configReader,
-        TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactoryInterface $clientFactory,
-        RequestStack $requestStack,
-        LoggerInterface $logger,
-        CustomFieldsHelperInterface $customFieldsHelper,
+        ResourceHydratorInterface             $basketHydrator,
+        CustomerResourceHydratorInterface     $customerHydrator,
+        ResourceHydratorInterface             $metadataHydrator,
+        EntityRepository                      $transactionRepository,
+        ConfigReaderInterface                 $configReader,
+        TransactionStateHandlerInterface      $transactionStateHandler,
+        ClientFactoryInterface                $clientFactory,
+        RequestStack                          $requestStack,
+        LoggerInterface                       $logger,
+        CustomFieldsHelperInterface           $customFieldsHelper,
         UnzerPaymentDeviceRepositoryInterface $deviceRepository
-    ) {
+    )
+    {
         parent::__construct(
             $basketHydrator,
             $customerHydrator,
@@ -72,13 +73,14 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
      */
     public function pay(
         AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
-        SalesChannelContext $salesChannelContext
-    ): RedirectResponse {
+        RequestDataBag                $dataBag,
+        SalesChannelContext           $salesChannelContext
+    ): RedirectResponse
+    {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         if (!$this->isPaymentAllowed($transaction->getOrderTransaction()->getId())) {
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
+            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
         }
 
         $registerDirectDebit = $dataBag->has(self::REMEMBER_SEPA_MANDATE_KEY);
@@ -99,9 +101,9 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'dataBag' => $dataBag,
                     'transaction' => $transaction,
-                    'exception'   => $apiException,
+                    'exception' => $apiException,
                 ]
             );
 
@@ -115,13 +117,13 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'dataBag' => $dataBag,
                     'transaction' => $transaction,
-                    'exception'   => $exception,
+                    'exception' => $exception,
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
 
@@ -129,8 +131,8 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
     {
         $currentRequest = $this->getCurrentRequestFromStack($transactionId);
 
-        $isSepaAccepted = ((string) $currentRequest->get('acceptSepaMandate', 'off')) === 'on';
-        $isNewAccount   = ((string) $currentRequest->get('savedDirectDebitDevice', 'new')) === 'new';
+        $isSepaAccepted = ((string)$currentRequest->get('acceptSepaMandate', 'off')) === 'on';
+        $isNewAccount = ((string)$currentRequest->get('savedDirectDebitDevice', 'new')) === 'new';
 
         return ($isSepaAccepted && $isNewAccount) || !$isNewAccount;
     }

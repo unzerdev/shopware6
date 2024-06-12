@@ -6,13 +6,13 @@
                     {% block unzer_payment_detail_container_left %}
                         <sw-description-list class="unzer-payment-detail">
                             <dt>{{ $tc('unzer-payment.paymentDetails.detail.amountRemaining') }}</dt>
-                            <dd>{{ remainingAmount | currency(paymentResource.currency) }}</dd>
+                            <dd>{{ formatCurrency(remainingAmount) }}</dd>
 
                             <dt>{{ $tc('unzer-payment.paymentDetails.detail.amountCancelled') }}</dt>
-                            <dd>{{ cancelledAmount | currency(paymentResource.currency) }}</dd>
+                            <dd>{{ formatCurrency(cancelledAmount) }}</dd>
 
                             <dt>{{ $tc('unzer-payment.paymentDetails.detail.amountCharged') }}</dt>
-                            <dd>{{ chargedAmount | currency(paymentResource.currency) }}</dd>
+                            <dd>{{ formatCurrency(chargedAmount) }}</dd>
 
                             {% block unzer_payment_detail_container_left_inner %}{% endblock %}
                         </sw-description-list>

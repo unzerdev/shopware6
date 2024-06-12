@@ -7,7 +7,7 @@ namespace UnzerPayment6\Components\PaymentHandler;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -45,18 +45,19 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
     protected $paymentType;
 
     public function __construct(
-        ResourceHydratorInterface $basketHydrator,
-        CustomerResourceHydratorInterface $customerHydrator,
-        ResourceHydratorInterface $metadataHydrator,
-        EntityRepository $transactionRepository,
-        ConfigReaderInterface $configReader,
-        TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactoryInterface $clientFactory,
-        RequestStack $requestStack,
-        LoggerInterface $logger,
-        CustomFieldsHelperInterface $customFieldsHelper,
+        ResourceHydratorInterface             $basketHydrator,
+        CustomerResourceHydratorInterface     $customerHydrator,
+        ResourceHydratorInterface             $metadataHydrator,
+        EntityRepository                      $transactionRepository,
+        ConfigReaderInterface                 $configReader,
+        TransactionStateHandlerInterface      $transactionStateHandler,
+        ClientFactoryInterface                $clientFactory,
+        RequestStack                          $requestStack,
+        LoggerInterface                       $logger,
+        CustomFieldsHelperInterface           $customFieldsHelper,
         UnzerPaymentDeviceRepositoryInterface $deviceRepository
-    ) {
+    )
+    {
         parent::__construct(
             $basketHydrator,
             $customerHydrator,
@@ -78,19 +79,20 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
      */
     public function pay(
         AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
-        SalesChannelContext $salesChannelContext
-    ): RedirectResponse {
+        RequestDataBag                $dataBag,
+        SalesChannelContext           $salesChannelContext
+    ): RedirectResponse
+    {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
         if ($this->paymentType === null) {
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Can not process payment without a valid payment resource.');
+            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), 'Can not process payment without a valid payment resource.');
         }
 
-        $customer            = $salesChannelContext->getCustomer();
-        $bookingMode         = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_CARD, BookingMode::CHARGE);
+        $customer = $salesChannelContext->getCustomer();
+        $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_CARD, BookingMode::CHARGE);
         $registerCreditCards = $dataBag->has(self::REMEMBER_CREDIT_CARD_KEY);
-        $saveToDeviceVault   = $this->canSaveToDeviceVault($registerCreditCards, $customer);
+        $saveToDeviceVault = $this->canSaveToDeviceVault($registerCreditCards, $customer);
 
         try {
             $recurrenceType = ($this->deviceRepository->exists($this->paymentType->getId(), $salesChannelContext->getContext()) || $saveToDeviceVault)
@@ -114,9 +116,9 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'dataBag' => $dataBag,
                     'transaction' => $transaction,
-                    'exception'   => $apiException,
+                    'exception' => $apiException,
                 ]
             );
 
@@ -130,13 +132,13 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             $this->logger->error(
                 sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'dataBag' => $dataBag,
                     'transaction' => $transaction,
-                    'exception'   => $exception,
+                    'exception' => $exception,
                 ]
             );
 
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }
 
