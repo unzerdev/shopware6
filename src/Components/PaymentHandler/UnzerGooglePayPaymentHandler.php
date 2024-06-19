@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
+use Exception;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -18,6 +19,7 @@ use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Card;
+use UnzerSDK\Unzer;
 
 class UnzerGooglePayPaymentHandler extends AbstractUnzerPaymentHandler
 {
@@ -78,5 +80,24 @@ class UnzerGooglePayPaymentHandler extends AbstractUnzerPaymentHandler
 
             throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
+    }
+
+    public static function fetchChannelId(Unzer $client): string
+    {
+        try {
+            $keyPair = $client->fetchKeyPair(true);
+            foreach ($keyPair->getPaymentTypes() as $paymentType) {
+                if ($paymentType->type === 'googlepay') {
+                    $channelId = $paymentType->supports[0]->channel ?? null;
+                    if ($channelId) {
+                        return $channelId;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            //silent to return '' at the end
+        }
+        // will only be reached, if no channel id was found
+        return '';
     }
 }

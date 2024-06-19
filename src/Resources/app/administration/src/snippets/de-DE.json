@@ -161,6 +161,9 @@
                 "label": "Merchant Identification Zertifikatsschlüssel (merchant_id.key)"
             }
         },
+        "google-pay": {
+            "gatewayMerchantId": "Gateway Händler ID"
+        },
         "form": {
             "message": {
                 "success": {

@@ -161,6 +161,9 @@
                 "label": "Merchant Identification Certificate Key (Private Key)"
             }
         },
+        "google-pay": {
+            "gatewayMerchantId": "Gateway Merchant ID"
+        },
         "form": {
             "message": {
                 "success": {
