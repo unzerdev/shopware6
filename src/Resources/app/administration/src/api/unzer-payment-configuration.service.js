@@ -61,6 +61,19 @@ class UnzerPaymentConfigurationService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    getGooglePayGatewayMerchantId(salesChannelId) {
+        return this.httpClient
+            .get(
+                `_action/${this.getApiBasePath()}/get-google-pay-gateway-merchant-id?salesChannelId=${salesChannelId||''}`,
+                {
+                    headers: this.getBasicHeaders()
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 Application.addServiceProvider('UnzerPaymentConfigurationService', (container) => {

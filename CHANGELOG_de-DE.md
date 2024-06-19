@@ -1,3 +1,7 @@
+# 6.1.0
+* Google Pay als weitere Zahlungsart hinzugefügt
+* Zertifikatverwaltung Apple Pay verbessert
+
 # 6.0.0
 * Kompatibilität shopware 6.6
 

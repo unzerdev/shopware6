@@ -21,6 +21,7 @@ use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\ConfigReader\KeyPairConfigReader;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
+use UnzerPayment6\Components\PaymentHandler\UnzerGooglePayPaymentHandler;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayPageExtension;
@@ -340,27 +341,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension(GooglePayPageExtension::EXTENSION_NAME, $extension);
     }
 
-    /**
-     * TODO: cache the channel id
-     */
-    private function fetchGooglePayChannelId(PageLoadedEvent $event) {
-        try{
+    private function fetchGooglePayChannelId(PageLoadedEvent $event)
+    {
         $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($event->getSalesChannelContext()));
-        $keyPair = $client->fetchKeyPair(true);
-
-            foreach ( $keyPair->getPaymentTypes() as $paymentType ) {
-                if ( $paymentType->type === 'googlepay' ) {
-                    $channelId = $paymentType->supports[0]->channel ?? null;
-                    if ( $channelId ) {
-                        return $channelId;
-                    }
-                }
-            }
-        } catch ( \Exception $e ) {
-
-        }
-        // will only be reached, if no channel id was found
-        return '';
+        return UnzerGooglePayPaymentHandler::fetchChannelId($client);
     }
 
     private function addPaylaterInstallmentExtension(PageLoadedEvent $event): void

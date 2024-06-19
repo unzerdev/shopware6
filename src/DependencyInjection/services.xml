@@ -11,7 +11,7 @@
             <argument type="string">%kernel.logs_dir%/%%s_%kernel.environment%.log</argument>
         </service>
 
-        <service id="UnzerPayment6\Components\ConfigReader\ConfigReader">
+        <service id="UnzerPayment6\Components\ConfigReader\ConfigReader" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
         </service>
 

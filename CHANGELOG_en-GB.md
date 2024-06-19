@@ -1,5 +1,9 @@
+# 6.1.0
+* Add Google Pay as new payment method
+* Certificate handling Apple Pay improved
+
 # 6.0.0
-* Compatibility shopwarer 6.6
+* Compatibility shopware 6.6
 
 # 5.7.1
 * Added compatability for PHP 8.3

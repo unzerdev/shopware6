@@ -83,7 +83,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_APPLE_PAY,
         self::PAYMENT_ID_PAYLATER_INSTALLMENT,
         self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
-        //self::PAYMENT_ID_GOOGLE_PAY,
+        self::PAYMENT_ID_GOOGLE_PAY,
     ];
 
     public const PAYMENT_METHODS = [
@@ -425,22 +425,22 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
         ],
-//        [
-//            'id'                => self::PAYMENT_ID_GOOGLE_PAY,
-//            'handlerIdentifier' => UnzerGooglePayPaymentHandler::class,
-//            'name'              => 'Google Pay',
-//            'technicalName' => 'unzer_googlepay',
-//            'translations'      => [
-//                'de-DE' => [
-//                    'name'        => 'Google Pay',
-//                    'description' => 'Google Pay mit Unzer payments',
-//                ],
-//                'en-GB' => [
-//                    'name'        => 'Google Pay',
-//                    'description' => 'Google Pay with Unzer payments',
-//                ],
-//            ],
-//        ],
+        [
+            'id'                => self::PAYMENT_ID_GOOGLE_PAY,
+            'handlerIdentifier' => UnzerGooglePayPaymentHandler::class,
+            'name'              => 'Google Pay',
+            'technicalName' => 'unzer_googlepay',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Google Pay',
+                    'description' => 'Google Pay mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'Google Pay',
+                    'description' => 'Google Pay with Unzer payments',
+                ],
+            ],
+        ],
     ];
     private const PLUGIN_VERSION_PAYLATER_INVOICE      = '5.0.0';
     private const PLUGIN_VERSION_PAYLATER_INSTALLMENT  = '5.6.0';
