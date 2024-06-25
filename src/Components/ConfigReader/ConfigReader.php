@@ -29,6 +29,17 @@ class ConfigReader implements ConfigReaderInterface
 
     public const CONFIG_KEY_SHIPPING_STATUS = 'statusForAutomaticShippingNotification';
 
+    public const CONFIG_KEY_GOOGLE_PAY_BOOKING_MODE = 'googlePayBookingMode';
+    public const CONFIG_KEY_GOOGLE_PAY_MERCHANT_ID = 'googlePayMerchantId';
+    public const CONFIG_KEY_GOOGLE_PAY_MERCHANT_NAME = 'googlePayMerchantName';
+    public const CONFIG_KEY_GOOGLE_PAY_CHANNEL_ID = 'googlePayChannelId';
+    public const CONFIG_KEY_GOOGLE_PAY_COUNTRY_CODE = 'googlePayCountryCode';
+    public const CONFIG_KEY_GOOGLE_PAY_CREDIT_CARDS_ALLOWED = 'googlePayCreditCardsAllowed';
+    public const CONFIG_KEY_GOOGLE_PAY_PREPAID_CARDS_ALLOWED = 'googlePayPrepaidCardsAllowed';
+    public const CONFIG_KEY_GOOGLE_PAY_CARD_NETWORKS = 'googlePayCardNetworks';
+    public const CONFIG_KEY_GOOGLE_PAY_BUTTON_COLOR = 'googlePayButtonColor';
+    public const CONFIG_KEY_GOOGLE_PAY_BUTTON_SIZE_MODE = 'googlePayButtonSizeMode';
+
     private SystemConfigService $systemConfigService;
 
     public function __construct(SystemConfigService $systemConfigService)

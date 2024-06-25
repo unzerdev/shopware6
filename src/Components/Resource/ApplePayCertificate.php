@@ -18,6 +18,8 @@ class ApplePayCertificate extends AbstractUnzerResource
 
     protected string $certificate;
 
+    protected ?bool $active;
+
     public function getFormat(): string
     {
         return $this->format;
@@ -65,6 +67,17 @@ class ApplePayCertificate extends AbstractUnzerResource
 
         return $this;
     }
+
+    public function getActive(): bool {
+        return (bool)$this->active;
+    }
+
+    public function setActive( $active ): self {
+        $this->active = (bool)$active;
+
+        return $this;
+    }
+
 
     public function expose()
     {

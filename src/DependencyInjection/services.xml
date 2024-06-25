@@ -8,7 +8,7 @@
             <argument type="string">plugin_unzer_payment</argument>
         </service>
 
-        <service id="UnzerPayment6\Components\ConfigReader\ConfigReader">
+        <service id="UnzerPayment6\Components\ConfigReader\ConfigReader" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
         </service>
 

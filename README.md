@@ -2,10 +2,12 @@
 
 Unzer payment integration for Shopware 6 including the following payment methods:
 * Alipay
+* Apple Pay
 * Bancontact
 * Credit Card
 * EPS
 * Giropay
+* Google Pay
 * iDEAL
 * Invoice
 * PayPal

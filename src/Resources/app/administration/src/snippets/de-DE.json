@@ -117,6 +117,10 @@
                         "true": "Das Payment Processing-Zertifikat ist vorhanden und gültig",
                         "false": "Das Payment Processing-Zertifikat fehlt"
                     },
+                    "paymentProcessingActive": {
+                        "true": "Das Payment Processing-Zertifikat ist aktiv",
+                        "false": "Das Payment Processing-Zertifikat ist nicht aktiv"
+                    },
                     "merchantIdentificationValid": {
                         "true": "Das Merchant Identification-Zertifikat ist vorhanden",
                         "false": "Das Merchant Identification-Zertifikat fehlt"
@@ -156,6 +160,9 @@
             "merchantIdentificationKey": {
                 "label": "Merchant Identification Zertifikatsschlüssel (merchant_id.key)"
             }
+        },
+        "google-pay": {
+            "gatewayMerchantId": "Gateway Händler ID"
         },
         "form": {
             "message": {

@@ -12,6 +12,7 @@ import UnzerPaymentPaylaterInvoicePlugin from "./unzer/unzer-payment.paylater-in
 import UnzerPaymentApplePayPlugin from './unzer/unzer-payment.apple-pay.plugin';
 import UnzerPaymentPaylaterInstallmentPlugin from './unzer/unzer-payment.paylater-installment.plugin';
 import UnzerPaymentPaylaterDirectDebitSecuredPlugin from './unzer/unzer-payment.paylater-direct-debit-secured.plugin';
+import UnzerPaymentGooglePayPlugin from './unzer/unzer-payment.google-pay.plugin';
 
 window.PluginManager.register('UnzerPaymentBase', UnzerPaymentBasePlugin, '[data-unzer-payment-base]');
 window.PluginManager.register('UnzerPaymentCreditCard', UnzerPaymentCreditCardPlugin, '[data-unzer-payment-credit-card]');
@@ -27,6 +28,7 @@ window.PluginManager.register('UnzerPaymentApplePay', UnzerPaymentApplePayPlugin
 window.PluginManager.register('UnzerPaymentPaylaterInvoice', UnzerPaymentPaylaterInvoicePlugin, '[data-unzer-payment-paylater-invoice]');
 window.PluginManager.register('UnzerPaymentPaylaterInstallment', UnzerPaymentPaylaterInstallmentPlugin, '[data-unzer-payment-paylater-installment]');
 window.PluginManager.register('UnzerPaymentPaylaterDirectDebitSecured', UnzerPaymentPaylaterDirectDebitSecuredPlugin, '[data-unzer-payment-paylater-direct-debit-secured]');
+window.PluginManager.register('UnzerPaymentGooglePay', UnzerPaymentGooglePayPlugin, '[data-unzer-payment-google-pay]');
 
 // Necessary for the webpack hot module reloading server
 if (module.hot) {

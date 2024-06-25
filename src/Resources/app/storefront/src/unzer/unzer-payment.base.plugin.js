@@ -82,7 +82,6 @@ export default class UnzerPaymentBasePlugin extends Plugin {
 
         this.setSubmitButtonActive(true);
         this.submitButton.click();
-        this.setSubmitButtonActive(false);
     }
 
     /**

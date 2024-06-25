@@ -38,6 +38,7 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
             merchantIdentificationValid: false,
             merchantIdentificationValidUntil: null,
             paymentProcessingValid: false,
+            paymentProcessingActive: false,
         };
     },
 
@@ -51,7 +52,11 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
         },
 
         parentConfigData() {
-            return this.parentRefs.systemConfig.actualConfigData[this.selectedSalesChannelId] || {};
+            if(this.parentRefs && this.parentRefs.systemConfig && this.parentRefs.systemConfig.actualConfigData) {
+                return this.parentRefs.systemConfig.actualConfigData[this.selectedSalesChannelId] || {};
+            }else{
+                return {};
+            }
         }
     },
 
@@ -79,6 +84,7 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
                         this.merchantIdentificationValid = response.merchantIdentificationValid;
                         this.merchantIdentificationValidUntil = response.merchantIdentificationValidUntil ? new Date(response.merchantIdentificationValidUntil) : null;
                         this.paymentProcessingValid = response.paymentProcessingValid;
+                        this.paymentProcessingActive = response.paymentProcessingActive;
                     }
                 })
                 .finally(() => {
@@ -184,6 +190,9 @@ Shopware.Component.register('unzer-payment-apple-pay-certificates', {
 
         getInheritedValue(name) {
             const systemConfig = this.parentRefs.systemConfig;
+            if(!systemConfig) {
+                return null;
+            }
             if (systemConfig.getInheritedValue && systemConfig.actualConfigData.null) {
                 return systemConfig.getInheritedValue({ name: 'UnzerPayment6.settings.' + name, type: 'text' });
             } else {

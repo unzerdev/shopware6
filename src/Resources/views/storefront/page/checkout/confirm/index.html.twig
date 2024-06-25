@@ -115,4 +115,22 @@
             </div>
         {% endif %}
     {% endblock %}
+
+    {% block unzer_payment_google_pay %}
+        {% set googlePayExtensionName = 'unzerGooglePay' %}
+        {% if page.extensions[googlePayExtensionName] %}
+            {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
+
+            {% set googlePayOptions = page.extensions[googlePayExtensionName].publicConfig|merge({
+                currency: context.currency.isoCode,
+                amount: summary.price.rawTotal ?: summary.price.totalPrice
+            }) %}
+            {% if page.extensions[googlePayExtensionName] %}
+                <div data-unzer-payment-google-pay data-unzer-payment-google-pay-options="{{ googlePayOptions|json_encode }}">
+                    <div id="unzer-google-pay-button"></div>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+
 {% endblock %}
