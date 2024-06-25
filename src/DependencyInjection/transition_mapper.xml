@@ -99,5 +99,13 @@
         <service id="UnzerPayment6\Components\PaymentTransitionMapper\PaylaterDirectDebitSecuredTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>
+
+        <service id="UnzerPayment6\Components\PaymentTransitionMapper\GooglePayTransitionMapper">
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="order_transaction.repository" />
+
+            <tag name="unzer.transition_mapper"/>
+        </service>
+
     </services>
 </container>

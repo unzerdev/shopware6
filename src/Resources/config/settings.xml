@@ -136,4 +136,143 @@
             <helpText lang="de-DE">Die automatische Versandbenachrichtigung wird, wenn aktiv, ausgelöst sobald eine Bestellung den hier ausgewählten Status erhält. Lassen Sie dieses Feld leer, um keine automatischen Versandbenachrichtigungen anzustoßen.</helpText>
         </component>
     </card>
+
+
+    <card>
+        <title>Google Pay</title>
+        <title lang="de-DE">Google Pay</title>
+
+        <input-field type="single-select">
+            <name>googlePayBookingMode</name>
+            <label>Booking mode</label>
+            <label lang="de-DE">Buchungsmodus</label>
+            <helpText>If you select the charge option, the amount is debited immediately; if you select the Authorization option, the amount must be collected manually later.</helpText>
+            <helpText lang="de-DE">Bei der Option Direkt wird der Betrag sofort abgebucht, wählen Sie hingegen die Option Autorisierung muss der Betrag später manuell eingezogen werden.</helpText>
+            <options>
+                <option>
+                    <id>charge</id>
+                    <name>Charge</name>
+                    <name lang="de-DE">Direkt</name>
+                </option>
+                <option>
+                    <id>authorize</id>
+                    <name>Authorize</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="text">
+            <name>googlePayMerchantId</name>
+            <label>Merchant ID</label>
+            <label lang="de-DE">Händler ID</label>
+            <helpText>Provided by Google in the merchant info field</helpText>
+            <helpText lang="de-DE">Wird im Google Konto angezeigt</helpText>
+        </input-field>
+
+        <input-field type="text">
+            <name>googlePayMerchantName</name>
+            <label>Merchant Name</label>
+            <label lang="de-DE">Händler Name</label>
+            <helpText>Provided by Google in the merchant info field</helpText>
+            <helpText lang="de-DE">Wird im Google Konto angezeigt</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>googlePayCountryCode</name>
+            <label>Country Code</label>
+            <label lang="de-DE">Land</label>
+            <helpText>Country code of the acquirer</helpText>
+            <helpText lang="de-DE">Ländercode des Acquirers</helpText>
+            <options>
+                <option>
+                    <id>DK</id>
+                    <name>DK (default)</name>
+                    <name lang="de-DE">DK (Standard)</name>
+                </option>
+                <option>
+                    <id>CH</id>
+                    <name>CH</name>
+                    <name lang="de-DE">CH</name>
+                </option>
+            </options>
+            <default>DK</default>
+        </input-field>
+
+        <input-field type="bool">
+            <name>googlePayCreditCardsAllowed</name>
+            <label>Allow Credit Cards</label>
+            <label lang="de-DE">Kreditkarten zulassen</label>
+        </input-field>
+
+        <input-field type="bool">
+            <name>googlePayPrepaidCardsAllowed</name>
+            <label>Allow Prepaid Cards</label>
+            <label lang="de-DE">Prepaid-Karten zulassen</label>
+        </input-field>
+
+        <input-field type="multi-select">
+            <name>googlePayCardNetworks</name>
+            <label>Allowed Card Networks</label>
+            <label lang="de-DE">Erlaubte Karten Netzwerke</label>
+            <options>
+               <option>
+                    <id>MASTERCARD</id>
+                    <name>MASTERCARD</name>
+                    <name lang="de-DE">MASTERCARD</name>
+                </option>
+                <option>
+                    <id>VISA</id>
+                    <name>VISA</name>
+                    <name lang="de-DE">VISA</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>googlePayButtonColor</name>
+            <label>Button Color</label>
+            <label lang="de-DE">Button Farbe</label>
+            <options>
+                <option>
+                    <id>default</id>
+                    <name>Google's default</name>
+                    <name lang="de-DE">Google Standard</name>
+                </option>
+                <option>
+                    <id>black</id>
+                    <name>Black</name>
+                    <name lang="de-DE">Schwarz</name>
+                </option>
+                <option>
+                    <id>white</id>
+                    <name>White</name>
+                    <name lang="de-DE">Weiß</name>
+                </option>
+            </options>
+            <default>default</default>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>googlePayButtonSizeMode</name>
+            <label>Button Size Mode</label>
+            <label lang="de-DE">Button Größe</label>
+            <options>
+                <option>
+                    <id>fill</id>
+                    <name>Full Width</name>
+                    <name lang="de-DE">Volle Breite</name>
+                </option>
+                <option>
+                    <id>static</id>
+                    <name>Static</name>
+                    <name lang="de-DE">Statisch</name>
+                </option>
+            </options>
+            <default>fill</default>
+        </input-field>
+
+
+    </card>
+
 </config>

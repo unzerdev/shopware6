@@ -1,3 +1,6 @@
+# 5.8.0
+* Google Pay als weitere Zahlungsart hinzugefügt
+
 # 5.7.1
 * Kompatibilität zu PHP 8.3 hergestellt
 * Kellerkinder Name entfernt von Plugin und Zahlungsartbeschreibung

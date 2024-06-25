@@ -18,6 +18,14 @@
                             v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingValid.' + paymentProcessingValid.toString())">
                             <sw-icon :name="paymentProcessingValid ? 'default-basic-checkmark-circle' : 'default-badge-alert'" :small="true"></sw-icon>
                             <span v-html="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingValid.' + paymentProcessingValid.toString())"></span>
+                        </sw-label><br>
+                        <sw-label
+                                v-if="!isDataLoading"
+                                :variant="paymentProcessingActive ? 'success' : 'danger'"
+                                appearance="pill"
+                                v-tooltip="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingActive.' + paymentProcessingActive.toString())">
+                            <sw-icon :name="paymentProcessingActive ? 'default-basic-checkmark-circle' : 'default-badge-alert'" :small="true"></sw-icon>
+                            <span v-html="$tc('unzer-payment-settings.apple-pay.certificates.check.paymentProcessingActive.' + paymentProcessingActive.toString())"></span>
                         </sw-label>
                         <sw-loader size="10px" v-else></sw-loader>
                         <br>

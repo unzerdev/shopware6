@@ -11,6 +11,8 @@ class CertificateInformation extends Struct
 {
     protected bool $paymentProcessingValid;
 
+    protected bool $paymentProcessingActive;
+
     protected bool $paymentProcessingInherited;
 
     protected bool $merchantIdentificationValid;
@@ -19,9 +21,10 @@ class CertificateInformation extends Struct
 
     protected ?DateTimeInterface $merchantIdentificationValidUntil;
 
-    public function __construct(bool $paymentProcessingValid, bool $paymentProcessingInherited, bool $merchantIdentificationValid, bool $merchantIdentificationInherited, ?DateTimeInterface $merchantIdentificationValidUntil)
+    public function __construct(bool $paymentProcessingValid, bool $paymentProcessingActive, bool $paymentProcessingInherited, bool $merchantIdentificationValid, bool $merchantIdentificationInherited, ?DateTimeInterface $merchantIdentificationValidUntil)
     {
         $this->paymentProcessingValid           = $paymentProcessingValid;
+        $this->paymentProcessingActive          = $paymentProcessingActive;
         $this->paymentProcessingInherited       = $paymentProcessingInherited;
         $this->merchantIdentificationValid      = $merchantIdentificationValid;
         $this->merchantIdentificationInherited  = $merchantIdentificationInherited;

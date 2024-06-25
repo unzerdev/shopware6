@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\ConfigReader\ConfigReader;
+use UnzerPayment6\Components\PaymentHandler\UnzerGooglePayPaymentHandler;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistratorInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 
@@ -33,12 +35,13 @@ class UnzerPaymentConfigurationController extends AbstractController
     private $webhookRegistrator;
 
     public function __construct(
-        ClientFactoryInterface $clientFactory,
-        LoggerInterface $logger,
+        ClientFactoryInterface      $clientFactory,
+        LoggerInterface             $logger,
         WebhookRegistratorInterface $webhookRegistrator
-    ) {
-        $this->clientFactory      = $clientFactory;
-        $this->logger             = $logger;
+    )
+    {
+        $this->clientFactory = $clientFactory;
+        $this->logger = $logger;
         $this->webhookRegistrator = $webhookRegistrator;
     }
 
@@ -48,8 +51,8 @@ class UnzerPaymentConfigurationController extends AbstractController
      */
     public function validateCredentials(RequestDataBag $dataBag): JsonResponse
     {
-        $privateKey   = $dataBag->get('privateKey');
-        $publicKey    = $dataBag->get('publicKey');
+        $privateKey = $dataBag->get('privateKey');
+        $publicKey = $dataBag->get('publicKey');
         $responseCode = Response::HTTP_OK;
 
         if (empty($privateKey) || empty($publicKey)) {
@@ -57,7 +60,7 @@ class UnzerPaymentConfigurationController extends AbstractController
         }
 
         try {
-            $client        = $this->clientFactory->createClientFromPrivateKey($privateKey);
+            $client = $this->clientFactory->createClientFromPrivateKey($privateKey);
             $remoteKeypair = $client->fetchKeypair();
 
             if ($remoteKeypair->getPublicKey() !== $publicKey) {
@@ -76,6 +79,32 @@ class UnzerPaymentConfigurationController extends AbstractController
         }
 
         return new JsonResponse([], $responseCode);
+    }
+
+    /**
+     * @Route("/api/_action/unzer-payment/get-google-pay-gateway-merchant-id", name="api.action.unzer.get.google.pay.gateway.merchant.id", methods={"GET"})
+     * @Route("/api/v{version}/_action/unzer-payment/get-google-pay-gateway-merchant-id", name="api.action.unzer.get.google.pay.gateway.merchant.id.version", methods={"GET"})
+     */
+    public function getGooglePayGatewayMerchantId(RequestDataBag $dataBag): JsonResponse
+    {
+        try {
+            $salesChannelId = $dataBag->get('salesChannelId', '');
+
+            /** @var ConfigReader $configReader */
+            $configReader = $this->container->get(ConfigReader::class);
+            $configuration = $configReader->read($salesChannelId);
+            $client = $this->clientFactory->createClientFromPrivateKey($configuration->get(ConfigReader::CONFIG_KEY_PRIVATE_KEY));
+            $channelId = UnzerGooglePayPaymentHandler::fetchChannelId($client);
+            return new JsonResponse([
+                'success' => true,
+                'gatewayMerchantId' => $channelId,
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
