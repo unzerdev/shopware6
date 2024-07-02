@@ -21,6 +21,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerEpsPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerGiropayPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerGooglePayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInstallmentSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
@@ -59,6 +60,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_APPLE_PAY                     = '62490bda54fa48fbb29ed6b9368bafe1';
     public const PAYMENT_ID_PAYLATER_INSTALLMENT          = '12fbfbce271a43a89b3783453b88e9a6';
     public const PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED = '6d6adcd4b7bf40499873c294a85f32ed';
+    public const PAYMENT_ID_GOOGLE_PAY                    = '67b6d50c1ecd11ef9e21d7850819bc50';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -81,6 +83,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_APPLE_PAY,
         self::PAYMENT_ID_PAYLATER_INSTALLMENT,
         self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
+        self::PAYMENT_ID_GOOGLE_PAY,
     ];
 
     public const PAYMENT_METHODS = [
@@ -419,6 +422,22 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name'        => 'Apple Pay',
                     'description' => 'Apple Pay with Unzer payments',
+                ],
+            ],
+        ],
+        [
+            'id'                => self::PAYMENT_ID_GOOGLE_PAY,
+            'handlerIdentifier' => UnzerGooglePayPaymentHandler::class,
+            'name'              => 'Google Pay',
+            'technicalName' => 'unzer_googlepay',
+            'translations'      => [
+                'de-DE' => [
+                    'name'        => 'Google Pay',
+                    'description' => 'Google Pay mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name'        => 'Google Pay',
+                    'description' => 'Google Pay with Unzer payments',
                 ],
             ],
         ],
