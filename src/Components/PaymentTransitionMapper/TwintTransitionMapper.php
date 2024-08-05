@@ -6,19 +6,19 @@ namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
 use UnzerPayment6\Components\PaymentTransitionMapper\Traits\IsBasicPaymentMethodTransitionMapper;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
-use UnzerSDK\Resources\PaymentTypes\Wechatpay;
+use UnzerSDK\Resources\PaymentTypes\Twint;
 
-class WeChatTransitionMapper extends AbstractTransitionMapper
+class TwintTransitionMapper extends AbstractTransitionMapper
 {
     use IsBasicPaymentMethodTransitionMapper;
 
     public function supports(BasePaymentType $paymentType): bool
     {
-        return $paymentType instanceof Wechatpay;
+        return $paymentType instanceof Twint;
     }
 
     protected function getResourceName(): string
     {
-        return Wechatpay::getResourceName();
+        return Twint::getResourceName();
     }
 }

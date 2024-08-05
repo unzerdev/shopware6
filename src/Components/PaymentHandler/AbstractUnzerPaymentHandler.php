@@ -61,77 +61,40 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     /** @var Configuration */
     protected $pluginConfig;
 
-    /** @var LoggerInterface */
-    protected $logger;
-
-    /** @var ResourceHydratorInterface */
-    protected $basketHydrator;
-
-    /** @var CustomerResourceHydratorInterface */
-    protected $customerHydrator;
-
-    /** @var ResourceHydratorInterface */
-    protected $metadataHydrator;
-
-    /** @var EntityRepository */
-    protected $transactionRepository;
-
-    /** @var TransactionStateHandlerInterface */
-    protected $transactionStateHandler;
-
-    /** @var ClientFactoryInterface */
-    protected $clientFactory;
-
-    /** @var ConfigReaderInterface */
-    protected $configReader;
-
-    /** @var RequestStack */
-    protected $requestStack;
-
-    /** @var CustomFieldsHelperInterface */
-    protected $customFieldsHelper;
-
     public function __construct(
-        ResourceHydratorInterface $basketHydrator,
-        CustomerResourceHydratorInterface $customerHydrator,
-        ResourceHydratorInterface $metadataHydrator,
-        EntityRepository $transactionRepository,
-        ConfigReaderInterface $configReader,
-        TransactionStateHandlerInterface $transactionStateHandler,
-        ClientFactoryInterface $clientFactory,
-        RequestStack $requestStack,
-        LoggerInterface $logger,
-        CustomFieldsHelperInterface $customFieldsHelper
-    ) {
-        $this->basketHydrator          = $basketHydrator;
-        $this->customerHydrator        = $customerHydrator;
-        $this->metadataHydrator        = $metadataHydrator;
-        $this->transactionRepository   = $transactionRepository;
-        $this->configReader            = $configReader;
-        $this->transactionStateHandler = $transactionStateHandler;
-        $this->clientFactory           = $clientFactory;
-        $this->requestStack            = $requestStack;
-        $this->logger                  = $logger;
-        $this->customFieldsHelper      = $customFieldsHelper;
+        protected readonly ResourceHydratorInterface         $basketHydrator,
+        protected readonly CustomerResourceHydratorInterface $customerHydrator,
+        protected readonly ResourceHydratorInterface         $metadataHydrator,
+        protected readonly EntityRepository                  $transactionRepository,
+        protected readonly ConfigReaderInterface             $configReader,
+        protected readonly TransactionStateHandlerInterface  $transactionStateHandler,
+        protected readonly ClientFactoryInterface            $clientFactory,
+        protected readonly RequestStack                      $requestStack,
+        protected readonly LoggerInterface                   $logger,
+        protected readonly CustomFieldsHelperInterface       $customFieldsHelper
+    )
+    {
+
     }
 
     public function pay(
         AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
-        SalesChannelContext $salesChannelContext
-    ): RedirectResponse {
+        RequestDataBag                $dataBag,
+        SalesChannelContext           $salesChannelContext
+    ): RedirectResponse
+    {
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
         try {
             $salesChannelId = $salesChannelContext->getSalesChannel()->getId();
 
             $this->pluginConfig = $this->configReader->read($salesChannelId);
-            $this->unzerClient  = $this->clientFactory->createClient(
+            $this->unzerClient = $this->clientFactory->createClient(
                 KeyPairContext::createFromSalesChannelContext($salesChannelContext),
                 empty($currentRequest->getLocale()) ? $currentRequest->getDefaultLocale() : $currentRequest->getLocale()
             );
 
-            $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
+            $this->unzerBasket = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
             $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
             $this->unzerCustomer = $this->getUnzerCustomer($currentRequest->get('unzerCustomerId', ''), $transaction->getOrderTransaction()->getPaymentMethodId(), $salesChannelContext);
 
@@ -148,9 +111,9 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->logger->error(
                 sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => $this->getLoggableRequest($currentRequest),
+                    'request' => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'exception'   => $apiException,
+                    'exception' => $apiException,
                 ]
             );
 
@@ -164,9 +127,9 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->logger->error(
                 sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'request'     => $this->getLoggableRequest($currentRequest),
+                    'request' => $this->getLoggableRequest($currentRequest),
                     'transaction' => $transaction,
-                    'exception'   => $exception,
+                    'exception' => $exception,
                 ]
             );
 
@@ -176,12 +139,13 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
     public function finalize(
         AsyncPaymentTransactionStruct $transaction,
-        Request $request,
-        SalesChannelContext $salesChannelContext
-    ): void {
+        Request                       $request,
+        SalesChannelContext           $salesChannelContext
+    ): void
+    {
         try {
             $this->pluginConfig = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-            $this->unzerClient  = $this->clientFactory->createClient(
+            $this->unzerClient = $this->clientFactory->createClient(
                 KeyPairContext::createFromSalesChannelContext($salesChannelContext)
             );
             $this->payment = $this->unzerClient->fetchPaymentByOrderId(
@@ -200,8 +164,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'request'     => $this->getLoggableRequest($request),
-                    'exception'   => $apiException,
+                    'request' => $this->getLoggableRequest($request),
+                    'exception' => $apiException,
                 ]
             );
 
@@ -211,8 +175,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
                 sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
                     'transaction' => $transaction,
-                    'request'     => $this->getLoggableRequest($request),
-                    'exception'   => $exception,
+                    'request' => $this->getLoggableRequest($request),
+                    'exception' => $exception,
                 ]
             );
 
@@ -225,7 +189,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
         $this->transactionRepository->update(
             [
                 [
-                    'id'           => $transactionId,
+                    'id' => $transactionId,
                     'customFields' => $information,
                 ],
             ],
@@ -254,7 +218,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
     protected function getUnzerCustomer(string $unzerCustomerId, string $paymentMethodId, SalesChannelContext $salesChannelContext): AbstractUnzerResource
     {
-        $customer        = $salesChannelContext->getCustomer();
+        $customer = $salesChannelContext->getCustomer();
         $fetchedCustomer = null;
 
         if (!empty($unzerCustomerId)) {
@@ -300,8 +264,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     {
         $result = [
             'request-info' => sprintf('%s %s %s', $request->getMethod(), $request->getRequestUri(), $request->getScheme()) . "\r\n",
-            'header'       => $request->headers->all(),
-            'content'      => $request->getContent(false),
+            'header' => $request->headers->all(),
+            'content' => $request->getContent(false),
         ];
         $cookies = [];
 

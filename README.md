@@ -6,7 +6,6 @@ Unzer payment integration for Shopware 6 including the following payment methods
 * Bancontact
 * Credit Card
 * EPS
-* Giropay
 * Google Pay
 * iDEAL
 * Invoice
@@ -14,6 +13,7 @@ Unzer payment integration for Shopware 6 including the following payment methods
 * Prepayment
 * SEPA direct debit
 * SOFORT
+* TWINT
 * Unzer Direct
 * Unzer direct debit (secured)
 * Unzer Invoice B2C / B2B (secured)
