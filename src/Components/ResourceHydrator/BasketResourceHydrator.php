@@ -200,7 +200,11 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             }
 
             $amountPerUnit = round($priceGross, $currencyPrecision);
-            $dispatchBasketItem->setVat($taxRate / $taxCounter);
+            if ($taxCounter === 0){
+                $dispatchBasketItem->setVat(0);
+            } else {
+                $dispatchBasketItem->setVat($taxRate / $taxCounter);
+            }
         }
 
         $dispatchBasketItem->setAmountPerUnitGross(round($amountPerUnit, $currencyPrecision));

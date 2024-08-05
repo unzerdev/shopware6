@@ -1,3 +1,7 @@
+# 6.2.0
+* Add TWINT as new payment method
+* Removal / setting inactive of Giropay as payment method
+
 # 6.1.0
 * Add Google Pay as new payment method
 * Certificate handling Apple Pay improved

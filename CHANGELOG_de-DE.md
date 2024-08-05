@@ -1,3 +1,7 @@
+# 6.2.0
+* TWINT als weitere Zahlungsart hinzugefügt
+* Giropay als Zahlungsart entfernt / inaktiv gesetzt
+
 # 6.1.0
 * Google Pay als weitere Zahlungsart hinzugefügt
 * Zertifikatverwaltung Apple Pay verbessert

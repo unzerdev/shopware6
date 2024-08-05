@@ -161,7 +161,9 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
 
     protected function getBlockedPaymentMethods(SalesChannelContext $salesChannelContext): array
     {
-        $paymentMethodIdsToBeRemoved = [];
+        $paymentMethodIdsToBeRemoved = [
+            PaymentInstaller::PAYMENT_ID_GIROPAY,
+        ];
 
         if ($salesChannelContext->getCurrency()->getIsoCode() !== 'EUR') {
             $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED;
