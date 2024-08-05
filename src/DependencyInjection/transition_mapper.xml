@@ -107,5 +107,9 @@
             <tag name="unzer.transition_mapper"/>
         </service>
 
+        <service id="UnzerPayment6\Components\PaymentTransitionMapper\TwintTransitionMapper">
+            <tag name="unzer.transition_mapper"/>
+        </service>
+
     </services>
 </container>

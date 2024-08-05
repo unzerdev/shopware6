@@ -1,3 +1,9 @@
+# 5.9.0
+* TWINT als weitere Zahlungsart hinzugefügt
+
+# 5.8.1
+* Giropay als Zahlungsart entfernt
+
 # 5.8.0
 * Google Pay als weitere Zahlungsart hinzugefügt
 
