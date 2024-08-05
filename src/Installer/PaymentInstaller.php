@@ -34,6 +34,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerPisPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerSofortPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerTwintPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerWeChatPaymentHandler;
 use UnzerPayment6\UnzerPayment6;
 
@@ -61,6 +62,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_PAYLATER_INSTALLMENT          = '12fbfbce271a43a89b3783453b88e9a6';
     public const PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED = '6d6adcd4b7bf40499873c294a85f32ed';
     public const PAYMENT_ID_GOOGLE_PAY                    = '67b6d50c1ecd11ef9e21d7850819bc50';
+    public const PAYMENT_ID_TWINT = '6493b43244eb11efa900b7a80e209d6a';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -84,6 +86,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_PAYLATER_INSTALLMENT,
         self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
         self::PAYMENT_ID_GOOGLE_PAY,
+        self::PAYMENT_ID_TWINT,
     ];
 
     public const PAYMENT_METHODS = [
@@ -148,22 +151,6 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name'        => 'EPS',
                     'description' => 'EPS payments with Unzer payments',
-                ],
-            ],
-        ],
-        [
-            'id'                => self::PAYMENT_ID_GIROPAY,
-            'handlerIdentifier' => UnzerGiropayPaymentHandler::class,
-            'name'              => 'Giropay',
-            'technicalName' => 'unzer_giropay',
-            'translations'      => [
-                'de-DE' => [
-                    'name'        => 'Giropay',
-                    'description' => 'Giropay Zahlungen mit Unzer payments',
-                ],
-                'en-GB' => [
-                    'name'        => 'Giropay',
-                    'description' => 'Giropay payments with Unzer payments',
                 ],
             ],
         ],
@@ -441,10 +428,27 @@ class PaymentInstaller implements InstallerInterface
                 ],
             ],
         ],
+        [
+            'id' => self::PAYMENT_ID_TWINT,
+            'handlerIdentifier' => UnzerTwintPaymentHandler::class,
+            'name' => 'TWINT',
+            'technicalName' => 'unzer_twint',
+            'translations' => [
+                'de-DE' => [
+                    'name' => 'TWINT',
+                    'description' => 'TWINT mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name' => 'TWINT',
+                    'description' => 'TWINT with Unzer payments',
+                ],
+            ],
+        ],
     ];
     private const PLUGIN_VERSION_PAYLATER_INVOICE      = '5.0.0';
     private const PLUGIN_VERSION_PAYLATER_INSTALLMENT  = '5.6.0';
     private const PLUGIN_VERSION_PAYLATER_DIRECT_DEBIT = '5.7.0';
+    private const PLUGIN_VERSION_GIROPAY_REMOVAL = '5.8.1';
 
     // TODO: Adjust this if compatibility is at least 6.5.0.0
     /** @var EntityRepository|\Shopware\Core\Checkout\Payment\DataAbstractionLayer\PaymentMethodRepositoryDecorator */
@@ -544,6 +548,29 @@ class PaymentInstaller implements InstallerInterface
                 $this->paymentMethodRepository->upsert([$upsertPayload], $context->getContext());
             }
         }
+        $this->deprecateGiropay($context);
+    }
+
+    private function deprecateGiropay(InstallContext $context):void
+    {
+        $existingPaymentMethod = $this->paymentMethodRepository->search(new Criteria([self::PAYMENT_ID_GIROPAY]), $context->getContext())->first();
+        if ($existingPaymentMethod === null) {
+            return;
+        }
+
+        $this->paymentMethodRepository->update([[
+            'id' => self::PAYMENT_ID_GIROPAY,
+            'active' => false,
+            'name' => 'Giropay (Veraltet)',
+            'translations'=> [
+                'de-DE' => [
+                    'name' => 'Giropay (Veraltet)',
+                ],
+                'en-GB' => [
+                    'name' => 'Giropay (Deprecated)',
+                ],
+            ],
+        ]], $context->getContext());
     }
 
     private function setAllPaymentMethodsActive(bool $active, InstallContext $context): void

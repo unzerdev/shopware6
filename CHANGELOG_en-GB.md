@@ -1,3 +1,9 @@
+# 5.9.0
+* Add TWINT as new payment method
+
+# 5.8.1
+* Removal of Giropay as payment method
+
 # 5.8.0
 * Add Google Pay as new payment method
 
