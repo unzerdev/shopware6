@@ -21,7 +21,7 @@
     },
     "require": {
         "php": ">=8.2 || <=8.3",
-        "unzerdev/php-sdk": "~3.7.0",
+        "unzerdev/php-sdk": "~3.6.0",
         "shopware/core": "~6.6.0",
         "shopware/administration": "~6.6.0",
         "shopware/storefront": "~6.6.0"
