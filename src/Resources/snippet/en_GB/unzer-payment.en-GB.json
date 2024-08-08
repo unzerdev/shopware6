@@ -20,6 +20,7 @@
             "creditCard": {
                 "new": "Use another credit card",
                 "number": "Card number:",
+                "holder": "Card holder:",
                 "cvc": "CVC:",
                 "expiry": "Expiry:",
                 "testData": {
