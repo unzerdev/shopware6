@@ -20,6 +20,7 @@
             "creditCard": {
                 "new": "Eine andere Kreditkarte verwenden",
                 "number": "Kreditkartennummer",
+                "holder": "Karteninhaber",
                 "cvc": "CVC:",
                 "expiry": "Ablaufdatum:",
                 "testData": {
