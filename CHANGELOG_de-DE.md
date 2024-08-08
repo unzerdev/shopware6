@@ -1,3 +1,6 @@
+# 6.2.1
+* Cardholder Name in Kreditkarten-Checkout hinzugefügt 
+
 # 6.2.0
 * TWINT als weitere Zahlungsart hinzugefügt
 * Giropay als Zahlungsart entfernt / inaktiv gesetzt

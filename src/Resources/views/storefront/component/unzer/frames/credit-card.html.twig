@@ -86,6 +86,17 @@
                 </div>
             {% endblock %}
 
+            {% block unzer_payment_frame_credit_card_holder %}
+                <div class="unzer-payment-frame-row">
+                    <label for="unzer-payment-credit-card-number">{{ "UnzerPayment.frame.creditCard.holder"|trans }}</label>
+                    <div id="unzer-payment-credit-card-holder" class="unzer-payment-text-input form-control"></div>
+                    <div id="unzer-payment-credit-card-holder-error" class="unzer-payment-error" hidden>
+                        <div class="unzer-payment-error-message">
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+
             {% block unzer_payment_frame_credit_card_remember %}
                 {% if not context.customer.guest %}
                     <div class="unzer-payment-frame-row custom-control custom-checkbox">

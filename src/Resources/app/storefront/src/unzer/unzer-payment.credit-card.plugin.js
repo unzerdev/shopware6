@@ -4,6 +4,7 @@ import DomAccess from 'src/helper/dom-access.helper';
 export default class UnzerPaymentCreditCardPlugin extends Plugin {
     static options = {
         numberFieldId: 'unzer-payment-credit-card-number',
+        holderFieldId: 'unzer-payment-credit-card-holder',
         numberFieldInputId: 'unzer-payment-credit-card-number-input',
         expiryFieldId: 'unzer-payment-credit-card-expiry',
         cvcFieldId: 'unzer-payment-credit-card-cvc',
@@ -36,6 +37,11 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
      */
     static _unzerPaymentPlugin = null;
 
+    static cvcValid = false;
+    static numberValid = false;
+    static expiryValid = false;
+    static holderValid = false;
+
     init() {
         this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
 
@@ -59,6 +65,11 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
 
         this.creditCard.create('number', {
             containerId: this.options.numberFieldInputId,
+            onlyIframe: true
+        });
+
+        this.creditCard.create('holder', {
+            containerId: this.options.holderFieldId,
             onlyIframe: true
         });
 
@@ -158,12 +169,15 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
             this.numberValid = event.success;
         } else if (event.type === 'expiry') {
             this.expiryValid = event.success;
+        } else if (event.type === 'holder') {
+            this.holderValid = event.success;
         }
 
         this._unzerPaymentPlugin.setSubmitButtonActive(
             this.cvcValid === true &&
             this.numberValid === true &&
-            this.expiryValid === true
+            this.expiryValid === true &&
+            this.holderValid === true
         );
     }
 

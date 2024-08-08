@@ -1,3 +1,6 @@
+# 6.2.1
+* Added cardholder name to creditcard checkout
+
 # 6.2.0
 * Add TWINT as new payment method
 * Removal / setting inactive of Giropay as payment method
