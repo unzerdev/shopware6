@@ -1,3 +1,6 @@
+# 5.9.1
+* Cardholder Name in Kreditkarten-Checkout hinzugefügt
+
 # 5.9.0
 * TWINT als weitere Zahlungsart hinzugefügt
 

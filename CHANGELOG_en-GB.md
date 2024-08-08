@@ -1,3 +1,6 @@
+# 5.9.1
+* Added cardholder name to creditcard checkout
+
 # 5.9.0
 * Add TWINT as new payment method
 
