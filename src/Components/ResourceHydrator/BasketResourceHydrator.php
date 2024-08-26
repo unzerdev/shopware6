@@ -89,6 +89,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
+            if ($lineItem->getProductId() === null && $lineItem->getParentId() === null) {
+                continue;
+            }
+            
             if ($this->isCustomProduct($lineItemCollection, $lineItem)) {
                 continue;
             }
@@ -218,6 +222,9 @@ class BasketResourceHydrator implements ResourceHydratorInterface
     protected function getAmount($lineItem, float $price): float
     {
         if ($price < 0 && $this->isPromotionLineItem($lineItem)) {
+            if ($lineItem->getQuantity() > 1) {
+                $price = $price / $lineItem->getQuantity();
+            }
             return $price * -1;
         }
 
