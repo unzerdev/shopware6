@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentTransitionMapper;
 
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperException;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\PaylaterInvoice;
+use UnzerSDK\Resources\TransactionTypes\Authorization;
 
 class PaylaterInvoiceTransitionMapper extends AbstractTransitionMapper
 {
@@ -32,6 +34,14 @@ class PaylaterInvoiceTransitionMapper extends AbstractTransitionMapper
             }
 
             throw new TransitionMapperException($this->getResourceName());
+        }
+
+        if ($this->stateMachineTransitionExists(AbstractTransitionMapper::CONST_KEY_AUTHORIZE) && $paymentObject->isPending()) {
+            $authorization = $paymentObject->getAuthorization();
+
+            if ($authorization instanceof Authorization && $authorization->isSuccess()) {
+                return constant(sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
+            }
         }
 
         return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));

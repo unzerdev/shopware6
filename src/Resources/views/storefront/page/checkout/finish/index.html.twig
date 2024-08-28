@@ -5,6 +5,9 @@
 
     {% block page_checkout_finish_details_unzer_paymenttransfer_information %}
         {% for transaction in page.order.transactions %}
+            {% if transaction.paymentMethodId == constant('UnzerPayment6\\Installer\\PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE') %}
+                {% continue %}
+            {% endif %}
             {% if transaction.extensions.unzerTransferInfo is defined and transaction.extensions.unzerTransferInfo is not null %}
                 {% sw_include '@Storefront/storefront/component/unzer/finish/transfer-information.html.twig' with {
                     'transferInformation': transaction.extensions.unzerTransferInfo
