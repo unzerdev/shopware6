@@ -3,9 +3,9 @@
 
     {% block unzer_payment_column_transaction %}
         <template #column-unzerPaymentTransactionId="{ item }">
-            <b v-if="item.transactions && item.transactions.last() && item.transactions.last().customFields && item.transactions.last().customFields.unzer_payment_is_transaction">
+            <span v-if="item.transactions && item.transactions.last() && item.transactions.last().customFields && item.transactions.last().customFields.unzer_payment_is_transaction">
                 {{ item.transactions.last().id }}
-            </b>
+            </span>
         </template>
     {% endblock %}
 {% endblock %}

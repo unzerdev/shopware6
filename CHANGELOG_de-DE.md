@@ -1,3 +1,11 @@
+# 5.9.2
+* Rechnungskauf und Ratenkauf: Anpassung Zahlungsstatus für neue Bestellungen
+* Invoice Paylater: Entfernen der Payment-Informationen auf Success-Page, Daten wurden bereits per Mail an den Kunden geschickt
+* Anpassung "font weight" für Unzer Transaktions-ID in Bestellübersicht
+* Plugin-Logo in Backend mit korrekten Dimensionen
+* "Zahlungspflichtig bestellen" Button aktivieren bei gespeicherten Zahlungsmethoden
+* EPS: Entfernung Bank Feld
+
 # 5.9.1
 * Cardholder Name in Kreditkarten-Checkout hinzugefügt
 

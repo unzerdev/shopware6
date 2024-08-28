@@ -1,6 +1,5 @@
 import UnzerPaymentBasePlugin from './unzer/unzer-payment.base.plugin';
 import UnzerPaymentCreditCardPlugin from './unzer/unzer-payment.credit-card.plugin';
-import UnzerPaymentEpsPlugin from './unzer/unzer-payment.eps.plugin';
 import UnzerPaymentInstallmentSecuredPlugin from './unzer/unzer-payment.installment-secured.plugin';
 import UnzerPaymentIdealPlugin from './unzer/unzer-payment.ideal.plugin';
 import UnzerPaymentInvoicePlugin from './unzer/unzer-payment.invoice.plugin';
@@ -16,7 +15,6 @@ import UnzerPaymentGooglePayPlugin from './unzer/unzer-payment.google-pay.plugin
 
 window.PluginManager.register('UnzerPaymentBase', UnzerPaymentBasePlugin, '[data-unzer-payment-base]');
 window.PluginManager.register('UnzerPaymentCreditCard', UnzerPaymentCreditCardPlugin, '[data-unzer-payment-credit-card]');
-window.PluginManager.register('UnzerPaymentEps', UnzerPaymentEpsPlugin, '[data-unzer-payment-eps]');
 window.PluginManager.register('UnzerPaymentIdeal', UnzerPaymentIdealPlugin, '[data-unzer-payment-ideal]');
 window.PluginManager.register('UnzerPaymentInvoice', UnzerPaymentInvoicePlugin, '[data-unzer-payment-invoice]');
 window.PluginManager.register('UnzerPaymentInvoiceSecured', UnzerPaymentInvoiceSecuredPlugin, '[data-unzer-payment-invoice-secured]');
