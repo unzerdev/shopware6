@@ -50,7 +50,6 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
 
         if (this.options.hasSavedCards) {
             const unzerPaymentElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
-
             unzerPaymentElementWrapper.hidden = true;
         } else {
             this._unzerPaymentPlugin.setSubmitButtonActive(false);
@@ -171,6 +170,14 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
             this.expiryValid = event.success;
         } else if (event.type === 'holder') {
             this.holderValid = event.success;
+        }
+
+        if(this.options.hasSavedCards){
+            const checkedRadioButton = DomAccess.querySelector(this.el, this.options.selectedRadioButtonSelector);
+            if (checkedRadioButton && checkedRadioButton.id !== this.options.radioButtonNewId) {
+                this._unzerPaymentPlugin.setSubmitButtonActive(true);
+                return;
+            }
         }
 
         this._unzerPaymentPlugin.setSubmitButtonActive(

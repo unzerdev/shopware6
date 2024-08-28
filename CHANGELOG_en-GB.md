@@ -1,3 +1,11 @@
+# 6.2.2
+* Invoice and Installment : Adjust Payment Status for New Orders to be Authorized
+* Invoice Paylater: Delete the payment information in the order success page. Information is already sent by mail to end customer
+* Adjust font weight for Unzer transaction ID in order overview
+* Use plugin logo with correct dimensions in backend
+* Enable “Pay” Button when saved payments are used
+* EPS: Remove Bank Field
+
 # 6.2.1
 * Added cardholder name to creditcard checkout
 
