@@ -40,6 +40,8 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_GOOGLE_PAY_BUTTON_COLOR = 'googlePayButtonColor';
     public const CONFIG_KEY_GOOGLE_PAY_BUTTON_SIZE_MODE = 'googlePayButtonSizeMode';
 
+    public const CONFIG_KEY_PAYPAL_SHOW_SAVE_ACCOUNT = 'paypalShowSaveAccount';
+
     private SystemConfigService $systemConfigService;
 
     public function __construct(SystemConfigService $systemConfigService)
