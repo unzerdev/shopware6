@@ -14,6 +14,20 @@ class PayPalPageExtension extends Struct
     /** @var UnzerPaymentDeviceEntity[] */
     protected $payPalAccounts = [];
 
+    protected array $publicConfig = [];
+
+    public function getPublicConfig(): array
+    {
+        return $this->publicConfig;
+    }
+
+    public function setPublicConfig(array $publicConfig): self
+    {
+        $this->publicConfig = $publicConfig;
+
+        return $this;
+    }
+
     public function addPayPalAccount(UnzerPaymentDeviceEntity $paypalAccount): self
     {
         $this->payPalAccounts[] = $paypalAccount;

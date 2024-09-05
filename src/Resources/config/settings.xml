@@ -137,6 +137,19 @@
         </component>
     </card>
 
+    <card>
+        <title>PayPal</title>
+        <title lang="de-DE">PayPal</title>
+
+        <input-field type="bool">
+            <name>paypalShowSaveAccount</name>
+            <label>Show 'Save PayPal Account for next order' on checkout</label>
+            <label lang="de-DE">Zeige 'PayPal Account für die nächste Bestellung speichern' auf Checkout-Seite</label>
+            <helpText>You need to have a 'PayPal Billing Agreement' with PayPal to make this work.</helpText>
+            <helpText lang="de-DE">Sie müssen ein 'PayPal Billing Agreement' mit PayPal haben, um dieses Feature nutzen zu können.</helpText>
+        </input-field>
+    </card>
+
 
     <card>
         <title>Google Pay</title>

@@ -1,6 +1,6 @@
 {% block unzer_payment_frame_paypal_account %}
     {% set hasSavedAccounts = page.extensions.unzerPayPal.payPalAccounts|length > 0 %}
-    {% set showAccountSave = not context.customer.guest %}
+    {% set showAccountSave = not context.customer.guest and page.extensions.unzerPayPal.publicConfig.paypalShowSaveAccount %}
     {% set showTitle = hasSavedAccounts or showAccountSave %}
 
     {% block unzer_payment_checkout_confirm_frame_card_body_title %}

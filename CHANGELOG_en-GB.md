@@ -1,3 +1,8 @@
+# 5.9.3
+* Invoice (Paylater): Charge without Invoice document possible
+* "Save Paypal Account" now optional
+* Prevented lineItems with no Parent ID and Product ID to be hydrated
+
 # 5.9.2
 * Invoice and Installment : Adjust Payment Status for New Orders to be Authorized
 * Invoice Paylater: Delete the payment information in the order success page. Information is already sent by mail to end customer 
