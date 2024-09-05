@@ -1,3 +1,8 @@
+# 6.2.3
+* Rechnungskauf: Charge ohne Rechnungsdokument möglich
+* "Paypal Account speichern" nun optional
+* Korrektur für Warenkorb-Items ohne Parent-ID oder Produkt-ID
+
 # 6.2.2
 * Rechnungskauf und Ratenkauf: Anpassung Zahlungsstatus für neue Bestellungen
 * Invoice Paylater: Entfernen der Payment-Informationen auf Success-Page, Daten wurden bereits per Mail an den Kunden geschickt
