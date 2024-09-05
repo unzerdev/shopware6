@@ -262,6 +262,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $extension->addPayPalAccount($payPalAccount);
         }
 
+        $extension->setPublicConfig([
+            'paypalShowSaveAccount' => $this->configData->get(ConfigReader::CONFIG_KEY_PAYPAL_SHOW_SAVE_ACCOUNT),
+        ]);
+
         $event->getPage()->addExtension(PayPalPageExtension::EXTENSION_NAME, $extension);
     }
 
