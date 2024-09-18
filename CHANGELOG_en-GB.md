@@ -1,3 +1,6 @@
+# 6.2.4
+* Update Basket Conversion functionality
+
 # 6.2.3
 * Invoice (Paylater): Charge without Invoice document possible
 * "Save Paypal Account" now optional
