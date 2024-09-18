@@ -1,3 +1,6 @@
+# 5.9.4
+* Update Basket Conversion 
+
 # 5.9.3
 * Rechnungskauf: Charge ohne Rechnungsdokument möglich
 * "Paypal Account speichern" nun optional
