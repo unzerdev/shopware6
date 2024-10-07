@@ -31,8 +31,9 @@ class BasketResourceHydrator implements ResourceHydratorInterface
      */
     public function hydrateObject(
         SalesChannelContext $channelContext,
-        $transaction = null
-    ): AbstractUnzerResource {
+                            $transaction = null
+    ): AbstractUnzerResource
+    {
         if (!($transaction instanceof AsyncPaymentTransactionStruct) && !($transaction instanceof OrderTransactionEntity)) {
             throw new InvalidArgumentException('Transaction struct can not be null');
         }
@@ -43,22 +44,26 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             throw new InvalidArgumentException('Order can not be null');
         }
 
+        if ($transaction instanceof AsyncPaymentTransactionStruct) {
+            $transactionId = $transaction->getOrderTransaction()->getId();
+        } else {
+            $transactionId = $transaction->getId();
+        }
+        return $this->generateUnzerBasket($order, $transactionId, $channelContext);
+    }
+
+    public function generateUnzerBasket(OrderEntity $order, string $transactionId, SalesChannelContext $channelContext): Basket
+    {
         /** @var int $currencyPrecision */
         $currencyPrecision = $order->getCurrency() !== null ? min(
             $order->getCurrency()->getItemRounding()->getDecimals(),
             UnzerPayment6::MAX_DECIMAL_PRECISION
         ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
 
-        if ($transaction instanceof AsyncPaymentTransactionStruct) {
-            $transactionId = $transaction->getOrderTransaction()->getId();
-        } else {
-            $transactionId = $transaction->getId();
-        }
-
         $unzerBasket = new Basket();
         $unzerBasket->setOrderId($transactionId);
         $unzerBasket->setTotalValueGross(round($order->getAmountTotal(), $currencyPrecision));
-        $unzerBasket->setCurrencyCode($channelContext->getCurrency()->getIsoCode());
+        $unzerBasket->setCurrencyCode($order->getCurrency()->getIsoCode());
 
         if ($order->getLineItems() !== null) {
             $this->hydrateLineItems(
@@ -76,106 +81,78 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $this->getShippingMethodName($channelContext->getShippingMethod())
         );
 
+        $this->makeBasketValid($unzerBasket, $currencyPrecision);
+
         return $unzerBasket;
     }
 
     protected function hydrateLineItems(
         OrderLineItemCollection $lineItemCollection,
-        Basket $unzerBasket,
-        int $currencyPrecision,
-        string $taxStatus
-    ): void {
+        Basket                  $unzerBasket,
+        int                     $currencyPrecision,
+        ?string                 $taxStatus
+    ): void
+    {
         $customProductLabels = $this->mapCustomProductsLabel($lineItemCollection);
 
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
-            if ($lineItem->getProductId() === null && $lineItem->getParentId() === null) {
-                continue;
-            }
-
             if ($this->isCustomProduct($lineItemCollection, $lineItem)) {
                 continue;
             }
-
-            if ($lineItem->getPrice() === null) {
-                $basketItem = new BasketItem();
-                $basketItem->setTitle($lineItem->getLabel());
-                $basketItem->setAmountPerUnitGross(round($this->getAmount($lineItem, $lineItem->getUnitPrice()), $currencyPrecision));
-                $basketItem->setQuantity($lineItem->getQuantity());
-
-                if ($this->isFreeBasketItem($basketItem, $currencyPrecision)) {
-                    continue;
-                }
-
-                $unzerBasket->addBasketItem($basketItem);
-
-                continue;
-            }
-
-            $amountTax  = 0.0;
-            $taxRate    = 0;
-            $taxCounter = 0;
-            /** @var CalculatedTax $tax */
-            foreach ($lineItem->getPrice()->getCalculatedTaxes() as $tax) {
-                $amountTax += round($this->getAmount($lineItem, $tax->getTax()), $currencyPrecision);
-                $taxRate += $tax->getTaxRate();
-                ++$taxCounter;
-            }
-
-            if ($this->isPromotionLineItem($lineItem)) {
-                $unitPrice      = 0;
-                $amountGross    = 0;
-                $amountDiscount = round(
-                    $this->getAmount($lineItem, $lineItem->getTotalPrice()),
-                    $currencyPrecision
-                );
-
-                if ($taxStatus === CartPrice::TAX_STATE_NET) {
-                    $amountDiscount += $amountTax;
-                }
-            } else {
-                $unitPrice      = round($this->getAmount($lineItem, $lineItem->getUnitPrice()), $currencyPrecision);
-                $amountGross    = round($this->getAmount($lineItem, $lineItem->getTotalPrice()), $currencyPrecision);
-                $amountDiscount = 0;
-
-                if ($taxStatus === CartPrice::TAX_STATE_NET) {
-                    $amountGross += $amountTax;
-
-                    $unitPrice = round($amountGross / $lineItem->getQuantity(), $currencyPrecision);
-                }
-            }
-
+            $basketItem = new BasketItem();
             $label = $lineItem->getLabel();
-
             if (!empty($customProductLabels) && array_key_exists($lineItem->getId(), $customProductLabels)) {
                 $label = $customProductLabels[$lineItem->getId()]
                     ? sprintf('%s: %s', $lineItem->getLabel(), $customProductLabels[$lineItem->getId()])
                     : $lineItem->getLabel();
             }
-
-            $basketItem = new BasketItem();
             $basketItem->setTitle($label);
-            $basketItem->setAmountPerUnitGross(round($unitPrice, $currencyPrecision));
             $basketItem->setQuantity($lineItem->getQuantity());
-            $basketItem->setVat($taxCounter === 0 ? 0 : $taxRate / $taxCounter);
-            $basketItem->setType($this->getLineItemType($lineItem));
-            $basketItem->setAmountDiscountPerUnitGross(round($amountDiscount, $currencyPrecision));
+            $basketItem->setType($lineItem->getUnitPrice() < 0 ? BasketItemTypes::VOUCHER : BasketItemTypes::GOODS);
             $basketItem->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
 
-            if ($this->isFreeBasketItem($basketItem, $currencyPrecision)) {
-                continue;
+            $taxCounter = 0;
+            $amountTax = 0.0;
+            $taxRate = 0;
+            $unitPrice = $lineItem->getUnitPrice();
+
+            if ($lineItem->getPrice() !== null) {
+                /** @var CalculatedTax $tax */
+                foreach ($lineItem->getPrice()->getCalculatedTaxes() as $tax) {
+                    $amountTax += round($tax->getTax(), $currencyPrecision);
+                    $taxRate += $tax->getTaxRate();
+                    $taxCounter++;
+                }
+                $amountGross = round($lineItem->getTotalPrice(), $currencyPrecision);
+                if ($taxStatus === CartPrice::TAX_STATE_NET) {
+                    $amountGross += $amountTax;
+                }
+                $unitPrice = $amountGross / $lineItem->getQuantity();
             }
 
-            $unzerBasket->addBasketItem($basketItem);
+            $basketItem->setVat($taxCounter === 0 ? 0 : $taxRate / $taxCounter);
+
+            $unitPrice = round($unitPrice, $currencyPrecision);
+            if ($unitPrice > 0) {
+                $basketItem->setAmountPerUnitGross($unitPrice);
+            } else {
+                $basketItem->setAmountDiscountPerUnitGross(abs($unitPrice));
+            }
+
+            if (!$this->isFreeBasketItem($basketItem, $currencyPrecision)) {
+                $unzerBasket->addBasketItem($basketItem);
+            }
         }
     }
 
     protected function hydrateShippingCosts(
         OrderEntity $order,
-        Basket $basket,
-        int $currencyPrecision,
-        string $shippingMethodName
-    ): void {
+        Basket      $basket,
+        int         $currencyPrecision,
+        string      $shippingMethodName
+    ): void
+    {
         $shippingCosts = $order->getShippingCosts();
 
         $dispatchBasketItem = new BasketItem();
@@ -187,8 +164,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $amountPerUnit = round($shippingCosts->getUnitPrice(), $currencyPrecision);
         } else {
             $priceGross = 0.00;
-            $amountVat  = 0.00;
-            $taxRate    = 0;
+            $amountVat = 0.00;
+            $taxRate = 0;
             $taxCounter = 0;
 
             /** @var CalculatedTax $tax */
@@ -204,11 +181,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             }
 
             $amountPerUnit = round($priceGross, $currencyPrecision);
-            if ($taxCounter === 0){
-                $dispatchBasketItem->setVat(0);
-            } else {
-                $dispatchBasketItem->setVat($taxRate / $taxCounter);
-            }
+            $dispatchBasketItem->setVat($taxCounter > 0 ? ($taxRate / $taxCounter) : 0);
         }
 
         $dispatchBasketItem->setAmountPerUnitGross(round($amountPerUnit, $currencyPrecision));
@@ -218,33 +191,6 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         }
 
         $basket->addBasketItem($dispatchBasketItem);
-    }
-
-    /**
-     * @param LineItem|OrderLineItemEntity $lineItem
-     */
-    protected function getAmount($lineItem, float $price): float
-    {
-        if ($price < 0 && $this->isPromotionLineItem($lineItem)) {
-            if ($lineItem->getQuantity() > 1) {
-                $price = $price / $lineItem->getQuantity();
-            }
-            return $price * -1;
-        }
-
-        return $price;
-    }
-
-    /**
-     * @param LineItem|OrderLineItemEntity $lineItem
-     */
-    protected function getLineItemType($lineItem): string
-    {
-        if ($this->isPromotionLineItem($lineItem)) {
-            return BasketItemTypes::VOUCHER;
-        }
-
-        return BasketItemTypes::GOODS;
     }
 
     protected function mapCustomProductsLabel(OrderLineItemCollection $lineItemCollection): array
@@ -269,22 +215,11 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         return $customProductsLabel;
     }
 
-    /**
-     * @param LineItem|OrderLineItemEntity $lineItem
-     */
-    protected function isPromotionLineItem($lineItem): bool
-    {
-        if ($lineItem instanceof OrderLineItemEntity) {
-            return !$lineItem->getGood();
-        }
-
-        return !$lineItem->isGood();
-    }
-
     protected function isCustomProduct(
         OrderLineItemCollection $lineItemCollection,
-        OrderLineItemEntity $lineItemEntity
-    ): bool {
+        OrderLineItemEntity     $lineItemEntity
+    ): bool
+    {
         if (!class_exists(CustomizedProductsCartDataCollector::class)) {
             return false;
         }
@@ -303,8 +238,9 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function isParentCustomProduct(
         OrderLineItemCollection $lineItemCollection,
-        OrderLineItemEntity $lineItemEntity
-    ): bool {
+        OrderLineItemEntity     $lineItemEntity
+    ): bool
+    {
         if (!class_exists(CustomizedProductsCartDataCollector::class)) {
             return false;
         }
@@ -344,10 +280,32 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function isFreeBasketItem(BasketItem $basketItem, int $currencyPrecision): bool
     {
-        if ((int) round($basketItem->getAmountPerUnitGross() * (10 ** $currencyPrecision)) === 0 && (int) round($basketItem->getAmountDiscountPerUnitGross() * (10 ** $currencyPrecision)) === 0) {
+        if ((int)round($basketItem->getAmountPerUnitGross() * (10 ** $currencyPrecision)) === 0 && (int)round($basketItem->getAmountDiscountPerUnitGross() * (10 ** $currencyPrecision)) === 0) {
             return true;
         }
 
         return false;
+    }
+
+    private function makeBasketValid(Basket $unzerBasket, int $currencyPrecision)
+    {
+        $total = $unzerBasket->getTotalValueGross();
+        foreach($unzerBasket->getBasketItems() as $item) {
+            $total -= $item->getAmountPerUnitGross() * $item->getQuantity();
+            $total += $item->getAmountDiscountPerUnitGross() * $item->getQuantity();
+        }
+        if(number_format($total, $currencyPrecision) !== number_format(0, $currencyPrecision)) {
+            $basketItem = new BasketItem();
+            $basketItem->setTitle('Unzer Shortfall');
+            $basketItem->setQuantity(1);
+            if($total > 0) {
+                $basketItem->setAmountPerUnitGross($total);
+                $basketItem->setType(BasketItemTypes::GOODS);
+            } else {
+                $basketItem->setAmountDiscountPerUnitGross(abs($total));
+                $basketItem->setType(BasketItemTypes::VOUCHER);
+            }
+            $unzerBasket->addBasketItem($basketItem);
+        }
     }
 }
