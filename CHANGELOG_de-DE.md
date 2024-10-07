@@ -1,3 +1,6 @@
+# 6.2.5
+* Update zur Verbesserung der Kompatibilität mit anderen 3rd-Party-Plugins
+
 # 6.2.4
 * Update Basket Conversion
 
