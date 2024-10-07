@@ -13,7 +13,7 @@
         </template>
 
         <template v-if="element.name == 'UnzerPayment6.settings.googlePayMerchantName'">
-            <sw-text-field :value="getUnzerGooglePayGatewayMerchantId()"
+            <sw-text-field :value="unzerGooglePayGatewayMerchantId"
                            :label="$tc('unzer-payment-settings.google-pay.gatewayMerchantId')"
                            disabled>
             </sw-text-field>
