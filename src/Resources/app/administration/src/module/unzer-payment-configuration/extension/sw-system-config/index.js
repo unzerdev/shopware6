@@ -12,12 +12,23 @@ Component.override('sw-system-config', {
             readOnlyUnzerGooglePayGatewayMerchantId: {}
         };
     },
-    methods: {
-        onSalesChannelChanged(salesChannelId) {
-            this.$super('onSalesChannelChanged', salesChannelId);
+    watch: {
+        currentSalesChannelId() {
+            this.getUnzerGooglePayGatewayMerchantId();
             this.$emit('sales-channel-changed', this.actualConfigData[this.currentSalesChannelId], this.currentSalesChannelId);
         },
-        readAll() {
+    },
+    computed: {
+        unzerGooglePayGatewayMerchantId() {
+            return this.readOnlyUnzerGooglePayGatewayMerchantId || '';
+        }
+    },
+    methods: {
+        async createdComponent() {
+            await this.$super('createdComponent');
+            this.getUnzerGooglePayGatewayMerchantId();
+        },
+        getUnzerGooglePayGatewayMerchantId() {
             if (this.domain === 'UnzerPayment6.settings') {
                 this.UnzerPaymentConfigurationService.getGooglePayGatewayMerchantId(this.currentSalesChannelId).then((response) => {
                     this.readOnlyUnzerGooglePayGatewayMerchantId = response.gatewayMerchantId;
@@ -26,10 +37,6 @@ Component.override('sw-system-config', {
 
                     });
             }
-            return this.$super('readAll');
-        },
-        getUnzerGooglePayGatewayMerchantId() {
-            return this.readOnlyUnzerGooglePayGatewayMerchantId || '';
         }
     }
 });
