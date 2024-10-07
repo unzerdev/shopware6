@@ -1,3 +1,6 @@
+# 5.9.5
+* Update to improve compatibility with 3rd-party-plugins
+
 # 5.9.4
 * Update Basket Conversion functionality
 
