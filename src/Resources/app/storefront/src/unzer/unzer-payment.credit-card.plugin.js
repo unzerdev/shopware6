@@ -158,7 +158,7 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
         }
 
         if (event.error) {
-            const errorMessageElement = errorElement.getElementsByClassName('unzer-error-message')[0];
+            const errorMessageElement = errorElement.getElementsByClassName('unzer-payment-error-message')[0];
             errorMessageElement.innerText = event.error;
         }
 
@@ -172,7 +172,7 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
             this.holderValid = event.success;
         }
 
-        if(this.options.hasSavedCards){
+        if (this.options.hasSavedCards) {
             const checkedRadioButton = DomAccess.querySelector(this.el, this.options.selectedRadioButtonSelector);
             if (checkedRadioButton && checkedRadioButton.id !== this.options.radioButtonNewId) {
                 this._unzerPaymentPlugin.setSubmitButtonActive(true);
