@@ -1,3 +1,6 @@
+# 5.9.6
+* Workarround Log-Funktionalität
+
 # 5.9.5
 * Update zur Verbesserung der Kompatibilität mit anderen 3rd-Party-Plugins
 
