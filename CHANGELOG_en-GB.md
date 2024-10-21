@@ -1,3 +1,6 @@
+# 5.9.6
+* Workarround for logging functionality
+
 # 5.9.5
 * Update to improve compatibility with 3rd-party-plugins
 
