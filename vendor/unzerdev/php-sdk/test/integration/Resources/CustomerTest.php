@@ -10,7 +10,7 @@
  *
  */
 
-namespace UnzerSDK\test\integration;
+namespace UnzerSDK\test\integration\Resources;
 
 use UnzerSDK\Constants\ApiResponseCodes;
 use UnzerSDK\Constants\Salutations;
@@ -18,7 +18,6 @@ use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\Customer;
 use UnzerSDK\Resources\PaymentTypes\Paypal;
 use UnzerSDK\test\BaseIntegrationTest;
-
 use function microtime;
 
 class CustomerTest extends BaseIntegrationTest

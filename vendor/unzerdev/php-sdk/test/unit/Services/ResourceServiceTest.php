@@ -37,6 +37,7 @@ use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
 use UnzerSDK\Resources\PaymentTypes\Invoice;
 use UnzerSDK\Resources\PaymentTypes\InvoiceSecured;
 use UnzerSDK\Resources\PaymentTypes\Klarna;
+use UnzerSDK\Resources\PaymentTypes\OpenbankingPis;
 use UnzerSDK\Resources\PaymentTypes\PaylaterInvoice;
 use UnzerSDK\Resources\PaymentTypes\Paypal;
 use UnzerSDK\Resources\PaymentTypes\PIS;
@@ -58,6 +59,7 @@ use UnzerSDK\Services\HttpService;
 use UnzerSDK\Services\IdService;
 use UnzerSDK\Services\ResourceService;
 use UnzerSDK\test\BasePaymentTest;
+use UnzerSDK\test\Fixtures\DummyPaypageResource;
 use UnzerSDK\test\unit\DummyResource;
 use UnzerSDK\test\unit\Traits\TraitDummyCanRecur;
 use UnzerSDK\Unzer;
@@ -112,6 +114,41 @@ class ResourceServiceTest extends BasePaymentTest
         /** @var AbstractUnzerResource $resourceMock */
         $response = $resourceSrv->send($resourceMock, $method);
         $this->assertEquals('This is the response', $response->response);
+    }
+
+    /**
+     * Verify send will call send on httpService.
+     *
+     * @group CC-1309
+     * @group CC-1376
+     *
+     * @test
+     *
+     * @dataProvider AuthTokenShouldBeRequestedAutomaticallyDP
+     *
+     * @param string $method
+     * @param string $uri
+     * @param bool   $appendId
+     */
+    public function AuthTokenShouldBeRequestedAutomatically(string $method, string $uri, bool $appendId): void
+    {
+        $unzer = new Unzer('s-priv-1234');
+        $httpMethod = HttpAdapterInterface::REQUEST_POST;
+        $dummyResource = new DummyPaypageResource();
+        $dummyResource->setParentResource($unzer);
+        $httpSrvMock = $this->getMockBuilder(HttpService::class)->setMethods(['send'])->getMock();
+        $resourceSrv = new ResourceService($unzer);
+
+        /** @var HttpService $httpSrvMock */
+        $unzer->setHttpService($httpSrvMock);
+
+        $httpSrvMock->expects($this->exactly(2))->method('send')->withConsecutive(
+            [$uri],
+            ['/dummy-paypage-uri', $dummyResource, $method]
+        )->willReturnOnConsecutiveCalls('{"accessToken": "jwt.auth.token"}', '{"response": "paypage response"}');
+
+        $response = $resourceSrv->send($dummyResource, $method);
+        $this->assertEquals('paypage response', $response->response);
     }
 
     //</editor-fold>
@@ -1314,6 +1351,16 @@ class ResourceServiceTest extends BasePaymentTest
     /**
      * @return array
      */
+    public function AuthTokenShouldBeRequestedAutomaticallyDP(): array
+    {
+        return [
+            HttpAdapterInterface::REQUEST_POST   => [HttpAdapterInterface::REQUEST_POST, '/auth/token', false],
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public function fetchShouldCallFetchResourceDP(): array
     {
         $fetchPaymentCB          = static function ($payment) {
@@ -1378,6 +1425,7 @@ class ResourceServiceTest extends BasePaymentTest
             'PaymentType HirePurchaseDirectDebit sandbox' => ['fetchPaymentType', ['s-hdd-12345678'], $getPaymentTypeCB(InstallmentSecured::class)],
             'PaymentType InstallmentSecured sandbox' => ['fetchPaymentType', ['s-ins-12345678'], $getPaymentTypeCB(InstallmentSecured::class)],
             'PaymentType Bancontact sandbox' => ['fetchPaymentType', ['s-bct-12345678'], $getPaymentTypeCB(Bancontact::class)],
+            'PaymentType OpenBanking sandbox' => ['fetchPaymentType', ['s-obp-12345678'], $getPaymentTypeCB(OpenbankingPis::class)],
             'PaymentType Alipay production' => ['fetchPaymentType', ['p-ali-12345678'], $getPaymentTypeCB(Alipay::class)],
             'PaymentType Bancontact production' => ['fetchPaymentType', ['p-bct-12345678'], $getPaymentTypeCB(Bancontact::class)],
             'PaymentType Card production' => ['fetchPaymentType', ['p-crd-12345678'], $getPaymentTypeCB(Card::class)],
@@ -1400,6 +1448,7 @@ class ResourceServiceTest extends BasePaymentTest
             'PaymentType SepaDirectDebitSecured production' => ['fetchPaymentType', ['p-dds-12345678'], $getPaymentTypeCB(SepaDirectDebitSecured::class)],
             'PaymentType Sofort production' => ['fetchPaymentType', ['p-sft-12345678'], $getPaymentTypeCB(Sofort::class)],
             'PaymentType Wechatpay production' => ['fetchPaymentType', ['p-wcp-12345678'], $getPaymentTypeCB(Wechatpay::class)],
+            'PaymentType OpenBanking production' => ['fetchPaymentType', ['p-obp-12345678'], $getPaymentTypeCB(OpenbankingPis::class)],
         ];
     }
 

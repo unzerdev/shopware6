@@ -34,45 +34,50 @@
 {% block page_checkout_confirm_product_table %}
     {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
     {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
-    {% if page.extensions[paymentFrameExtensionName].paymentFrame and page.extensions[paymentDataExtensionName] %}
-        {% block unzer_payment_checkout_confirm_frame %}
+    {% if page.extensions[paymentDataExtensionName] %}
+        {% block unzer_payment_checkout_confirm_library %}
             {% sw_include '@Storefront/storefront/component/unzer/base/unzer-library.html.twig' %}
+        {% endblock %}
+        {% if page.extensions[paymentFrameExtensionName].paymentFrame %}
+            {% block unzer_payment_checkout_confirm_frame %}
 
-            {% block page_checkout_unzer_payment_form_elements %}
-                <input type="hidden" id="unzerResourceId" name="unzerResourceId" form="confirmOrderForm">
-            {% endblock %}
+                {% block page_checkout_unzer_payment_form_elements %}
+                    <input type="hidden" id="unzerResourceId" name="unzerResourceId" form="confirmOrderForm">
+                {% endblock %}
 
-            {% block unzer_payment_checkout_confirm_frame_card %}
-                <div class="unzer-payment-base"
-                     id="unzer-payment-base"
-                     data-unzer-payment-base="true"
-                     data-unzer-payment-base-options='{
+                {% block unzer_payment_checkout_confirm_frame_card %}
+                    <div class="unzer-payment-base"
+                         id="unzer-payment-base"
+                         data-unzer-payment-base="true"
+                         data-unzer-payment-base-options='{
                      "publicKey": "{{ page.extensions[paymentDataExtensionName].publicKey }}",
                      "shopLocale": "{{ page.extensions[paymentDataExtensionName].locale }}",
                      "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
                  }'>
-                    <div class="unzer-payment-base-body">
-                        {% block unzer_payment_checkout_confirm_frame_card_body %}
-                            {% block unzer_payment_checkout_confirm_frame_card_body_frame %}
-                                <div class="unzer-payment-frame">
-                                    {% sw_include page.extensions[paymentFrameExtensionName].paymentFrame ignore missing %}
-                                </div>
+                        <div class="unzer-payment-base-body">
+                            {% block unzer_payment_checkout_confirm_frame_card_body %}
+                                {% block unzer_payment_checkout_confirm_frame_card_body_frame %}
+                                    <div class="unzer-payment-frame">
+                                        {% sw_include page.extensions[paymentFrameExtensionName].paymentFrame ignore missing %}
+                                    </div>
+                                {% endblock %}
                             {% endblock %}
-                        {% endblock %}
+                        </div>
                     </div>
-                </div>
+                {% endblock %}
             {% endblock %}
-        {% endblock %}
+
+        {% endif %}
     {% endif %}
 
     {% set fraudPreventionExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
 
     {% if page.extensions[fraudPreventionExtensionName] %}
         <input
-            name="unzerPaymentFraudPreventionSessionId"
-            type="hidden"
-            value="{{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"
-            form="confirmOrderForm"
+                name="unzerPaymentFraudPreventionSessionId"
+                type="hidden"
+                value="{{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"
+                form="confirmOrderForm"
         />
     {% endif %}
 

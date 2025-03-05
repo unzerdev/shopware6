@@ -13,9 +13,10 @@ class IdStrings
     public const AUTHORIZE = 'aut';
     public const CANCEL = 'cnl';
     public const CHARGE = 'chg';
-    public const PAYOUT = 'out';
-    public const SHIPMENT = 'shp';
     public const CHARGEBACK = 'cbk';
+    public const PAYOUT = 'out';
+    public const PREAUTHORIZE = 'preaut';
+    public const SHIPMENT = 'shp';
 
     // Payment Types
     public const ALIPAY = 'ali';
@@ -25,6 +26,7 @@ class IdStrings
     public const EPS = 'eps';
     public const GIROPAY = 'gro';
     public const GOOGLE_PAY = 'gop';
+    public const CLICK_TO_PAY = 'ctp';
     public const HIRE_PURCHASE_DIRECT_DEBIT = 'hdd';
     public const IDEAL = 'idl';
     public const INSTALLMENT_SECURED = 'ins';
@@ -50,6 +52,8 @@ class IdStrings
     public const SOFORT = 'sft';
     public const TWINT = 'twt';
     public const WECHATPAY = 'wcp';
+
+    public const OPEN_BANKING = 'obp';
 
     // Resources
     public const BASKET = 'bsk';
@@ -91,5 +95,6 @@ class IdStrings
         self::SOFORT,
         self::TWINT,
         self::WECHATPAY,
+        self::OPEN_BANKING,
     ];
 }

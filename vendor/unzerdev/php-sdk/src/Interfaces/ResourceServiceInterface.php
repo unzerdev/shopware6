@@ -8,6 +8,7 @@
 
 namespace UnzerSDK\Interfaces;
 
+use RuntimeException;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Basket;
@@ -25,7 +26,6 @@ use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Chargeback;
 use UnzerSDK\Resources\TransactionTypes\Payout;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
-use RuntimeException;
 
 interface ResourceServiceInterface
 {
@@ -112,7 +112,7 @@ interface ResourceServiceInterface
     /**
      * Create Metadata resource.
      *
-     * @param Metadata|string $metadata The Metadata object to be created.
+     * @param Metadata $metadata The Metadata object to be created.
      *
      * @return Metadata The fetched Metadata resource.
      *

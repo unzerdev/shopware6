@@ -4,25 +4,25 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8bfe430efa3463bb3178e1b84b5dfcb1",
+    "content-hash": "77faa31f3f2fcd92913239eaa2b9f06d",
     "packages": [
         {
             "name": "unzerdev/php-sdk",
-            "version": "3.6.0",
+            "version": "3.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unzerdev/php-sdk.git",
-                "reference": "498687f607efb9dce1fdd45d90a2f6badbea2073"
+                "reference": "274650b6120b8665c8867627210cd8adab65406b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/498687f607efb9dce1fdd45d90a2f6badbea2073",
-                "reference": "498687f607efb9dce1fdd45d90a2f6badbea2073",
+                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/274650b6120b8665c8867627210cd8adab65406b",
+                "reference": "274650b6120b8665c8867627210cd8adab65406b",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "~7.4.0|~8.0.0|~8.1.0|~8.2.0|~8.3.0"
+                "php": "~7.4.0|~8.0.0|~8.1.0|~8.2.0|~8.3.0|~8.4.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
@@ -45,9 +45,9 @@
             "description": "This is the php sdk to connect to the Unzer rest API.",
             "support": {
                 "email": "support@unzer.com",
-                "source": "https://github.com/unzerdev/php-sdk/tree/3.6.0"
+                "source": "https://github.com/unzerdev/php-sdk/tree/3.11.0"
             },
-            "time": "2024-04-16T14:21:23+00:00"
+            "time": "2024-12-04T08:14:47+00:00"
         }
     ],
     "packages-dev": [
@@ -99,16 +99,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.11.1",
+            "version": "1.12.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "e524358f930e41a2b4cca1320e3b04fc26b39e0b"
+                "reference": "7027b3b0270bf392de0cfba12825979768d728bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e524358f930e41a2b4cca1320e3b04fc26b39e0b",
-                "reference": "e524358f930e41a2b4cca1320e3b04fc26b39e0b",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/7027b3b0270bf392de0cfba12825979768d728bf",
+                "reference": "7027b3b0270bf392de0cfba12825979768d728bf",
                 "shasum": ""
             },
             "require": {
@@ -153,7 +153,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-15T08:00:59+00:00"
+            "time": "2025-02-07T15:01:57+00:00"
         }
     ],
     "aliases": [],

@@ -8,3 +8,4 @@
 /composer.lock
 /build
 /myreport.html/
+/test/.env

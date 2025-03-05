@@ -9,7 +9,7 @@
  *
  */
 
-namespace UnzerSDK\test\integration;
+namespace UnzerSDK\test\integration\Resources;
 
 use UnzerSDK\Constants\ApiResponseCodes;
 use UnzerSDK\Exceptions\UnzerApiException;

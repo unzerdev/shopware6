@@ -22,6 +22,15 @@ class WebhookEvents
     public const AUTHORIZE_RESUMED = 'authorize.resumed';
     public const AUTHORIZE_SUCCEEDED = 'authorize.succeeded';
 
+    // preauthorize events
+    public const PREAUTHORIZE = 'preauthorize';
+    public const PREAUTHORIZE_CANCELED = 'preauthorize.canceled';
+    public const PREAUTHORIZE_EXPIRED = 'preauthorize.expired';
+    public const PREAUTHORIZE_FAILED = 'preauthorize.failed';
+    public const PREAUTHORIZE_PENDING = 'preauthorize.pending';
+    public const PREAUTHORIZE_RESUMED = 'preauthorize.resumed';
+    public const PREAUTHORIZE_SUCCEEDED = 'preauthorize.succeeded';
+
     // charge events
     public const CHARGE = 'charge';
     public const CHARGE_CANCELED = 'charge.canceled';
@@ -69,6 +78,13 @@ class WebhookEvents
         self::AUTHORIZE_PENDING,
         self::AUTHORIZE_RESUMED,
         self::AUTHORIZE_SUCCEEDED,
+        self::PREAUTHORIZE,
+        self::PREAUTHORIZE_CANCELED,
+        self::PREAUTHORIZE_EXPIRED,
+        self::PREAUTHORIZE_FAILED,
+        self::PREAUTHORIZE_PENDING,
+        self::PREAUTHORIZE_RESUMED,
+        self::PREAUTHORIZE_SUCCEEDED,
         self::CHARGE,
         self::CHARGE_CANCELED,
         self::CHARGE_EXPIRED,

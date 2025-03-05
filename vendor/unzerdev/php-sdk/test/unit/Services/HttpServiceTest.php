@@ -11,19 +11,17 @@
 
 namespace UnzerSDK\test\unit\Services;
 
+use RuntimeException;
 use UnzerSDK\Adapter\CurlAdapter;
 use UnzerSDK\Adapter\HttpAdapterInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
-use UnzerSDK\Unzer;
 use UnzerSDK\Interfaces\DebugHandlerInterface;
 use UnzerSDK\Services\EnvironmentService;
 use UnzerSDK\Services\HttpService;
 use UnzerSDK\test\BasePaymentTest;
 use UnzerSDK\test\unit\DummyResource;
-use RuntimeException;
-
+use UnzerSDK\Unzer;
 use function array_key_exists;
-
 use const PHP_VERSION;
 
 class HttpServiceTest extends BasePaymentTest
@@ -483,7 +481,6 @@ class HttpServiceTest extends BasePaymentTest
             'Stg with production key' => [EnvironmentService::ENV_VAR_VALUE_STAGING_ENVIRONMENT, $prodUrl, $prodKey],
             'something else with production key' => ['something else', $prodUrl, $prodKey],
             'undefined with production key' => ['', $prodUrl, $prodKey],
-            'Dev with sandbox key' => [EnvironmentService::ENV_VAR_VALUE_DEVELOPMENT_ENVIRONMENT, $devUrl, $sbxKey],
             'Prod with sandbox key' => [EnvironmentService::ENV_VAR_VALUE_PROD_ENVIRONMENT, $sbxUrl, $sbxKey],
             'Stg with sandbox key' => [EnvironmentService::ENV_VAR_VALUE_STAGING_ENVIRONMENT, $stgUrl, $sbxKey],
             'something else with sandbox key' => ['something else', $sbxUrl, $sbxKey],
