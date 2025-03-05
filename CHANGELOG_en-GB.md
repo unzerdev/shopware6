@@ -1,3 +1,11 @@
+# 5.11.0
+* Unzer Direct Bank Transfer added as new payment method
+* Update PHP-SDK
+
+# 5.10.1
+* Apple Pay Infotext in backend
+* Fix: Retry payment after being cancelled by Unzer JS
+
 # 5.10.0
 * Updated Apple Pay Integration
 

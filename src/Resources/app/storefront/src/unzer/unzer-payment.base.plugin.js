@@ -114,6 +114,7 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         errorWrapper.scrollIntoView({ block: 'end', behavior: 'smooth' });
 
         this.setSubmitButtonActive(true);
+        this.submitting = false;
     }
 
     /**
@@ -147,7 +148,6 @@ export default class UnzerPaymentBasePlugin extends Plugin {
 
         if (!this._validateForm()) {
             this.submitting = false;
-
             this.setSubmitButtonActive(true);
 
             return;

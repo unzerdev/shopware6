@@ -112,6 +112,8 @@
         "apple-pay": {
             "certificates": {
                 "title": "Apple Pay Certificates (Deprecated)",
+                "textExisting": "We have updated our integration with Apple Pay, but since you already have it set up, you don't need to do anything just now.<br><br>However, when your Apple Pay certificates are about to expire, you can change to the new integration.<br><br>You can of course change to the new integration now, if you want, and then you don't have to worry about expiring certificates, changing integration, etc. in the future.",
+                "textAll": "Before you activate Apple Pay, please make sure you have read our <a href='https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/#prerequisites-for-accepting-apple-pay-transactions' target='_blank'>checklist</a>.",
                 "check": {
                     "paymentProcessingValid": {
                         "true": "The Payment Processing certificate is present and valid",
