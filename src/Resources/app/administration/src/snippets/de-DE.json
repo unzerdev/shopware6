@@ -112,6 +112,8 @@
         "apple-pay": {
             "certificates": {
                 "title": "Apple Pay Zertifikate (Veraltet)",
+                "textExisting": "Wir haben unsere Integration mit Apple Pay aktualisiert, aber da Sie sie bereits eingerichtet haben, brauchen Sie im Moment nichts zu tun.<br><br>Wenn Ihre Apple-Pay-Zertifikate jedoch bald ablaufen, können Sie auf die neue Integration umsteigen.<br><br>Sie können natürlich auch jetzt schon auf die neue Integration umsteigen, wenn Sie möchten, und müssen sich dann in Zukunft keine Gedanken mehr über ablaufende Zertifikate, einen Wechsel der Integration usw. machen.",
+                "textAll": "Bevor Sie Apple Pay aktivieren, stellen Sie bitte sicher, dass Sie unsere <a href='https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/#prerequisites-for-accepting-apple-pay-transactions' target='_blank'>Checkliste</a> gelesen haben.",
                 "check": {
                     "paymentProcessingValid": {
                         "true": "Das Payment Processing-Zertifikat ist vorhanden und gültig",

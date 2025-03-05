@@ -3,6 +3,24 @@
                   class="unzer-payment-settings--apple-pay-certificates">
         <template v-show="!isLoading">
             {% block unzer_payment_apple_pay_certificates_form %}
+                <div v-if="parentConfigData['UnzerPayment6.settings.applePayPaymentProcessingCertificateId']">
+                    <sw-alert
+                            variant="info"
+                            appearance="default"
+                            :showIcon="true"
+                            :closable="false">
+                        <div v-html="$tc('unzer-payment-settings.apple-pay.certificates.textExisting')"></div>
+                    </sw-alert>
+                </div>
+                <div>
+                    <sw-alert
+                            variant="info"
+                            appearance="default"
+                            :showIcon="true"
+                            :closable="false">
+                        <div v-html="$tc('unzer-payment-settings.apple-pay.certificates.textAll')"></div>
+                    </sw-alert>
+                </div>
                 <sw-inherit-wrapper
                     ref="inheritWrapperPaymentProcessingCertificate"
                     :label="$tc('unzer-payment-settings.apple-pay.paymentProcessingCertificate.label')"
