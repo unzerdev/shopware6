@@ -151,10 +151,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             $this->addPaymentFrameExtension($event);
             $this->addUnzerDataExtension($event);
         }
-
-        if ($paymentMethodId === PaymentInstaller::PAYMENT_ID_GOOGLE_PAY) {
-            $this->addGooglePayExtension($event);
-        }
     }
 
     private function isActionRequired(PageLoadedEvent $event, PaymentMethodEntity $paymentMethod): bool

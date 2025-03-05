@@ -27,6 +27,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInstallmentSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerInvoiceSecuredPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerOpenBankingPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterDirectDebitSecuredPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInstallmentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler;
@@ -65,6 +66,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED = '6d6adcd4b7bf40499873c294a85f32ed';
     public const PAYMENT_ID_GOOGLE_PAY = '67b6d50c1ecd11ef9e21d7850819bc50';
     public const PAYMENT_ID_TWINT = '6493b43244eb11efa900b7a80e209d6a';
+    public const PAYMENT_ID_OPEN_BANKING = '105932c2e56b11ef9cd003e762195b4d';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -90,6 +92,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
         self::PAYMENT_ID_GOOGLE_PAY,
         self::PAYMENT_ID_TWINT,
+        self::PAYMENT_ID_OPEN_BANKING,
     ];
 
     public const DEPRECATED_PAYMENT_METHOD_IDS = [
@@ -469,6 +472,22 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name' => 'TWINT',
                     'description' => 'TWINT with Unzer payments',
+                ],
+            ],
+        ],
+        [
+            'id' => self::PAYMENT_ID_OPEN_BANKING,
+            'handlerIdentifier' => UnzerOpenBankingPaymentHandler::class,
+            'name' => 'TWINT',
+            'technicalName' => 'unzer_openbanking',
+            'translations' => [
+                'de-DE' => [
+                    'name' => 'Direktüberweisung',
+                    'description' => 'Direktüberweisung mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name' => 'Direct Bank Transfer',
+                    'description' => 'Direct Bank Transfer with Unzer payments',
                 ],
             ],
         ],

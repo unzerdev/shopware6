@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'unzerdev/shopware6',
-        'pretty_version' => '5.7.1',
-        'version' => '5.7.1.0',
+        'pretty_version' => '6.3.0',
+        'version' => '6.3.0.0',
         'reference' => null,
         'type' => 'shopware-platform-plugin',
         'install_path' => __DIR__ . '/../../',
@@ -17,17 +17,17 @@
             ),
         ),
         'unzerdev/php-sdk' => array(
-            'pretty_version' => '3.6.0',
-            'version' => '3.6.0.0',
-            'reference' => '498687f607efb9dce1fdd45d90a2f6badbea2073',
+            'pretty_version' => '3.11.0',
+            'version' => '3.11.0.0',
+            'reference' => '274650b6120b8665c8867627210cd8adab65406b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../unzerdev/php-sdk',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'unzerdev/shopware6' => array(
-            'pretty_version' => '5.7.1',
-            'version' => '5.7.1.0',
+            'pretty_version' => '6.3.0',
+            'version' => '6.3.0.0',
             'reference' => null,
             'type' => 'shopware-platform-plugin',
             'install_path' => __DIR__ . '/../../',

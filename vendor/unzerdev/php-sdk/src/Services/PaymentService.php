@@ -3,27 +3,27 @@
 namespace UnzerSDK\Services;
 
 use DateTime;
+use RuntimeException;
 use UnzerSDK\Constants\TransactionTypes;
 use UnzerSDK\Exceptions\UnzerApiException;
-use UnzerSDK\Resources\EmbeddedResources\Paylater\InstallmentPlansQuery;
-use UnzerSDK\Resources\PaylaterInstallmentPlans;
-use UnzerSDK\Resources\PaymentTypes\PaylaterInstallment;
-use UnzerSDK\Unzer;
 use UnzerSDK\Interfaces\PaymentServiceInterface;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Basket;
 use UnzerSDK\Resources\Customer;
+use UnzerSDK\Resources\EmbeddedResources\Paylater\InstallmentPlansQuery;
 use UnzerSDK\Resources\InstalmentPlans;
 use UnzerSDK\Resources\Metadata;
+use UnzerSDK\Resources\PaylaterInstallmentPlans;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
+use UnzerSDK\Resources\PaymentTypes\PaylaterInstallment;
 use UnzerSDK\Resources\PaymentTypes\Paypage;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Payout;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
-use RuntimeException;
+use UnzerSDK\Unzer;
 
 /**
  * This service provides for functionalities concerning payment transactions.

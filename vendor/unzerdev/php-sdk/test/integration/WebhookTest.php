@@ -16,7 +16,6 @@ use UnzerSDK\Constants\WebhookEvents;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\Webhook;
 use UnzerSDK\test\BaseIntegrationTest;
-
 use function count;
 use function in_array;
 
@@ -30,7 +29,7 @@ class WebhookTest extends BaseIntegrationTest
      * @test
      *
      * @dataProvider webhookResourceCanBeRegisteredAndFetchedDP
-     *
+     * @group CC-1576
      * @param string $event
      */
     public function webhookResourceCanBeRegisteredAndFetched($event): void
@@ -51,7 +50,7 @@ class WebhookTest extends BaseIntegrationTest
      */
     public function webhookUrlShouldBeUpdateable(): void
     {
-        $url     = $this->generateUniqueUrl();
+        $url = $this->generateUniqueUrl();
         $webhook = $this->unzer->createWebhook($url, WebhookEvents::ALL);
         $fetchedWebhook = $this->unzer->fetchWebhook($webhook->getId());
         $this->assertEquals(WebhookEvents::ALL, $fetchedWebhook->getEvent());
@@ -123,6 +122,7 @@ class WebhookTest extends BaseIntegrationTest
      * Verify fetching all registered webhooks will return an array of webhooks.
      *
      * @test
+     * @group CC-1576
      */
     public function fetchWebhooksShouldReturnArrayOfRegisteredWebhooks(): void
     {
@@ -139,14 +139,16 @@ class WebhookTest extends BaseIntegrationTest
         $webhook1 = $this->unzer->createWebhook($this->generateUniqueUrl(), WebhookEvents::CUSTOMER);
         $webhook2 = $this->unzer->createWebhook($this->generateUniqueUrl(), WebhookEvents::CHARGE);
         $webhook3 = $this->unzer->createWebhook($this->generateUniqueUrl(), WebhookEvents::AUTHORIZE);
+        $webhook4 = $this->unzer->createWebhook($this->generateUniqueUrl(), WebhookEvents::PREAUTHORIZE);
 
         // --- Verify webhooks have been registered ---
         $fetchedWebhooks = $this->unzer->fetchAllWebhooks();
-        $this->assertCount(3, $fetchedWebhooks);
+        $this->assertCount(4, $fetchedWebhooks);
 
         $this->assertTrue($this->arrayContainsWebhook($fetchedWebhooks, $webhook1));
         $this->assertTrue($this->arrayContainsWebhook($fetchedWebhooks, $webhook2));
         $this->assertTrue($this->arrayContainsWebhook($fetchedWebhooks, $webhook3));
+        $this->assertTrue($this->arrayContainsWebhook($fetchedWebhooks, $webhook4));
     }
 
     /**
@@ -177,8 +179,8 @@ class WebhookTest extends BaseIntegrationTest
      */
     public function bulkSettingWebhookEventsShouldBePossible(): void
     {
-        $webhookEvents      = [WebhookEvents::AUTHORIZE, WebhookEvents::CHARGE, WebhookEvents::SHIPMENT];
-        $url                = $this->generateUniqueUrl();
+        $webhookEvents = [WebhookEvents::AUTHORIZE, WebhookEvents::CHARGE, WebhookEvents::SHIPMENT, WebhookEvents::PREAUTHORIZE];
+        $url = $this->generateUniqueUrl();
         $registeredWebhooks = $this->unzer->registerMultipleWebhooks($url, $webhookEvents);
 
         // check whether the webhooks have the correct url
@@ -207,7 +209,7 @@ class WebhookTest extends BaseIntegrationTest
         // remove all existing webhooks a avoid errors here
         $this->unzer->deleteAllWebhooks();
 
-        $url                = $this->generateUniqueUrl();
+        $url = $this->generateUniqueUrl();
         $registeredWebhooks = $this->unzer->registerMultipleWebhooks($url, [WebhookEvents::AUTHORIZE]);
 
         $this->assertCount(1, $registeredWebhooks);

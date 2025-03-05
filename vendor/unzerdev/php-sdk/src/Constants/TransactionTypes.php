@@ -11,6 +11,7 @@ namespace UnzerSDK\Constants;
 class TransactionTypes
 {
     public const AUTHORIZATION = 'authorize';
+    public const PREAUTHORIZATION = 'preauthorize';
     public const CHARGE = 'charge';
     public const REVERSAL = 'cancel-authorize';
     public const REFUND = 'cancel-charge';

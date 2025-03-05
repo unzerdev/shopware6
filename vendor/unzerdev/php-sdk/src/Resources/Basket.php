@@ -2,10 +2,9 @@
 
 namespace UnzerSDK\Resources;
 
+use stdClass;
 use UnzerSDK\Adapter\HttpAdapterInterface;
 use UnzerSDK\Resources\EmbeddedResources\BasketItem;
-use stdClass;
-
 use function count;
 
 /**

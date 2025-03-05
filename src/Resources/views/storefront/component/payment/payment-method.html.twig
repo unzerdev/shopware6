@@ -13,3 +13,15 @@
         {{ parent() }}
     {% endif %}
 {% endblock %}
+
+{% block component_payment_method_description %}
+    {{ parent() }}
+    {% if payment and payment.id == constant("UnzerPayment6\\Installer\\PaymentInstaller::PAYMENT_ID_OPEN_BANKING") and page.extensions.unzerPaymentData.publicKey and payment.id is same as(selectedPaymentMethodId)%}
+        <unzer-payment
+                publicKey="{{ page.extensions.unzerPaymentData.publicKey }}"
+                locale="{{ page.extensions.unzerPaymentData.locale }}">
+            <unzer-open-banking></unzer-open-banking>
+        </unzer-payment>
+    {% endif %}
+
+{% endblock %}

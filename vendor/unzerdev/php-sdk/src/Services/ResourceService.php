@@ -4,59 +4,63 @@ namespace UnzerSDK\Services;
 
 use DateTime;
 use Exception;
+use RuntimeException;
+use stdClass;
 use UnzerSDK\Adapter\HttpAdapterInterface;
+use UnzerSDK\Apis\Constants\AuthorizationMethods;
 use UnzerSDK\Constants\ApiResponseCodes;
 use UnzerSDK\Constants\IdStrings;
 use UnzerSDK\Exceptions\UnzerApiException;
-use UnzerSDK\Resources\Config;
-use UnzerSDK\Resources\PaymentTypes\Applepay;
-use UnzerSDK\Resources\PaymentTypes\Googlepay;
-use UnzerSDK\Resources\PaymentTypes\Klarna;
-use UnzerSDK\Resources\PaymentTypes\PaylaterDirectDebit;
-use UnzerSDK\Resources\PaymentTypes\PaylaterInstallment;
-use UnzerSDK\Resources\PaymentTypes\Paypage;
-use UnzerSDK\Resources\PaymentTypes\PayU;
-use UnzerSDK\Resources\PaymentTypes\PostFinanceCard;
-use UnzerSDK\Resources\PaymentTypes\PostFinanceEfinance;
-use UnzerSDK\Resources\PaymentTypes\Twint;
-use UnzerSDK\Resources\TransactionTypes\Chargeback;
-use UnzerSDK\Unzer;
 use UnzerSDK\Interfaces\ResourceServiceInterface;
 use UnzerSDK\Resources\AbstractUnzerResource;
+use UnzerSDK\Resources\Authentication\Token;
 use UnzerSDK\Resources\Basket;
+use UnzerSDK\Resources\Config;
 use UnzerSDK\Resources\Customer;
 use UnzerSDK\Resources\Keypair;
 use UnzerSDK\Resources\Metadata;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\Alipay;
+use UnzerSDK\Resources\PaymentTypes\Applepay;
 use UnzerSDK\Resources\PaymentTypes\Bancontact;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Card;
+use UnzerSDK\Resources\PaymentTypes\Clicktopay;
 use UnzerSDK\Resources\PaymentTypes\EPS;
 use UnzerSDK\Resources\PaymentTypes\Giropay;
-use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
+use UnzerSDK\Resources\PaymentTypes\Googlepay;
 use UnzerSDK\Resources\PaymentTypes\Ideal;
+use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
 use UnzerSDK\Resources\PaymentTypes\Invoice;
 use UnzerSDK\Resources\PaymentTypes\InvoiceSecured;
+use UnzerSDK\Resources\PaymentTypes\Klarna;
+use UnzerSDK\Resources\PaymentTypes\OpenbankingPis;
+use UnzerSDK\Resources\PaymentTypes\PaylaterDirectDebit;
+use UnzerSDK\Resources\PaymentTypes\PaylaterInstallment;
 use UnzerSDK\Resources\PaymentTypes\PaylaterInvoice;
+use UnzerSDK\Resources\PaymentTypes\Paypage;
 use UnzerSDK\Resources\PaymentTypes\Paypal;
+use UnzerSDK\Resources\PaymentTypes\PayU;
 use UnzerSDK\Resources\PaymentTypes\PIS;
+use UnzerSDK\Resources\PaymentTypes\PostFinanceCard;
+use UnzerSDK\Resources\PaymentTypes\PostFinanceEfinance;
 use UnzerSDK\Resources\PaymentTypes\Prepayment;
 use UnzerSDK\Resources\PaymentTypes\Przelewy24;
 use UnzerSDK\Resources\PaymentTypes\SepaDirectDebit;
 use UnzerSDK\Resources\PaymentTypes\SepaDirectDebitSecured;
 use UnzerSDK\Resources\PaymentTypes\Sofort;
+use UnzerSDK\Resources\PaymentTypes\Twint;
 use UnzerSDK\Resources\PaymentTypes\Wechatpay;
 use UnzerSDK\Resources\Recurring;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Cancellation;
 use UnzerSDK\Resources\TransactionTypes\Charge;
+use UnzerSDK\Resources\TransactionTypes\Chargeback;
 use UnzerSDK\Resources\TransactionTypes\Payout;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
+use UnzerSDK\Resources\V2\Paypage as PaypageV2;
 use UnzerSDK\Traits\CanRecur;
-use RuntimeException;
-use stdClass;
-
+use UnzerSDK\Unzer;
 use function in_array;
 use function is_string;
 
@@ -115,10 +119,15 @@ class ResourceService implements ResourceServiceInterface
         string                $httpMethod = HttpAdapterInterface::REQUEST_GET,
         string                $apiVersion = Unzer::API_VERSION
     ): stdClass {
+        $configClass = $resource->getApiConfig();
+        if (!$resource instanceof Token && $configClass::getAuthorizationMethod() === AuthorizationMethods::BEARER) {
+            $this->unzer->prepareJwtToken();
+        }
+
         $appendId     = $httpMethod !== HttpAdapterInterface::REQUEST_POST;
         $uri          = $resource->getUri($appendId, $httpMethod);
         $responseJson = $resource->getUnzerObject()->getHttpService()->send($uri, $resource, $httpMethod, $apiVersion);
-        return json_decode($responseJson, false);
+        return !empty($responseJson) ? json_decode($responseJson, false) : new stdClass();
     }
 
     /**
@@ -160,6 +169,9 @@ class ResourceService implements ResourceServiceInterface
         $resourceType = IdService::getResourceTypeFromIdString($resourceId);
         switch (true) {
             case $resourceType === IdStrings::AUTHORIZE:
+                $resource = $unzer->fetchAuthorization(IdService::getResourceIdFromUrl($url, IdStrings::PAYMENT));
+                break;
+            case $resourceType === IdStrings::PREAUTHORIZE:
                 $resource = $unzer->fetchAuthorization(IdService::getResourceIdFromUrl($url, IdStrings::PAYMENT));
                 break;
             case $resourceType === IdStrings::CHARGE:
@@ -405,6 +417,36 @@ class ResourceService implements ResourceServiceInterface
         return $paymentObject;
     }
 
+    /** Create Paypage V2 resource.
+     * @throws UnzerApiException
+     */
+    public function createPaypage(PaypageV2 $paypage): PaypageV2
+    {
+        $paypage->setParentResource($this->unzer);
+        $this->createResource($paypage);
+        return $paypage;
+    }
+
+    /** Delete Paypage V2
+     * @throws UnzerApiException
+     */
+    public function deletePaypage(PaypageV2 $paypage): void
+    {
+        $paypage->setParentResource($this->unzer);
+        $this->deleteResource($paypage);
+    }
+
+    /** Delete Paypage V2
+     * @throws UnzerApiException
+     */
+    public function updatePaypage(PaypageV2 $paypage): PaypageV2
+    {
+        $paypage->setParentResource($this->unzer);
+        $this->patchResource($paypage);
+
+        return $paypage;
+    }
+
     /**
      * @inheritDoc
      */
@@ -417,6 +459,18 @@ class ResourceService implements ResourceServiceInterface
         }
 
         $this->fetchResource($payPageObject->setParentResource($this->unzer));
+        return $payPageObject;
+    }
+
+    public function fetchPayPageV2($payPage): PaypageV2
+    {
+        $payPageObject = $payPage;
+        if (is_string($payPage)) {
+            $payPageObject = new PaypageV2(0, '', '');
+            $payPageObject->setId($payPage);
+        }
+
+        $this->fetchResource($payPageObject->setParentResource($this->unzer), $payPageObject->getApiVersion());
         return $payPageObject;
     }
 
@@ -825,6 +879,9 @@ class ResourceService implements ResourceServiceInterface
             case IdStrings::GOOGLE_PAY:
                 $paymentType = new Googlepay();
                 break;
+            case IdStrings::CLICK_TO_PAY:
+                $paymentType = new Clicktopay();
+                break;
             case IdStrings::HIRE_PURCHASE_DIRECT_DEBIT:
             case IdStrings::INSTALLMENT_SECURED:
                 $paymentType = new InstallmentSecured();
@@ -888,6 +945,9 @@ class ResourceService implements ResourceServiceInterface
                 break;
             case IdStrings::WECHATPAY:
                 $paymentType = new Wechatpay();
+                break;
+            case IdStrings::OPEN_BANKING:
+                $paymentType = new OpenbankingPis();
                 break;
             default:
                 throw new RuntimeException('Invalid payment type!');

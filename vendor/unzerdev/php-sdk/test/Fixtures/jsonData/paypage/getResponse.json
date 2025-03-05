@@ -1,0 +1,29 @@
+{
+  "payments": [
+    {
+      "paymentId": "s-pay-1337",
+      "transactionStatus": "pending",
+      "creationDate": "2024-08-16T14:36:15.923Z",
+      "messages": [
+        {
+          "code": "COR.000.200.000",
+          "customer": "Your payment is currently pending. Please contact us for more information.",
+          "merchant": "Transaction pending"
+        }
+      ]
+    },
+    {
+      "paymentId": "s-pay-1338",
+      "transactionStatus": "success",
+      "creationDate": "2024-08-16T14:36:54.517Z",
+      "messages": [
+        {
+          "code": "COR.000.100.112",
+          "customer": "Your payments have been successfully processed in sandbox mode.",
+          "merchant": "Request successfully processed in 'Merchant in Connector Test Mode'"
+        }
+      ]
+    }
+  ],
+  "total": 2
+}

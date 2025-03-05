@@ -2,6 +2,8 @@
 
 namespace UnzerSDK\Resources;
 
+use RuntimeException;
+use stdClass;
 use UnzerSDK\Adapter\HttpAdapterInterface;
 use UnzerSDK\Constants\CancelReasonCodes;
 use UnzerSDK\Constants\IdStrings;
@@ -16,15 +18,13 @@ use UnzerSDK\Resources\TransactionTypes\Cancellation;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Chargeback;
 use UnzerSDK\Resources\TransactionTypes\Payout;
+use UnzerSDK\Resources\TransactionTypes\PreAuthorization;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
 use UnzerSDK\Services\IdService;
 use UnzerSDK\Traits\HasInvoiceId;
 use UnzerSDK\Traits\HasOrderId;
 use UnzerSDK\Traits\HasPaymentState;
 use UnzerSDK\Traits\HasTraceId;
-use RuntimeException;
-use stdClass;
-
 use function is_string;
 
 /**
@@ -903,6 +903,9 @@ class Payment extends AbstractUnzerResource
                 case TransactionTypes::AUTHORIZATION:
                     $this->updateAuthorizationTransaction($transaction);
                     break;
+                case TransactionTypes::PREAUTHORIZATION:
+                    $this->updatePreAuthorizationTransaction($transaction);
+                    break;
                 case TransactionTypes::CHARGE:
                     $this->updateChargeTransaction($transaction);
                     break;
@@ -988,6 +991,27 @@ class Payment extends AbstractUnzerResource
         $authorization = $this->getAuthorization(true);
         if (!$authorization instanceof Authorization) {
             $authorization = (new Authorization())->setPayment($this)->setId($transactionId);
+            $this->setAuthorization($authorization);
+        }
+
+        $authorization->handleResponse($transaction);
+    }
+
+    /**
+     * This updates the local Authorization object referenced by this Payment with the given Authorization transaction
+     * from the Payment response.
+     *
+     * @param stdClass $transaction The transaction from the Payment response containing the Authorization data.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    private function updatePreAuthorizationTransaction(stdClass $transaction): void
+    {
+        $transactionId = IdService::getResourceIdFromUrl($transaction->url, IdStrings::PREAUTHORIZE);
+        $authorization = $this->getAuthorization(true);
+        if (!$authorization instanceof Authorization) {
+            $authorization = (new PreAuthorization())->setPayment($this)->setId($transactionId);
             $this->setAuthorization($authorization);
         }
 

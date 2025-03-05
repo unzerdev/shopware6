@@ -9,11 +9,11 @@
  *
  */
 
-namespace UnzerSDK\test\integration;
+namespace UnzerSDK\test\integration\Resources;
 
-use UnzerSDK\Unzer;
-use UnzerSDK\test\BaseIntegrationTest;
 use RuntimeException;
+use UnzerSDK\test\BaseIntegrationTest;
+use UnzerSDK\Unzer;
 
 class KeypairTest extends BaseIntegrationTest
 {

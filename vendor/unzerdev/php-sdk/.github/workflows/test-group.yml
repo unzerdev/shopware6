@@ -1,0 +1,39 @@
+name: Run Test Group
+
+on:
+  workflow_dispatch:
+    inputs:
+      group:
+        description: "group: test group to run."
+        type: string
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Run test group
+    env:
+      UNZER_PAPI_TEST_PRIVATE_KEY_DEFAULT: ${{ secrets.PAPI_PRIVATE_KEY_DEFAULT }}
+      UNZER_PAPI_TEST_PRIVATE_KEY_ALTERNATIVE: ${{ secrets.PAPI_PRIVATE_KEY_ALTERNATIVE }}
+      UNZER_PAPI_TEST_PRIVATE_KEY_LEGACY: ${{ secrets.PAPI_PRIVATE_KEY_LEGACY }}
+      UNZER_APPLE_MERCHANT_ID_PATH: ${{ secrets.UNZER_APPLE_MERCHANT_ID_PATH }}
+      UNZER_APPLE_CA_CERTIFICATE_PATH: ${{ secrets.UNZER_APPLE_CA_CERTIFICATE_PATH }}
+      APPLE_PAY_MERCHANT_ID_CERT: ${{ secrets.APPLE_PAY_MERCHANT_ID_CERT }}
+      APPLE_PAY_MERCHANT_ID_CERT_COMBINED: ${{ secrets.APPLE_PAY_MERCHANT_ID_CERT_COMBINED }}
+      APPLE_PAY_MERCHANT_ID_KEY: ${{ secrets.APPLE_PAY_MERCHANT_ID_KEY }}
+      UNZER_PAPI_VERBOSE_TEST_LOGGING: ${{ vars.UNZER_PAPI_VERBOSE_TEST_LOGGING }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Setup Apple Pay test certificate
+        run: mkdir certs
+      - run: echo "$APPLE_PAY_MERCHANT_ID_CERT" > certs/merchant_id.pem
+      - run: echo "$APPLE_PAY_MERCHANT_ID_CERT_COMBINED" > certs/apple-pay-cert.pem
+      - run: echo "$APPLE_PAY_MERCHANT_ID_KEY" > certs/merchant_id.key
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+      - name: Run Test Group
+        run: php ./vendor/bin/phpunit ./test --group ${{ github.event.inputs.group }}
