@@ -1,3 +1,6 @@
+# 6.4.1
+* New config setting to capture and refund on status change
+
 # 6.4.0
 * Unzer Direct Bank Transfer added as new payment method
 * Update PHP-SDK
