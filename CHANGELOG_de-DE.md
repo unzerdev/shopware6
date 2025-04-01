@@ -1,3 +1,6 @@
+# 6.4.1
+* Neue Konfigurationsoption für automatischen Einzug / Refund bei Statuswechsel
+
 # 6.4.0
 * Unzer Direkt-Überweisung als neue Zahlungsmethode hinzugefügt
 * Update PHP-SDK

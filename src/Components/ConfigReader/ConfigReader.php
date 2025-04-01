@@ -41,6 +41,8 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_GOOGLE_PAY_BUTTON_SIZE_MODE = 'googlePayButtonSizeMode';
 
     public const CONFIG_KEY_PAYPAL_SHOW_SAVE_ACCOUNT = 'paypalShowSaveAccount';
+    public const CONFIG_KEY_DELIVERY_STATUS_FOR_CAPTURE =  'deliveryStatusForAutomaticCapture';
+    public const CONFIG_KEY_DELIVERY_STATUS_FOR_REFUND =  'deliveryStatusForAutomaticRefund';
 
     private SystemConfigService $systemConfigService;
 

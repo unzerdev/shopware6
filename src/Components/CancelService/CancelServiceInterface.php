@@ -27,9 +27,9 @@ interface CancelServiceInterface
      * @throws RuntimeException
      */
     public function cancelAuthorizationById(
-        string $orderTransactionId,
-        string $authorizationId,
-        float $amountGross,
+        string  $orderTransactionId,
+        string  $paymentId,
+        float   $amountGross,
         Context $context
     ): void;
 }
