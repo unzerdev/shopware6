@@ -56,9 +56,9 @@ Regarding plugin compatibility, please take a look at the release notes for more
 2. Inside the plugin directory run `composer install`
 3. Go to the plugin manager and install/activate the plugin.
 4. Run the following commands inside the Shopware folder:
-    > `./psh.phar administration:build`
+   > `./psh.phar administration:build`
 
-    > `./psh.phar storefront:build`
+   > `./psh.phar storefront:build`
 
 This will automatically generate all files required for the plugin to work correctly
 

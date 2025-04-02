@@ -139,6 +139,24 @@
             <helpText>Automatic shipping notifications (if active) will be sent if an order enters the selected status. Leave empty to disable automatic shipping notifications.</helpText>
             <helpText lang="de-DE">Die automatische Versandbenachrichtigung wird, wenn aktiv, ausgelöst sobald eine Bestellung den hier ausgewählten Status erhält. Lassen Sie dieses Feld leer, um keine automatischen Versandbenachrichtigungen anzustoßen.</helpText>
         </component>
+
+        <component name="unzer-entity-multi-select-delivery-status">
+            <name>deliveryStatusForAutomaticCapture</name>
+            <entityName>state_machine_state</entityName>
+            <label>Delivery status for triggering automatic capture</label>
+            <label lang="de-DE">Versandstatus zum Auslösen des automatischen Zahlungseinzugs</label>
+            <helpText>Leave blank, if you don't want to use automatic capture</helpText>
+            <helpText lang="de-DE">Leer lassen, um keinen automatischen Zahlungseinzug auszulösen</helpText>
+        </component>
+
+        <component name="unzer-entity-multi-select-delivery-status">
+            <name>deliveryStatusForAutomaticRefund</name>
+            <entityName>state_machine_state</entityName>
+            <label>Delivery status for triggering automatic cancel/refund</label>
+            <label lang="de-DE">Versandstatus zum Auslösen der automatischen Rückzahlung</label>
+            <helpText>Leave blank, if you don't want to use automatic refund</helpText>
+            <helpText lang="de-DE">Leer lassen, um keine automatische Rückzahlung auszulösen</helpText>
+        </component>
     </card>
 
     <card>

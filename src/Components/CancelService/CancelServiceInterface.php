@@ -28,7 +28,7 @@ interface CancelServiceInterface
      */
     public function cancelAuthorizationById(
         string $orderTransactionId,
-        string $authorizationId,
+        string  $paymentId,
         float $amountGross,
         Context $context
     ): void;

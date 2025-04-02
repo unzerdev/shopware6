@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\CancelService;
 
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
@@ -28,13 +29,16 @@ class CancelService implements CancelServiceInterface
     private EntityRepository $orderTransactionRepository;
 
     private ClientFactoryInterface $clientFactory;
+    private LoggerInterface $logger;
 
     public function __construct(
         EntityRepository $orderTransactionRepository,
-        ClientFactoryInterface $clientFactory
+        ClientFactoryInterface $clientFactory,
+        LoggerInterface $logger
     ) {
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->clientFactory              = $clientFactory;
+        $this->logger = $logger;
     }
 
     /**
@@ -98,7 +102,7 @@ class CancelService implements CancelServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function cancelAuthorizationById(string $orderTransactionId, string $authorizationId, float $amountGross, Context $context): void
+    public function cancelAuthorizationById(string $orderTransactionId, string $paymentId, float $amountGross, Context $context): void
     {
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
 
@@ -107,14 +111,15 @@ class CancelService implements CancelServiceInterface
         }
 
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
+        $authorization = $client->fetchAuthorization($paymentId);
 
         if ($this->isPaylaterPaymentMethod($transaction->getPaymentMethodId())) {
-            $client->cancelAuthorizedPayment($authorizationId, new Cancellation($amountGross));
+            $this->logger->info('Canceling authorization by payment', ['authorization' => $authorization->getPayment()]);
+            $client->cancelAuthorizedPayment($authorization->getPayment(), new Cancellation($amountGross));
 
             return;
         }
-
-        $authorization = $client->fetchAuthorization($authorizationId);
+        $this->logger->info('Canceling authorization', ['authorization' => $authorization]);
         $authorization->cancel($amountGross);
     }
 
