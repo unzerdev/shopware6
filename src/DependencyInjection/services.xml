@@ -32,6 +32,7 @@
         <service id="UnzerPayment6\Components\CancelService\CancelService">
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="unzer_payment.logger"/>
         </service>
 
         <service id="UnzerPayment6\Components\ShipService\ShipService">
@@ -83,6 +84,14 @@
             <argument type="service" id="plugin.repository"/>
 
             <tag name="shopware.cart.validator"/>
+        </service>
+
+        <service id="UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil">
+            <argument type="service" id="order_transaction.repository"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\CancelService\CancelService"/>
+            <argument type="service" id="unzer_payment.logger"/>
         </service>
     </services>
 </container>

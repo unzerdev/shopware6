@@ -43,6 +43,8 @@
             <argument type="service" id="unzer_payment.logger"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="UnzerPayment6\Components\ShipService\ShipService"/>
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
