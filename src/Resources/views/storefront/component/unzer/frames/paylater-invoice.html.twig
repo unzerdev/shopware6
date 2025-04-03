@@ -16,6 +16,7 @@
                     <select required="required"
                             form="confirmOrderForm"
                             name="unzerPaymentCompanyType"
+                            id="unzerPaymentCompanyType"
                             class="form-control">
                             <option value=""
                                     disabled="disabled"
@@ -41,7 +42,7 @@
         {% endblock %}
 
         {% block unzer_payment_frame_paylater_invoice_birthday %}
-            <div id="unzer-payment-b2c-form">
+            <div id="unzer-payment-b2c-form" {% if context.customer.activeBillingAddress.company is not empty %} style="display: {% if page.extensions[paymentDataExtensionName].unzerCustomer and page.extensions[paymentDataExtensionName].unzerCustomer.companyInfo and page.extensions[paymentDataExtensionName].unzerCustomer.companyInfo.companyType == 'sole' %}block{% else %}none{% endif %};" {% endif %}>
                 <label for="unzerPaymentBirthday" class="unzer-payment-label">
                     {{ "account.personalBirthdayLabel"|trans }}
                 </label>

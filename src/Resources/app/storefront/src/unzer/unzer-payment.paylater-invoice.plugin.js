@@ -35,9 +35,24 @@ export default class UnzerPaymentPaylaterInvoicePlugin extends Plugin {
      * @private
      */
     _registerEvents() {
+        if (document.getElementById('unzerPaymentCompanyType')) {
+            document.getElementById('unzerPaymentCompanyType').addEventListener('change', (event) => this._toggleB2CForm(event));
+        }
+        this._toggleB2CForm();
         this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
+    }
+
+    /**
+     * @private
+     */
+    _toggleB2CForm() {
+        if (document.getElementById('unzerPaymentCompanyType').value === "sole") {
+            document.getElementById("unzer-payment-b2c-form").style.display = "block";
+        } else {
+            document.getElementById("unzer-payment-b2c-form").style.display = "none";
+        }
     }
 
     /**
