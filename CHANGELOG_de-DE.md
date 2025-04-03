@@ -1,3 +1,6 @@
+# 6.4.2
+* Anpassung Rechnungskauf als gewerblicher Kunde
+
 # 6.4.1
 * Neue Konfigurationsoption für automatischen Einzug / Refund bei Statuswechsel
 
