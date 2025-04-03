@@ -1,3 +1,6 @@
+# 5.11.2
+* Adaption Invoice as commerical customer
+
 # 5.11.1
 * New config setting to capture and refund on status change
 

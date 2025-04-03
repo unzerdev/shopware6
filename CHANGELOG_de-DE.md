@@ -1,3 +1,6 @@
+# 5.11.2
+* Anpassung Rechnungskauf als gewerblicher Kunde
+
 # 5.11.1
 * Neue Konfigurationsoption für automatischen Einzug / Refund bei Statuswechsel
 
