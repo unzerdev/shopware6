@@ -1,3 +1,6 @@
+# 5.11.3
+* Bugfix JS Invoice
+
 # 5.11.2
 * Adaption Invoice as commerical customer
 
