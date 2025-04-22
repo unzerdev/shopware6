@@ -1,3 +1,6 @@
+# 6.4.3
+* Bugfix JS invoice
+
 # 6.4.2
 * Adaption Invoice as commerical customer
 

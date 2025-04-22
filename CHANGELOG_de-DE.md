@@ -1,3 +1,6 @@
+# 6.4.3
+* Bugfix JS Rechnungskauf
+
 # 6.4.2
 * Anpassung Rechnungskauf als gewerblicher Kunde
 

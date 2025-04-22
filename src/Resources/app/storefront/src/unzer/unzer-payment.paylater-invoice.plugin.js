@@ -37,8 +37,8 @@ export default class UnzerPaymentPaylaterInvoicePlugin extends Plugin {
     _registerEvents() {
         if (document.getElementById('unzerPaymentCompanyType')) {
             document.getElementById('unzerPaymentCompanyType').addEventListener('change', (event) => this._toggleB2CForm(event));
+            this._toggleB2CForm();
         }
-        this._toggleB2CForm();
         this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
             scope: this
         });
