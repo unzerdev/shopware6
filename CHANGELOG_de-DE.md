@@ -1,3 +1,6 @@
+# 6.4.4
+* Bugfix B2B Rechnungskauf ohne Geburtsdatum
+
 # 6.4.3
 * Bugfix JS Rechnungskauf
 
