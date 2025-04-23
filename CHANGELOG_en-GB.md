@@ -1,3 +1,6 @@
+# 5.11.4
+* Bugfix B2B Invoice without birthdate
+
 # 5.11.3
 * Bugfix JS Invoice
 
