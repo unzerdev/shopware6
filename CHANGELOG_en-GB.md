@@ -1,3 +1,6 @@
+# 6.4.5
+* Customer object change from old version to latest
+
 # 6.4.4
 * Bugfix B2B Invoice without birthdate
 

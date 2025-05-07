@@ -10,11 +10,14 @@ use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use UnzerPayment6\Installer\PaymentInstaller;
+use UnzerSDK\Constants\CompanyCommercialSectorItems;
+use UnzerSDK\Constants\CompanyRegistrationTypes;
 use UnzerSDK\Constants\ShippingTypes;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Customer;
 use UnzerSDK\Resources\CustomerFactory;
 use UnzerSDK\Resources\EmbeddedResources\Address;
+use UnzerSDK\Resources\EmbeddedResources\CompanyInfo;
 
 class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 {
@@ -54,14 +57,19 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
                 $billingAddress->getLastName()
             );
         } else {
-            $unzerCustomer = CustomerFactory::createNotRegisteredB2bCustomer(
-                $billingAddress->getFirstName(),
-                $billingAddress->getLastName(),
-                $this->getBirthDate($customer),
-                $this->getUnzerAddress($billingAddress),
-                $customer->getEmail(),
-                $billingAddress->getCompany()
-            );
+            $companyInfo = (new CompanyInfo())
+                ->setRegistrationType(CompanyRegistrationTypes::REGISTRATION_TYPE_NOT_REGISTERED)
+                ->setFunction('OWNER')
+                ->setCommercialSector(CompanyCommercialSectorItems::OTHER);
+
+            $unzerCustomer = (new Customer())
+                ->setFirstname($billingAddress->getFirstName())
+                ->setLastname($billingAddress->getLastName())
+                ->setBirthDate($this->getBirthDate($customer))
+                ->setBillingAddress($this->getUnzerAddress($billingAddress))
+                ->setEmail($customer->getEmail())
+                ->setCompany($billingAddress->getCompany())
+                ->setCompanyInfo($companyInfo);
         }
 
         $unzerCustomer->setShippingAddress($this->getUnzerAddress($shippingAddress));

@@ -1,3 +1,6 @@
+# 6.4.5
+* Customer object Update von alter Version zu neuester
+
 # 6.4.4
 * Bugfix B2B Rechnungskauf ohne Geburtsdatum
 
