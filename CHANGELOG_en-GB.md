@@ -1,3 +1,6 @@
+# 5.11.5
+* Customer object change from old version to latest
+
 # 5.11.4
 * Bugfix B2B Invoice without birthdate
 

@@ -1,3 +1,6 @@
+# 5.11.5
+* Customer object Update von alter Version zu neuester
+
 # 5.11.4
 * Bugfix B2B Rechnungskauf ohne Geburtsdatum
 
