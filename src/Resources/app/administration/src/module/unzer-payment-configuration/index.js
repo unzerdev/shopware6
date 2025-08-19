@@ -2,17 +2,15 @@ import './component/register-webhook';
 import './component/unzer-webhooks-modal';
 import './component/unzer-entity-single-select-delivery-status';
 import './component/unzer-entity-multi-select-delivery-status';
-import './component/unzer-payment-apple-pay-certificates';
+import './component/unzer-google-pay-gateway-merchant-id';
 import './component/unzer-payment-plugin-icon';
-
-import './extension/sw-system-config';
 
 import './page/unzer-payment-settings';
 
 import deDE from '../../snippets/de-DE.json';
 import enGB from '../../snippets/en-GB.json';
 
-const {Module} = Shopware;
+const { Module } = Shopware;
 
 const configuration = {
     type: 'plugin',
@@ -24,7 +22,7 @@ const configuration = {
 
     snippets: {
         'de-DE': deDE,
-        'en-GB': enGB
+        'en-GB': enGB,
     },
 
     routes: {
@@ -32,20 +30,24 @@ const configuration = {
             component: 'unzer-payment-settings',
             path: 'settings',
             meta: {
-                parentPath: 'sw.settings.index'
-            }
-        }
+                parentPath: 'sw.settings.index',
+            },
+        },
     },
+
+    extensionEntryRoute:{
+        extensionName: 'UnzerPayment6',
+        route: 'unzer.payment.configuration.settings',
+    },
+
     settingsItem: {
         name: 'unzer-payment-configuration',
         to: 'unzer.payment.configuration.settings',
         label: 'unzer-payment-settings.module.title',
         group: 'plugins',
         iconComponent: 'unzer-payment-plugin-icon',
-        backgroundEnabled: false
-    }
+        backgroundEnabled: false,
+    },
 };
-
-
 
 Module.register('unzer-payment-configuration', configuration);

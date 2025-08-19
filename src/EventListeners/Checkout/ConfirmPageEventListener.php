@@ -9,6 +9,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
@@ -24,7 +25,6 @@ use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
 use UnzerPayment6\Components\PaymentHandler\UnzerGooglePayPaymentHandler;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\KeyPairContext;
-use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayV2PageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
@@ -44,47 +44,19 @@ use UnzerSDK\Resources\Customer;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
 {
-    /** @var Configuration */
-    protected $configData;
-
-    /** @var UnzerPaymentDeviceRepositoryInterface */
-    private $deviceRepository;
-
-    /** @var ConfigReaderInterface */
-    private $configReader;
-
-    /** @var PaymentFrameFactoryInterface */
-    private $paymentFrameFactory;
-
-    /** @var SystemConfigService */
-    private $systemConfigReader;
-
-    /** @var EntityRepository */
-    private $languageRepository;
-
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
-
-    /** @var KeyPairConfigReader */
-    private $keyPairConfigReader;
+    private ?Configuration $configData = null;
 
     public function __construct(
-        UnzerPaymentDeviceRepositoryInterface $deviceRepository,
-        ConfigReaderInterface                 $configReader,
-        PaymentFrameFactoryInterface          $paymentFrameFactory,
-        SystemConfigService                   $systemConfigReader,
-        EntityRepository                      $languageRepository,
-        ClientFactoryInterface                $clientFactory,
-        KeyPairConfigReader                   $keyPairConfigReader
+        private readonly UnzerPaymentDeviceRepositoryInterface $deviceRepository,
+        private readonly ConfigReaderInterface                 $configReader,
+        private readonly PaymentFrameFactoryInterface          $paymentFrameFactory,
+        private readonly SystemConfigService                   $systemConfigReader,
+        private readonly EntityRepository                      $languageRepository,
+        private readonly ClientFactoryInterface                $clientFactory,
+        private readonly KeyPairConfigReader                   $keyPairConfigReader
     )
     {
-        $this->deviceRepository = $deviceRepository;
-        $this->configReader = $configReader;
-        $this->paymentFrameFactory = $paymentFrameFactory;
-        $this->systemConfigReader = $systemConfigReader;
-        $this->languageRepository = $languageRepository;
-        $this->clientFactory = $clientFactory;
-        $this->keyPairConfigReader = $keyPairConfigReader;
+
     }
 
     /**
@@ -128,9 +100,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             case PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED:
                 $this->addInstallmentSecuredExtension($event);
                 break;
-            case PaymentInstaller::PAYMENT_ID_APPLE_PAY:
-                $this->addApplePayExtension($event);
-                break;
             case PaymentInstaller::PAYMENT_ID_APPLE_PAY_V2:
                 $this->addApplePayV2Extension($event);
                 break;
@@ -147,7 +116,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
                 break;
         }
 
-        if (in_array($paymentMethodId, PaymentInstaller::PAYMENT_METHOD_IDS)) {
+        if (\in_array($paymentMethodId, PaymentInstaller::PAYMENT_METHOD_IDS, true)) {
             $this->addPaymentFrameExtension($event);
             $this->addUnzerDataExtension($event);
         }
@@ -197,7 +166,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
         try {
             return $client->fetchCustomerByExtCustomerId($customerNumber);
-        } catch (Throwable $t) {
+        } catch (Throwable) {
             return null;
         }
     }
@@ -220,7 +189,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             PaymentFramePageExtension::EXTENSION_NAME,
             (new PaymentFramePageExtension())
                 ->setPaymentFrame($mappedFrameTemplate)
-                ->setShopName(is_string($shopName) ? $shopName : '')
+                ->setShopName(\is_string($shopName) ? $shopName : '')
         );
     }
 
@@ -260,7 +229,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $extension->setPublicConfig([
-            'paypalShowSaveAccount' => $this->configData->get(ConfigReader::CONFIG_KEY_PAYPAL_SHOW_SAVE_ACCOUNT),
+            'allowSaveAccount' => $this->configData->get(ConfigReader::CONFIG_KEY_ALLOW_SAVE_ACCOUNT),
         ]);
 
         $event->getPage()->addExtension(PayPalPageExtension::EXTENSION_NAME, $extension);
@@ -319,11 +288,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension(InstallmentSecuredPageExtension::EXTENSION_NAME, $extension);
     }
 
-    private function addApplePayExtension(PageLoadedEvent $event): void
-    {
-        $event->getPage()->addExtension(ApplePayPageExtension::EXTENSION_NAME, new ApplePayPageExtension());
-    }
-
     private function addApplePayV2Extension(PageLoadedEvent $event): void
     {
         $event->getPage()->addExtension(ApplePayV2PageExtension::EXTENSION_NAME, new ApplePayV2PageExtension());
@@ -331,7 +295,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     private function addGooglePayExtension(PageLoadedEvent $event): void
     {
-
         $extension = new GooglePayPageExtension();
         $extension->setPublicConfig([
             'merchantName' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_MERCHANT_NAME),
@@ -347,9 +310,10 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension(GooglePayPageExtension::EXTENSION_NAME, $extension);
     }
 
-    private function fetchGooglePayChannelId(PageLoadedEvent $event)
+    private function fetchGooglePayChannelId(PageLoadedEvent $event): string
     {
         $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($event->getSalesChannelContext()));
+
         return UnzerGooglePayPaymentHandler::fetchChannelId($client);
     }
 
@@ -383,11 +347,11 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     private function getLocaleByLanguageId(string $languageId, Context $context): string
     {
-        $critera = new Criteria([$languageId]);
-        $critera->addAssociation('locale');
+        $criteria = new Criteria([$languageId]);
+        $criteria->addAssociation('locale');
 
-        /** @var null|\Shopware\Core\System\Language\LanguageEntity $searchResult */
-        $searchResult = $this->languageRepository->search($critera, $context)->first();
+        /** @var LanguageEntity|null $searchResult */
+        $searchResult = $this->languageRepository->search($criteria, $context)->first();
 
         if ($searchResult === null || $searchResult->getLocale() === null) {
             return ClientFactoryInterface::DEFAULT_LOCALE;

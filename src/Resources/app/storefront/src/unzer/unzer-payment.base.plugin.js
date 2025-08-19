@@ -1,4 +1,4 @@
-import Plugin from 'src/plugin-system/plugin.class';
+const Plugin = window.PluginBaseClass;
 
 export default class UnzerPaymentBasePlugin extends Plugin {
     static options = {
@@ -9,9 +9,9 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         resourceIdElementId: 'unzerResourceId',
         confirmFormId: 'confirmOrderForm',
         errorWrapperClass: 'unzer-payment--error-wrapper',
-        errorContentSelector: '.unzer-payment--error-wrapper .alert-content',
+        errorContentSelector: '.unzer-payment--error-wrapper .alert-content-container',
         errorShouldNotBeEmpty: '%field% should not be empty',
-        isOrderEdit: false
+        isOrderEdit: false,
     };
 
     /**
@@ -37,16 +37,23 @@ export default class UnzerPaymentBasePlugin extends Plugin {
     _registerElements() {
         let unzerInstanceOptions = null;
 
-        if(this.options.shopLocale !== null) {
-            unzerInstanceOptions = {locale: this.options.shopLocale}
+        if (this.options.shopLocale !== null) {
+            unzerInstanceOptions = { locale: this.options.shopLocale };
         }
 
-        this.unzerInstance = new window.unzer(this.options.publicKey, unzerInstanceOptions);
+        this.unzerInstance = new window.unzer(
+            this.options.publicKey,
+            unzerInstanceOptions
+        );
 
         if (this.options.isOrderEdit) {
-            this.submitButton = document.getElementById(this.options.confirmFormId).getElementsByTagName('button')[0];
+            this.submitButton = document
+                .getElementById(this.options.confirmFormId)
+                .getElementsByTagName('button')[0];
         } else {
-            this.submitButton = document.getElementById(this.options.submitButtonId);
+            this.submitButton = document.getElementById(
+                this.options.submitButtonId
+            );
         }
         this.confirmForm = document.getElementById(this.options.confirmFormId);
     }
@@ -55,7 +62,10 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this.submitButton.addEventListener('click', this._onSubmitButtonClick.bind(this));
+        this.submitButton.addEventListener(
+            'click',
+            this._onSubmitButtonClick.bind(this)
+        );
     }
 
     /**
@@ -77,7 +87,9 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      * @param {Object} resource
      */
     submitResource(resource) {
-        const resourceIdElement = document.getElementById(this.options.resourceIdElementId);
+        const resourceIdElement = document.getElementById(
+            this.options.resourceIdElementId
+        );
         resourceIdElement.value = resource.id;
 
         this.setSubmitButtonActive(true);
@@ -88,7 +100,9 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      * @param {String} typeId
      */
     submitTypeId(typeId) {
-        const resourceIdElement = document.getElementById(this.options.resourceIdElementId);
+        const resourceIdElement = document.getElementById(
+            this.options.resourceIdElementId
+        );
         resourceIdElement.value = typeId;
 
         this.setSubmitButtonActive(true);
@@ -101,8 +115,12 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      * @param {Boolean} append
      */
     showError(error, append = false) {
-        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0);
-        const errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+        const errorWrapper = document
+            .getElementsByClassName(this.options.errorWrapperClass)
+            .item(0);
+        const errorContent = document.querySelectorAll(
+            this.options.errorContentSelector
+        )[0];
 
         if (!append || errorContent.innerText === '') {
             errorContent.innerText = error.message;
@@ -122,8 +140,12 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      * @param {HTMLElement} el
      */
     renderErrorToElement(error, el) {
-        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0);
-        const errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+        const errorWrapper = document
+            .getElementsByClassName(this.options.errorWrapperClass)
+            .item(0);
+        const errorContent = document.querySelectorAll(
+            this.options.errorContentSelector
+        )[0];
 
         errorWrapper.hidden = false;
         errorContent.innerText = error.message;
@@ -173,13 +195,23 @@ export default class UnzerPaymentBasePlugin extends Plugin {
             const element = form[i];
 
             if (!element.checkValidity()) {
+                let hasCustomErrorMessage = false;
                 if (element.dataset.customError) {
                     this.showError({
-                        message: element.dataset.customError
+                        message: element.dataset.customError,
                     });
+                    hasCustomErrorMessage = true;
                 }
 
                 element.classList.add('is-invalid');
+
+                if(!hasCustomErrorMessage) {
+                    element.scrollIntoView({
+                        block: 'end',
+                        behavior: 'smooth',
+                    });
+                    element.reportValidity();
+                }
 
                 return false;
             }
@@ -188,11 +220,20 @@ export default class UnzerPaymentBasePlugin extends Plugin {
                 element.classList.add('is-invalid');
 
                 if (element.labels.length === 0 && formValid) {
-                    element.scrollIntoView({ block: 'end', behavior: 'smooth' });
+                    element.scrollIntoView({
+                        block: 'end',
+                        behavior: 'smooth',
+                    });
                 } else if (element.labels.length > 0) {
-                    this.showError({
-                        message: this.options.errorShouldNotBeEmpty.replace(/%field%/, element.labels[0].innerText)
-                    }, true);
+                    this.showError(
+                        {
+                            message: this.options.errorShouldNotBeEmpty.replace(
+                                /%field%/,
+                                element.labels[0].innerText
+                            ),
+                        },
+                        true
+                    );
                 }
 
                 formValid = false;
@@ -205,8 +246,12 @@ export default class UnzerPaymentBasePlugin extends Plugin {
     }
 
     _clearErrorMessage() {
-        const errorWrapper = document.getElementsByClassName(this.options.errorWrapperClass).item(0);
-        const errorContent = document.querySelectorAll(this.options.errorContentSelector)[0];
+        const errorWrapper = document
+            .getElementsByClassName(this.options.errorWrapperClass)
+            .item(0);
+        const errorContent = document.querySelectorAll(
+            this.options.errorContentSelector
+        )[0];
 
         errorWrapper.hidden = true;
         errorContent.innerText = '';
@@ -221,8 +266,10 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      */
     getB2bCustomerObject(customerInfo) {
         const combinedName = `${customerInfo.firstName} ${customerInfo.lastName}`;
-        const birthDate = !customerInfo.birthday ? null : new Date(customerInfo.birthday);
-        const customerObject =  {
+        const birthDate = !customerInfo.birthday
+            ? null
+            : new Date(customerInfo.birthday);
+        const customerObject = {
             firstname: customerInfo.firstName,
             lastname: customerInfo.lastName,
             email: customerInfo.email,
@@ -233,20 +280,25 @@ export default class UnzerPaymentBasePlugin extends Plugin {
                 street: customerInfo.activeBillingAddress.street,
                 zip: customerInfo.activeBillingAddress.zipcode,
                 city: customerInfo.activeBillingAddress.city,
-                country: customerInfo.activeBillingAddress.country.iso
+                country: customerInfo.activeBillingAddress.country.iso,
             },
             shippingAddress: {
                 name: combinedName,
                 street: customerInfo.activeShippingAddress.street,
                 zip: customerInfo.activeShippingAddress.zipcode,
                 city: customerInfo.activeShippingAddress.city,
-                country: customerInfo.activeShippingAddress.country.iso
-            }
+                country: customerInfo.activeShippingAddress.country.iso,
+            },
         };
 
-        if(birthDate) {
+        if (birthDate) {
             // @see https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
-            customerObject.birthDate = birthDate.getFullYear() + '-' + (birthDate.getMonth() + 1).toString().padStart(2, '0') + '-' + (birthDate.getDay()).toString().padStart(2, '0')
+            customerObject.birthDate =
+                birthDate.getFullYear() +
+                '-' +
+                (birthDate.getMonth() + 1).toString().padStart(2, '0') +
+                '-' +
+                birthDate.getDay().toString().padStart(2, '0');
         }
 
         return customerObject;

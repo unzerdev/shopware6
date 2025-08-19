@@ -1,6 +1,6 @@
-import Plugin from 'src/plugin-system/plugin.class';
-import DomAccess from 'src/helper/dom-access.helper';
-import HttpClient from 'src/service/http-client.service';
+const Plugin = window.PluginBaseClass;
+
+
 
 export default class UnzerPaymentApplePayPlugin extends Plugin {
     static options = {
@@ -40,9 +40,11 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
     static client;
 
     init() {
-        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.client = new HttpClient();
-        this.googlePayInstance = this._unzerPaymentPlugin.unzerInstance.Googlepay();
+        this._unzerPaymentPlugin =
+            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        
+        this.googlePayInstance =
+            this._unzerPaymentPlugin.unzerInstance.Googlepay();
 
         this._createScript(() => {
             this._registerGooglePayButton();
@@ -56,8 +58,8 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
     _registerGooglePayButton() {
         const me = this;
 
-        const paymentDataRequestObject = this.googlePayInstance.initPaymentDataRequestObject(
-            {
+        const paymentDataRequestObject =
+            this.googlePayInstance.initPaymentDataRequestObject({
                 gatewayMerchantId: this.options.gatewayMerchantId,
                 merchantInfo: {
                     merchantName: this.options.merchantName,
@@ -70,46 +72,57 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
                     totalPrice: String(this.options.amount),
                 },
                 buttonOptions: {
+                    onClick: function(e){
+                        alert('click');
+                        console.log(e);
+                        e.preventDefault();
+                        e.stopPropagation();
+                    },
                     buttonColor: this.options.buttonColor,
                     buttonSizeMode: this.options.buttonSizeMode,
-
                 },
                 allowedCardNetworks: this.options.allowedCardNetworks,
                 allowCreditCards: this.options.allowCreditCards,
                 allowPrepaidCards: this.options.allowPrepaidCards,
 
                 onPaymentAuthorizedCallback: (paymentData) => {
-                    const googlePayButton = document.getElementById(me.options.googlePayButtonId);
+                    const googlePayButton = document.getElementById(
+                        me.options.googlePayButtonId
+                    );
                     googlePayButton.style.display = 'none';
-                    return me.googlePayInstance.createResource(paymentData)
-                        .then(
-                            (createdResource) => {
-                                if (me._unzerPaymentPlugin._validateForm() !== false) {
-                                    me._unzerPaymentPlugin.submitting = true;
-                                    me._unzerPaymentPlugin.submitResource(createdResource);
-                                }else{
-                                    googlePayButton.style.display = '';
-                                }
-                                return {
-                                    status: 'success'
-                                };
-                            }
-                        )
-                        .catch(
-                            (error) => {
+                    return me.googlePayInstance
+                        .createResource(paymentData)
+                        .then((createdResource) => {
+                            if (
+                                me._unzerPaymentPlugin._validateForm() !== false
+                            ) {
+                                me._unzerPaymentPlugin.submitting = true;
+                                me._unzerPaymentPlugin.submitResource(
+                                    createdResource
+                                );
+                            } else {
                                 googlePayButton.style.display = '';
-                                const publicError = error;
-                                publicError.message = error.customerMessage || error.message || 'Error';
-                                me._handleError(publicError);
-                                return {
-                                    status: 'error',
-                                    message: publicError.message || 'Unexpected error'
-                                }
                             }
-                        )
-                }
-            }
-        );
+                            return {
+                                status: 'success',
+                            };
+                        })
+                        .catch((error) => {
+                            googlePayButton.style.display = '';
+                            const publicError = error;
+                            publicError.message =
+                                error.customerMessage ||
+                                error.message ||
+                                'Error';
+                            me._handleError(publicError);
+                            return {
+                                status: 'error',
+                                message:
+                                    publicError.message || 'Unexpected error',
+                            };
+                        });
+                },
+            });
         this.googlePayInstance.create(
             {
                 containerId: me.options.googlePayButtonId,
@@ -134,7 +147,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
      * @private
      */
     _hideBuyButton() {
-        const confirmButton = DomAccess.querySelector(document, this.options.checkoutConfirmButtonSelector);
+        const confirmButton = document.querySelector(this.options.checkoutConfirmButtonSelector);
         confirmButton.style.display = 'none';
     }
 

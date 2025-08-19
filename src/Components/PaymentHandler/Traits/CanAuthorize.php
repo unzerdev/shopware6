@@ -5,6 +5,16 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
 use RuntimeException;
+use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\PaymentException;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Struct\Struct;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Throwable;
+use UnzerPayment6\Components\BookingMode;
+use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
+use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\EmbeddedResources\RiskData;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 
@@ -60,5 +70,50 @@ trait CanAuthorize
         }
 
         return $returnUrl;
+    }
+
+    protected function payWithBookingMode(
+        Request                  $request,
+        PaymentTransactionStruct $transaction,
+        Context                  $context,
+        ?Struct                  $validateStruct,
+        string $bookingMode
+    ): RedirectResponse
+    {
+
+        try {
+            $returnUrl = $bookingMode === BookingMode::CHARGE
+                ? $this->charge($transaction->getReturnUrl())
+                : $this->authorize($transaction->getReturnUrl(), $this->unzerBasket->getTotalValueGross());
+
+            return new RedirectResponse($returnUrl);
+        } catch (UnzerApiException $apiException) {
+            $this->logger->error(
+                \sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
+                [
+                    'request' => $request,
+                    'transaction' => $transaction,
+                    'exception' => $apiException,
+                ]
+            );
+
+            $this->executeFailTransition(
+                $transaction->getOrderTransactionId(),
+                $context
+            );
+            $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
+            throw new UnzerPaymentProcessException($orderTransaction->getOrderId(), $transaction->getOrderTransactionId(), $apiException);
+        } catch (Throwable $exception) {
+            $this->logger->error(
+                \sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
+                [
+                    'request' => $request,
+                    'transaction' => $transaction,
+                    'exception' => $exception,
+                ]
+            );
+
+            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransactionId(), $exception->getMessage());
+        }
     }
 }

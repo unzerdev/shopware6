@@ -76,11 +76,6 @@
                 </option>
             </options>
         </input-field>
-    </card>
-
-    <card>
-        <title>Apple Pay</title>
-        <title lang="de-DE">Apple Pay</title>
         <input-field type="single-select">
             <name>bookingModeApplePay</name>
             <label>Booking mode Apple Pay</label>
@@ -100,31 +95,34 @@
                 </option>
             </options>
         </input-field>
-    </card>
-
-    <card>
-        <title>Apple Pay (Deprecated)</title>
-        <title lang="de-DE">Apple Pay (Veraltet)</title>
-
-        <input-field type="text">
-            <name>applePayMerchantIdentifier</name>
-            <label>Merchant Identifier</label>
-            <label lang="de-DE">Merchant Identifier</label>
-            <helpText>Available in your Apple Developer account</helpText>
-            <helpText lang="de-DE">Verfügbar im Apple Developer Account</helpText>
+        <input-field type="single-select">
+            <name>googlePayBookingMode</name>
+            <label>Booking mode Google Pay</label>
+            <label lang="de-DE">Buchungsmodus Google Pay</label>
+            <helpText>If you select the charge option, the amount is debited immediately; if you select the Authorization option, the amount must be collected manually later.</helpText>
+            <helpText lang="de-DE">Bei der Option Direkt wird der Betrag sofort abgebucht, wählen Sie hingegen die Option Autorisierung muss der Betrag später manuell eingezogen werden.</helpText>
+            <options>
+                <option>
+                    <id>charge</id>
+                    <name>Charge</name>
+                    <name lang="de-DE">Direkt</name>
+                </option>
+                <option>
+                    <id>authorize</id>
+                    <name>Authorize</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
         </input-field>
 
-        <input-field type="text">
-            <name>applePayPaymentProcessingCertificateId</name>
-            <label>ID of payment processing certificate at Unzer</label>
-            <label lang="de-DE">ID des Payment Processing Zertifikats bei Unzer</label>
+        <input-field type="bool">
+            <name>allowSaveAccount</name>
+            <label>Allow customers to save their payment details for future orders</label>
+            <label lang="de-DE">Erlauben Kunden ihre Zahlungsdaten für zukünftige Bestellungen zu speichern</label>
+            <helpText>For PayPal you need to have a 'PayPal Billing Agreement' with PayPal to make this work.</helpText>
+            <helpText lang="de-DE">Für PayPal müssen Sie ein 'PayPal Billing Agreement' mit PayPal haben, um dieses Feature nutzen zu können.</helpText>
         </input-field>
 
-        <input-field type="text">
-            <name>applePayMerchantIdentificationCertificateId</name>
-            <label>ID of merchant identification certificate path</label>
-            <label lang="de-DE">ID des Merchant Identification Zertifikat-Pfads</label>
-        </input-field>
     </card>
 
     <card>
@@ -159,43 +157,10 @@
         </component>
     </card>
 
-    <card>
-        <title>PayPal</title>
-        <title lang="de-DE">PayPal</title>
-
-        <input-field type="bool">
-            <name>paypalShowSaveAccount</name>
-            <label>Show 'Save PayPal Account for next order' on checkout</label>
-            <label lang="de-DE">Zeige 'PayPal Account für die nächste Bestellung speichern' auf Checkout-Seite</label>
-            <helpText>You need to have a 'PayPal Billing Agreement' with PayPal to make this work.</helpText>
-            <helpText lang="de-DE">Sie müssen ein 'PayPal Billing Agreement' mit PayPal haben, um dieses Feature nutzen zu können.</helpText>
-        </input-field>
-    </card>
-    
 
     <card>
         <title>Google Pay</title>
         <title lang="de-DE">Google Pay</title>
-
-        <input-field type="single-select">
-            <name>googlePayBookingMode</name>
-            <label>Booking mode</label>
-            <label lang="de-DE">Buchungsmodus</label>
-            <helpText>If you select the charge option, the amount is debited immediately; if you select the Authorization option, the amount must be collected manually later.</helpText>
-            <helpText lang="de-DE">Bei der Option Direkt wird der Betrag sofort abgebucht, wählen Sie hingegen die Option Autorisierung muss der Betrag später manuell eingezogen werden.</helpText>
-            <options>
-                <option>
-                    <id>charge</id>
-                    <name>Charge</name>
-                    <name lang="de-DE">Direkt</name>
-                </option>
-                <option>
-                    <id>authorize</id>
-                    <name>Authorize</name>
-                    <name lang="de-DE">Autorisierung</name>
-                </option>
-            </options>
-        </input-field>
 
         <input-field type="text">
             <name>googlePayMerchantId</name>
@@ -251,7 +216,7 @@
             <label>Allowed Card Networks</label>
             <label lang="de-DE">Erlaubte Karten Netzwerke</label>
             <options>
-               <option>
+                <option>
                     <id>MASTERCARD</id>
                     <name>MASTERCARD</name>
                     <name lang="de-DE">MASTERCARD</name>

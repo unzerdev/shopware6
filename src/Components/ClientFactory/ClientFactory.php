@@ -52,10 +52,10 @@ class ClientFactory implements ClientFactoryInterface
         return $client;
     }
 
-    protected function applyGlobalClientSettings(Unzer $client, string $salesChannelId = '')
+    protected function applyGlobalClientSettings(Unzer $client, string $salesChannelId = ''): void
     {
         $config = $this->configReader->read($salesChannelId);
-        $client->setDebugMode((bool)$config->get(ConfigReader::CONFIG_KEY_EXTENDED_LOGGING));
+        $client->setDebugMode((bool) $config->get(ConfigReader::CONFIG_KEY_EXTENDED_LOGGING));
         $client->setDebugHandler($this->debugHandler);
         $client->setClientIp($_SERVER['REMOTE_ADDR'] ?? null);
     }

@@ -18,12 +18,12 @@ use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperE
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 
-class TransactionStateHandler implements TransactionStateHandlerInterface
+readonly class TransactionStateHandler implements TransactionStateHandlerInterface
 {
     public function __construct(
-        private readonly StateMachineRegistry $stateMachineRegistry,
-        private readonly PaymentTransitionMapperFactory $transitionMapperFactory,
-        private readonly LoggerInterface $logger
+        private StateMachineRegistry           $stateMachineRegistry,
+        private PaymentTransitionMapperFactory $transitionMapperFactory,
+        private LoggerInterface                $logger
     ) {
     }
 
@@ -36,7 +36,7 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         Context $context
     ): void {
         if ($payment->getPaymentType() === null) {
-            $this->logger->error(sprintf('The payment has no payment type for transition mapping. TransactionId: %s', $transactionId), [
+            $this->logger->error(\sprintf('The payment has no payment type for transition mapping. TransactionId: %s', $transactionId), [
                 'payment' => $payment,
             ]);
 
@@ -78,14 +78,14 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
     {
         try {
             /** @var BasePaymentType $paymentType */
-            $paymentType      = $payment->getPaymentType();
+            $paymentType = $payment->getPaymentType();
             $transitionMapper = $this->transitionMapperFactory->getTransitionMapper($paymentType);
-            $transition       = $transitionMapper->getTargetPaymentStatus($payment);
-        } catch (NoTransitionMapperFoundException | TransitionMapperException $exception) {
+            $transition = $transitionMapper->getTargetPaymentStatus($payment);
+        } catch (NoTransitionMapperFoundException|TransitionMapperException $exception) {
             $this->logger->error($exception->getMessage(), [
-                'code'  => $exception->getCode(),
-                'file'  => $exception->getFile(),
-                'line'  => $exception->getLine(),
+                'code' => $exception->getCode(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
                 'trace' => $exception->getTraceAsString(),
             ]);
         }
@@ -105,14 +105,14 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
                 ),
                 $context
             );
-        } catch (IllegalTransitionException $exception) {
+        } catch (IllegalTransitionException) {
             // false positive handling (state to state) like open -> open, paid -> paid, etc.
         }
 
         // If payment should be in state "paid", `do_pay` is given -> finalize state
         if ($transition === StateMachineTransitionActions::ACTION_DO_PAY) {
             $this->logger->debug(
-                sprintf(
+                \sprintf(
                     '%s transition is executed as fallback for %s',
                     StateMachineTransitionActions::ACTION_PAID,
                     StateMachineTransitionActions::ACTION_DO_PAY

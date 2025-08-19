@@ -8,10 +8,7 @@ import './extension/sw-order-detail';
 import './extension/sw-order-list';
 import './page/unzer-payment-tab';
 
-import deDE from '../../snippets/de-DE.json';
-import enGB from '../../snippets/en-GB.json';
-
-const { Module } = Shopware;
+const {Module} = Shopware;
 
 Module.register('unzer-payment', {
     type: 'plugin',
@@ -22,11 +19,6 @@ Module.register('unzer-payment', {
     targetVersion: '0.0.1',
     maxDigits: 4,
 
-    snippets: {
-        'de-DE': deDE,
-        'en-GB': enGB
-    },
-
     routeMiddleware(next, currentRoute) {
         if (currentRoute.name === 'sw.order.detail') {
             currentRoute.children.push({
@@ -35,11 +27,11 @@ Module.register('unzer-payment', {
                 path: '/sw/order/detail/:id/unzer-payment',
                 isChildren: true,
                 meta: {
-                    parentPath: 'sw.order.index'
-                }
+                    parentPath: 'sw.order.index',
+                },
             });
         }
 
         next(currentRoute);
-    }
+    },
 });

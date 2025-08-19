@@ -1,7 +1,8 @@
 .unzer-payment-detail {
     line-height: 15px;
 
-    dt, dd {
+    dt,
+    dd {
         padding: 0;
         border-bottom: none;
     }
@@ -9,7 +10,8 @@
     dt {
         font-weight: 600;
 
-        &:not(:first-child), &:only-of-type{
+        &:not(:first-child),
+        &:only-of-type {
             padding-top: 10px;
         }
     }

@@ -19,7 +19,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Throwable;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
@@ -35,10 +34,10 @@ use UnzerSDK\Exceptions\UnzerApiException;
 )]
 class SendShippingNotificationCommand extends Command
 {
-    private const EXIT_CODE_SUCCESS       = 0;
-    private const EXIT_CODE_API_ERROR     = 1;
+    private const EXIT_CODE_SUCCESS = 0;
+    private const EXIT_CODE_API_ERROR = 1;
     private const EXIT_CODE_UNKNOWN_ERROR = 2;
-    private const EXIT_CODE_NO_ORDERS     = 3;
+    private const EXIT_CODE_NO_ORDERS = 3;
     private const EXIT_CODE_CONFIGURATION = 4;
 
     private ConfigReaderInterface $configReader;
@@ -57,18 +56,18 @@ class SendShippingNotificationCommand extends Command
         EventDispatcherInterface $eventDispatcher,
         ShipServiceInterface $shipService
     ) {
-        $this->configReader          = $configReader;
+        $this->configReader = $configReader;
         $this->transactionRepository = $transactionRepository;
-        $this->context               = Context::createDefaultContext();
-        $this->eventDispatcher       = $eventDispatcher;
-        $this->shipService           = $shipService;
+        $this->context = Context::createDefaultContext();
+        $this->eventDispatcher = $eventDispatcher;
+        $this->shipService = $shipService;
 
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $config          = $this->configReader->read();
+        $config = $this->configReader->read();
         $configuredState = $config->get(ConfigReader::CONFIG_KEY_SHIPPING_STATUS);
 
         if (empty($configuredState)) {
@@ -77,7 +76,7 @@ class SendShippingNotificationCommand extends Command
             return self::EXIT_CODE_CONFIGURATION;
         }
 
-        $transactions     = $this->getMatchingTransactions($configuredState);
+        $transactions = $this->getMatchingTransactions($configuredState);
         $transactionCount = $transactions->count();
 
         if ($transactionCount === 0) {
@@ -86,7 +85,7 @@ class SendShippingNotificationCommand extends Command
             return self::EXIT_CODE_NO_ORDERS;
         }
 
-        $output->writeln(sprintf('<info>Found %s possible order(s) for automatic shipping notification</info>', $transactionCount));
+        $output->writeln(\sprintf('<info>Found %s possible order(s) for automatic shipping notification</info>', $transactionCount));
         $currentTransactionCounter = 0;
 
         /** @var OrderTransactionEntity $transaction */
@@ -96,18 +95,18 @@ class SendShippingNotificationCommand extends Command
             $order = $transaction->getOrder();
 
             if ($order === null) {
-                $output->writeln(sprintf('<error>Transaction %s has no order</error>', $transaction->getId()));
+                $output->writeln(\sprintf('<error>Transaction %s has no order</error>', $transaction->getId()));
 
                 continue;
             }
 
             if ($order->getDocuments() === null) {
-                $output->writeln(sprintf('<error>Order %s has no documents</error>', $order->getOrderNumber()));
+                $output->writeln(\sprintf('<error>Order %s has no documents</error>', $order->getOrderNumber()));
 
                 continue;
             }
 
-            $output->write(sprintf('(%s/%s) Order %s', $currentTransactionCounter, $transactionCount, $order->getOrderNumber()));
+            $output->write(\sprintf('(%s/%s) Order %s', $currentTransactionCounter, $transactionCount, $order->getOrderNumber()));
 
             $entityFilter = new DocumentTypeEntity();
             $entityFilter->setTechnicalName('invoice');
@@ -120,9 +119,9 @@ class SendShippingNotificationCommand extends Command
 
                 $output->writeln("\t<info>OK</info>");
             } catch (UnzerApiException $apiException) {
-                $output->writeln(sprintf("\t<error>%s</error>", $apiException->getMerchantMessage()));
+                $output->writeln(\sprintf("\t<error>%s</error>", $apiException->getMerchantMessage()));
 
-                //Already insured but flag in DB missing!
+                // Already insured but flag in DB missing!
                 /** @var string $exceptionCode */
                 $exceptionCode = $apiException->getCode();
 
@@ -134,8 +133,8 @@ class SendShippingNotificationCommand extends Command
                 }
 
                 return self::EXIT_CODE_API_ERROR;
-            } catch (Throwable $exception) {
-                $output->writeln(sprintf("\t<error>%s</error>", $exception->getMessage()));
+            } catch (\Throwable $exception) {
+                $output->writeln(\sprintf("\t<error>%s</error>", $exception->getMessage()));
 
                 return self::EXIT_CODE_UNKNOWN_ERROR;
             }
@@ -153,7 +152,7 @@ class SendShippingNotificationCommand extends Command
         ]);
 
         $update = [
-            'id'           => $transaction->getId(),
+            'id' => $transaction->getId(),
             'customFields' => $customFields,
         ];
 
@@ -164,7 +163,7 @@ class SendShippingNotificationCommand extends Command
     {
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter(sprintf('customFields.%s', CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED), false),
+            new EqualsFilter(\sprintf('customFields.%s', CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED), false),
             new EqualsAnyFilter('paymentMethodId', AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS),
             new EqualsFilter('order.deliveries.stateId', $stateId),
             new EqualsFilter('order.documents.documentType.technicalName', 'invoice')

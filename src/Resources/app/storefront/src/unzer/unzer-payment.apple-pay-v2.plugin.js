@@ -1,6 +1,6 @@
-import Plugin from 'src/plugin-system/plugin.class';
-import DomAccess from 'src/helper/dom-access.helper';
-import HttpClient from 'src/service/http-client.service';
+const Plugin = window.PluginBaseClass;
+
+
 import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 
 export default class UnzerPaymentApplePayPlugin extends Plugin {
@@ -15,7 +15,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
         authorizePaymentUrl: '',
         merchantValidationUrl: '',
         noApplePayMessage: '',
-        supportedNetworks: ['masterCard', 'visa']
+        supportedNetworks: ['masterCard', 'visa'],
     };
 
     /**
@@ -45,8 +45,9 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
     static client;
 
     init() {
-        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.client = new HttpClient();
+        this._unzerPaymentPlugin =
+            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        
 
         if (this._hasCapability()) {
             this._createForm();
@@ -57,13 +58,19 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
     }
 
     _hasCapability() {
-        return window.ApplePaySession && window.ApplePaySession.canMakePayments() && window.ApplePaySession.supportsVersion(6)
+        return (
+            window.ApplePaySession &&
+            window.ApplePaySession.canMakePayments() &&
+            window.ApplePaySession.supportsVersion(6)
+        );
     }
 
     _disableApplePay() {
-        DomAccess.querySelector(document, this.options.applePayMethodSelector, false).remove();
-        DomAccess.querySelectorAll(document, '[data-unzer-payment-apple-pay-v2]', false).forEach((pluginElement) => pluginElement.remove());
-        this._unzerPaymentPlugin.showError({ message: this.options.noApplePayMessage });
+        document.querySelector(this.options.applePayMethodSelector).remove();
+        document.querySelectorAll('[data-unzer-payment-apple-pay-v2]').forEach((pluginElement) => pluginElement.remove());
+        this._unzerPaymentPlugin.showError({
+            message: this.options.noApplePayMessage,
+        });
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
     }
 
@@ -73,12 +80,12 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
     _createForm() {
         this.applePay = this._unzerPaymentPlugin.unzerInstance.ApplePay();
 
-        const confirmButton = DomAccess.querySelector(document, this.options.checkoutConfirmButtonSelector);
+        const confirmButton = document.querySelector(this.options.checkoutConfirmButtonSelector);
         confirmButton.style.display = 'none';
     }
 
     _startPayment() {
-        if(!this._unzerPaymentPlugin._validateForm()){
+        if (!this._unzerPaymentPlugin._validateForm()) {
             return;
         }
         const me = this;
@@ -87,19 +94,25 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
             currencyCode: this.options.currency,
             supportedNetworks: this.options.supportedNetworks,
             merchantCapabilities: this.options.merchantCapabilities,
-            total: { label: this.options.shopName, amount: this.options.amount }
+            total: {
+                label: this.options.shopName,
+                amount: this.options.amount,
+            },
         };
 
         if (!window.ApplePaySession) {
             return;
         }
 
-        const session = this.applePay.initApplePaySession(applePayPaymentRequest);
+        const session = this.applePay.initApplePaySession(
+            applePayPaymentRequest
+        );
 
         session.onpaymentauthorized = (event) => {
             const paymentData = event.payment.token.paymentData;
 
-            me.applePay.createResource(paymentData)
+            me.applePay
+                .createResource(paymentData)
                 .then((createdResource) => {
                     me._unzerPaymentPlugin.setSubmitButtonActive(false);
                     me._unzerPaymentPlugin.submitting = true;
@@ -113,7 +126,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
                     me._unzerPaymentPlugin.setSubmitButtonActive(true);
                     me._unzerPaymentPlugin.submitting = false;
                 });
-        }
+        };
         session.begin();
     }
 
@@ -121,7 +134,7 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        const applePayButton = DomAccess.querySelector(document, this.options.applePayButtonSelector);
+        const applePayButton = document.querySelector(this.options.applePayButtonSelector);
 
         applePayButton.addEventListener('click', this._startPayment.bind(this));
     }

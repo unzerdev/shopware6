@@ -6,42 +6,37 @@ const Criteria = Shopware.Data.Criteria;
 Shopware.Component.register('unzer-payment-register-webhook', {
     template,
 
-    mixins: [
-        Shopware.Mixin.getByName('notification')
-    ],
+    mixins: [Shopware.Mixin.getByName('notification')],
 
-    inject: [
-        'repositoryFactory',
-        'UnzerPaymentConfigurationService'
-    ],
+    inject: ['repositoryFactory', 'UnzerPaymentConfigurationService'],
 
     props: {
         webhooks: {
             type: Array,
-            required: true
+            required: true,
         },
         isLoading: {
             type: Boolean,
-            required: false
+            required: false,
         },
         selectedSalesChannelId: {
             type: String,
-            required: false
+            required: false,
         },
         privateKey: {
             type: String,
-            required: true
+            required: true,
         },
         isDisabled: {
             type: Boolean,
-            required: false
-        }
+            required: false,
+        },
     },
 
     computed: {
         salesChannelRepository() {
             return this.repositoryFactory.create('sales_channel');
-        }
+        },
     },
 
     data() {
@@ -51,9 +46,9 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             isRegistrationSuccessful: false,
             isDataLoading: false,
             selection: {},
-            selectedDomain:null,
+            selectedDomain: null,
             entitySelection: {},
-            salesChannels: {}
+            salesChannels: {},
         };
     },
 
@@ -69,12 +64,13 @@ Shopware.Component.register('unzer-payment-register-webhook', {
         loadData(page, limit) {
             let me = this;
 
-            me.isDataLoading = true;
+            this.isDataLoading = true;
 
             let criteria = new Criteria(page, limit);
             criteria.addAssociation('domains');
 
-            this.salesChannelRepository.search(criteria, Shopware.Context.api)
+            this.salesChannelRepository
+                .search(criteria, Shopware.Context.api)
                 .then((result) => {
                     me.salesChannels = result;
                     me.isDataLoading = false;
@@ -100,7 +96,7 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             this.isRegistering = true;
 
             this.UnzerPaymentConfigurationService.registerWebhooks({
-                selection: this.entitySelection
+                selection: this.entitySelection,
             })
                 .then((response) => {
                     me.isRegistrationSuccessful = true;
@@ -113,8 +109,12 @@ Shopware.Component.register('unzer-payment-register-webhook', {
                 })
                 .catch(() => {
                     this.createNotificationError({
-                        title: this.$tc('unzer-payment-settings.webhook.globalError.title'),
-                        message: this.$tc('unzer-payment-settings.webhook.globalError.message')
+                        title: this.$tc(
+                            'unzer-payment-settings.webhook.globalError.title'
+                        ),
+                        message: this.$tc(
+                            'unzer-payment-settings.webhook.globalError.message'
+                        ),
                     });
                 })
                 .finally(() => {
@@ -127,9 +127,7 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             this.selection = {};
         },
 
-
         onSelectItem(domainId, domain) {
-            console.log(domainId, domain);
             if (!domain) {
                 return;
             }
@@ -146,12 +144,20 @@ Shopware.Component.register('unzer-payment-register-webhook', {
                 if (data[domain].success) {
                     this.createNotificationSuccess({
                         title: this.$tc(data[domain].message, domainAmount),
-                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + domain
+                        message:
+                            this.$tc(
+                                'unzer-payment-settings.webhook.messagePrefix',
+                                domainAmount
+                            ) + domain,
                     });
                 } else {
                     this.createNotificationError({
                         title: this.$tc(data[domain].message, domainAmount),
-                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + domain
+                        message:
+                            this.$tc(
+                                'unzer-payment-settings.webhook.messagePrefix',
+                                domainAmount
+                            ) + domain,
                     });
                 }
             });
@@ -195,9 +201,11 @@ Shopware.Component.register('unzer-payment-register-webhook', {
             let criteria = new Criteria();
 
             criteria.addFilter(Criteria.prefix('url', 'https://'));
-            criteria.addFilter(Criteria.equals('salesChannelId', salesChannelId));
+            criteria.addFilter(
+                Criteria.equals('salesChannelId', salesChannelId)
+            );
 
             return criteria;
-        }
-    }
+        },
+    },
 });

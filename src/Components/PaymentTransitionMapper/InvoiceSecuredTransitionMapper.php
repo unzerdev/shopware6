@@ -11,7 +11,9 @@ use UnzerSDK\Resources\PaymentTypes\InvoiceSecured;
 
 class InvoiceSecuredTransitionMapper extends AbstractTransitionMapper
 {
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $isShipmentAllowed = true;
 
     public function supports(BasePaymentType $paymentType): bool

@@ -20,29 +20,29 @@ use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerPayment6\UnzerPayment6;
 
-class PaymentMethodLoadedEventListener implements EventSubscriberInterface
+readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterface
 {
-    /** @var ConfigReaderInterface */
-    private $configReader;
 
-    public function __construct(ConfigReaderInterface $configReader)
+
+    public function __construct(
+        private ConfigReaderInterface $configReader
+    )
     {
-        $this->configReader = $configReader;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
             'sales_channel.payment_method.search.id.result.loaded' => ['onSalesChannelIdSearchResultLoaded', -1],
-            'sales_channel.payment_method.search.result.loaded'    => ['onSalesChannelSearchResultLoaded', -1],
-            AccountEditOrderPageLoadedEvent::class                 => 'onAccountEditOrderPageLoaded',
-            CheckoutConfirmPageLoadedEvent::class                  => 'onCheckoutConfirmPageLoaded',
+            'sales_channel.payment_method.search.result.loaded' => ['onSalesChannelSearchResultLoaded', -1],
+            AccountEditOrderPageLoadedEvent::class => 'onAccountEditOrderPageLoaded',
+            CheckoutConfirmPageLoadedEvent::class => 'onCheckoutConfirmPageLoaded',
         ];
     }
 
     public function onSalesChannelIdSearchResultLoaded(SalesChannelEntityIdSearchResultLoadedEvent $event): void
     {
-        $result              = $event->getResult();
+        $result = $event->getResult();
         $salesChannelContext = $event->getSalesChannelContext();
 
         if (!$this->isConfigurationValid($salesChannelContext->getSalesChannel()->getId())) {
@@ -62,7 +62,7 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
 
     public function onSalesChannelSearchResultLoaded(SalesChannelEntitySearchResultLoadedEvent $event): void
     {
-        $result              = $event->getResult();
+        $result = $event->getResult();
         $salesChannelContext = $event->getSalesChannelContext();
 
         if (!$this->isConfigurationValid($salesChannelContext->getSalesChannel()->getId())) {
@@ -82,14 +82,15 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
 
     public function onAccountEditOrderPageLoaded(AccountEditOrderPageLoadedEvent $pageLoadedEvent): void
     {
-        $page        = $pageLoadedEvent->getPage();
-        $order       = $page->getOrder();
+        $page = $pageLoadedEvent->getPage();
+        $order = $page->getOrder();
         $totalAmount = $order->getAmountTotal();
 
         if ($this->isZeroAmount($totalAmount, $pageLoadedEvent->getSalesChannelContext()->getCurrency())) {
-            $page->setPaymentMethods($page->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
-                return !in_array($paymentMethod->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true);
-            })
+            $page->setPaymentMethods(
+                $page->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
+                    return !\in_array($paymentMethod->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true);
+                })
             );
             $pageLoadedEvent->getSalesChannelContext()->assign(['paymentMethods' => $page->getPaymentMethods()]);
         }
@@ -98,21 +99,22 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
     public function onCheckoutConfirmPageLoaded(CheckoutConfirmPageLoadedEvent $pageLoadedEvent): void
     {
         $salesChannelContext = $pageLoadedEvent->getSalesChannelContext();
-        $page                = $pageLoadedEvent->getPage();
-        $cart                = $page->getCart();
-        $totalAmount         = $cart->getPrice()->getTotalPrice();
+        $page = $pageLoadedEvent->getPage();
+        $cart = $page->getCart();
+        $totalAmount = $cart->getPrice()->getTotalPrice();
 
         if ($this->isZeroAmount($totalAmount, $salesChannelContext->getCurrency())) {
-            $page->setPaymentMethods($page->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
-                return !in_array($paymentMethod->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true);
-            })
+            $page->setPaymentMethods(
+                $page->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
+                    return !\in_array($paymentMethod->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true);
+                })
             );
 
             $salesChannelContext->assign(['paymentMethods' => $page->getPaymentMethods()]);
         }
 
-        if (in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true)
-            && !array_key_exists($salesChannelContext->getPaymentMethod()->getId(), $page->getPaymentMethods()->getElements())) {
+        if (\in_array($salesChannelContext->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true)
+            && !\array_key_exists($salesChannelContext->getPaymentMethod()->getId(), $page->getPaymentMethods()->getElements())) {
             $page->getCart()->addErrors(new PaymentMethodBlockedError($salesChannelContext->getPaymentMethod()->getName() ?? 'unknown'));
         }
     }
@@ -120,12 +122,12 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
     protected function removePaymentMethodsFromIdResult(IdSearchResult $result, array $paymentIdsToBeRemoved): void
     {
         $filteredPaymentMethods = array_filter($result->getIds(), static function ($paymentMethod) use ($paymentIdsToBeRemoved) {
-            return !in_array($paymentMethod, $paymentIdsToBeRemoved, true);
+            return !\in_array($paymentMethod, $paymentIdsToBeRemoved, true);
         });
 
         $result->assign([
-            'total'    => count($filteredPaymentMethods),
-            'ids'      => $filteredPaymentMethods,
+            'total' => \count($filteredPaymentMethods),
+            'ids' => $filteredPaymentMethods,
             'entities' => $filteredPaymentMethods,
             'elements' => $filteredPaymentMethods,
         ]);
@@ -134,11 +136,11 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
     protected function removePaymentMethodsFromResult(EntitySearchResult $result, array $paymentIdsToBeRemoved): void
     {
         $filteredResult = $result->getEntities()->filter(static function (PaymentMethodEntity $entity) use ($paymentIdsToBeRemoved) {
-            return !in_array($entity->getId(), $paymentIdsToBeRemoved, true);
+            return !\in_array($entity->getId(), $paymentIdsToBeRemoved, true);
         });
 
         $result->assign([
-            'total'    => count($filteredResult),
+            'total' => \count($filteredResult),
             'entities' => $filteredResult,
             'elements' => $filteredResult->getElements(),
         ]);
@@ -153,7 +155,7 @@ class PaymentMethodLoadedEventListener implements EventSubscriberInterface
 
     protected function isZeroAmount(float $totalAmount, CurrencyEntity $currency): bool
     {
-        $currencyPrecision  = min($currency->getItemRounding()->getDecimals(), UnzerPayment6::MAX_DECIMAL_PRECISION);
+        $currencyPrecision = min($currency->getItemRounding()->getDecimals(), UnzerPayment6::MAX_DECIMAL_PRECISION);
         $roundedAmountTotal = (int) round($totalAmount * (10 ** $currencyPrecision));
 
         return $roundedAmountTotal <= 0;

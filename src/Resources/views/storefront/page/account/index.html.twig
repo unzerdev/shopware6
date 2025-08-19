@@ -1,6 +1,8 @@
-{% sw_extends '@Storefront/storefront/page/account/payment/index.html.twig' %}
+{% sw_extends '@Storefront/storefront/page/account/index.html.twig' %}
 
-{% block page_account_payment_main %}
+{% block page_account_overview_addresses_include %}
+    {{ parent() }}
+
     {% if page.extensions.unzerPaymentMethod.deviceRemoved %}
         {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
             type: "success",
@@ -8,7 +10,6 @@
         } %}
     {% endif %}
 
-    {{ parent() }}
 
     {% if page.extensions.unzerPaymentMethod.savedDevices|length > 0 %}
         {% block page_account_payment_main_unzer_paymentwrapper %}

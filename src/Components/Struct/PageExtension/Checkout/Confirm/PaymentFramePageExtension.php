@@ -10,11 +10,9 @@ class PaymentFramePageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerPaymentFrame';
 
-    /** @var string */
-    private $paymentFrame;
+    private string $paymentFrame;
 
-    /** @var string */
-    private $shopName;
+    private string $shopName;
 
     public function getPaymentFrame(): string
     {

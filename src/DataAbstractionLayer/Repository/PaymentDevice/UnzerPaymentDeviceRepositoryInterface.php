@@ -12,7 +12,7 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 
 interface UnzerPaymentDeviceRepositoryInterface
 {
-    public function getCollectionByCustomer(CustomerEntity $customer, Context $context, string $deviceType = null): EntitySearchResult;
+    public function getCollectionByCustomer(CustomerEntity $customer, Context $context, ?string $deviceType = null): EntitySearchResult;
 
     public function create(CustomerEntity $customer, string $deviceType, string $typeId, array $data, Context $context): EntityWrittenContainerEvent;
 

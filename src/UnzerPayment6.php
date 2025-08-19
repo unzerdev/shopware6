@@ -21,7 +21,6 @@ use UnzerPayment6\Components\UnzerPaymentClassLoader;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerPayment6\Installer\PaymentInstaller;
 
-
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     (new UnzerPaymentClassLoader())->register();
 }
@@ -43,9 +42,6 @@ class UnzerPayment6 extends Plugin
         parent::build($container);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function install(InstallContext $installContext): void
     {
         /** @var EntityRepository $paymentRepository */
@@ -61,9 +57,6 @@ class UnzerPayment6 extends Plugin
         (new CustomFieldInstaller($customFieldSetRepository))->install($installContext);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function update(UpdateContext $updateContext): void
     {
         /** @var EntityRepository $paymentRepository */
@@ -79,9 +72,6 @@ class UnzerPayment6 extends Plugin
         (new CustomFieldInstaller($customFieldSetRepository))->update($updateContext);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function activate(ActivateContext $activateContext): void
     {
         /** @var EntityRepository $paymentRepository */
@@ -97,9 +87,6 @@ class UnzerPayment6 extends Plugin
         (new CustomFieldInstaller($customFieldSetRepository))->activate($activateContext);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deactivate(DeactivateContext $deactivateContext): void
     {
         /** @var EntityRepository $paymentRepository */
@@ -115,9 +102,6 @@ class UnzerPayment6 extends Plugin
         (new CustomFieldInstaller($customFieldSetRepository))->deactivate($deactivateContext);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function uninstall(UninstallContext $uninstallContext): void
     {
         /** @var EntityRepository $paymentRepository */
@@ -136,7 +120,8 @@ class UnzerPayment6 extends Plugin
 
         if (!$uninstallContext->keepUserData()) {
             (new CustomFieldInstaller($customFieldSetRepository))->uninstall($uninstallContext);
-            $connection->executeStatement('
+            $connection->executeStatement(
+                '
             DROP TABLE IF EXISTS `unzer_payment_transfer_info`;
             DROP TABLE IF EXISTS `unzer_payment_payment_device`;
         '

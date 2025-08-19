@@ -1,0 +1,25 @@
+{
+  "base": "/bundles/unzerpayment6/administration/",
+  "entryPoints": {
+    "unzer-payment6": {
+      "css": [
+        "/bundles/unzerpayment6/administration/assets/unzer-payment6-y2GmhhIw.css"
+      ],
+      "dynamic": [],
+      "js": [
+        "/bundles/unzerpayment6/administration/assets/unzer-payment6-CkAaNePq.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}

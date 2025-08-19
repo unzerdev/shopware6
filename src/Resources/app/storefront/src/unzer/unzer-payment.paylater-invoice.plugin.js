@@ -1,8 +1,8 @@
-import Plugin from 'src/plugin-system/plugin.class';
+const Plugin = window.PluginBaseClass;
 
 export default class UnzerPaymentPaylaterInvoicePlugin extends Plugin {
     static options = {
-        isB2BCustomer: false
+        isB2BCustomer: false,
     };
 
     /**
@@ -20,13 +20,15 @@ export default class UnzerPaymentPaylaterInvoicePlugin extends Plugin {
     static _unzerPaymentPlugin = null;
 
     init() {
-        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.paylaterInvoice = this._unzerPaymentPlugin.unzerInstance.PaylaterInvoice();
+        this._unzerPaymentPlugin =
+            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.paylaterInvoice =
+            this._unzerPaymentPlugin.unzerInstance.PaylaterInvoice();
 
         this.paylaterInvoice.create({
             containerId: 'unzer-payment-paylater-invoice-wrapper',
-            customerType: this.options.isB2BCustomer ? 'B2B' : 'B2C'
-        })
+            customerType: this.options.isB2BCustomer ? 'B2B' : 'B2C',
+        });
 
         this._registerEvents();
     }
@@ -36,33 +38,41 @@ export default class UnzerPaymentPaylaterInvoicePlugin extends Plugin {
      */
     _registerEvents() {
         if (document.getElementById('unzerPaymentCompanyType')) {
-            document.getElementById('unzerPaymentCompanyType').addEventListener('change', () => this._toggleB2CForm());
+            document
+                .getElementById('unzerPaymentCompanyType')
+                .addEventListener('change', () => this._toggleB2CForm());
             this._toggleB2CForm();
         }
-        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
-            scope: this
-        });
+        this._unzerPaymentPlugin.$emitter.subscribe(
+            'unzerBase_createResource',
+            () => this._onCreateResource(),
+            {
+                scope: this,
+            }
+        );
     }
 
     /**
      * @private
      */
     _toggleB2CForm() {
-        const form = document.getElementById("unzer-payment-b2c-form");
-        const birthdate = document.getElementById("unzerPaymentBirthday");
+        const form = document.getElementById('unzer-payment-b2c-form');
+        const birthdate = document.getElementById('unzerPaymentBirthday');
 
-        if(!birthdate || !form) {
+        if (!birthdate || !form) {
             return;
         }
 
-        if (document.getElementById('unzerPaymentCompanyType').value === "sole") {
-            form.style.display = "block";
-            birthdate.setAttribute("required", "required");
-            birthdate.name = "unzerPaymentBirthday";
+        if (
+            document.getElementById('unzerPaymentCompanyType').value === 'sole'
+        ) {
+            form.style.display = 'block';
+            birthdate.setAttribute('required', 'required');
+            birthdate.name = 'unzerPaymentBirthday';
         } else {
-            form.style.display = "none";
-            birthdate.removeAttribute("required");
-            birthdate.name = "";
+            form.style.display = 'none';
+            birthdate.removeAttribute('required');
+            birthdate.name = '';
         }
     }
 
@@ -79,7 +89,8 @@ export default class UnzerPaymentPaylaterInvoicePlugin extends Plugin {
      * @private
      */
     _createResource() {
-        this.paylaterInvoice.createResource()
+        this.paylaterInvoice
+            .createResource()
             .then((resource) => this._submitPayment(resource))
             .catch((error) => this._handleError(error));
     }

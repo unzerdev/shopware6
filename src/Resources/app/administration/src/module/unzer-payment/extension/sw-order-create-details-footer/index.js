@@ -19,7 +19,7 @@ const unzerPaymentIds = [
     '95aa098aac8f11e9a2a32a2ae2dbcce4', //PAYMENT_ID_SOFORT
     'fd96d03535a46d197f5adac17c9f8bac', //PAYMENT_ID_WE_CHAT
     '09588ffee8064f168e909ff31889dd7f', //PAYMENT_ID_PAYLATER_INVOICE
-]
+];
 
 Shopware.Component.override('sw-order-create-details-footer', {
     template,
@@ -30,16 +30,16 @@ Shopware.Component.override('sw-order-create-details-footer', {
             const criteria = new Criteria();
 
             if (this.salesChannelId) {
-                criteria.addFilter(Criteria.equals('salesChannels.id', this.salesChannelId));
+                criteria.addFilter(
+                    Criteria.equals('salesChannels.id', this.salesChannelId)
+                );
             }
 
             criteria.addFilter(
-                Criteria.not('AND', [
-                    Criteria.equalsAny('id', unzerPaymentIds)
-                ])
+                Criteria.not('AND', [Criteria.equalsAny('id', unzerPaymentIds)])
             );
 
             return criteria;
-        }
-    }
+        },
+    },
 });

@@ -7,6 +7,7 @@
 
         <service id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator">
             <argument type="service" id="request_stack" />
+            <argument type="service" id="customer.repository" />
         </service>
 
         <service id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator">

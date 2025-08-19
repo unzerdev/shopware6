@@ -10,14 +10,18 @@ class ApplePayV2PageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerApplePayV2';
 
-    /** @var string[] */
-    protected $supportedNetworks = ['masterCard', 'visa'];
-    protected $merchantCapabilities = ['supports3DS'];
+    /**
+     * @var string[]
+     */
+    protected array $supportedNetworks = ['masterCard', 'visa'];
+
+    protected array $merchantCapabilities = ['supports3DS'];
 
     public function getSupportedNetworks(): array
     {
         return $this->supportedNetworks;
     }
+
     public function getMerchantCapabilities(): array
     {
         return $this->merchantCapabilities;

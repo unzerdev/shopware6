@@ -10,8 +10,10 @@ class FraudPreventionPageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerFraudPrevention';
 
-    /** @var string */
-    private $fraudPreventionSessionId = '';
+    /**
+     * @var string
+     */
+    private string $fraudPreventionSessionId = '';
 
     public function getFraudPreventionSessionId(): string
     {

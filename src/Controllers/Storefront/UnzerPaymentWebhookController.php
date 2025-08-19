@@ -21,7 +21,9 @@ use UnzerPayment6\Components\WebhookHandler\WebhookHandlerInterface;
 #[Route(defaults: ['_routeScope' => ['storefront']])]
 class UnzerPaymentWebhookController extends StorefrontController
 {
-    /** @var Traversable|WebhookHandlerInterface[] */
+    /**
+     * @var Traversable|WebhookHandlerInterface[]
+     */
     private Traversable $handlers;
 
     private ConfigReaderInterface $configReader;
@@ -30,9 +32,9 @@ class UnzerPaymentWebhookController extends StorefrontController
 
     public function __construct(Traversable $handlers, ConfigReaderInterface $configReader, LoggerInterface $logger)
     {
-        $this->handlers     = $handlers;
+        $this->handlers = $handlers;
         $this->configReader = $configReader;
-        $this->logger       = $logger;
+        $this->logger = $logger;
     }
 
     #[Route(path: '/unzer/webhook', name: 'frontend.unzer.webhook.execute', defaults: ['csrf_protected' => false], methods: ['POST', 'GET'])]
@@ -48,7 +50,7 @@ class UnzerPaymentWebhookController extends StorefrontController
         }
 
         $webhook = new Webhook($requestContent);
-        $config  = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $config = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
         if (!$this->isValidPublicKey($webhook, $config)) {
             $this->logger->error('The provided public key does not match the configured public key');
@@ -63,7 +65,7 @@ class UnzerPaymentWebhookController extends StorefrontController
 
             try {
                 $this->logger->debug(
-                    sprintf(
+                    \sprintf(
                         'Started handling of incoming webhook with content: %s',
                         json_encode($request->getContent())
                     )
@@ -75,10 +77,10 @@ class UnzerPaymentWebhookController extends StorefrontController
                     'An exception was caught when handling a webhook, but this may not be a failure.',
                     [
                         'message' => $exception->getMessage(),
-                        'code'    => $exception->getCode(),
-                        'file'    => $exception->getFile(),
-                        'line'    => $exception->getLine(),
-                        'trace'   => $exception->getTraceAsString(),
+                        'code' => $exception->getCode(),
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'trace' => $exception->getTraceAsString(),
                     ]
                 );
             }
@@ -95,7 +97,7 @@ class UnzerPaymentWebhookController extends StorefrontController
 
         $paylaterInvoiceKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_INVOICE);
 
-        if (is_array($paylaterInvoiceKeys)) {
+        if (\is_array($paylaterInvoiceKeys)) {
             foreach ($paylaterInvoiceKeys as $keyPairConfig) {
                 if ($keyPairConfig['publicKey'] === $webhook->getPublicKey()) {
                     return true;
@@ -105,7 +107,7 @@ class UnzerPaymentWebhookController extends StorefrontController
 
         $paylaterInstallmentKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_INSTALLMENT);
 
-        if (is_array($paylaterInstallmentKeys)) {
+        if (\is_array($paylaterInstallmentKeys)) {
             foreach ($paylaterInstallmentKeys as $keyPairConfig) {
                 if ($keyPairConfig['publicKey'] === $webhook->getPublicKey()) {
                     return true;
@@ -115,7 +117,7 @@ class UnzerPaymentWebhookController extends StorefrontController
 
         $paylaterDirectDebitKeys = $config->get(ConfigReader::CONFIG_KEY_PAYLATER_DIRECT_DEBIT_SECURED);
 
-        if (is_array($paylaterDirectDebitKeys)) {
+        if (\is_array($paylaterDirectDebitKeys)) {
             foreach ($paylaterDirectDebitKeys as $keyPairConfig) {
                 if ($keyPairConfig['publicKey'] === $webhook->getPublicKey()) {
                     return true;

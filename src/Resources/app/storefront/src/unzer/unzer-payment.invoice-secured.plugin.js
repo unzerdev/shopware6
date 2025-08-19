@@ -1,9 +1,9 @@
-import Plugin from 'src/plugin-system/plugin.class';
+const Plugin = window.PluginBaseClass;
 
 export default class UnzerPaymentInvoiceSecuredPlugin extends Plugin {
     static options = {
         isB2BCustomer: false,
-        customerInfo: null
+        customerInfo: null,
     };
 
     /**
@@ -26,8 +26,10 @@ export default class UnzerPaymentInvoiceSecuredPlugin extends Plugin {
     static b2bCustomerProvider = null;
 
     init() {
-        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.invoiceSecured = this._unzerPaymentPlugin.unzerInstance.InvoiceSecured();
+        this._unzerPaymentPlugin =
+            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.invoiceSecured =
+            this._unzerPaymentPlugin.unzerInstance.InvoiceSecured();
 
         if (this.options.isB2BCustomer) {
             this._createB2bForm();
@@ -40,23 +42,33 @@ export default class UnzerPaymentInvoiceSecuredPlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
-            scope: this
-        });
+        this._unzerPaymentPlugin.$emitter.subscribe(
+            'unzerBase_createResource',
+            () => this._onCreateResource(),
+            {
+                scope: this,
+            }
+        );
     }
 
     /**
      * @private
      */
     _createB2bForm() {
-        this.b2bCustomerProvider = this._unzerPaymentPlugin.unzerInstance.B2BCustomer();
+        this.b2bCustomerProvider =
+            this._unzerPaymentPlugin.unzerInstance.B2BCustomer();
 
-        this.b2bCustomerProvider.b2bCustomerEventHandler = (event) => this._onValidateB2bForm(event);
-        this.b2bCustomerProvider.initFormFields(this._unzerPaymentPlugin.getB2bCustomerObject(this.options.customerInfo));
+        this.b2bCustomerProvider.b2bCustomerEventHandler = (event) =>
+            this._onValidateB2bForm(event);
+        this.b2bCustomerProvider.initFormFields(
+            this._unzerPaymentPlugin.getB2bCustomerObject(
+                this.options.customerInfo
+            )
+        );
 
         this.b2bCustomerProvider.create({
             containerId: 'unzer-payment-b2b-form',
-            externalCustomerId: this.options.customerInfo.customerNumber
+            externalCustomerId: this.options.customerInfo.customerNumber,
         });
     }
 
@@ -76,11 +88,13 @@ export default class UnzerPaymentInvoiceSecuredPlugin extends Plugin {
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
         if (this.options.isB2BCustomer) {
-            this.b2bCustomerProvider.createCustomer()
+            this.b2bCustomerProvider
+                .createCustomer()
                 .then((data) => this._onB2bCustomerCreated(data.id))
                 .catch((error) => this._handleError(error));
         } else {
-            this.invoiceSecured.createResource()
+            this.invoiceSecured
+                .createResource()
                 .then((resource) => this._submitPayment(resource))
                 .catch((error) => this._handleError(error));
         }
@@ -95,7 +109,8 @@ export default class UnzerPaymentInvoiceSecuredPlugin extends Plugin {
         const resourceIdElement = document.getElementById('unzerCustomerId');
         resourceIdElement.value = b2bCustomerId;
 
-        this.invoiceSecured.createResource()
+        this.invoiceSecured
+            .createResource()
             .then((resource) => this._submitPayment(resource))
             .catch((error) => this._handleError(error));
     }

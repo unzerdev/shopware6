@@ -40,7 +40,7 @@ class PaylaterInvoiceTransitionMapper extends AbstractTransitionMapper
             $authorization = $paymentObject->getAuthorization();
 
             if ($authorization instanceof Authorization && $authorization->isSuccess()) {
-                return constant(sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
+                return \constant(\sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
             }
         }
 

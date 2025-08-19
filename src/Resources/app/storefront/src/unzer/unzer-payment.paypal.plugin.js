@@ -1,13 +1,14 @@
-import Plugin from 'src/plugin-system/plugin.class';
-import DomAccess from 'src/helper/dom-access.helper';
+const Plugin = window.PluginBaseClass;
+
 
 export default class UnzerPaymentPayPalPlugin extends Plugin {
     static options = {
         radioButtonSelector: 'input[name="savedPayPalAccount"]',
         selectedRadioButtonSelector: 'input[name="savedPayPalAccount"]:checked',
         radioButtonNewId: 'account-new',
-        elementWrapperSelector: '.unzer-payment-saved-accounts-wrapper-elements',
-        hasSavedAccounts: false
+        elementWrapperSelector:
+            '.unzer-payment-saved-accounts-wrapper-elements',
+        hasSavedAccounts: false,
     };
 
     /**
@@ -23,12 +24,13 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
     static _unzerPaymentPlugin = null;
 
     init() {
-        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this._unzerPaymentPlugin =
+            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
 
         this._registerEvents();
 
         if (this.options.hasSavedAccounts) {
-            const unzerPaymentElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+            const unzerPaymentElementWrapper = this.el.querySelector(this.options.elementWrapperSelector);
 
             unzerPaymentElementWrapper.hidden = true;
         }
@@ -39,14 +41,19 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
      */
     _registerEvents() {
         if (this.options.hasSavedAccounts) {
-            const radioButtons = DomAccess.querySelectorAll(this.el, this.options.radioButtonSelector);
+            const radioButtons = this.el.querySelectorAll(this.options.radioButtonSelector);
 
             for (let $i = 0; $i < radioButtons.length; $i++) {
-                radioButtons[$i].addEventListener('change', (event) => this._onRadioButtonChange(event));
+                radioButtons[$i].addEventListener('change', (event) =>
+                    this._onRadioButtonChange(event)
+                );
             }
         }
 
-        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource());
+        this._unzerPaymentPlugin.$emitter.subscribe(
+            'unzerBase_createResource',
+            () => this._onCreateResource()
+        );
     }
 
     /**
@@ -56,9 +63,10 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
      */
     _onRadioButtonChange(event) {
         const targetElement = event.target;
-        const unzerPaymentElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+        const unzerPaymentElementWrapper = this.el.querySelector(this.options.elementWrapperSelector);
 
-        unzerPaymentElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewId;
+        unzerPaymentElementWrapper.hidden =
+            targetElement.id !== this.options.radioButtonNewId;
     }
 
     /**
@@ -66,9 +74,14 @@ export default class UnzerPaymentPayPalPlugin extends Plugin {
      */
     _onCreateResource() {
         /** @type {Element} */
-        const checkedRadioButton = document.querySelector(this.options.selectedRadioButtonSelector);
+        const checkedRadioButton = document.querySelector(
+            this.options.selectedRadioButtonSelector
+        );
 
-        if (checkedRadioButton !== null && checkedRadioButton.id !== this.options.radioButtonNewId) {
+        if (
+            checkedRadioButton !== null &&
+            checkedRadioButton.id !== this.options.radioButtonNewId
+        ) {
             this._unzerPaymentPlugin.submitTypeId(checkedRadioButton.value);
 
             return;

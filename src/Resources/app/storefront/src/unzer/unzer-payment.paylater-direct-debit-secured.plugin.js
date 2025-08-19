@@ -1,4 +1,4 @@
-import Plugin from 'src/plugin-system/plugin.class';
+const Plugin = window.PluginBaseClass;
 import ElementLoadingIndicatorUtil from 'src/utility/loading-indicator/element-loading-indicator.util';
 
 export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin {
@@ -49,11 +49,17 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
     static _unzerPaymentPlugin = null;
 
     init() {
-        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        this.paylaterDirectDebitSecured = this._unzerPaymentPlugin.unzerInstance.PaylaterDirectDebit();
+        this._unzerPaymentPlugin =
+            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this.paylaterDirectDebitSecured =
+            this._unzerPaymentPlugin.unzerInstance.PaylaterDirectDebit();
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
-        this.birthdateContainer = document.getElementById(this.options.birthdateContainerIdSelector);
-        this.birthdateInput = document.getElementById(this.options.birthdateInputIdSelector);
+        this.birthdateContainer = document.getElementById(
+            this.options.birthdateContainerIdSelector
+        );
+        this.birthdateInput = document.getElementById(
+            this.options.birthdateInputIdSelector
+        );
         this.unzerInputsValid = false;
 
         this._createForm();
@@ -65,11 +71,12 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
      */
     _createForm() {
         this.paylaterDirectDebitSecured.create('paylater-direct-debit', {
-            containerId: 'unzer-payment-paylater-direct-debit-secured-container',
+            containerId:
+                'unzer-payment-paylater-direct-debit-secured-container',
             amount: this.options.paylaterDirectDebitSecuredAmount.toFixed(4),
             currency: this.options.paylaterDirectDebitSecuredCurrency,
             country: this.options.countryIso,
-            threatMetrixId: this.options.threatMetrixId
+            threatMetrixId: this.options.threatMetrixId,
         });
     }
 
@@ -77,23 +84,34 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
      * @private
      */
     _registerEvents() {
-        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
-            scope: this
-        })
+        this._unzerPaymentPlugin.$emitter.subscribe(
+            'unzerBase_createResource',
+            () => this._onCreateResource(),
+            {
+                scope: this,
+            }
+        );
 
-        this.paylaterDirectDebitSecured.sepaEventHandler = this._handleSepaDataChange.bind(this);
-        this.birthdateInput.addEventListener('change', this._onBirthdateInputChange.bind(this))
-        
+        this.paylaterDirectDebitSecured.sepaEventHandler =
+            this._handleSepaDataChange.bind(this);
+        this.birthdateInput.addEventListener(
+            'change',
+            this._onBirthdateInputChange.bind(this)
+        );
+
         if (this.birthdateInput.value !== '') {
             this._onBirthdateInputChange();
         }
     }
 
-    _handleSepaDataChange(event) {
-        this.unzerInputsValid = this.paylaterDirectDebitSecured.isHolderValidated
-            && this.paylaterDirectDebitSecured.isIbanValidated;
+    _handleSepaDataChange() {
+        this.unzerInputsValid =
+            this.paylaterDirectDebitSecured.isHolderValidated &&
+            this.paylaterDirectDebitSecured.isIbanValidated;
 
-        this._unzerPaymentPlugin.setSubmitButtonActive(this.unzerInputsValid && this._validateBirthdate());
+        this._unzerPaymentPlugin.setSubmitButtonActive(
+            this.unzerInputsValid && this._validateBirthdate()
+        );
     }
 
     /**
@@ -101,19 +119,29 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
      */
     _onCreateResource() {
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
-        const loadingIndicatorElement = document.getElementById(this.options.formLoadingIndicatorElementId);
+        const loadingIndicatorElement = document.getElementById(
+            this.options.formLoadingIndicatorElementId
+        );
 
         ElementLoadingIndicatorUtil.create(loadingIndicatorElement);
 
-        this.paylaterDirectDebitSecured.createResource()
-            .then(function(resource) {
-                this._submitPayment(resource);
-            }.bind(this))
-            .catch(function(error) {
-                this._unzerPaymentPlugin.renderErrorToElement(error, loadingIndicatorElement);
+        this.paylaterDirectDebitSecured
+            .createResource()
+            .then(
+                function (resource) {
+                    this._submitPayment(resource);
+                }.bind(this)
+            )
+            .catch(
+                function (error) {
+                    this._unzerPaymentPlugin.renderErrorToElement(
+                        error,
+                        loadingIndicatorElement
+                    );
 
-                ElementLoadingIndicatorUtil.remove(loadingIndicatorElement);
-            }.bind(this));
+                    ElementLoadingIndicatorUtil.remove(loadingIndicatorElement);
+                }.bind(this)
+            );
     }
 
     /**
@@ -128,7 +156,7 @@ export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends Plugin
     _formatCurrency(value) {
         return value.toLocaleString(this.options.currencyFormatLocale, {
             style: 'currency',
-            currency: this.options.currencyIso
+            currency: this.options.currencyIso,
         });
     }
 

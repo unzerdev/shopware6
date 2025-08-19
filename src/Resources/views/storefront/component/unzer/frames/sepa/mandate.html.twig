@@ -1,18 +1,5 @@
 {% block unzer_payment_frame_sepa_mandate %}
-    <div class="unzer-payment-sepa-mandate-container">
-        <div class="card-title">
-            {{ "UnzerPayment.frame.sepa.mandate.title" | trans  }}
-        </div>
-
-        <div class="unzer-payment-sepa-mandate-content">
-            {{ "UnzerPayment.frame.sepa.mandate.content" | trans({'%company%': page.extensions.unzerPaymentFrame.shopName})  }}
-        </div>
-
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" required="required" class="custom-control-input" form="confirmOrderForm" name="acceptSepaMandate" id="acceptSepaMandate" data-custom-error="{{ "UnzerPayment.frame.sepa.mandate.error" | trans }}"/>
-            <label for="acceptSepaMandate" class="custom-control-label">{{ "UnzerPayment.frame.sepa.mandate.accept" | trans  }}</label>
-        </div>
-
+    <div class="unzer-payment-sepa-mandate-checkbox-container">
         {% if not context.customer.guest %}
             <div class="custom-control custom-checkbox">
                 <input type="checkbox"

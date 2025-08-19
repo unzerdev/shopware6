@@ -4,9 +4,9 @@ const { Component } = Shopware;
 
 Component.register('unzer-payment-plugin-icon', {
     template,
-    computed:{
+    computed: {
         assetFilter() {
             return Shopware.Filter.getByName('asset');
         },
-    }
+    },
 });

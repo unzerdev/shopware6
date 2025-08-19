@@ -26,52 +26,22 @@ use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 
-class TransitionEventListener implements EventSubscriberInterface
+readonly class TransitionEventListener implements EventSubscriberInterface
 {
-    /** @var EntityRepository */
-    private $orderRepository;
 
-    /** @var EntityRepository */
-    private $orderDeliveryRepository;
-
-    /** @var EntityRepository */
-    private $transactionRepository;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var AutomaticShippingValidatorInterface */
-    private $automaticShippingValidator;
-
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
-
-    /** @var ShipServiceInterface */
-    private $shipService;
-    private ConfigReaderInterface $configReader;
-    private UnzerTransactionUtil $unzerTransactionUtil;
 
     public function __construct(
-        EntityRepository                    $orderRepository,
-        EntityRepository                    $orderDeliveryRepository,
-        EntityRepository                    $transactionRepository,
-        AutomaticShippingValidatorInterface $automaticShippingValidator,
-        LoggerInterface                     $logger,
-        EventDispatcherInterface            $eventDispatcher,
-        ShipServiceInterface                $shipService,
-        ConfigReaderInterface               $configReader,
-        UnzerTransactionUtil                $unzerTransactionUtil
-    )
-    {
-        $this->orderRepository = $orderRepository;
-        $this->orderDeliveryRepository = $orderDeliveryRepository;
-        $this->transactionRepository = $transactionRepository;
-        $this->logger = $logger;
-        $this->automaticShippingValidator = $automaticShippingValidator;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->shipService = $shipService;
-        $this->configReader = $configReader;
-        $this->unzerTransactionUtil = $unzerTransactionUtil;
+        private EntityRepository $orderRepository,
+        private EntityRepository $orderDeliveryRepository,
+        private EntityRepository $transactionRepository,
+        private AutomaticShippingValidatorInterface $automaticShippingValidator,
+        private LoggerInterface $logger,
+        private EventDispatcherInterface $eventDispatcher,
+        private ShipServiceInterface $shipService,
+        private ConfigReaderInterface $configReader,
+        private UnzerTransactionUtil $unzerTransactionUtil
+    ) {
+
     }
 
     /**
@@ -86,22 +56,19 @@ class TransitionEventListener implements EventSubscriberInterface
 
     public function onStateMachineTransition(StateMachineTransitionEvent $event): void
     {
-
         $order = $this->getOrderFromEvent($event);
         $this->registerShipping($event, $order);
         $this->doAutomaticTransactions($event, $order);
-
     }
 
     protected function registerShipping(StateMachineTransitionEvent $event, ?OrderEntity $order): void
     {
-
         if (!$order || !$this->automaticShippingValidator->shouldSendAutomaticShipping($order, $event->getToPlace())) {
             return;
         }
 
         if (!$this->automaticShippingValidator->hasInvoiceDocument($order)) {
-            $this->logger->error(sprintf('Error during automatic shipping validation for order [%s]: No invoice could be found', $order->getOrderNumber()));
+            $this->logger->error(\sprintf('Error during automatic shipping validation for order [%s]: No invoice could be found', $order->getOrderNumber()));
 
             return;
         }
@@ -117,13 +84,13 @@ class TransitionEventListener implements EventSubscriberInterface
         }
 
         if (empty($firstTransaction)) {
-            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: orderTransaction could not be found', $order->getOrderNumber()));
+            $this->logger->error(\sprintf('Error while executing automatic shipping notification for order [%s]: orderTransaction could not be found', $order->getOrderNumber()));
 
             return;
         }
 
         if (empty($invoiceNumber)) {
-            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice could not be found', $order->getOrderNumber()));
+            $this->logger->error(\sprintf('Error while executing automatic shipping notification for order [%s]: Either invoice could not be found', $order->getOrderNumber()));
 
             return;
         }
@@ -133,15 +100,15 @@ class TransitionEventListener implements EventSubscriberInterface
             $this->setCustomFields($event->getContext(), $firstTransaction);
 
             $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceNumber, $event->getContext()));
-            $this->logger->info(sprintf('The automatic shipping notification for order [%s] was executed with invoice [%s]', $order->getOrderNumber(), $invoiceNumber));
+            $this->logger->info(\sprintf('The automatic shipping notification for order [%s] was executed with invoice [%s]', $order->getOrderNumber(), $invoiceNumber));
         } catch (Throwable $exception) {
-            $this->logger->error(sprintf('Error while executing automatic shipping notification for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
+            $this->logger->error(\sprintf('Error while executing automatic shipping notification for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                 'trace' => $exception->getTraceAsString(),
             ]);
         }
     }
 
-    protected function doAutomaticTransactions(StateMachineTransitionEvent $event, ?OrderEntity $order)
+    protected function doAutomaticTransactions(StateMachineTransitionEvent $event, ?OrderEntity $order): void
     {
         if ($order === null) {
             return;
@@ -149,43 +116,41 @@ class TransitionEventListener implements EventSubscriberInterface
         $config = $this->configReader->read($order->getSalesChannelId());
 
         $autoCaptureStatus = $config->get(ConfigReader::CONFIG_KEY_DELIVERY_STATUS_FOR_CAPTURE);
-        if (is_scalar($autoCaptureStatus)) {
+        if (\is_scalar($autoCaptureStatus)) {
             $autoCaptureStatus = [$autoCaptureStatus];
         }
 
-        if (is_array($autoCaptureStatus) && in_array($event->getToPlace()->getId(), $autoCaptureStatus)) {
-            $this->logger->info(sprintf('Automatic capture for order [%s] was triggered', $order->getOrderNumber()));
+        if (\is_array($autoCaptureStatus) && \in_array($event->getToPlace()->getId(), $autoCaptureStatus, true)) {
+            $this->logger->info(\sprintf('Automatic capture for order [%s] was triggered', $order->getOrderNumber()));
             try {
                 $this->unzerTransactionUtil->captureOrder($order, $event->getContext());
             } catch (Throwable $exception) {
-                $this->logger->error(sprintf('Error while executing automatic capture for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
+                $this->logger->error(\sprintf('Error while executing automatic capture for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                     'trace' => $exception->getTraceAsString(),
                 ]);
             }
         }
 
         $autoRefundStatus = $config->get(ConfigReader::CONFIG_KEY_DELIVERY_STATUS_FOR_REFUND);
-        if (is_scalar($autoRefundStatus)) {
+        if (\is_scalar($autoRefundStatus)) {
             $autoRefundStatus = [$autoRefundStatus];
         }
-        if (is_array($autoRefundStatus) && in_array($event->getToPlace()->getId(), $autoRefundStatus)) {
-            $this->logger->info(sprintf('Automatic refund for order [%s] was triggered', $order->getOrderNumber()));
+        if (\is_array($autoRefundStatus) && \in_array($event->getToPlace()->getId(), $autoRefundStatus, true)) {
+            $this->logger->info(\sprintf('Automatic refund for order [%s] was triggered', $order->getOrderNumber()));
             try {
                 $this->unzerTransactionUtil->refundOrder($order, $event->getContext());
             } catch (Throwable $exception) {
-                $this->logger->error(sprintf('Error while executing automatic refund for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
+                $this->logger->error(\sprintf('Error while executing automatic refund for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                     'trace' => $exception->getTraceAsString(),
                 ]);
             }
         }
-
     }
 
     protected function setCustomFields(
-        Context                $context,
+        Context $context,
         OrderTransactionEntity $transaction
-    ): void
-    {
+    ): void {
         $customFields = $transaction->getCustomFields() ?? [];
         $customFields = array_merge($customFields, [
             CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED => true,
@@ -201,8 +166,8 @@ class TransitionEventListener implements EventSubscriberInterface
 
     private function getOrderFromEvent(StateMachineTransitionEvent $transitionEvent): ?OrderEntity
     {
+        $criteria = new Criteria([$transitionEvent->getEntityId()]);
         if ($transitionEvent->getEntityName() === OrderDeliveryDefinition::ENTITY_NAME) {
-            $criteria = new Criteria([$transitionEvent->getEntityId()]);
             $criteria->addAssociations([
                 'order',
                 'order.transactions',
@@ -210,17 +175,12 @@ class TransitionEventListener implements EventSubscriberInterface
                 'order.documents.documentType',
             ]);
 
-            /** @var null|OrderDeliveryEntity $orderDeliveryEntity */
+            /** @var OrderDeliveryEntity|null $orderDeliveryEntity */
             $orderDeliveryEntity = $this->orderDeliveryRepository->search($criteria, $transitionEvent->getContext())->first();
 
-            if ($orderDeliveryEntity === null) {
-                return null;
-            }
-
-            return $orderDeliveryEntity->getOrder();
+            return $orderDeliveryEntity?->getOrder();
         }
 
-        $criteria = new Criteria([$transitionEvent->getEntityId()]);
         $criteria->addAssociations([
             'transactions',
             'documents',

@@ -1,4 +1,4 @@
-import Plugin from 'src/plugin-system/plugin.class';
+const Plugin = window.PluginBaseClass;
 
 export default class UnzerPaymentIdealPlugin extends Plugin {
     /**
@@ -16,7 +16,8 @@ export default class UnzerPaymentIdealPlugin extends Plugin {
     static _unzerPaymentPlugin = null;
 
     init() {
-        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this._unzerPaymentPlugin =
+            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
         this.ideal = this._unzerPaymentPlugin.unzerInstance.Ideal();
 
         this._createForm();
@@ -28,7 +29,7 @@ export default class UnzerPaymentIdealPlugin extends Plugin {
      */
     _createForm() {
         this.ideal.create('ideal', {
-            containerId: 'unzer-payment-ideal-container'
+            containerId: 'unzer-payment-ideal-container',
         });
 
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
@@ -38,14 +39,22 @@ export default class UnzerPaymentIdealPlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
-            scope: this
-        });
+        this._unzerPaymentPlugin.$emitter.subscribe(
+            'unzerBase_createResource',
+            () => this._onCreateResource(),
+            {
+                scope: this,
+            }
+        );
 
         if (this.ideal) {
-            this.ideal.addEventListener('change', (event) => this._onFormChange(event), {
-                scope: this
-            });
+            this.ideal.addEventListener(
+                'change',
+                (event) => this._onFormChange(event),
+                {
+                    scope: this,
+                }
+            );
         }
     }
 
@@ -64,8 +73,11 @@ export default class UnzerPaymentIdealPlugin extends Plugin {
     _onCreateResource() {
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
-        this.ideal.createResource()
-            .then((resource) => this._unzerPaymentPlugin.submitResource(resource))
+        this.ideal
+            .createResource()
+            .then((resource) =>
+                this._unzerPaymentPlugin.submitResource(resource)
+            )
             .catch((error) => this._unzerPaymentPlugin.showError(error));
     }
 }

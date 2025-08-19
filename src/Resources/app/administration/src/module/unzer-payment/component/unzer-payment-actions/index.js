@@ -6,42 +6,40 @@ const reasonCodes = {
     CANCEL: 'CANCEL',
     RETURN: 'RETURN',
     CREDIT: 'CREDIT',
-}
+};
 
 Component.register('unzer-payment-actions', {
     template,
 
     inject: ['UnzerPaymentService'],
 
-    mixins: [
-        Mixin.getByName('notification')
-    ],
+    mixins: [Mixin.getByName('notification')],
 
     data() {
         return {
             isLoading: false,
             isSuccessful: false,
-            transactionAmount: 0.00,
-            reasonCode: null
+            transactionAmount: 0.0,
+            reasonCode: null,
         };
     },
 
     props: {
         transactionResource: {
             type: Object,
-            required: true
+            required: true,
         },
 
         paymentResource: {
             type: Object,
-            required: true
+            required: true,
         },
 
         decimalPrecision: {
             type: Number,
             required: true,
-            default: 4
-        }
+            default: 4,
+        },
     },
 
     computed: {
@@ -68,26 +66,31 @@ Component.register('unzer-payment-actions', {
                 amount = this.transactionResource.remainingAmount;
             }
 
-            return amount / (10 ** this.paymentResource.amount.decimalPrecision);
+            return amount / 10 ** this.paymentResource.amount.decimalPrecision;
         },
-
 
         reasonCodeSelection() {
             return [
                 {
-                    label: this.$tc('unzer-payment.paymentDetails.actions.reason.cancel'),
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.actions.reason.cancel'
+                    ),
                     value: reasonCodes.CANCEL,
                 },
                 {
-                    label: this.$tc('unzer-payment.paymentDetails.actions.reason.credit'),
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.actions.reason.credit'
+                    ),
                     value: reasonCodes.CREDIT,
                 },
                 {
-                    label: this.$tc('unzer-payment.paymentDetails.actions.reason.return'),
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.actions.reason.return'
+                    ),
                     value: reasonCodes.RETURN,
-                }
+                },
             ];
-        }
+        },
     },
 
     created() {
@@ -102,33 +105,45 @@ Component.register('unzer-payment-actions', {
                 this.paymentResource.orderId,
                 this.transactionResource.id,
                 this.transactionAmount
-            ).then(() => {
-                this.createNotificationSuccess({
-                    title: this.$tc('unzer-payment.paymentDetails.notifications.chargeSuccessTitle'),
-                    message: this.$tc('unzer-payment.paymentDetails.notifications.chargeSuccessMessage')
+            )
+                .then(() => {
+                    this.createNotificationSuccess({
+                        title: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.chargeSuccessTitle'
+                        ),
+                        message: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.chargeSuccessMessage'
+                        ),
+                    });
+
+                    this.isSuccessful = true;
+
+                    this.$emit('reload');
+                })
+                .catch((errorResponse) => {
+                    let message = errorResponse.response.data.errors[0];
+
+                    if (message === 'generic-error') {
+                        message = this.$tc(
+                            'unzer-payment.paymentDetails.notifications.genericErrorMessage'
+                        );
+                    }
+
+                    if (message === 'paylater-invoice-document-required') {
+                        message = this.$tc(
+                            'unzer-payment.paymentDetails.notifications.paylaterInvoiceDocumentRequiredErrorMessage'
+                        );
+                    }
+
+                    this.createNotificationError({
+                        title: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.chargeErrorTitle'
+                        ),
+                        message: message,
+                    });
+
+                    this.isLoading = false;
                 });
-
-                this.isSuccessful = true;
-
-                this.$emit('reload');
-            }).catch((errorResponse) => {
-                let message = errorResponse.response.data.errors[0];
-
-                if (message === 'generic-error') {
-                    message = this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage');
-                }
-
-                if (message === 'paylater-invoice-document-required') {
-                    message = this.$tc('unzer-payment.paymentDetails.notifications.paylaterInvoiceDocumentRequiredErrorMessage');
-                }
-
-                this.createNotificationError({
-                    title: this.$tc('unzer-payment.paymentDetails.notifications.chargeErrorTitle'),
-                    message: message
-                });
-
-                this.isLoading = false;
-            });
         },
 
         refund() {
@@ -139,33 +154,43 @@ Component.register('unzer-payment-actions', {
                 this.transactionResource.id,
                 this.transactionAmount,
                 this.reasonCode
-            ).then(() => {
-                this.createNotificationSuccess({
-                    title: this.$tc('unzer-payment.paymentDetails.notifications.refundSuccessTitle'),
-                    message: this.$tc('unzer-payment.paymentDetails.notifications.refundSuccessMessage')
+            )
+                .then(() => {
+                    this.createNotificationSuccess({
+                        title: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.refundSuccessTitle'
+                        ),
+                        message: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.refundSuccessMessage'
+                        ),
+                    });
+
+                    this.isSuccessful = true;
+
+                    this.$emit('reload');
+                })
+                .catch((errorResponse) => {
+                    let message = errorResponse.response.data.errors[0];
+
+                    if (message === 'generic-error') {
+                        message = this.$tc(
+                            'unzer-payment.paymentDetails.notifications.genericErrorMessage'
+                        );
+                    }
+
+                    this.createNotificationError({
+                        title: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.refundErrorTitle'
+                        ),
+                        message: message,
+                    });
+
+                    this.isLoading = false;
                 });
-
-                this.isSuccessful = true;
-
-                this.$emit('reload');
-            }).catch((errorResponse) => {
-                let message = errorResponse.response.data.errors[0];
-
-                if (message === 'generic-error') {
-                    message = this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage');
-                }
-
-                this.createNotificationError({
-                    title: this.$tc('unzer-payment.paymentDetails.notifications.refundErrorTitle'),
-                    message: message
-                });
-
-                this.isLoading = false;
-            });
         },
 
         startCancel() {
             this.$emit('cancel', this.transactionAmount);
         },
-    }
+    },
 });

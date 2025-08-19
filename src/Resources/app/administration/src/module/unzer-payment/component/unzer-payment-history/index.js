@@ -7,9 +7,7 @@ Component.register('unzer-payment-history', {
 
     inject: ['repositoryFactory', 'UnzerPaymentService'],
 
-    mixins: [
-        Mixin.getByName('notification')
-    ],
+    mixins: [Mixin.getByName('notification')],
 
     data() {
         return {
@@ -22,15 +20,16 @@ Component.register('unzer-payment-history', {
     props: {
         paymentResource: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
 
     computed: {
         unzerMaxDigits() {
-            const unzerPaymentModule = Module.getModuleRegistry().get('unzer-payment');
+            const unzerPaymentModule =
+                Module.getModuleRegistry().get('unzer-payment');
 
-            if(!unzerPaymentModule || !unzerPaymentModule.manifest) {
+            if (!unzerPaymentModule || !unzerPaymentModule.manifest) {
                 return 4;
             }
 
@@ -42,40 +41,52 @@ Component.register('unzer-payment-history', {
         },
 
         decimalPrecision() {
-            if(!this.paymentResource || !this.paymentResource.amount || !this.paymentResource.amount.decimalPrecision) {
+            if (
+                !this.paymentResource ||
+                !this.paymentResource.amount ||
+                !this.paymentResource.amount.decimalPrecision
+            ) {
                 return this.unzerMaxDigits;
             }
 
-          return Math.min(this.unzerMaxDigits, this.paymentResource.amount.decimalPrecision)
+            return Math.min(
+                this.unzerMaxDigits,
+                this.paymentResource.amount.decimalPrecision
+            );
         },
 
         data: function () {
             const data = [];
 
-            Object.values(this.paymentResource.transactions).forEach((transaction) => {
-                // const amount = this.$options.filters.currency(
-                //     this.formatAmount(parseFloat(transaction.amount), this.decimalPrecision),
-                //     this.paymentResource.currency
-                // );
-                const amount = this.formatCurrency(
-                    this.formatAmount(parseFloat(transaction.amount), this.decimalPrecision),
-                );
-                const date = Shopware.Filter.getByName('date')(
-                    transaction.date,
-                    {
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        second: 'numeric'
-                    }
-                );
+            Object.values(this.paymentResource.transactions).forEach(
+                (transaction) => {
+                    // const amount = this.$options.filters.currency(
+                    //     this.formatAmount(parseFloat(transaction.amount), this.decimalPrecision),
+                    //     this.paymentResource.currency
+                    // );
+                    const amount = this.formatCurrency(
+                        this.formatAmount(
+                            parseFloat(transaction.amount),
+                            this.decimalPrecision
+                        )
+                    );
+                    const date = Shopware.Filter.getByName('date')(
+                        transaction.date,
+                        {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            second: 'numeric',
+                        }
+                    );
 
-                data.push({
-                    type: this.transactionTypeRenderer(transaction.type),
-                    amount: amount,
-                    date: date,
-                    resource: transaction
-                });
-            });
+                    data.push({
+                        type: this.transactionTypeRenderer(transaction.type),
+                        amount: amount,
+                        date: date,
+                        resource: transaction,
+                    });
+                }
+            );
 
             return data;
         },
@@ -84,38 +95,56 @@ Component.register('unzer-payment-history', {
             return [
                 {
                     property: 'type',
-                    label: this.$tc('unzer-payment.paymentDetails.history.column.type'),
-                    rawData: true
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.history.column.type'
+                    ),
+                    rawData: true,
                 },
                 {
                     property: 'amount',
-                    label: this.$tc('unzer-payment.paymentDetails.history.column.amount'),
-                    rawData: true
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.history.column.amount'
+                    ),
+                    rawData: true,
                 },
                 {
                     property: 'date',
-                    label: this.$tc('unzer-payment.paymentDetails.history.column.date'),
-                    rawData: true
-                }
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.history.column.date'
+                    ),
+                    rawData: true,
+                },
             ];
-        }
+        },
     },
 
     methods: {
         transactionTypeRenderer: function (value) {
             switch (value) {
                 case 'authorization':
-                    return this.$tc('unzer-payment.paymentDetails.history.type.authorization');
+                    return this.$tc(
+                        'unzer-payment.paymentDetails.history.type.authorization'
+                    );
                 case 'charge':
-                    return this.$tc('unzer-payment.paymentDetails.history.type.charge');
+                    return this.$tc(
+                        'unzer-payment.paymentDetails.history.type.charge'
+                    );
                 case 'shipment':
-                    return this.$tc('unzer-payment.paymentDetails.history.type.shipment');
+                    return this.$tc(
+                        'unzer-payment.paymentDetails.history.type.shipment'
+                    );
                 case 'refund':
-                    return this.$tc('unzer-payment.paymentDetails.history.type.refund');
+                    return this.$tc(
+                        'unzer-payment.paymentDetails.history.type.refund'
+                    );
                 case 'cancellation':
-                    return this.$tc('unzer-payment.paymentDetails.history.type.cancellation');
+                    return this.$tc(
+                        'unzer-payment.paymentDetails.history.type.cancellation'
+                    );
                 default:
-                    return this.$tc('unzer-payment.paymentDetails.history.type.default');
+                    return this.$tc(
+                        'unzer-payment.paymentDetails.history.type.default'
+                    );
             }
         },
 
@@ -125,7 +154,7 @@ Component.register('unzer-payment-history', {
         },
 
         formatAmount(cents, decimalPrecision) {
-            return cents / (10 ** decimalPrecision);
+            return cents / 10 ** decimalPrecision;
         },
 
         openCancelModal(item, cancelAmount) {
@@ -145,33 +174,43 @@ Component.register('unzer-payment-history', {
                 this.paymentResource.orderId,
                 this.paymentResource.id,
                 this.cancelAmount
-            ).then(() => {
-                this.createNotificationSuccess({
-                    title: this.$tc('unzer-payment.paymentDetails.notifications.cancelSuccessTitle'),
-                    message: this.$tc('unzer-payment.paymentDetails.notifications.cancelSuccessMessage')
+            )
+                .then(() => {
+                    this.createNotificationSuccess({
+                        title: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.cancelSuccessTitle'
+                        ),
+                        message: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.cancelSuccessMessage'
+                        ),
+                    });
+
+                    this.reload();
+                })
+                .catch((errorResponse) => {
+                    let message = errorResponse.response.data.errors[0];
+
+                    if (message === 'generic-error') {
+                        message = this.$tc(
+                            'unzer-payment.paymentDetails.notifications.cancelErrorMessage'
+                        );
+                    }
+
+                    this.createNotificationError({
+                        title: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.cancelErrorTitle'
+                        ),
+                        message: message,
+                    });
+
+                    this.isCancelLoading = false;
                 });
-
-                this.reload();
-            }).catch((errorResponse) => {
-                let message = errorResponse.response.data.errors[0];
-
-                if (message === 'generic-error') {
-                    message = this.$tc('unzer-payment.paymentDetails.notifications.cancelErrorMessage');
-                }
-
-                this.createNotificationError({
-                    title: this.$tc('unzer-payment.paymentDetails.notifications.cancelErrorTitle'),
-                    message: message
-                });
-
-                this.isCancelLoading = false;
-            });
         },
         formatCurrency(value) {
             return Shopware.Utils.format.currency(
                 value || 0.0,
                 this.paymentResource.currency
             );
-        }
-    }
+        },
+    },
 });

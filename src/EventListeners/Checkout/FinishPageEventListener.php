@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\Checkout;
 
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
@@ -17,22 +18,16 @@ use UnzerSDK\Resources\InstalmentPlan;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Unzer;
 
-class FinishPageEventListener implements EventSubscriberInterface
+readonly class FinishPageEventListener implements EventSubscriberInterface
 {
-    /** @var ClientFactoryInterface */
-    private $clientFactory;
 
-    /** @var LoggerInterface */
-    private $logger;
 
-    /** @var TransactionSelectionHelperInterface */
-    private $transactionSelectionHelper;
-
-    public function __construct(ClientFactoryInterface $clientFactory, LoggerInterface $logger, TransactionSelectionHelperInterface $transactionSelectionHelper)
+    public function __construct(
+        private ClientFactoryInterface $clientFactory,
+        private LoggerInterface $logger,
+        private TransactionSelectionHelperInterface $transactionSelectionHelper)
     {
-        $this->clientFactory              = $clientFactory;
-        $this->logger                     = $logger;
-        $this->transactionSelectionHelper = $transactionSelectionHelper;
+
     }
 
     public static function getSubscribedEvents(): array
@@ -45,8 +40,8 @@ class FinishPageEventListener implements EventSubscriberInterface
     public function onCheckoutFinish(CheckoutFinishPageLoadedEvent $event): void
     {
         $salesChannelContext = $event->getSalesChannelContext();
-        $page                = $event->getPage();
-        $unzerTransaction    = $this->transactionSelectionHelper->getBestUnzerTransaction($page->getOrder());
+        $page = $event->getPage();
+        $unzerTransaction = $this->transactionSelectionHelper->getBestUnzerTransaction($page->getOrder());
 
         if (!$unzerTransaction) {
             return;
@@ -54,14 +49,14 @@ class FinishPageEventListener implements EventSubscriberInterface
 
         try {
             $unzerClient = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($salesChannelContext));
-        } catch (\RuntimeException $ex) {
+        } catch (RuntimeException $ex) {
             $this->logger->error($ex->getMessage());
 
             return;
         }
 
         $extension = new FinishPageExtension();
-        $payment   = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getId());
+        $payment = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getId());
 
         if (!$payment) {
             $payment = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getOrderId());
@@ -86,12 +81,12 @@ class FinishPageEventListener implements EventSubscriberInterface
         try {
             return $unzerClient->fetchPaymentByOrderId($orderId);
         } catch (UnzerApiException $exception) {
-            //catch payment not found exception so that shopware can handle its own errors
+            // catch payment not found exception so that shopware can handle its own errors
             $this->logger->error($exception->getMessage(), [
-                'code'          => $exception->getCode(),
+                'code' => $exception->getCode(),
                 'clientMessage' => $exception->getClientMessage(),
-                'file'          => $exception->getFile(),
-                'trace'         => $exception->getTraceAsString(),
+                'file' => $exception->getFile(),
+                'trace' => $exception->getTraceAsString(),
             ]);
         }
 

@@ -9,24 +9,22 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Runtime;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ObjectField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
+use Shopware\Core\Framework\Log\Package;
 
+#[Package('checkout')]
 class OrderTransactionExtension extends EntityExtension
 {
-    /**
-     * {@inheritdoc}
-     */
+    public const TRANSFER_INFO_EXTENSION = 'transferInfo';
+
     public function extendFields(FieldCollection $collection): void
     {
         $collection->add(
-            (new ObjectField('transfer_info', 'transferInfo'))->addFlags(new Runtime())
+            (new ObjectField('transfer_info', self::TRANSFER_INFO_EXTENSION))->addFlags(new Runtime())
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefinitionClass(): string
+    public function getEntityName(): string
     {
-        return OrderTransactionDefinition::class;
+        return OrderTransactionDefinition::ENTITY_NAME;
     }
 }

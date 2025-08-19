@@ -1,14 +1,13 @@
-import Plugin from 'src/plugin-system/plugin.class';
-import DomAccess from 'src/helper/dom-access.helper';
+const Plugin = window.PluginBaseClass;
+
 
 export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
     static options = {
-        acceptMandateId: 'acceptSepaMandate',
         elementWrapperSelector: '.unzer-payment-sepa-wrapper-elements',
         radioButtonSelector: '*[name="savedDirectDebitDevice"]',
         radioButtonNewAccountId: 'device-new',
         selectedRadioButtonSelector: '*[name="savedDirectDebitDevice"]:checked',
-        hasSepaDevices: false
+        hasSepaDevices: false,
     };
 
     /**
@@ -26,13 +25,12 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
     static _unzerPaymentPlugin = null;
 
     init() {
-        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this._unzerPaymentPlugin =
+            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
         this.sepa = this._unzerPaymentPlugin.unzerInstance.SepaDirectDebit();
-        this.mandateAcceptedCheckbox = document.getElementById(this.options.acceptMandateId);
 
         this._createForm();
         this._registerEvents();
-
 
         if (!this.options.hasSepaDevices) {
             this._unzerPaymentPlugin.setSubmitButtonActive(false);
@@ -44,7 +42,7 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
      */
     _createForm() {
         this.sepa.create('sepa-direct-debit', {
-            containerId: 'unzer-payment-sepa-container'
+            containerId: 'unzer-payment-sepa-container',
         });
     }
 
@@ -53,34 +51,46 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
      */
     _registerEvents() {
         if (this.options.hasSepaDevices) {
-            const radioButtons = DomAccess.querySelectorAll(this.el, this.options.radioButtonSelector);
+            const radioButtons = this.el.querySelectorAll(this.options.radioButtonSelector);
 
             for (let $i = 0; $i < radioButtons.length; $i++) {
-                radioButtons[$i].addEventListener('change', (event) => this._onRadioButtonChange(event));
+                radioButtons[$i].addEventListener('change', (event) =>
+                    this._onRadioButtonChange(event)
+                );
             }
 
-            document.querySelector(this.options.selectedRadioButtonSelector).dispatchEvent(new Event('change'));
+            document
+                .querySelector(this.options.selectedRadioButtonSelector)
+                .dispatchEvent(new Event('change'));
         }
 
-        this.sepa.addEventListener('change', (event) => this._onFormChange(event));
+        this.sepa.addEventListener('change', (event) =>
+            this._onFormChange(event)
+        );
 
-        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
-            scope: this
-        });
+        this._unzerPaymentPlugin.$emitter.subscribe(
+            'unzerBase_createResource',
+            () => this._onCreateResource(),
+            {
+                scope: this,
+            }
+        );
     }
 
     _onRadioButtonChange(event) {
         const targetElement = event.target;
-        const unzerElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+        const unzerElementWrapper = this.el.querySelector(this.options.elementWrapperSelector);
 
-        unzerElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewAccountId;
+        unzerElementWrapper.hidden =
+            targetElement.id !== this.options.radioButtonNewAccountId;
 
-        if (!targetElement || targetElement.id === this.options.radioButtonNewAccountId) {
+        if (
+            !targetElement ||
+            targetElement.id === this.options.radioButtonNewAccountId
+        ) {
             this._unzerPaymentPlugin.setSubmitButtonActive(this.sepa.validated);
-            this.mandateAcceptedCheckbox.required = true;
         } else {
             this._unzerPaymentPlugin.setSubmitButtonActive(true);
-            this.mandateAcceptedCheckbox.required = false;
         }
     }
 
@@ -92,12 +102,18 @@ export default class UnzerPaymentSepaDirectDebitPlugin extends Plugin {
      * @private
      */
     _onCreateResource() {
-        const selectedDevice = document.querySelector(this.options.selectedRadioButtonSelector);
+        const selectedDevice = document.querySelector(
+            this.options.selectedRadioButtonSelector
+        );
 
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
-        if (!selectedDevice || selectedDevice.id === this.options.radioButtonNewAccountId) {
-            this.sepa.createResource()
+        if (
+            !selectedDevice ||
+            selectedDevice.id === this.options.radioButtonNewAccountId
+        ) {
+            this.sepa
+                .createResource()
                 .then((resource) => this._submitPayment(resource))
                 .catch((error) => this._handleError(error));
         } else {

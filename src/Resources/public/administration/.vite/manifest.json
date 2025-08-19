@@ -1,0 +1,11 @@
+{
+  "main.js": {
+    "file": "assets/unzer-payment6-CkAaNePq.js",
+    "name": "unzer-payment6",
+    "src": "main.js",
+    "isEntry": true,
+    "css": [
+      "assets/unzer-payment6-y2GmhhIw.css"
+    ]
+  }
+}

@@ -1,8 +1,8 @@
-import Plugin from 'src/plugin-system/plugin.class';
+const Plugin = window.PluginBaseClass;
 
 export default class UnzerPaymentInvoicePlugin extends Plugin {
     static options = {
-        unzerPaymentCardId: 'unzer-payment-card'
+        unzerPaymentCardId: 'unzer-payment-card',
     };
 
     /**
@@ -20,7 +20,8 @@ export default class UnzerPaymentInvoicePlugin extends Plugin {
     static _unzerPaymentPlugin = null;
 
     init() {
-        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this._unzerPaymentPlugin =
+            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
         this.invoice = this._unzerPaymentPlugin.unzerInstance.Invoice();
 
         this._registerEvents();
@@ -30,9 +31,13 @@ export default class UnzerPaymentInvoicePlugin extends Plugin {
      * @private
      */
     _registerEvents() {
-        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
-            scope: this
-        });
+        this._unzerPaymentPlugin.$emitter.subscribe(
+            'unzerBase_createResource',
+            () => this._onCreateResource(),
+            {
+                scope: this,
+            }
+        );
     }
 
     /**
@@ -41,7 +46,8 @@ export default class UnzerPaymentInvoicePlugin extends Plugin {
     _onCreateResource() {
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
-        this.invoice.createResource()
+        this.invoice
+            .createResource()
             .then((resource) => this._submitPayment(resource))
             .catch((error) => this._handleError(error));
     }

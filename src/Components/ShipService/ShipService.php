@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ShipService;
 
-use DateInterval;
 use DateTime;
 use DateTimeInterface;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Document\Renderer\InvoiceRenderer;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use UnzerPayment6\Components\BackwardsCompatibility\InvoiceGenerator;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
@@ -24,15 +21,13 @@ use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
 use UnzerSDK\Unzer;
 
-class ShipService implements ShipServiceInterface
+readonly class ShipService implements ShipServiceInterface
 {
-
-
     public function __construct(
-        private readonly ClientFactoryInterface $clientFactory,
-        private readonly TransactionStateHandlerInterface $transactionStateHandler,
-        private readonly EntityRepository $orderTransactionRepository,
-        private readonly LoggerInterface $logger
+        private ClientFactoryInterface           $clientFactory,
+        private TransactionStateHandlerInterface $transactionStateHandler,
+        private EntityRepository                 $orderTransactionRepository,
+        private LoggerInterface                  $logger
     ) {
     }
 
@@ -47,48 +42,48 @@ class ShipService implements ShipServiceInterface
             throw PaymentException::invalidTransaction($orderTransactionId);
         }
 
-        $order         = $transaction->getOrder();
-        $documents     = $transaction->getOrder()->getDocuments()->getElements();
+        $order = $transaction->getOrder();
+        $documents = $transaction->getOrder()->getDocuments()->getElements();
         $invoiceNumber = null;
-        $documentDate  = null;
+        $documentDate = null;
 
         foreach ($documents as $document) {
             if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceRenderer::TYPE) {
                 $newDocumentDate = new DateTime($document->getConfig()['documentDate']);
 
                 if ($documentDate === null || $newDocumentDate->getTimestamp() > $documentDate->getTimestamp()) {
-                    $documentDate  = $newDocumentDate;
+                    $documentDate = $newDocumentDate;
                     $invoiceNumber = $document->getConfig()['documentNumber'];
                 }
             }
         }
 
         if (!$documentDate) {
-            $this->logger->error(sprintf('Error while sending shipping notification for order [%s]: No DocumentDate for invoice found', $order->getOrderNumber()));
+            $this->logger->error(\sprintf('Error while sending shipping notification for order [%s]: No DocumentDate for invoice found', $order->getOrderNumber()));
 
             return [
-                'status'  => false,
+                'status' => false,
                 'message' => 'documentdate-missing-error',
             ];
         }
 
         if (!$invoiceNumber) {
-            $this->logger->error(sprintf('Error while sending shipping notification for order [%s]: No invoiceNumber found', $order->getOrderNumber()));
+            $this->logger->error(\sprintf('Error while sending shipping notification for order [%s]: No invoiceNumber found', $order->getOrderNumber()));
 
             return [
-                'status'  => false,
+                'status' => false,
                 'message' => 'invoice-missing-error',
             ];
         }
 
-        $client  = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
+        $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
         $payment = $this->getPayment($orderTransactionId, $documentDate, $client);
 
         if ($payment === null) {
-            $this->logger->error(sprintf('Error while sending shipping notification for order [%s]: Payment could not be fetched', $order->getOrderNumber()));
+            $this->logger->error(\sprintf('Error while sending shipping notification for order [%s]: Payment could not be fetched', $order->getOrderNumber()));
 
             return [
-                'status'  => false,
+                'status' => false,
                 'message' => 'payment-missing-error',
             ];
         }
@@ -119,17 +114,17 @@ class ShipService implements ShipServiceInterface
     {
         try {
             $payment = $client->fetchPaymentByOrderId($orderTransactionId);
-        } catch (UnzerApiException $exception) {
+        } catch (UnzerApiException) {
             return null;
         }
 
         $paymentType = $payment->getPaymentType();
 
-        if ($paymentType !== null && $paymentType instanceof InstallmentSecured) {
+        if ($paymentType instanceof InstallmentSecured) {
             /** @var DateTime $invoiceDueDate */
             $invoiceDueDate = clone $documentDate;
-            /** @var DateInterval $dateInterval */
-            $dateInterval = DateInterval::createFromDateString(sprintf('%s months', $paymentType->getNumberOfRates()));
+            /** @var \DateInterval $dateInterval */
+            $dateInterval = \DateInterval::createFromDateString(\sprintf('%s months', $paymentType->getNumberOfRates()));
             $invoiceDueDate->add($dateInterval);
 
             $paymentType->setInvoiceDate($documentDate->format('Y-m-d'));
@@ -137,7 +132,7 @@ class ShipService implements ShipServiceInterface
 
             try {
                 $payment->setPaymentType($client->updatePaymentType($paymentType));
-            } catch (UnzerApiException $exception) {
+            } catch (UnzerApiException) {
                 return null;
             }
         }

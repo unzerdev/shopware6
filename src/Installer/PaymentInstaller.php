@@ -14,8 +14,8 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
+use Throwable;
 use UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler;
-use UnzerPayment6\Components\PaymentHandler\UnzerApplePayPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerApplePayV2PaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerBancontactHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerCreditCardPaymentHandler;
@@ -86,7 +86,6 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_WE_CHAT,
         self::PAYMENT_ID_BANCONTACT,
         self::PAYMENT_ID_PAYLATER_INVOICE,
-        self::PAYMENT_ID_APPLE_PAY,
         self::PAYMENT_ID_APPLE_PAY_V2,
         self::PAYMENT_ID_PAYLATER_INSTALLMENT,
         self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
@@ -253,15 +252,15 @@ class PaymentInstaller implements InstallerInterface
         [
             'id' => self::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
             'handlerIdentifier' => UnzerPaylaterDirectDebitSecuredPaymentHandler::class,
-            'name' => 'Direct Debit',
+            'name' => 'Direct Debit Secured',
             'technicalName' => 'unzer_directdebitsecured',
             'translations' => [
                 'de-DE' => [
-                    'name' => 'Lastschrift',
+                    'name' => 'Gesicherte Lastschrift',
                     'description' => 'Unzer Lastschrift',
                 ],
                 'en-GB' => [
-                    'name' => 'Direct Debit',
+                    'name' => 'Direct Debit Secured',
                     'description' => 'Unzer Direct Debit',
                 ],
             ],
@@ -366,16 +365,16 @@ class PaymentInstaller implements InstallerInterface
         [
             'id' => self::PAYMENT_ID_WE_CHAT,
             'handlerIdentifier' => UnzerWeChatPaymentHandler::class,
-            'name' => 'WeChat',
+            'name' => 'WeChat Pay',
             'technicalName' => 'unzer_wechatpay',
             'translations' => [
                 'de-DE' => [
-                    'name' => 'WeChat',
-                    'description' => 'WeChat Zahlungen mit Unzer payments',
+                    'name' => 'WeChat Pay',
+                    'description' => 'WeChat Pay Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name' => 'WeChat',
-                    'description' => 'WeChat payments with Unzer payments',
+                    'name' => 'WeChat Pay',
+                    'description' => 'WeChat Pay payments with Unzer payments',
                 ],
             ],
         ],
@@ -408,22 +407,6 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name' => 'Invoice',
                     'description' => 'Invoice payments with Unzer payments',
-                ],
-            ],
-        ],
-        [
-            'id' => self::PAYMENT_ID_APPLE_PAY,
-            'handlerIdentifier' => UnzerApplePayPaymentHandler::class,
-            'name' => 'Apple Pay (Deprecated)',
-            'technicalName' => 'unzer_applepay',
-            'translations' => [
-                'de-DE' => [
-                    'name' => 'Apple Pay (Deprecated)',
-                    'description' => 'Apple Pay mit Unzer payments',
-                ],
-                'en-GB' => [
-                    'name' => 'Apple Pay (Veraltet)',
-                    'description' => 'Apple Pay with Unzer payments',
                 ],
             ],
         ],
@@ -492,11 +475,11 @@ class PaymentInstaller implements InstallerInterface
             ],
         ],
     ];
+
+    public const APPLE_PAY_DOMAIN_VERIFICATION_FILE_CONTENT = '7b2276657273696f6e223a312c227073704964223a2244303134343945313932433041444436323041333641443243393834373337433245313930423230333138343431393437433743423736364338344534323638222c22637265617465644f6e223a313731383839323737333837377d';
     private const PLUGIN_VERSION_PAYLATER_INVOICE = '5.0.0';
     private const PLUGIN_VERSION_PAYLATER_INSTALLMENT = '5.6.0';
     private const PLUGIN_VERSION_PAYLATER_DIRECT_DEBIT = '5.7.0';
-
-    public const APPLE_PAY_DOMAIN_VERIFICATION_FILE_CONTENT = '7b2276657273696f6e223a312c227073704964223a2244303134343945313932433041444436323041333641443243393834373337433245313930423230333138343431393437433743423736364338344534323638222c22637265617465644f6e223a313731383839323737333837377d';
 
     private EntityRepository $paymentMethodRepository;
 
@@ -516,7 +499,7 @@ class PaymentInstaller implements InstallerInterface
 
     public function update(UpdateContext $context, ?object $publicFileSystem): void
     {
-        $this->upsertPaymentMethods($context, $publicFileSystem);
+        $this->upsertPaymentMethods($context);
         $this->createApplePayDomainVerification($publicFileSystem);
         if ($context->getUpdatePluginVersion() === self::PLUGIN_VERSION_PAYLATER_INVOICE) {
             $this->paymentMethodRepository->upsert([
@@ -579,10 +562,13 @@ class PaymentInstaller implements InstallerInterface
 
         foreach (self::PAYMENT_METHODS as $paymentMethod) {
             if (!$this->isPaymentMethodInstalled($paymentMethod['id'], $context->getContext())) {
+                // method does not exist > create with complete data
                 $paymentMethod['pluginId'] = $pluginId;
+                $paymentMethod['afterOrderEnabled']  = true;
 
                 $this->paymentMethodRepository->upsert([$paymentMethod], $context->getContext());
             } else {
+                // method does exist > only update necessary fields
                 $upsertPayload = [
                     'id' => $paymentMethod['id'],
                     'technicalName' => $paymentMethod['technicalName'],
@@ -594,7 +580,8 @@ class PaymentInstaller implements InstallerInterface
         $this->deprecatePaymentMethods($context);
     }
 
-    private function deprecatePaymentMethods(InstallContext $context):void{
+    private function deprecatePaymentMethods(InstallContext $context): void
+    {
         $upsertPayload = [];
         foreach (self::DEPRECATED_PAYMENT_METHOD_IDS as $paymentMethodId) {
             $upsertPayload[] = [
@@ -611,11 +598,14 @@ class PaymentInstaller implements InstallerInterface
                         ],
                     ],
                 ],
-
             ];
         }
 
-        $this->paymentMethodRepository->upsert($upsertPayload, $context->getContext());
+        try{
+        $this->paymentMethodRepository->update($upsertPayload, $context->getContext());
+        } catch (Throwable) {
+            // ignore
+        }
     }
 
     private function deprecateGiropay(InstallContext $context): void

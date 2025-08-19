@@ -10,13 +10,11 @@ class InstallmentSecuredPageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerInstallmentSecured';
 
-    /** @var float */
-    private $amount = 0.0;
 
-    /** @var string */
-    private $currency = 'EUR';
+    private float $amount = 0.0;
 
-    /** @var string */
+    private string $currency = 'EUR';
+
     private $orderDate = '';
 
     public function getAmount(): float

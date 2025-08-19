@@ -5,21 +5,24 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator;
 
 use RuntimeException;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Symfony\Component\HttpFoundation\RequestStack;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Constants\CompanyCommercialSectorItems;
 use UnzerSDK\Constants\CompanyRegistrationTypes;
 use UnzerSDK\Constants\ShippingTypes;
-use UnzerSDK\Resources\AbstractUnzerResource;
-use UnzerSDK\Resources\Customer;
+use UnzerSDK\Resources\Customer as UnzerCustomer;
 use UnzerSDK\Resources\CustomerFactory;
 use UnzerSDK\Resources\EmbeddedResources\Address;
 use UnzerSDK\Resources\EmbeddedResources\CompanyInfo;
 
-class CustomerResourceHydrator implements CustomerResourceHydratorInterface
+readonly class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 {
     private const B2B_CUSTOMERS_ALLOWED = [
         PaymentInstaller::PAYMENT_ID_INVOICE_SECURED,
@@ -27,31 +30,50 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED,
     ];
 
-    private RequestStack $requestStack;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(
+        private RequestStack     $requestStack,
+        private EntityRepository $customerRepository
+    )
     {
-        $this->requestStack = $requestStack;
+
+    }
+
+    public function getCustomer(string $customerId, Context $context): ?CustomerEntity
+    {
+        return $this->customerRepository->search(
+            (new Criteria([$customerId]))
+                ->addAssociations([
+                    'activeBillingAddress',
+                    'activeShippingAddress',
+                    'salutation',
+                    'addresses',
+                ]),
+            $context
+        )->first();
+
     }
 
     public function hydrateObject(
-        string $paymentMethodId,
-        SalesChannelContext $channelContext
-    ): AbstractUnzerResource {
-        $customer = $channelContext->getCustomer();
-
+        string                 $paymentMethodId,
+        OrderCustomerEntity    $orderCustomer,
+        OrderTransactionEntity $orderTransaction,
+        Context                $context
+    ): UnzerCustomer
+    {
+        $customer = $this->getCustomer($orderCustomer->getCustomerId(), $context);
         if (!$customer) {
             throw new RuntimeException('Could not determine the customer');
         }
 
-        $billingAddress  = $customer->getActiveBillingAddress();
-        $shippingAddress = $customer->getActiveShippingAddress();
+        $billingAddress = $orderTransaction->getOrder()->getBillingAddress();
+        $shippingAddress = $orderTransaction->getOrder()->getDeliveries()->first()->getShippingOrderAddress();
 
         if (empty($billingAddress) || empty($shippingAddress)) {
-            throw new RuntimeException(sprintf('Could not determine the address for customer with number %s', $customer->getCustomerNumber()));
+            throw new RuntimeException(\sprintf('Could not determine any address for order %s', $orderTransaction->getOrder()->getOrderNumber()));
         }
 
-        if (empty($billingAddress->getCompany()) || !in_array($paymentMethodId, self::B2B_CUSTOMERS_ALLOWED, true)) {
+        if (empty($billingAddress->getCompany()) || !\in_array($paymentMethodId, self::B2B_CUSTOMERS_ALLOWED, true)) {
             $unzerCustomer = CustomerFactory::createCustomer(
                 $billingAddress->getFirstName(),
                 $billingAddress->getLastName()
@@ -62,7 +84,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
                 ->setFunction('OWNER')
                 ->setCommercialSector(CompanyCommercialSectorItems::OTHER);
 
-            $unzerCustomer = (new Customer())
+            $unzerCustomer = (new UnzerCustomer())
                 ->setFirstname($billingAddress->getFirstName())
                 ->setLastname($billingAddress->getLastName())
                 ->setBirthDate($this->getBirthDate($customer))
@@ -83,63 +105,52 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
 
         $unzerCustomer->setCustomerId($customerNumber);
 
-        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
+        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $orderTransaction, $billingAddress);
     }
 
     public function hydrateExistingCustomer(
-        AbstractUnzerResource $unzerCustomer,
-        SalesChannelContext $salesChannelContext
-    ): AbstractUnzerResource {
-        if (!$unzerCustomer instanceof Customer) {
-            return $unzerCustomer;
-        }
-
-        $customer = $salesChannelContext->getCustomer();
+        UnzerCustomer          $unzerCustomer,
+        OrderCustomerEntity    $orderCustomer,
+        OrderTransactionEntity $orderTransaction,
+        Context                $context
+    ): UnzerCustomer
+    {
+        $customer = $this->getCustomer($orderCustomer->getCustomerId(), $context);
 
         if (!$customer) {
             throw new RuntimeException('Could not determine the customer');
         }
 
-        $billingAddress = $customer->getActiveBillingAddress();
+        $billingAddress = $orderTransaction->getOrder()->getBillingAddress();
 
         if (!$billingAddress) {
-            throw new RuntimeException(sprintf('Could not determine the address for customer with number %s', $customer->getCustomerNumber()));
+            throw new RuntimeException(\sprintf('Could not determine the address for customer with number %s', $customer->getCustomerNumber()));
         }
 
-        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
+        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $orderTransaction, $billingAddress);
     }
 
-    protected function getUnzerAddress(CustomerAddressEntity $shopwareAddress): Address
+    protected function getUnzerAddress(OrderAddressEntity $shopwareAddress): Address
     {
         $address = new Address();
-        $address->setCountry($shopwareAddress->getCountry() !== null ? $shopwareAddress->getCountry()->getIso() : null);
-        $address->setState(
-            $shopwareAddress->getCountryState() !== null ? $shopwareAddress->getCountryState()->getShortCode() : null
-        );
+        $address->setCountry($shopwareAddress->getCountry()?->getIso());
+        $address->setState($shopwareAddress->getCountryState()?->getShortCode());
         $address->setZip($shopwareAddress->getZipcode());
         $address->setStreet($shopwareAddress->getStreet());
         $address->setCity($shopwareAddress->getCity());
-        $address->setName(sprintf('%s %s', $shopwareAddress->getFirstName(), $shopwareAddress->getLastName()));
+        $address->setName(\sprintf('%s %s', $shopwareAddress->getFirstName(), $shopwareAddress->getLastName()));
 
         return $address;
     }
 
-    /**
-     * @deprecated this function will be removed in a future update. Please use \UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator::updateAdditionalDataToCustomer instead
-     */
-    protected function addAdditionalDataToCustomer(
-        Customer $unzerCustomer,
-        CustomerEntity $customer,
-        CustomerAddressEntity $billingAddress
-    ): Customer {
-        return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress);
-    }
 
     protected function updateAdditionalDataToCustomer(
-        Customer $unzerCustomer,
-        CustomerEntity $customer,
-        CustomerAddressEntity $billingAddress
-    ): Customer {
+        UnzerCustomer          $unzerCustomer,
+        CustomerEntity         $customer,
+        OrderTransactionEntity $orderTransaction,
+        OrderAddressEntity     $billingAddress
+    ): UnzerCustomer
+    {
         $unzerBillingAddress = $unzerCustomer->getBillingAddress();
 
         if ($unzerCustomer->getFirstname() !== $billingAddress->getFirstName()) {
@@ -189,7 +200,7 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
         }
 
         $unzerCustomer->setBillingAddress($unzerBillingAddress);
-        $this->updateShippingAddress($unzerCustomer, $customer->getActiveShippingAddress(), $billingAddress->getId());
+        $this->updateShippingAddress($unzerCustomer, $orderTransaction->getOrder()?->getDeliveries()?->first()?->getShippingOrderAddress(), $billingAddress->getId());
 
         return $unzerCustomer;
     }
@@ -206,13 +217,12 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
             }
         }
 
-        return $customer->getBirthday() !== null ? $customer->getBirthday()->format('Y-m-d') : null;
+        return $customer->getBirthday()?->format('Y-m-d');
     }
 
-    private function updateShippingAddress(Customer $unzerCustomer, ?CustomerAddressEntity $shippingAddress, string $billingAddressId): void
+    private function updateShippingAddress(UnzerCustomer $unzerCustomer, ?OrderAddressEntity $shippingAddress, string $billingAddressId): void
     {
         $unzerShippingAddress = $unzerCustomer->getShippingAddress();
-
         if ($shippingAddress === null) {
             return;
         }

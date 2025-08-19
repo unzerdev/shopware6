@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace UnzerPayment6\Components\UnzerUtil;
 
@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Throwable;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\KeyPairContext;
@@ -19,17 +20,37 @@ use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
-class UnzerTransactionUtil
+readonly class UnzerTransactionUtil
 {
-
     public function __construct(
-        protected readonly EntityRepository                 $orderTransactionRepository,
-        protected readonly ClientFactoryInterface           $clientFactory,
-        protected readonly TransactionStateHandlerInterface $transactionStateHandler,
-        protected readonly CancelServiceInterface           $cancelService,
-        protected readonly LoggerInterface                  $logger
+        protected EntityRepository                 $orderTransactionRepository,
+        protected ClientFactoryInterface           $clientFactory,
+        protected TransactionStateHandlerInterface $transactionStateHandler,
+        protected CancelServiceInterface           $cancelService,
+        protected LoggerInterface                  $logger
     )
     {
+    }
+
+
+    public function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
+    {
+        $criteria = new Criteria([$orderTransactionId]);
+        $criteria->addAssociations([
+            'order',
+            'order.billingAddress.country',
+            'order.currency',
+            'order.documents.documentType',
+            'paymentMethod',
+            'order.orderCustomer',
+            'order.deliveries.shippingMethod.translated',
+            'order.deliveries.shippingOrderAddress.country',
+            'order.lineItems.product.manufacturer',
+            'order.lineItems.cover.url',
+            'order.lineItems.calculatedPrices.taxes',
+        ]);
+
+        return $this->orderTransactionRepository->search($criteria, $context)->first();
     }
 
     /**
@@ -48,6 +69,7 @@ class UnzerTransactionUtil
             'order.documents.documentType',
             'paymentMethod',
         ]);
+
         return $this->orderTransactionRepository->search($criteria, $context)->first();
     }
 
@@ -78,13 +100,16 @@ class UnzerTransactionUtil
         return true;
     }
 
-    public function refundOrder(OrderEntity $order, Context $context)
+    /**
+     * @throws Exception
+     */
+    public function refundOrder(OrderEntity $order, Context $context): void
     {
         $this->logger->info('Refunding order', ['order' => $order->getId()]);
         $orderTransaction = $this->getOrderTransactionFromOrder($order, $context);
 
         if ($orderTransaction === null) {
-            return false;
+            return;
         }
 
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($orderTransaction));
@@ -99,11 +124,11 @@ class UnzerTransactionUtil
                     $this->cancelService->cancelChargeById(
                         $orderTransaction->getId(),
                         $charge->getId(),
-                        $charge->getAmount()-$charge->getCancelledAmount(),
+                        $charge->getAmount() - $charge->getCancelledAmount(),
                         null,
                         $context
                     );
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $this->logger->error('Error while refunding charge', ['charge' => $charge->getId(), 'error' => $e->getMessage()]);
                 }
             }
@@ -118,7 +143,7 @@ class UnzerTransactionUtil
                         $authorization->getAmount() - $authorization->getCancelledAmount(),
                         $context
                     );
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $this->logger->error('Error while refunding authorization', ['authorization' => $authorization->getId(), 'error' => $e->getMessage()]);
                 }
             }
@@ -130,8 +155,5 @@ class UnzerTransactionUtil
         } catch (UnzerApiException $e) {
             throw new Exception($e->getMerchantMessage() ?: $e->getClientMessage());
         }
-
     }
-
-
 }

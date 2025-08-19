@@ -9,30 +9,25 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\PluginEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use UnzerPayment6\UnzerPayment6;
-use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Metadata;
 
-class MetadataResourceHydrator implements ResourceHydratorInterface
+readonly class MetadataResourceHydrator
 {
-    /** @var string */
-    private $shopwareVersion;
 
-    /** @var EntityRepository */
-    private $pluginRepository;
 
-    public function __construct(string $shopwareVersion, EntityRepository $pluginRepository)
+    public function __construct(
+        private string           $shopwareVersion,
+        private EntityRepository $pluginRepository
+    )
     {
-        $this->shopwareVersion  = $shopwareVersion;
-        $this->pluginRepository = $pluginRepository;
     }
 
     public function hydrateObject(
-        SalesChannelContext $channelContext,
-        $transaction = null
-    ): AbstractUnzerResource {
-        $pluginData = $this->getPluginData($channelContext->getContext());
+        Context $context
+    ): Metadata
+    {
+        $pluginData = $this->getPluginData($context);
 
         $unzerMetadata = new Metadata();
         $unzerMetadata->setShopType('Shopware 6');

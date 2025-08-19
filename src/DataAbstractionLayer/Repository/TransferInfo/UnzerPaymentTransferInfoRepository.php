@@ -12,15 +12,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use UnzerPayment6\Components\Struct\TransferInformation\TransferInformation;
 use UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo\UnzerPaymentTransferInfoEntity;
 
-class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransferInfoRepositoryInterface
+readonly class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransferInfoRepositoryInterface
 {
-    public function __construct(private readonly EntityRepository $entityRepository)
+    public function __construct(private EntityRepository $entityRepository)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function create(
         TransferInformation $transferInformation,
         Context $context
@@ -28,9 +25,6 @@ class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransferInfoRepo
         return $this->entityRepository->create([$transferInformation->getEntityData()], $context);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function remove(string $id, Context $context): EntityWrittenContainerEvent
     {
         return $this->entityRepository->delete([
@@ -38,9 +32,6 @@ class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransferInfoRepo
         ], $context);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function exists(string $transactionId, Context $context): bool
     {
         $criteria = new Criteria();
@@ -51,9 +42,7 @@ class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransferInfoRepo
         return $this->entityRepository->search($criteria, $context)->getTotal() > 0;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+
     public function read(string $transactionId, Context $context): ?UnzerPaymentTransferInfoEntity
     {
         $criteria = new Criteria();

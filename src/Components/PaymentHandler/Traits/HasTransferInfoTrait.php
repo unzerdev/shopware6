@@ -29,7 +29,7 @@ trait HasTransferInfoTrait
             throw new RuntimeException('Payment can not be null');
         }
 
-        /** @var null|Charge $charge */
+        /** @var Charge|null $charge */
         $charge = $this->payment->getChargeByIndex(0);
 
         if (!isset($charge)) {
@@ -38,7 +38,7 @@ trait HasTransferInfoTrait
 
         return $this->transactionRepository->upsert([
             [
-                'id'           => $orderTransactionEntity->getId(),
+                'id' => $orderTransactionEntity->getId(),
                 'customFields' => array_merge(
                     $orderTransactionEntity->getCustomFields() ?? [],
                     [
@@ -59,7 +59,7 @@ trait HasTransferInfoTrait
             throw new RuntimeException('Payment can not be null');
         }
 
-        /** @var null|Authorization $authorization */
+        /** @var Authorization|null $authorization */
         $authorization = $this->payment->getAuthorization();
 
         if (!isset($authorization)) {
@@ -68,7 +68,7 @@ trait HasTransferInfoTrait
 
         return $this->transactionRepository->upsert([
             [
-                'id'           => $orderTransactionEntity->getId(),
+                'id' => $orderTransactionEntity->getId(),
                 'customFields' => array_merge(
                     $orderTransactionEntity->getCustomFields() ?? [],
                     [

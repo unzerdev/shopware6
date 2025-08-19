@@ -11,8 +11,8 @@ class UnzerEpsPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use IsBasicPaymentMethod;
 
-    protected function getUnzerPaymentTypeObject(): Eps
+    protected function getUnzerPaymentTypeObject(): EPS
     {
-        return new Eps();
+        return new EPS();
     }
 }

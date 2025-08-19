@@ -12,48 +12,37 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Shipping\ShippingMethodEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Constants\BasketItemTypes;
-use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Basket;
 use UnzerSDK\Resources\EmbeddedResources\BasketItem;
 
-class BasketResourceHydrator implements ResourceHydratorInterface
+class BasketResourceHydrator
 {
     private const UNDEFINED_SHIPPING_METHOD_NAME = 'UndefinedShippingMethod';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function hydrateObject(
-        SalesChannelContext $channelContext,
-                            $transaction = null
-    ): AbstractUnzerResource
-    {
-        if (!($transaction instanceof AsyncPaymentTransactionStruct) && !($transaction instanceof OrderTransactionEntity)) {
-            throw new InvalidArgumentException('Transaction struct can not be null');
-        }
 
-        $order = $transaction->getOrder();
+    public function hydrateObject(
+        OrderTransactionEntity $orderTransaction
+    ): Basket
+    {
+
+        $order = $orderTransaction->getOrder();
 
         if ($order === null) {
             throw new InvalidArgumentException('Order can not be null');
         }
 
-        if ($transaction instanceof AsyncPaymentTransactionStruct) {
-            $transactionId = $transaction->getOrderTransaction()->getId();
-        } else {
-            $transactionId = $transaction->getId();
-        }
-        return $this->generateUnzerBasket($order, $transactionId, $channelContext);
+
+        return $this->generateUnzerBasket($orderTransaction);
     }
 
-    public function generateUnzerBasket(OrderEntity $order, string $transactionId, SalesChannelContext $channelContext): Basket
+    protected function generateUnzerBasket(OrderTransactionEntity $orderTransaction): Basket
     {
+        $order = $orderTransaction->getOrder();
+
         /** @var int $currencyPrecision */
         $currencyPrecision = $order->getCurrency() !== null ? min(
             $order->getCurrency()->getItemRounding()->getDecimals(),
@@ -61,7 +50,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         ) : UnzerPayment6::MAX_DECIMAL_PRECISION;
 
         $unzerBasket = new Basket();
-        $unzerBasket->setOrderId($transactionId);
+        $unzerBasket->setOrderId($orderTransaction->getId());
         $unzerBasket->setTotalValueGross(round($order->getAmountTotal(), $currencyPrecision));
         $unzerBasket->setCurrencyCode($order->getCurrency()->getIsoCode());
 
@@ -74,11 +63,17 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             );
         }
 
+        $shippingMethodName = self::UNDEFINED_SHIPPING_METHOD_NAME;
+        $shippingMethod = $order->getDeliveries()?->first()?->getShippingMethod();
+        if ($shippingMethod !== null) {
+            $shippingMethodName = $this->getShippingMethodName($shippingMethod);
+        }
+
         $this->hydrateShippingCosts(
             $order,
             $unzerBasket,
             $currencyPrecision,
-            $this->getShippingMethodName($channelContext->getShippingMethod())
+            $shippingMethodName
         );
 
         $this->makeBasketValid($unzerBasket, $currencyPrecision);
@@ -102,15 +97,15 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             }
             $basketItem = new BasketItem();
             $label = $lineItem->getLabel();
-            if (!empty($customProductLabels) && array_key_exists($lineItem->getId(), $customProductLabels)) {
+            if (!empty($customProductLabels) && \array_key_exists($lineItem->getId(), $customProductLabels)) {
                 $label = $customProductLabels[$lineItem->getId()]
-                    ? sprintf('%s: %s', $lineItem->getLabel(), $customProductLabels[$lineItem->getId()])
+                    ? \sprintf('%s: %s', $lineItem->getLabel(), $customProductLabels[$lineItem->getId()])
                     : $lineItem->getLabel();
             }
             $basketItem->setTitle($label);
             $basketItem->setQuantity($lineItem->getQuantity());
             $basketItem->setType($lineItem->getUnitPrice() < 0 ? BasketItemTypes::VOUCHER : BasketItemTypes::GOODS);
-            $basketItem->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
+            $basketItem->setImageUrl($lineItem->getCover()?->getUrl());
 
             $taxCounter = 0;
             $amountTax = 0.0;
@@ -122,7 +117,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 foreach ($lineItem->getPrice()->getCalculatedTaxes() as $tax) {
                     $amountTax += round($tax->getTax(), $currencyPrecision);
                     $taxRate += $tax->getTaxRate();
-                    $taxCounter++;
+                    ++$taxCounter;
                 }
                 $amountGross = round($lineItem->getTotalPrice(), $currencyPrecision);
                 if ($taxStatus === CartPrice::TAX_STATE_NET) {
@@ -164,14 +159,12 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $amountPerUnit = round($shippingCosts->getUnitPrice(), $currencyPrecision);
         } else {
             $priceGross = 0.00;
-            $amountVat = 0.00;
             $taxRate = 0;
             $taxCounter = 0;
 
             /** @var CalculatedTax $tax */
             foreach ($shippingCosts->getCalculatedTaxes() as $tax) {
                 $priceGross += $tax->getPrice();
-                $amountVat += $tax->getTax();
                 $taxRate += $tax->getTaxRate();
                 ++$taxCounter;
 
@@ -224,7 +217,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             return false;
         }
 
-        $isCustomProductOption = in_array(
+        $isCustomProductOption = \in_array(
             $lineItemEntity->getType(),
             [
                 CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_OPTION_LINE_ITEM_TYPE,
@@ -270,7 +263,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         }
 
         if (!empty($shippingMethod->getTranslated())
-            && array_key_exists('name', $shippingMethod->getTranslated())
+            && \array_key_exists('name', $shippingMethod->getTranslated())
             && !empty($shippingMethod->getTranslated()['name'])) {
             return $shippingMethod->getTranslated()['name'];
         }
@@ -287,18 +280,18 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         return false;
     }
 
-    private function makeBasketValid(Basket $unzerBasket, int $currencyPrecision)
+    private function makeBasketValid(Basket $unzerBasket, int $currencyPrecision): void
     {
         $total = $unzerBasket->getTotalValueGross();
-        foreach($unzerBasket->getBasketItems() as $item) {
+        foreach ($unzerBasket->getBasketItems() as $item) {
             $total -= $item->getAmountPerUnitGross() * $item->getQuantity();
             $total += $item->getAmountDiscountPerUnitGross() * $item->getQuantity();
         }
-        if(number_format($total, $currencyPrecision) !== number_format(0, $currencyPrecision)) {
+        if (number_format($total, $currencyPrecision) !== number_format(0, $currencyPrecision)) {
             $basketItem = new BasketItem();
             $basketItem->setTitle('Unzer Shortfall');
             $basketItem->setQuantity(1);
-            if($total > 0) {
+            if ($total > 0) {
                 $basketItem->setAmountPerUnitGross($total);
                 $basketItem->setType(BasketItemTypes::GOODS);
             } else {

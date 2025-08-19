@@ -1,3 +1,8 @@
+# 7.0.0
+* Support for Shopware 6.7
+* Backend UI redesign for better overview
+* Apple Pay V1 (merchant certificate) removed
+
 # 6.4.5
 * Customer object change from old version to latest
 

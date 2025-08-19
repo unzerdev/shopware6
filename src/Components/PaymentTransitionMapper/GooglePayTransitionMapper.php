@@ -21,11 +21,11 @@ class GooglePayTransitionMapper extends AbstractTransitionMapper
     use HasBookingMode;
 
     private const BOOKING_MODE_KEY = ConfigReader::CONFIG_KEY_GOOGLE_PAY_BOOKING_MODE;
-    private const DEFAULT_MODE     = BookingMode::CHARGE;
+    private const DEFAULT_MODE = BookingMode::CHARGE;
 
     public function __construct(ConfigReaderInterface $configReader, EntityRepository $orderTransactionRepository)
     {
-        $this->configReader               = $configReader;
+        $this->configReader = $configReader;
         $this->orderTransactionRepository = $orderTransactionRepository;
     }
 
@@ -75,7 +75,7 @@ class GooglePayTransitionMapper extends AbstractTransitionMapper
             $authorization = $paymentObject->getAuthorization();
 
             if ($authorization instanceof Authorization && $authorization->isSuccess()) {
-                return constant(sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
+                return \constant(\sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
             }
         }
 

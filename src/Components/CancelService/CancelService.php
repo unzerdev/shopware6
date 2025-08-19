@@ -29,6 +29,7 @@ class CancelService implements CancelServiceInterface
     private EntityRepository $orderTransactionRepository;
 
     private ClientFactoryInterface $clientFactory;
+
     private LoggerInterface $logger;
 
     public function __construct(
@@ -37,7 +38,7 @@ class CancelService implements CancelServiceInterface
         LoggerInterface $logger
     ) {
         $this->orderTransactionRepository = $orderTransactionRepository;
-        $this->clientFactory              = $clientFactory;
+        $this->clientFactory = $clientFactory;
         $this->logger = $logger;
     }
 
@@ -65,15 +66,15 @@ class CancelService implements CancelServiceInterface
             $taxRates[] = $calculatedTax->getTaxRate();
         }
 
-        $clearedTaxRate = count($taxRates) > 0
-            ? array_sum($taxRates) / count($taxRates)
+        $clearedTaxRate = \count($taxRates) > 0
+            ? array_sum($taxRates) / \count($taxRates)
             : 0;
 
         $roundedAmountGross = (int) round($amountGross * (10 ** $decimalPrecision));
-        $roundedAmountNet   = (int) round($roundedAmountGross / (100 + $clearedTaxRate) * 100);
-        $roundedAmountVat   = $roundedAmountGross - $roundedAmountNet;
-        $amountNet          = $roundedAmountNet / (10 ** $decimalPrecision);
-        $amountVat          = $roundedAmountVat / (10 ** $decimalPrecision);
+        $roundedAmountNet = (int) round($roundedAmountGross / (100 + $clearedTaxRate) * 100);
+        $roundedAmountVat = $roundedAmountGross - $roundedAmountNet;
+        $amountNet = $roundedAmountNet / (10 ** $decimalPrecision);
+        $amountVat = $roundedAmountVat / (10 ** $decimalPrecision);
 
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
 
@@ -143,6 +144,6 @@ class CancelService implements CancelServiceInterface
 
     protected function isPaylaterPaymentMethod(string $paymentMethodId): bool
     {
-        return in_array($paymentMethodId, self::PAYLATER_PAYMENT_METHODS);
+        return \in_array($paymentMethodId, self::PAYLATER_PAYMENT_METHODS, true);
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\CancelService;
 
-use RuntimeException;
 use Shopware\Core\Framework\Context;
 use UnzerSDK\Exceptions\UnzerApiException;
 
@@ -12,7 +11,7 @@ interface CancelServiceInterface
 {
     /**
      * @throws UnzerApiException
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function cancelChargeById(
         string $orderTransactionId,
@@ -24,12 +23,12 @@ interface CancelServiceInterface
 
     /**
      * @throws UnzerApiException
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function cancelAuthorizationById(
-        string  $orderTransactionId,
-        string  $paymentId,
-        float   $amountGross,
+        string $orderTransactionId,
+        string $paymentId,
+        float $amountGross,
         Context $context
     ): void;
 }

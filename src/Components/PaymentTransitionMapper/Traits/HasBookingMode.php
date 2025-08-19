@@ -14,14 +14,18 @@ use UnzerSDK\Resources\Payment;
 
 /**
  * @property ConfigReaderInterface $configReader
- * @property EntityRepository      $orderTransactionRepository
+ * @property EntityRepository $orderTransactionRepository
  */
 trait HasBookingMode
 {
-    /** @var ConfigReaderInterface */
+    /**
+     * @var ConfigReaderInterface
+     */
     private $configReader;
 
-    /** @var EntityRepository */
+    /**
+     * @var EntityRepository
+     */
     private $orderTransactionRepository;
 
     protected function getBookingMode(Payment $paymentObject): string

@@ -5,26 +5,27 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\PaymentHandler;
 
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\PaymentException;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\Framework\Struct\Struct;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
-use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
+use UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator;
 use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
-use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
+use UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
-use UnzerSDK\Exceptions\UnzerApiException;
 
 class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
 {
@@ -32,62 +33,50 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
     use HasDeviceVault;
 
     public function __construct(
-        ResourceHydratorInterface             $basketHydrator,
-        CustomerResourceHydratorInterface     $customerHydrator,
-        ResourceHydratorInterface             $metadataHydrator,
-        EntityRepository                      $transactionRepository,
-        ConfigReaderInterface                 $configReader,
-        TransactionStateHandlerInterface      $transactionStateHandler,
-        ClientFactoryInterface                $clientFactory,
-        RequestStack                          $requestStack,
-        LoggerInterface                       $logger,
-        CustomFieldsHelperInterface           $customFieldsHelper,
-        UnzerPaymentDeviceRepositoryInterface $deviceRepository
+        protected readonly BasketResourceHydrator            $basketHydrator,
+        protected readonly CustomerResourceHydratorInterface $customerHydrator,
+        protected readonly MetadataResourceHydrator          $metadataHydrator,
+        protected readonly EntityRepository                  $transactionRepository,
+        protected readonly ConfigReaderInterface             $configReader,
+        protected readonly TransactionStateHandlerInterface  $transactionStateHandler,
+        protected readonly ClientFactoryInterface            $clientFactory,
+        protected readonly RequestStack                      $requestStack,
+        protected readonly LoggerInterface                   $logger,
+        protected readonly CustomFieldsHelperInterface       $customFieldsHelper,
+        protected readonly UnzerTransactionUtil              $transactionUtil,
+        protected readonly EntityRepository                  $customerRepository,
+        protected UnzerPaymentDeviceRepositoryInterface      $deviceRepository
     )
     {
-        parent::__construct(
-            $basketHydrator,
-            $customerHydrator,
-            $metadataHydrator,
-            $transactionRepository,
-            $configReader,
-            $transactionStateHandler,
-            $clientFactory,
-            $requestStack,
-            $logger,
-            $customFieldsHelper
-        );
-
-        $this->deviceRepository = $deviceRepository;
     }
 
     /**
      * {@inheritdoc}
      */
     public function pay(
-        AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag                $dataBag,
-        SalesChannelContext           $salesChannelContext
+        Request                  $request,
+        PaymentTransactionStruct $transaction,
+        Context                  $context,
+        ?Struct                  $validateStruct
     ): RedirectResponse
     {
-        parent::pay($transaction, $dataBag, $salesChannelContext);
-        $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
+        parent::pay($request, $transaction, $context, $validateStruct);
 
-        if (!$this->isPaymentAllowed($transaction->getOrderTransaction()->getId())) {
-            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
+
+        if (!$this->isPaymentAllowed($transaction->getOrderTransactionId())) {
+            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransactionId(), 'SEPA direct debit mandate has not been accepted by the customer.');
         }
-
-        $registerDirectDebit = $dataBag->has(UnzerDirectDebitPaymentHandler::REMEMBER_SEPA_MANDATE_KEY);
-        $birthday = $currentRequest->get('unzerPaymentBirthday', '');
+        $saveToDeviceVault = $request->get(UnzerDirectDebitPaymentHandler::REMEMBER_SEPA_MANDATE_KEY) !== null;
+        $birthday = $request->get('unzerPaymentBirthday', '');
 
         try {
             if (!empty($birthday)
                 && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
                 $this->unzerCustomer->setBirthDate($birthday);
             } else {
-                $paymentDevice = $this->deviceRepository->getByPaymentTypeId($this->paymentType->getId(), $salesChannelContext->getContext());
+                $paymentDevice = $this->deviceRepository->getByPaymentTypeId($this->paymentType->getId(), $context);
 
-                if ($paymentDevice && array_key_exists('birthDate', $paymentDevice->getData())) {
+                if ($paymentDevice && \array_key_exists('birthDate', $paymentDevice->getData())) {
                     $birthDate = $paymentDevice->getData()['birthDate'];
 
                     if (!empty($birthDate)) {
@@ -97,14 +86,14 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             }
 
             $this->unzerCustomer = $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
-
             $returnUrl = $this->charge($transaction->getReturnUrl());
 
-            if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null && $salesChannelContext->getCustomer()->getGuest() === false) {
-                $this->saveToDeviceVault(
-                    $salesChannelContext->getCustomer(),
+            if ($saveToDeviceVault) {
+                $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
+                $this->tryToSaveToDeviceVault(
+                    $orderTransaction->getOrder()->getOrderCustomer()->getCustomerId(),
                     UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT_SECURED,
-                    $salesChannelContext->getContext(),
+                    $context,
                     [
                         'birthDate' => $this->unzerCustomer->getBirthDate(),
                     ]
@@ -112,33 +101,8 @@ class UnzerDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
             }
 
             return new RedirectResponse($returnUrl);
-        } catch (UnzerApiException $apiException) {
-            $this->logger->error(
-                sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
-                [
-                    'request' => $this->getLoggableRequest($currentRequest),
-                    'transaction' => $transaction,
-                    'exception' => $apiException,
-                ]
-            );
-
-            $this->executeFailTransition(
-                $transaction->getOrderTransaction()->getId(),
-                $salesChannelContext->getContext()
-            );
-
-            throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
         } catch (Throwable $exception) {
-            $this->logger->error(
-                sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
-                [
-                    'request' => $this->getLoggableRequest($currentRequest),
-                    'transaction' => $transaction,
-                    'exception' => $exception,
-                ]
-            );
-
-            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+            $this->handlePayException($exception, $request, $transaction, $context);
         }
     }
 

@@ -9,7 +9,6 @@ use UnzerSDK\Unzer;
 
 interface ClientFactoryInterface
 {
-    /** @var string */
     public const DEFAULT_LOCALE = 'en-GB';
 
     public function createClient(KeyPairContext $keyPairContext, string $locale = self::DEFAULT_LOCALE): Unzer;

@@ -1,5 +1,5 @@
-import Plugin from 'src/plugin-system/plugin.class';
-import DomAccess from 'src/helper/dom-access.helper';
+const Plugin = window.PluginBaseClass;
+
 
 export default class UnzerPaymentCreditCardPlugin extends Plugin {
     static options = {
@@ -15,7 +15,8 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
         radioButtonNewId: 'card-new',
         selectedRadioButtonSelector: '*[name="savedCreditCard"]:checked',
         hasSavedCards: false,
-        placeholderBrandImageUrl: 'https://static.unzer.com/assets/images/common/group-5.svg'
+        placeholderBrandImageUrl:
+            'https://static.unzer.com/assets/images/common/group-5.svg',
     };
 
     /**
@@ -43,13 +44,14 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
     static holderValid = false;
 
     init() {
-        this._unzerPaymentPlugin = window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        this._unzerPaymentPlugin =
+            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
 
         this._createForm();
         this._registerEvents();
 
         if (this.options.hasSavedCards) {
-            const unzerPaymentElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+            const unzerPaymentElementWrapper = this.el.querySelector(this.options.elementWrapperSelector);
             unzerPaymentElementWrapper.hidden = true;
         } else {
             this._unzerPaymentPlugin.setSubmitButtonActive(false);
@@ -64,25 +66,28 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
 
         this.creditCard.create('number', {
             containerId: this.options.numberFieldInputId,
-            onlyIframe: true
+            onlyIframe: true,
         });
 
         this.creditCard.create('holder', {
             containerId: this.options.holderFieldId,
-            onlyIframe: true
+            onlyIframe: true,
         });
 
         this.creditCard.create('expiry', {
             containerId: this.options.expiryFieldId,
-            onlyIframe: true
+            onlyIframe: true,
         });
 
         this.creditCard.create('cvc', {
             containerId: this.options.cvcFieldId,
-            onlyIframe: true
+            onlyIframe: true,
         });
 
-        this.creditCard.addEventListener('change', this._onChangeForm.bind(this));
+        this.creditCard.addEventListener(
+            'change',
+            this._onChangeForm.bind(this)
+        );
     }
 
     /**
@@ -90,16 +95,22 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
      */
     _registerEvents() {
         if (this.options.hasSavedCards) {
-            const radioButtons = DomAccess.querySelectorAll(this.el, this.options.radioButtonSelector);
+            const radioButtons = this.el.querySelectorAll(this.options.radioButtonSelector);
 
             for (let $i = 0; $i < radioButtons.length; $i++) {
-                radioButtons[$i].addEventListener('change', (event) => this._onRadioButtonChange(event));
+                radioButtons[$i].addEventListener('change', (event) =>
+                    this._onRadioButtonChange(event)
+                );
             }
         }
 
-        this._unzerPaymentPlugin.$emitter.subscribe('unzerBase_createResource', () => this._onCreateResource(), {
-            scope: this
-        });
+        this._unzerPaymentPlugin.$emitter.subscribe(
+            'unzerBase_createResource',
+            () => this._onCreateResource(),
+            {
+                scope: this,
+            }
+        );
     }
 
     /**
@@ -109,15 +120,16 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
      */
     _onRadioButtonChange(event) {
         const targetElement = event.target;
-        const unzerPaymentElementWrapper = DomAccess.querySelector(this.el, this.options.elementWrapperSelector);
+        const unzerPaymentElementWrapper = this.el.querySelector(this.options.elementWrapperSelector);
 
-        unzerPaymentElementWrapper.hidden = targetElement.id !== this.options.radioButtonNewId;
+        unzerPaymentElementWrapper.hidden =
+            targetElement.id !== this.options.radioButtonNewId;
 
         if (targetElement.id === this.options.radioButtonNewId) {
             this._unzerPaymentPlugin.setSubmitButtonActive(
                 this.cvcValid === true &&
-                this.numberValid === true &&
-                this.expiryValid === true
+                    this.numberValid === true &&
+                    this.expiryValid === true
             );
         } else {
             this._unzerPaymentPlugin.setSubmitButtonActive(true);
@@ -158,7 +170,9 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
         }
 
         if (event.error) {
-            const errorMessageElement = errorElement.getElementsByClassName('unzer-error-message')[0];
+            const errorMessageElement = errorElement.getElementsByClassName(
+                'unzer-error-message'
+            )[0];
             errorMessageElement.innerText = event.error;
         }
 
@@ -172,9 +186,12 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
             this.holderValid = event.success;
         }
 
-        if(this.options.hasSavedCards){
-            const checkedRadioButton = DomAccess.querySelector(this.el, this.options.selectedRadioButtonSelector);
-            if (checkedRadioButton && checkedRadioButton.id !== this.options.radioButtonNewId) {
+        if (this.options.hasSavedCards) {
+            const checkedRadioButton = this.el.querySelector(this.options.selectedRadioButtonSelector);
+            if (
+                checkedRadioButton &&
+                checkedRadioButton.id !== this.options.radioButtonNewId
+            ) {
                 this._unzerPaymentPlugin.setSubmitButtonActive(true);
                 return;
             }
@@ -182,9 +199,9 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
 
         this._unzerPaymentPlugin.setSubmitButtonActive(
             this.cvcValid === true &&
-            this.numberValid === true &&
-            this.expiryValid === true &&
-            this.holderValid === true
+                this.numberValid === true &&
+                this.expiryValid === true &&
+                this.holderValid === true
         );
     }
 
@@ -195,14 +212,18 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
         let checkedRadioButton = null;
 
         if (this.options.hasSavedCards) {
-            checkedRadioButton = DomAccess.querySelector(this.el, this.options.selectedRadioButtonSelector);
+            checkedRadioButton = this.el.querySelector(this.options.selectedRadioButtonSelector);
         }
 
         this.submitting = true;
         this._unzerPaymentPlugin.setSubmitButtonActive(false);
 
-        if (checkedRadioButton === null || checkedRadioButton.id === this.options.radioButtonNewId) {
-            this.creditCard.createResource()
+        if (
+            checkedRadioButton === null ||
+            checkedRadioButton.id === this.options.radioButtonNewId
+        ) {
+            this.creditCard
+                .createResource()
                 .then((resource) => this._submitPayment(resource))
                 .catch((error) => this._handleError(error));
         } else {
@@ -219,7 +240,7 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
     _getInputElementByEvent(event) {
         const selector = `#unzer-payment-credit-card-${event.type}`;
 
-        return DomAccess.querySelector(this.el, selector);
+        return this.el.querySelector(selector);
     }
 
     /**
@@ -231,7 +252,7 @@ export default class UnzerPaymentCreditCardPlugin extends Plugin {
     _getErrorElementByEvent(event) {
         const selector = `#unzer-payment-credit-card-${event.type}-error`;
 
-        return DomAccess.querySelector(this.el, selector);
+        return this.el.querySelector(selector);
     }
 
     /**

@@ -37,10 +37,6 @@
             <tag name="unzer.transition_mapper"/>
         </service>
 
-        <service id="UnzerPayment6\Components\PaymentTransitionMapper\GiropayTransitionMapper">
-            <tag name="unzer.transition_mapper"/>
-        </service>
-
         <service id="UnzerPayment6\Components\PaymentTransitionMapper\IdealTransitionMapper">
             <tag name="unzer.transition_mapper"/>
         </service>

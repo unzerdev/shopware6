@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
@@ -20,13 +19,19 @@ use UnzerSDK\Unzer;
  */
 trait CanRecur
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $sessionIsRecurring = 'UnzerPaymentIsRecurring';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $sessionPaymentTypeKey = 'UnzerPaymentTypeId';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $sessionCustomerIdKey = 'UnzerPaymentCustomerId';
 
     /**
@@ -35,11 +40,11 @@ trait CanRecur
     public function activateRecurring(string $returnUrl, ?string $recurrenceType = null): string
     {
         if ($this->paymentType === null) {
-            throw new RuntimeException('PaymentType can not be null');
+            throw new \RuntimeException('PaymentType can not be null');
         }
 
         if (!method_exists($this->paymentType, 'activateRecurring')) {
-            throw new RuntimeException('This payment type does not support recurring');
+            throw new \RuntimeException('This payment type does not support recurring');
         }
 
         $this->recurring = $this->paymentType->activateRecurring($returnUrl, $recurrenceType);
@@ -69,7 +74,7 @@ trait CanRecur
     ): void {
         $orderTransaction = $this->fetchTransactionById($transaction->getOrderTransaction()->getId(), $salesChannelContext->getContext());
 
-        $this->unzerBasket   = $this->basketHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
+        $this->unzerBasket = $this->basketHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
         $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
         $this->unzerCustomer = $this->getUnzerCustomer($transaction->getOrderTransaction()->getCustomFields()[$this->sessionCustomerIdKey] ?? '', $transaction->getOrderTransaction()->getPaymentMethodId(), $salesChannelContext);
     }

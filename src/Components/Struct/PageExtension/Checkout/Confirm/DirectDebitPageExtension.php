@@ -11,8 +11,10 @@ class DirectDebitPageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerDirectDebit';
 
-    /** @var UnzerPaymentDeviceEntity[] */
-    protected $directDebitDevices = [];
+    /**
+     * @var UnzerPaymentDeviceEntity[]
+     */
+    protected array $directDebitDevices = [];
 
     public function addDirectDebitDevice(UnzerPaymentDeviceEntity $directDebitDevice): self
     {

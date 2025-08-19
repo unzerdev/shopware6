@@ -1,5 +1,5 @@
-const path = require("path")
-const {resolve, join} = require("path");
+const path = require('path');
+const { resolve, join } = require('path');
 
 module.exports = {
     mode: 'production',
@@ -11,9 +11,25 @@ module.exports = {
     resolve: {
         extensions: ['.js'],
         alias: {
-            'src': resolve(
-                join(__dirname, '..', '..', '..', '..', '..', '..', '..', 'vendor', 'shopware', 'storefront', 'Resources', 'app', 'storefront', 'src'),
+            src: resolve(
+                join(
+                    __dirname,
+                    '..',
+                    '..',
+                    '..',
+                    '..',
+                    '..',
+                    '..',
+                    '..',
+                    'vendor',
+                    'shopware',
+                    'storefront',
+                    'Resources',
+                    'app',
+                    'storefront',
+                    'src'
+                )
             ),
         },
     },
-}
+};

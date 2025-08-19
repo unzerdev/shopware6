@@ -1,4 +1,4 @@
-@import "~scss/variables";
+@import '~scss/variables';
 
 .register-webhook--container {
     margin-left: 8px;
@@ -6,18 +6,18 @@
 }
 
 .unzer-payment-detail--webhook-modal {
-  .sw-modal__footer {
-    border-top: 1px solid $color-gray-300;
-  }
+    .sw-modal__footer {
+        border-top: 1px solid $color-gray-300;
+    }
 
-  .unzer-payment-detail--webhook-modal {
-    padding: 20px 30px;
-  }
-  .saleschannel-name {
-      padding: 15px;
-  }
+    .unzer-payment-detail--webhook-modal {
+        padding: 20px 30px;
+    }
+    .saleschannel-name {
+        padding: 15px;
+    }
 
-  .sw-data-grid__bulk {
-    display: none;
-  }
+    .sw-data-grid__bulk {
+        display: none;
+    }
 }
