@@ -571,6 +571,7 @@ class PaymentInstaller implements InstallerInterface
                 // method does exist > only update necessary fields
                 $upsertPayload = [
                     'id' => $paymentMethod['id'],
+                    'pluginId' => $pluginId,
                     'technicalName' => $paymentMethod['technicalName'],
                 ];
                 $this->paymentMethodRepository->upsert([$upsertPayload], $context->getContext());
