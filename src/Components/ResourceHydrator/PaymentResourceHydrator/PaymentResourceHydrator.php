@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator;
 
-use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use stdClass;
-use Throwable;
 use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Resources\EmbeddedResources\Amount;
 use UnzerSDK\Resources\Payment;
@@ -31,7 +28,6 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
     private const TRANSACTION_TYPE_SHIPMENT = 'shipment';
     private const TRANSACTION_TYPE_REFUND = 'refund';
 
-
     public function __construct(private LoggerInterface $logger)
     {
     }
@@ -48,7 +44,7 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
                 $data['transactions'][$this->getTransactionKey($authorization)] = $this->hydrateAuthorize($authorization, $decimalPrecision);
                 $data['descriptor'] = $authorization->getDescriptor();
             }
-        } catch (Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             $this->logResourceError($throwable);
         }
 
@@ -58,7 +54,7 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
         if ($payment->getMetadata() !== null) {
             $exposedMeta = $payment->getMetadata()->expose();
 
-            if ($exposedMeta instanceof stdClass) {
+            if ($exposedMeta instanceof \stdClass) {
                 $encoded = json_encode($exposedMeta);
 
                 if (!$encoded) {
@@ -86,7 +82,7 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
 
         $exposedPayment = $payment->expose();
 
-        if ($exposedPayment instanceof stdClass) {
+        if ($exposedPayment instanceof \stdClass) {
             $encoded = json_encode($exposedPayment);
 
             if (!$encoded) {
@@ -144,22 +140,24 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
 
     protected function hydrateCharges(array &$data, Payment $payment, int $decimalPrecision): void
     {
+        $isFirst = true;
         foreach ($payment->getCharges() as $lazyCharge) {
             try {
                 $charge = $payment->getCharge($lazyCharge->getId());
-            } catch (Throwable $throwable) {
+            } catch (\Throwable $throwable) {
                 $this->logResourceError($throwable);
                 continue;
             }
 
-            $data['transactions'][$this->getTransactionKey($charge)] = $this->hydrateCharge($charge, $decimalPrecision);
+            $data['transactions'][$this->getTransactionKey($charge)] = $this->hydrateCharge($charge, $decimalPrecision) + ['isFirst' => $isFirst];
 
+            $isFirst = false;
             /** @var Cancellation $lazyCancellation */
             foreach ($charge->getCancellations() as $lazyCancellation) {
                 try {
                     /** @var Cancellation $cancellation */
                     $cancellation = $charge->getCancellation($lazyCancellation->getId());
-                } catch (Throwable $throwable) {
+                } catch (\Throwable $throwable) {
                     $this->logResourceError($throwable);
 
                     continue;
@@ -180,7 +178,7 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
         foreach ($payment->getRefunds() as $lazyRefund) {
             try {
                 $cancellation = $client->fetchPaymentRefund($payment, $lazyRefund->getId());
-            } catch (Throwable $throwable) {
+            } catch (\Throwable $throwable) {
                 $this->logResourceError($throwable);
 
                 continue;
@@ -233,7 +231,7 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
             try {
                 /** @var Shipment $shipment */
                 $shipment = $payment->getShipment($lazyShipment->getId());
-            } catch (Throwable $throwable) {
+            } catch (\Throwable $throwable) {
                 $this->logResourceError($throwable);
 
                 continue;
@@ -298,10 +296,10 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
     {
         return [
             'decimalPrecision' => $decimalPrecision,
-            'total' => (int)round($amount->getTotal() * (10 ** $decimalPrecision)),
-            'cancelled' => (int)round($amount->getCanceled() * (10 ** $decimalPrecision)),
-            'charged' => (int)round($amount->getCharged() * (10 ** $decimalPrecision)),
-            'remaining' => (int)round($amount->getRemaining() * (10 ** $decimalPrecision)),
+            'total' => (int) round($amount->getTotal() * (10 ** $decimalPrecision)),
+            'cancelled' => (int) round($amount->getCanceled() * (10 ** $decimalPrecision)),
+            'charged' => (int) round($amount->getCharged() * (10 ** $decimalPrecision)),
+            'remaining' => (int) round($amount->getRemaining() * (10 ** $decimalPrecision)),
         ];
     }
 
@@ -310,7 +308,7 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
         $date = '';
 
         if (!empty($item->getDate())) {
-            $date = (new DateTimeImmutable($item->getDate()))->getTimestamp();
+            $date = (new \DateTimeImmutable($item->getDate()))->getTimestamp();
         }
 
         return \sprintf('%s_%s', $date, $item->getId());
@@ -321,8 +319,8 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
         $data = $this->hydrateTransactionItem($charge, self::TRANSACTION_TYPE_CHARGE, $decimalPrecision);
 
         if ($charge->getCancelledAmount() !== null) {
-            $chargedAmount = (int)round($charge->getAmount() * (10 ** $decimalPrecision));
-            $cancelledAmount = (int)round($charge->getCancelledAmount() * (10 ** $decimalPrecision));
+            $chargedAmount = (int) round($charge->getAmount() * (10 ** $decimalPrecision));
+            $cancelledAmount = (int) round($charge->getCancelledAmount() * (10 ** $decimalPrecision));
             $reducedAmount = $chargedAmount - $cancelledAmount;
 
             $data['processedAmount'] = $cancelledAmount;
@@ -345,8 +343,8 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
         if ($payment !== null) {
             $amount = $payment->getAmount();
 
-            $authorizedAmount = (int)round($authorization->getAmount() * (10 ** $decimalPrecision));
-            $remainingAmount = (int)round($amount->getRemaining() * (10 ** $decimalPrecision));
+            $authorizedAmount = (int) round($authorization->getAmount() * (10 ** $decimalPrecision));
+            $remainingAmount = (int) round($amount->getRemaining() * (10 ** $decimalPrecision));
             $reducedAmount = $authorizedAmount - $remainingAmount;
 
             $data['processedAmount'] = $reducedAmount;
@@ -364,12 +362,18 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
             $amount = $item->getAmount();
         }
 
+        $state = 'success';
+        if ($item->isError()) {
+            $state = 'error';
+        }
+
         return [
             'id' => $item->getId(),
             'shortId' => $item->getShortId(),
+            'state' => $state,
             'date' => $item->getDate(),
             'type' => $type,
-            'amount' => (int)round($amount * (10 ** $decimalPrecision)),
+            'amount' => (int) round($amount * (10 ** $decimalPrecision)),
         ];
     }
 
@@ -387,7 +391,7 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
         );
     }
 
-    protected function logResourceError(Throwable $t): void
+    protected function logResourceError(\Throwable $t): void
     {
         $this->logger->error(
             \sprintf('Error while preparing payment data: %s', $t->getMessage()),

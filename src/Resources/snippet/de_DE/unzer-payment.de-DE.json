@@ -30,7 +30,6 @@
                     "cvc": "CVC",
                     "secret": "Secret"
                 },
-                "mandate": "Wurst",
                 "choose": "Wählen Sie bitte eine gespeicherte Kreditkarte oder füllen Sie das Formular aus.",
                 "remember": "Meine Kreditkarte für die nächste Bestellung speichern"
             },
@@ -40,7 +39,7 @@
                     "country": "Land"
                 },
                 "mandate": {
-                      "remember": "Mein SEPA Lastschrift-Mandat für die nächste Bestellung speichern"
+                    "remember": "Mein SEPA Lastschrift-Mandat für die nächste Bestellung speichern"
                 },
                 "device": {
                     "choose": "Wählen Sie bitte ein gespeichertes Konto oder füllen Sie das Formular aus.",

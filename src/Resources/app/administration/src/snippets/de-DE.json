@@ -30,6 +30,7 @@
                 "refundButton": "Rückerstatten",
                 "defaultButton": "Erledigt",
                 "cancelButton": "Stornieren",
+                "noActions": "Keine Aktionen möglich",
                 "confirmCancelModal": {
                     "text": "Möchten Sie wirklich die Reservierung über den angegebenen Betrag stornieren?",
                     "amountLabel": "Betrag:",
@@ -108,6 +109,11 @@
         }
     },
     "unzer-payment-settings": {
+        "subheadings": {
+            "paymentSettingsBookingModes": "Buchungsmodus",
+            "paymentSettingsSaveDevices": "Zahlungsmittel speichern",
+            "paymentSettingsExpressCheckout": "Express Checkout"
+        },
         "module": {
             "title": "Unzer Payment",
             "description": "Unzer Payment"

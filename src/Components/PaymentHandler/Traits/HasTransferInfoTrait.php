@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -22,18 +21,18 @@ trait HasTransferInfoTrait
     private function saveTransferInfo(OrderTransactionEntity $orderTransactionEntity, Context $context): EntityWrittenContainerEvent
     {
         if (!isset($this->transactionRepository)) {
-            throw new RuntimeException('TransactionRepository can not be null');
+            throw new \RuntimeException('TransactionRepository can not be null');
         }
 
         if (!isset($this->payment)) {
-            throw new RuntimeException('Payment can not be null');
+            throw new \RuntimeException('Payment can not be null');
         }
 
         /** @var Charge|null $charge */
         $charge = $this->payment->getChargeByIndex(0);
 
         if (!isset($charge)) {
-            throw new RuntimeException('Payment has not been charged');
+            throw new \RuntimeException('Payment has not been charged');
         }
 
         return $this->transactionRepository->upsert([
@@ -52,18 +51,18 @@ trait HasTransferInfoTrait
     private function saveTransferInfoFromAuthorize(OrderTransactionEntity $orderTransactionEntity, Context $context): EntityWrittenContainerEvent
     {
         if (!isset($this->transactionRepository)) {
-            throw new RuntimeException('TransactionRepository can not be null');
+            throw new \RuntimeException('TransactionRepository can not be null');
         }
 
         if (!isset($this->payment)) {
-            throw new RuntimeException('Payment can not be null');
+            throw new \RuntimeException('Payment can not be null');
         }
 
         /** @var Authorization|null $authorization */
         $authorization = $this->payment->getAuthorization();
 
         if (!isset($authorization)) {
-            throw new RuntimeException('Payment has not been authorized');
+            throw new \RuntimeException('Payment has not been authorized');
         }
 
         return $this->transactionRepository->upsert([

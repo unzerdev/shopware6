@@ -4,27 +4,27 @@ export default class UnzerPaymentBasePlugin extends Plugin {
     static options = {
         publicKey: null,
         shopLocale: null,
+        unzerCustomer: null,
         submitButtonId: 'confirmFormSubmit',
         disabledClass: 'disabled',
         resourceIdElementId: 'unzerResourceId',
+        threatMetrixIdElementId: 'unzerThreatMetrixId',
         confirmFormId: 'confirmOrderForm',
         errorWrapperClass: 'unzer-payment--error-wrapper',
-        errorContentSelector: '.unzer-payment--error-wrapper .alert-content-container',
+        errorContentSelector:
+            '.unzer-payment--error-wrapper .alert-content-container',
         errorShouldNotBeEmpty: '%field% should not be empty',
         isOrderEdit: false,
+        savedDeviceRadioButtonSelector: '*[name="savedPaymentDevice"]',
+        savedDeviceRadioButtonNewAccountId: 'device-new',
+        savedDeviceSelectedRadioButtonSelector:
+            '*[name="savedPaymentDevice"]:checked',
     };
 
     /**
      * @type {Boolean}
      */
     static submitting = false;
-
-    /**
-     * @type {Object}
-     *
-     * @public
-     */
-    static unzerInstance = null;
 
     init() {
         this._registerElements();
@@ -35,27 +35,17 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      * @private
      */
     _registerElements() {
-        let unzerInstanceOptions = null;
+        this.submitButton = this.getSubmitButton();
+    }
 
-        if (this.options.shopLocale !== null) {
-            unzerInstanceOptions = { locale: this.options.shopLocale };
-        }
-
-        this.unzerInstance = new window.unzer(
-            this.options.publicKey,
-            unzerInstanceOptions
-        );
-
-        if (this.options.isOrderEdit) {
-            this.submitButton = document
+    getSubmitButton() {
+        let submitButton = document.getElementById(this.options.submitButtonId);
+        if (!submitButton) {
+            submitButton = document
                 .getElementById(this.options.confirmFormId)
                 .getElementsByTagName('button')[0];
-        } else {
-            this.submitButton = document.getElementById(
-                this.options.submitButtonId
-            );
         }
-        this.confirmForm = document.getElementById(this.options.confirmFormId);
+        return submitButton || null;
     }
 
     /**
@@ -66,6 +56,24 @@ export default class UnzerPaymentBasePlugin extends Plugin {
             'click',
             this._onSubmitButtonClick.bind(this)
         );
+        if (this.options.unzerCustomer) {
+            Promise.all([customElements.whenDefined('unzer-payment')]).then(
+                () => {
+                    const unzerPaymentElement = document.getElementById(
+                        'unzer-payment-component'
+                    );
+                    if (unzerPaymentElement) {
+                        console.log(
+                            'set customer data',
+                            this.options.unzerCustomer
+                        );
+                        unzerPaymentElement.setCustomerData(
+                            this.options.unzerCustomer
+                        );
+                    }
+                }
+            );
+        }
     }
 
     /**
@@ -84,26 +92,23 @@ export default class UnzerPaymentBasePlugin extends Plugin {
     }
 
     /**
-     * @param {Object} resource
-     */
-    submitResource(resource) {
-        const resourceIdElement = document.getElementById(
-            this.options.resourceIdElementId
-        );
-        resourceIdElement.value = resource.id;
-
-        this.setSubmitButtonActive(true);
-        this.submitButton.click();
-    }
-
-    /**
      * @param {String} typeId
+     * @param {String} threatMetrixId
      */
-    submitTypeId(typeId) {
+    submitTypeId(typeId, threatMetrixId) {
         const resourceIdElement = document.getElementById(
             this.options.resourceIdElementId
         );
         resourceIdElement.value = typeId;
+
+        if (threatMetrixId) {
+            const threatMetrixElement = document.getElementById(
+                this.options.threatMetrixIdElementId
+            );
+            if (threatMetrixElement) {
+                threatMetrixElement.value = threatMetrixId;
+            }
+        }
 
         this.setSubmitButtonActive(true);
         this.submitButton.click();
@@ -159,7 +164,7 @@ export default class UnzerPaymentBasePlugin extends Plugin {
      *
      * @private
      */
-    _onSubmitButtonClick(event) {
+    async _onSubmitButtonClick(event) {
         if (this.submitting === true) {
             return;
         }
@@ -171,13 +176,63 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         if (!this._validateForm()) {
             this.submitting = false;
             this.setSubmitButtonActive(true);
-
             return;
         }
 
         this.setSubmitButtonActive(false);
 
-        this.$emitter.publish('unzerBase_createResource');
+        const selectedSavedDevicesOption = document.querySelector(
+            this.options.savedDeviceSelectedRadioButtonSelector
+        );
+        if (
+            selectedSavedDevicesOption &&
+            selectedSavedDevicesOption.id !==
+                this.options.savedDeviceRadioButtonNewAccountId
+        ) {
+            //submitting a selected saved device
+            this.submitTypeId(selectedSavedDevicesOption.value, null);
+        } else {
+            const unzerPaymentComponent = document.getElementById(
+                'unzer-payment-component'
+            );
+            if (!unzerPaymentComponent) {
+                this.setSubmitButtonActive(true);
+                this.submitButton.click();
+                this.setSubmitButtonActive(false);
+            } else {
+                try {
+                    const response = await unzerPaymentComponent.submit();
+
+                    if (response.submitResponse) {
+                        if (response.submitResponse.success === true) {
+                            console.log(
+                                'submit response: ',
+                                response.submitResponse
+                            );
+                            this.submitTypeId(
+                                response.submitResponse.data.id,
+                                response.threatMetrixId || null
+                            );
+                        } else {
+                            this.showError({
+                                message: 'GENERAL ERROR',
+                            });
+                        }
+                    } else {
+                        this.showError({
+                            message: 'EXCEPTIONAL ERROR',
+                        });
+                    }
+                } catch (err) {
+                    unzerPaymentComponent.scrollIntoView({
+                        block: 'end',
+                        behavior: 'smooth',
+                    });
+                    this.submitting = false;
+                    this.setSubmitButtonActive(true);
+                }
+            }
+        }
     }
 
     /**
@@ -195,23 +250,13 @@ export default class UnzerPaymentBasePlugin extends Plugin {
             const element = form[i];
 
             if (!element.checkValidity()) {
-                let hasCustomErrorMessage = false;
                 if (element.dataset.customError) {
                     this.showError({
                         message: element.dataset.customError,
                     });
-                    hasCustomErrorMessage = true;
                 }
 
                 element.classList.add('is-invalid');
-
-                if(!hasCustomErrorMessage) {
-                    element.scrollIntoView({
-                        block: 'end',
-                        behavior: 'smooth',
-                    });
-                    element.reportValidity();
-                }
 
                 return false;
             }

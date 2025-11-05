@@ -3,6 +3,7 @@
 namespace UnzerSDK\Resources\EmbeddedResources\Paypage;
 
 use UnzerSDK\Resources\AbstractUnzerResource;
+use UnzerSDK\Resources\EmbeddedResources\WeroEventDependentPayment;
 
 class PaymentMethodConfig extends AbstractUnzerResource
 {
@@ -14,6 +15,19 @@ class PaymentMethodConfig extends AbstractUnzerResource
 
     protected ?bool $credentialOnFile = null; // card only.
     protected ?string $exemption = null; // card only.
+
+    protected ?WeroEventDependentPayment $eventDependentPayment = null;
+
+    public function getEventDependentPayment(): ?WeroEventDependentPayment
+    {
+        return $this->eventDependentPayment;
+    }
+
+    public function setEventDependentPayment(?WeroEventDependentPayment $eventDependentPayment): PaymentMethodConfig
+    {
+        $this->eventDependentPayment = $eventDependentPayment;
+        return $this;
+    }
 
     /**
      * @param bool|null $enabled

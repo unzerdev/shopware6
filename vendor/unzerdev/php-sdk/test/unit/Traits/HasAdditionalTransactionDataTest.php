@@ -11,9 +11,13 @@
 
 namespace UnzerSDK\test\unit\Traits;
 
+use UnzerSDK\Constants\WeroAmountPaymentTypes;
+use UnzerSDK\Constants\WeroCaptureTriggers;
 use UnzerSDK\Resources\EmbeddedResources\CardTransactionData;
 use UnzerSDK\Resources\EmbeddedResources\RiskData;
 use UnzerSDK\Resources\EmbeddedResources\ShippingData;
+use UnzerSDK\Resources\EmbeddedResources\WeroEventDependentPayment;
+use UnzerSDK\Resources\EmbeddedResources\WeroTransactionData;
 use UnzerSDK\Resources\PaymentTypes\Paypal;
 use UnzerSDK\test\BasePaymentTest;
 
@@ -108,6 +112,69 @@ class HasAdditionalTransactionDataTest extends BasePaymentTest
         $this->assertFalse(isset($additionalTransactionData->card['liability']));
         $this->assertEquals('recurrenceType', $additionalTransactionData->card['recurrenceType']);
         $this->assertEquals('exemptionType', $additionalTransactionData->card['exemptionType']);
+    }
+
+    /**
+     * WeroData setters/getters should work as expected.
+     *
+     * @test
+     */
+    public function setAndGetWeroData(): void
+    {
+        $dummy = new TraitDummyHasAdditionalTransactionData();
+        $this->assertNull($dummy->getWeroTransactionData());
+
+        $edp = (new WeroEventDependentPayment())
+            ->setCaptureTrigger(WeroCaptureTriggers::SERVICEFULFILMENT)
+            ->setAmountPaymentType(WeroAmountPaymentTypes::PAY)
+            ->setMaxAuthToCaptureTime(300)
+            ->setMultiCapturesAllowed(false);
+
+        $weroTransactionData = (new WeroTransactionData())
+            ->setEventDependentPayment($edp);
+
+        $dummy->setWeroTransactionData($weroTransactionData);
+
+        $wero = $dummy->getWeroTransactionData();
+        $this->assertNotNull($wero);
+        $this->assertInstanceOf(WeroTransactionData::class, $wero);
+        $this->assertInstanceOf(WeroEventDependentPayment::class, $wero->getEventDependentPayment());
+        $this->assertEquals(WeroCaptureTriggers::SERVICEFULFILMENT, $wero->getEventDependentPayment()->getCaptureTrigger());
+        $this->assertEquals(WeroAmountPaymentTypes::PAY, $wero->getEventDependentPayment()->getAmountPaymentType());
+        $this->assertSame(300, $wero->getEventDependentPayment()->getMaxAuthToCaptureTime());
+        $this->assertSame(false, $wero->getEventDependentPayment()->getMultiCapturesAllowed());
+    }
+
+    /**
+     * WeroData should be exposed correctly.
+     *
+     * @test
+     */
+    public function exposeWeroDataAsExpected(): void
+    {
+        $dummy = new TraitDummyHasAdditionalTransactionData();
+        $this->assertNull($dummy->getWeroTransactionData());
+
+        $edp = (new WeroEventDependentPayment())
+            ->setCaptureTrigger(WeroCaptureTriggers::SERVICEFULFILMENT)
+            ->setAmountPaymentType(WeroAmountPaymentTypes::PAY)
+            ->setMaxAuthToCaptureTime(300)
+            ->setMultiCapturesAllowed(false);
+
+        $weroTransactionData = (new WeroTransactionData())
+            ->setEventDependentPayment($edp);
+
+        $dummy->setWeroTransactionData($weroTransactionData);
+
+        $exposedResource = $dummy->expose();
+        $this->assertNotNull($exposedResource['additionalTransactionData']);
+        $additionalTransactionData = $exposedResource['additionalTransactionData'];
+
+        $this->assertArrayHasKey('eventDependentPayment', $additionalTransactionData->wero);
+        $this->assertEquals(WeroCaptureTriggers::SERVICEFULFILMENT, $additionalTransactionData->wero['eventDependentPayment']['captureTrigger']);
+        $this->assertEquals(WeroAmountPaymentTypes::PAY, $additionalTransactionData->wero['eventDependentPayment']['amountPaymentType']);
+        $this->assertSame(300, $additionalTransactionData->wero['eventDependentPayment']['maxAuthToCaptureTime']);
+        $this->assertSame(false, $additionalTransactionData->wero['eventDependentPayment']['multiCapturesAllowed']);
     }
 
     /**

@@ -37,6 +37,9 @@
     <card>
         <title>Payment Settings</title>
         <title lang="de-DE">Zahlungsarten Einstellungen</title>
+        <component name="unzer-settings-subheading">
+            <name>paymentSettingsBookingModes</name>
+        </component>
         <input-field type="single-select">
             <name>bookingModeCreditCard</name>
             <label>Booking mode credit card</label>
@@ -114,47 +117,76 @@
                 </option>
             </options>
         </input-field>
-
+        <input-field type="single-select">
+            <name>bookingModeWero</name>
+            <label>Booking mode Wero</label>
+            <label lang="de-DE">Buchungsmodus für Wero</label>
+            <helpText>If you select the charge option, the amount is debited immediately; if you select the Authorization option, the amount must be collected manually later.</helpText>
+            <helpText lang="de-DE">Bei der Option Direkt wird der Betrag sofort abgebucht, wählen Sie hingegen die Option Autorisierung muss der Betrag später manuell eingezogen werden.</helpText>
+            <options>
+                <option>
+                    <id>charge</id>
+                    <name>Charge</name>
+                    <name lang="de-DE">Direkt</name>
+                </option>
+                <option>
+                    <id>authorize</id>
+                    <name>Authorize</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+        <component name="unzer-settings-subheading">
+            <name>paymentSettingsSaveDevices</name>
+        </component>
         <input-field type="bool">
-            <name>allowSaveAccount</name>
-            <label>Allow customers to save their payment details for future orders</label>
-            <label lang="de-DE">Erlauben Kunden ihre Zahlungsdaten für zukünftige Bestellungen zu speichern</label>
-            <helpText>For PayPal you need to have a 'PayPal Billing Agreement' with PayPal to make this work.</helpText>
-            <helpText lang="de-DE">Für PayPal müssen Sie ein 'PayPal Billing Agreement' mit PayPal haben, um dieses Feature nutzen zu können.</helpText>
+            <name>allowCtp</name>
+            <label>Show 'Save Card with Click To Pay' on checkout</label>
+            <label lang="de-DE">'Click To Pay' anbieten</label>
+            <helpText>For credit card payment method</helpText>
+            <helpText lang="de-DE">Für Kreditkarten-Zahlungen</helpText>
+        </input-field>
+        <input-field type="bool">
+            <name>allowSaveCard</name>
+            <label>Show 'Save Credit Card for next order' on checkout</label>
+            <label lang="de-DE">'Meine Kreditkarte für die nächste Bestellung speichern' anzeigen</label>
+            <helpText>For credit card payment method</helpText>
+            <helpText lang="de-DE">Für Kreditkarten-Zahlungen</helpText>
+        </input-field>
+        <input-field type="bool">
+            <name>paypalShowSaveAccount</name>
+            <label>Show 'Save PayPal Account for next order' on checkout</label>
+            <label lang="de-DE">'Mein PayPal Account für die nächste Bestellung speichern' anzeigen</label>
+            <helpText>Allows saving the PayPal credentials for subsequent orders</helpText>
+            <helpText lang="de-DE">Erlaubt das Speichern des PayPal-Zugangs für spätere Bestellungen</helpText>
+        </input-field>
+        <input-field type="bool">
+            <name>allowSaveSepa</name>
+            <label>Show 'Save Direct Debit Mandate for next order' on checkout</label>
+            <label lang="de-DE">'Mein SEPA Lastschrift-Mandat für die nächste Bestellung speichern' anzeigen</label>
+            <helpText>For direct debit payments</helpText>
+            <helpText lang="de-DE">Für Lastschrift</helpText>
         </input-field>
 
-    </card>
-
-    <card>
-        <title>Advanced settings</title>
-        <title lang="de-DE">Erweiterte Einstellungen</title>
-
-        <component name="unzer-entity-single-select-delivery-status">
-            <name>statusForAutomaticShippingNotification</name>
-            <entity>state_machine_state</entity>
-            <label>Delivery status for shipping notification</label>
-            <label lang="de-DE">Versandstatus für die Versandbenachrichtigung</label>
-            <helpText>Automatic shipping notifications (if active) will be sent if an order enters the selected status. Leave empty to disable automatic shipping notifications.</helpText>
-            <helpText lang="de-DE">Die automatische Versandbenachrichtigung wird, wenn aktiv, ausgelöst sobald eine Bestellung den hier ausgewählten Status erhält. Lassen Sie dieses Feld leer, um keine automatischen Versandbenachrichtigungen anzustoßen.</helpText>
+        <component name="unzer-settings-subheading">
+            <name>paymentSettingsExpressCheckout</name>
         </component>
+        <input-field type="bool">
+            <name>useGooglePayExpress</name>
+            <label>Offer Google Pay express checkout</label>
+            <label lang="de-DE">Google Pay als Express Zahlungsart anbieten</label>
+        </input-field>
+        <input-field type="bool">
+            <name>usePaypalExpress</name>
+            <label>Offer PayPal express checkout</label>
+            <label lang="de-DE">PayPal als Express Zahlungsart anbieten</label>
+        </input-field>
+        <input-field type="bool">
+            <name>useApplePayExpress</name>
+            <label>Offer Apple Pay express checkout</label>
+            <label lang="de-DE">Apple Pay als Express Zahlungsart anbieten</label>
+        </input-field>
 
-        <component name="unzer-entity-multi-select-delivery-status">
-            <name>deliveryStatusForAutomaticCapture</name>
-            <entityName>state_machine_state</entityName>
-            <label>Delivery status for triggering automatic capture</label>
-            <label lang="de-DE">Versandstatus zum Auslösen des automatischen Zahlungseinzugs</label>
-            <helpText>Leave blank, if you don't want to use automatic capture</helpText>
-            <helpText lang="de-DE">Leer lassen, um keinen automatischen Zahlungseinzug auszulösen</helpText>
-        </component>
-
-        <component name="unzer-entity-multi-select-delivery-status">
-            <name>deliveryStatusForAutomaticRefund</name>
-            <entityName>state_machine_state</entityName>
-            <label>Delivery status for triggering automatic cancel/refund</label>
-            <label lang="de-DE">Versandstatus zum Auslösen der automatischen Rückzahlung</label>
-            <helpText>Leave blank, if you don't want to use automatic refund</helpText>
-            <helpText lang="de-DE">Leer lassen, um keine automatische Rückzahlung auszulösen</helpText>
-        </component>
     </card>
 
 
@@ -273,6 +305,39 @@
         </input-field>
 
 
+    </card>
+
+
+    <card>
+        <title>Advanced settings</title>
+        <title lang="de-DE">Erweiterte Einstellungen</title>
+
+        <component name="unzer-entity-single-select-delivery-status">
+            <name>statusForAutomaticShippingNotification</name>
+            <entity>state_machine_state</entity>
+            <label>Delivery status for shipping notification</label>
+            <label lang="de-DE">Versandstatus für die Versandbenachrichtigung</label>
+            <helpText>Automatic shipping notifications (if active) will be sent if an order enters the selected status. Leave empty to disable automatic shipping notifications.</helpText>
+            <helpText lang="de-DE">Die automatische Versandbenachrichtigung wird, wenn aktiv, ausgelöst sobald eine Bestellung den hier ausgewählten Status erhält. Lassen Sie dieses Feld leer, um keine automatischen Versandbenachrichtigungen anzustoßen.</helpText>
+        </component>
+
+        <component name="unzer-entity-multi-select-delivery-status">
+            <name>deliveryStatusForAutomaticCapture</name>
+            <entityName>state_machine_state</entityName>
+            <label>Delivery status for triggering automatic capture</label>
+            <label lang="de-DE">Versandstatus zum Auslösen des automatischen Zahlungseinzugs</label>
+            <helpText>Leave blank, if you don't want to use automatic capture</helpText>
+            <helpText lang="de-DE">Leer lassen, um keinen automatischen Zahlungseinzug auszulösen</helpText>
+        </component>
+
+        <component name="unzer-entity-multi-select-delivery-status">
+            <name>deliveryStatusForAutomaticRefund</name>
+            <entityName>state_machine_state</entityName>
+            <label>Delivery status for triggering automatic cancel/refund</label>
+            <label lang="de-DE">Versandstatus zum Auslösen der automatischen Rückzahlung</label>
+            <helpText>Leave blank, if you don't want to use automatic refund</helpText>
+            <helpText lang="de-DE">Leer lassen, um keine automatische Rückzahlung auszulösen</helpText>
+        </component>
     </card>
 
 </config>

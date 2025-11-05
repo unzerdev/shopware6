@@ -2,14 +2,13 @@
 
 namespace UnzerSDK\Services;
 
-use UnzerSDK\Unzer;
+use RuntimeException;
 use UnzerSDK\Interfaces\ResourceServiceInterface;
 use UnzerSDK\Interfaces\WebhookServiceInterface;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Webhook;
 use UnzerSDK\Resources\Webhooks;
-use RuntimeException;
-
+use UnzerSDK\Unzer;
 use function is_string;
 
 /**
@@ -165,7 +164,7 @@ class WebhookService implements WebhookServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function fetchResourceFromEvent(string $eventJson = null): AbstractUnzerResource
+    public function fetchResourceFromEvent(?string $eventJson = null): AbstractUnzerResource
     {
         $resourceObject = null;
         $eventData = json_decode($eventJson ?? $this->readInputStream(), false);

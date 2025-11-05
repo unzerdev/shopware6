@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
-use DateTime;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Document\Renderer\InvoiceRenderer;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -14,7 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Throwable;
 use UnzerPayment6\Components\BasketConverter\BasketConverterInterface;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
@@ -22,6 +20,7 @@ use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentRes
 use UnzerPayment6\Components\ShipService\ShipServiceInterface;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
+use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\TransactionTypes\Charge;
@@ -30,15 +29,14 @@ use UnzerSDK\Resources\TransactionTypes\Charge;
 class UnzerPaymentTransactionController extends AbstractController
 {
     public function __construct(
-        private readonly ClientFactoryInterface           $clientFactory,
-        private readonly UnzerTransactionUtil             $unzerTransactionUtil,
+        private readonly ClientFactoryInterface $clientFactory,
+        private readonly UnzerTransactionUtil $unzerTransactionUtil,
         private readonly PaymentResourceHydratorInterface $hydrator,
-        private readonly CancelServiceInterface           $cancelService,
-        private readonly ShipServiceInterface             $shipService,
-        private readonly BasketConverterInterface         $basketConverter,
-        private readonly LoggerInterface                  $logger
-    )
-    {
+        private readonly CancelServiceInterface $cancelService,
+        private readonly ShipServiceInterface $shipService,
+        private readonly BasketConverterInterface $basketConverter,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/details', name: 'api.action.unzer.transaction.details', methods: ['GET'])]
@@ -53,15 +51,25 @@ class UnzerPaymentTransactionController extends AbstractController
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
 
         try {
-            $payment = $client->fetchPaymentByOrderId($orderTransactionId);
-            $payment = $client->fetchPayment($payment);
+            try {
+                $payment = $client->fetchPaymentByOrderId($orderTransactionId);
+                // not sure what this is for - we'll leave it here for now:
+                $payment = $client->fetchPayment($payment);
+            } catch (UnzerApiException $e) {
+                $paymentId = $transaction->getCustomFields()[CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY] ?? null;
+                if ($paymentId) {
+                    $payment = $client->fetchPayment($paymentId);
+                } else {
+                    throw new \RuntimeException('no payment found');
+                }
+            }
 
             $data = $this->hydrator->hydrateArray($payment, $transaction, $client);
 
             if (!empty($data['basket']['totalValueGross'])) {
                 $data['basket'] = $this->basketConverter->populateDeprecatedVariables($data['basket']);
             }
-        } catch (UnzerApiException|Throwable $exception) {
+        } catch (UnzerApiException|\Throwable $exception) {
             $exceptionReturnValues = $this->handleException($exception, \sprintf('Error while executing fetching transaction details for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
 
             return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
@@ -94,7 +102,7 @@ class UnzerPaymentTransactionController extends AbstractController
             }
 
             $client->performChargeOnPayment($orderTransactionId, $charge);
-        } catch (UnzerApiException|Throwable $exception) {
+        } catch (UnzerApiException|\Throwable $exception) {
             $exceptionReturnValues = $this->handleException($exception, \sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
 
             return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
@@ -110,7 +118,7 @@ class UnzerPaymentTransactionController extends AbstractController
     {
         try {
             $this->cancelService->cancelChargeById($orderTransactionId, $chargeId, $amount, $reasonCode, $context);
-        } catch (UnzerApiException|Throwable $exception) {
+        } catch (UnzerApiException|\Throwable $exception) {
             $exceptionReturnValues = $this->handleException($exception, \sprintf('Error while executing refund transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
 
             return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
@@ -125,7 +133,7 @@ class UnzerPaymentTransactionController extends AbstractController
     {
         try {
             $this->cancelService->cancelAuthorizationById($orderTransactionId, $authorizationId, $amount, $context);
-        } catch (UnzerApiException|Throwable $exception) {
+        } catch (UnzerApiException|\Throwable $exception) {
             $exceptionReturnValues = $this->handleException($exception, \sprintf('Error while executing cancel transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
 
             return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
@@ -140,7 +148,7 @@ class UnzerPaymentTransactionController extends AbstractController
     {
         try {
             $result = $this->shipService->shipTransaction($orderTransactionId, $context);
-        } catch (UnzerApiException|Throwable $exception) {
+        } catch (UnzerApiException|\Throwable $exception) {
             $exceptionReturnValues = $this->handleException($exception, \sprintf('Error while executing shipping notification for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
 
             return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
@@ -149,7 +157,7 @@ class UnzerPaymentTransactionController extends AbstractController
         return new JsonResponse($result);
     }
 
-    protected function handleException(Throwable|UnzerApiException $exception, string $logMessage): array
+    protected function handleException(\Throwable|UnzerApiException $exception, string $logMessage): array
     {
         $this->logger->error($logMessage, [
             'trace' => $exception->getTraceAsString(),
@@ -182,7 +190,7 @@ class UnzerPaymentTransactionController extends AbstractController
         // get latest invoice document
         foreach ($documents as $document) {
             if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceRenderer::TYPE) {
-                $newDocumentDate = new DateTime($document->getConfig()['documentDate']);
+                $newDocumentDate = new \DateTime($document->getConfig()['documentDate']);
 
                 if ($documentDate === null || $newDocumentDate->getTimestamp() > $documentDate->getTimestamp()) {
                     $documentDate = $newDocumentDate;

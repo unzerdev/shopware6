@@ -24,14 +24,7 @@ class Payout extends AbstractTransactionType
     /** @var string $paymentReference */
     protected $paymentReference;
 
-    /**
-     * Payout constructor.
-     *
-     * @param float|null  $amount
-     * @param string|null $currency
-     * @param null        $returnUrl
-     */
-    public function __construct(float $amount = null, string $currency = null, $returnUrl = null)
+    public function __construct(?float $amount = null, ?string $currency = null, $returnUrl = null)
     {
         $this->setAmount($amount);
         $this->setCurrency($currency);

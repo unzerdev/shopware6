@@ -17,7 +17,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Event\StateMachineTransitionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Throwable;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
@@ -28,8 +27,6 @@ use UnzerPayment6\Installer\CustomFieldInstaller;
 
 readonly class TransitionEventListener implements EventSubscriberInterface
 {
-
-
     public function __construct(
         private EntityRepository $orderRepository,
         private EntityRepository $orderDeliveryRepository,
@@ -41,7 +38,6 @@ readonly class TransitionEventListener implements EventSubscriberInterface
         private ConfigReaderInterface $configReader,
         private UnzerTransactionUtil $unzerTransactionUtil
     ) {
-
     }
 
     /**
@@ -101,7 +97,7 @@ readonly class TransitionEventListener implements EventSubscriberInterface
 
             $this->eventDispatcher->dispatch(new AutomaticShippingNotificationEvent($order, $invoiceNumber, $event->getContext()));
             $this->logger->info(\sprintf('The automatic shipping notification for order [%s] was executed with invoice [%s]', $order->getOrderNumber(), $invoiceNumber));
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->logger->error(\sprintf('Error while executing automatic shipping notification for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                 'trace' => $exception->getTraceAsString(),
             ]);
@@ -124,7 +120,7 @@ readonly class TransitionEventListener implements EventSubscriberInterface
             $this->logger->info(\sprintf('Automatic capture for order [%s] was triggered', $order->getOrderNumber()));
             try {
                 $this->unzerTransactionUtil->captureOrder($order, $event->getContext());
-            } catch (Throwable $exception) {
+            } catch (\Throwable $exception) {
                 $this->logger->error(\sprintf('Error while executing automatic capture for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                     'trace' => $exception->getTraceAsString(),
                 ]);
@@ -139,7 +135,7 @@ readonly class TransitionEventListener implements EventSubscriberInterface
             $this->logger->info(\sprintf('Automatic refund for order [%s] was triggered', $order->getOrderNumber()));
             try {
                 $this->unzerTransactionUtil->refundOrder($order, $event->getContext());
-            } catch (Throwable $exception) {
+            } catch (\Throwable $exception) {
                 $this->logger->error(\sprintf('Error while executing automatic refund for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                     'trace' => $exception->getTraceAsString(),
                 ]);

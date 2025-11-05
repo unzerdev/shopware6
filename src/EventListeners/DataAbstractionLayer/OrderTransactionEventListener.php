@@ -13,8 +13,8 @@ use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTrans
 readonly class OrderTransactionEventListener implements EventSubscriberInterface
 {
     public function __construct(
-        private UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository)
-    {
+        private UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository
+    ) {
     }
 
     /**

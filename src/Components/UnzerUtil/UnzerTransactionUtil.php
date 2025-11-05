@@ -2,7 +2,6 @@
 
 namespace UnzerPayment6\Components\UnzerUtil;
 
-use Exception;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -11,7 +10,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Throwable;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\KeyPairContext;
@@ -23,15 +21,13 @@ use UnzerSDK\Resources\TransactionTypes\Charge;
 readonly class UnzerTransactionUtil
 {
     public function __construct(
-        protected EntityRepository                 $orderTransactionRepository,
-        protected ClientFactoryInterface           $clientFactory,
+        protected EntityRepository $orderTransactionRepository,
+        protected ClientFactoryInterface $clientFactory,
         protected TransactionStateHandlerInterface $transactionStateHandler,
-        protected CancelServiceInterface           $cancelService,
-        protected LoggerInterface                  $logger
-    )
-    {
+        protected CancelServiceInterface $cancelService,
+        protected LoggerInterface $logger
+    ) {
     }
-
 
     public function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
     {
@@ -42,7 +38,7 @@ readonly class UnzerTransactionUtil
             'order.currency',
             'order.documents.documentType',
             'paymentMethod',
-            'order.orderCustomer',
+            'order.orderCustomer.customer',
             'order.deliveries.shippingMethod.translated',
             'order.deliveries.shippingOrderAddress.country',
             'order.lineItems.product.manufacturer',
@@ -74,7 +70,7 @@ readonly class UnzerTransactionUtil
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function captureOrder(OrderEntity $order, Context $context): bool
     {
@@ -94,14 +90,14 @@ readonly class UnzerTransactionUtil
                 $context
             );
         } catch (UnzerApiException $e) {
-            throw new Exception($e->getMerchantMessage() ?: $e->getClientMessage());
+            throw new \Exception($e->getMerchantMessage() ?: $e->getClientMessage());
         }
 
         return true;
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function refundOrder(OrderEntity $order, Context $context): void
     {
@@ -128,7 +124,7 @@ readonly class UnzerTransactionUtil
                         null,
                         $context
                     );
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     $this->logger->error('Error while refunding charge', ['charge' => $charge->getId(), 'error' => $e->getMessage()]);
                 }
             }
@@ -143,7 +139,7 @@ readonly class UnzerTransactionUtil
                         $authorization->getAmount() - $authorization->getCancelledAmount(),
                         $context
                     );
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     $this->logger->error('Error while refunding authorization', ['authorization' => $authorization->getId(), 'error' => $e->getMessage()]);
                 }
             }
@@ -153,7 +149,7 @@ readonly class UnzerTransactionUtil
                 $context
             );
         } catch (UnzerApiException $e) {
-            throw new Exception($e->getMerchantMessage() ?: $e->getClientMessage());
+            throw new \Exception($e->getMerchantMessage() ?: $e->getClientMessage());
         }
     }
 }

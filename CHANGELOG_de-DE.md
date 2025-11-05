@@ -1,3 +1,9 @@
+# 7.1.0
+* Migration von Unzer UI Component V1 zu Unzer UI Component V2
+* Express-Checkout für Apple Pay, Google Pay und PayPal wurde hinzugefügt
+* EAA-Unterstützung, siehe https://docs.unzer.com/online-payments/compliance/eaa/￼
+* Veraltete Zahlungsmethoden wurden durch neue ersetzt, entfernt oder umbenannt. Die vollständige Liste befindet sich unter https://docs.unzer.com/plugins/shopware-6/shop6-migrate-v1-v2/￼
+
 # 7.0.0
 * Support for Shopware 6.7
 * Backend UI redesign für bessere Übersicht

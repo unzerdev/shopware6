@@ -14,7 +14,7 @@ use UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelp
 readonly class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
 {
     public function __construct(
-        private ConfigReaderInterface               $configReader,
+        private ConfigReaderInterface $configReader,
         private TransactionSelectionHelperInterface $transactionSelectionHelper
     ) {
     }

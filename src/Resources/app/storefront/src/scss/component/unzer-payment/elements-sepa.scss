@@ -1,0 +1,24 @@
+.unzer-payment-sepa-mandate-container {
+    border: 1px solid #d4e2e2;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.unzer-payment-sepa-mandate-content {
+    border-bottom: 1px solid #d4e2e2;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+}
+
+.unzer-payment-sepa-wrapper .unzer-save-payment-device-container {
+    margin-top: 25px;
+}
+
+#unzer-save-payment-device-checkbox {
+    float: left;
+    margin-top: 4px;
+    margin-right: 8px;
+}
+label[for='unzer-save-payment-device-checkbox'] {
+    max-width: 85%;
+}

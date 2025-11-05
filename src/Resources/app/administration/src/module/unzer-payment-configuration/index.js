@@ -4,6 +4,7 @@ import './component/unzer-entity-single-select-delivery-status';
 import './component/unzer-entity-multi-select-delivery-status';
 import './component/unzer-google-pay-gateway-merchant-id';
 import './component/unzer-payment-plugin-icon';
+import './component/unzer-settings-subheading';
 
 import './page/unzer-payment-settings';
 
@@ -35,7 +36,7 @@ const configuration = {
         },
     },
 
-    extensionEntryRoute:{
+    extensionEntryRoute: {
         extensionName: 'UnzerPayment6',
         route: 'unzer.payment.configuration.settings',
     },

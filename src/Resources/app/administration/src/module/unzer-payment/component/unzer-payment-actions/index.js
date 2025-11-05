@@ -44,18 +44,38 @@ Component.register('unzer-payment-actions', {
 
     computed: {
         isChargePossible: function () {
-            return this.transactionResource.type === 'authorization';
+            return (
+                this.transactionResource.type === 'authorization' &&
+                this.transactionResource.state !== 'error'
+            );
         },
 
         isRefundPossible: function () {
-            return this.transactionResource.type === 'charge';
+            return (
+                this.transactionResource.type === 'charge' &&
+                this.transactionResource.state !== 'error' &&
+                !(
+                    this.transactionResource.isFirst &&
+                    this.paymentResource.paymentMethodId ===
+                        '085b64d0028a8bd447294e03c4eb411a' &&
+                    this.paymentResource.state.name !== 'pending' &&
+                    this.paymentResource.state.name !== 'partly'
+                )
+            );
         },
 
         maxTransactionAmount() {
             let amount = 0;
 
             if (this.isRefundPossible) {
-                amount = this.transactionResource.amount;
+                if (
+                    this.paymentResource.paymentMethodId ===
+                    '085b64d0028a8bd447294e03c4eb411a'
+                ) {
+                    amount = this.paymentResource.amount.remaining;
+                } else {
+                    amount = this.transactionResource.amount;
+                }
             }
 
             if (this.isChargePossible) {

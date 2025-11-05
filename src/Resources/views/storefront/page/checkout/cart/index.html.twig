@@ -1,0 +1,13 @@
+{% sw_extends '@Storefront/storefront/page/checkout/cart/index.html.twig' %}
+
+{% block page_checkout_cart_action_proceed %}
+    {{ parent() }}
+    {% block page_checkout_cart_action_proceed_unzer_express_buttons %}
+        {% if page.cart.lineItems.count is not same as(0) and page.extensions.UnzerExpressButtons.publicKey is not empty %}
+            {% sw_include '@Storefront/storefront/component/unzer/express-buttons.html.twig' with {
+                page:page,
+                expressExtension:page.extensions.UnzerExpressButtons
+            } %}
+        {% endif %}
+    {% endblock %}
+{% endblock %}

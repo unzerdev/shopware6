@@ -11,29 +11,14 @@ use UnzerSDK\Resources\TransactionTypes\Charge;
 
 class TransferInformation extends Struct
 {
-    /**
-     * @var string|null
-     */
     protected ?string $iban;
 
-    /**
-     * @var string|null
-     */
     protected ?string $bic;
 
-    /**
-     * @var string|null
-     */
     protected ?string $holder;
 
-    /**
-     * @var string|null
-     */
     protected ?string $descriptor;
 
-    /**
-     * @var float|null
-     */
     protected ?float $amount;
 
     /**

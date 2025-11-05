@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Unzer;
@@ -69,26 +66,16 @@ trait CanRecur
     }
 
     protected function recur(
-        AsyncPaymentTransactionStruct $transaction,
-        SalesChannelContext $salesChannelContext
+        OrderTransactionEntity $orderTransaction,
+        Context $context
     ): void {
-        $orderTransaction = $this->fetchTransactionById($transaction->getOrderTransaction()->getId(), $salesChannelContext->getContext());
-
-        $this->unzerBasket = $this->basketHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
-        $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $orderTransaction ?? $transaction);
-        $this->unzerCustomer = $this->getUnzerCustomer($transaction->getOrderTransaction()->getCustomFields()[$this->sessionCustomerIdKey] ?? '', $transaction->getOrderTransaction()->getPaymentMethodId(), $salesChannelContext);
-    }
-
-    protected function fetchTransactionById(string $transactionId, Context $context): ?OrderTransactionEntity
-    {
-        $transactionCriteria = new Criteria([$transactionId]);
-        $transactionCriteria->addAssociation('order');
-        $transactionCriteria->addAssociation('order.currency');
-        $transactionCriteria->addAssociation('order.lineItems');
-        $transactionCriteria->addAssociation('order.deliveries');
-
-        $transactionSearchResult = $this->transactionRepository->search($transactionCriteria, $context);
-
-        return $transactionSearchResult->first();
+        $this->unzerBasket = $this->basketHydrator->hydrateObject($orderTransaction);
+        $this->unzerMetadata = $this->metadataHydrator->hydrateObject($context);
+        $this->unzerCustomer = $this->getUnzerCustomer(
+            unzerCustomerId: $orderTransaction->getCustomFields()[$this->sessionCustomerIdKey] ?? '',
+            paymentMethodId: $orderTransaction->getPaymentMethodId(),
+            orderTransaction: $orderTransaction,
+            context: $context
+        );
     }
 }

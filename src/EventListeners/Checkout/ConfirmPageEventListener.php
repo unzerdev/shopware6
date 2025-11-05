@@ -8,7 +8,6 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -16,20 +15,21 @@ use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\ConfigReader\KeyPairConfigReader;
+use UnzerPayment6\Components\ExpressCheckout\ExpressCheckoutService;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
 use UnzerPayment6\Components\PaymentHandler\UnzerGooglePayPaymentHandler;
+use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
+use UnzerPayment6\Components\Storefront\ExtensionFactory;
 use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayV2PageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\CreditCardPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\DirectDebitSecuredPageExtension;
-use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\FraudPreventionPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\GooglePayPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\InstallmentSecuredPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaylaterDirectDebitSecuredPageExtension;
@@ -48,15 +48,15 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     public function __construct(
         private readonly UnzerPaymentDeviceRepositoryInterface $deviceRepository,
-        private readonly ConfigReaderInterface                 $configReader,
-        private readonly PaymentFrameFactoryInterface          $paymentFrameFactory,
-        private readonly SystemConfigService                   $systemConfigReader,
-        private readonly EntityRepository                      $languageRepository,
-        private readonly ClientFactoryInterface                $clientFactory,
-        private readonly KeyPairConfigReader                   $keyPairConfigReader
-    )
-    {
-
+        private readonly ConfigReaderInterface $configReader,
+        private readonly PaymentFrameFactoryInterface $paymentFrameFactory,
+        private readonly SystemConfigService $systemConfigReader,
+        private readonly EntityRepository $languageRepository,
+        private readonly ClientFactoryInterface $clientFactory,
+        private readonly KeyPairConfigReader $keyPairConfigReader,
+        private readonly ExtensionFactory $extensionFactory,
+        private readonly CustomerResourceHydratorInterface $customerResourceHydrator,
+    ) {
     }
 
     /**
@@ -94,9 +94,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             case PaymentInstaller::PAYMENT_ID_DIRECT_DEBIT_SECURED:
                 $this->addDirectDebitSecuredExtension($event);
                 break;
-            case PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE:
-                $this->addFraudPreventionExtension($event);
-                break;
             case PaymentInstaller::PAYMENT_ID_INSTALLMENT_SECURED:
                 $this->addInstallmentSecuredExtension($event);
                 break;
@@ -105,11 +102,9 @@ class ConfirmPageEventListener implements EventSubscriberInterface
                 break;
             case PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT:
                 $this->addPaylaterInstallmentExtension($event);
-                $this->addFraudPreventionExtension($event);
                 break;
             case PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED:
                 $this->addPaylaterDirectDebitSecuredExtension($event);
-                $this->addFraudPreventionExtension($event);
                 break;
             case PaymentInstaller::PAYMENT_ID_GOOGLE_PAY:
                 $this->addGooglePayExtension($event);
@@ -127,14 +122,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         return $event instanceof CheckoutConfirmPageLoadedEvent || ($event instanceof AccountEditOrderPageLoadedEvent && $paymentMethod->getAfterOrderEnabled());
     }
 
-    private function addFraudPreventionExtension(PageLoadedEvent $event): void
-    {
-        $extension = new FraudPreventionPageExtension();
-        $extension->setFraudPreventionSessionId(Uuid::randomHex());
-
-        $event->getPage()->addExtension(FraudPreventionPageExtension::EXTENSION_NAME, $extension);
-    }
-
     private function addUnzerDataExtension(PageLoadedEvent $event): void
     {
         $context = $event->getSalesChannelContext()->getContext();
@@ -142,7 +129,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $extension = new UnzerDataPageExtension();
         $extension->setPublicKey($this->getPublicKey($event->getSalesChannelContext()));
         $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
-        $extension->setShowTestData((bool)$this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
+        $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
         $extension->setUnzerCustomer($this->getUnzerCustomer($event));
 
         $event->getPage()->addExtension(UnzerDataPageExtension::EXTENSION_NAME, $extension);
@@ -150,25 +137,38 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     private function getUnzerCustomer(PageLoadedEvent $event): ?Customer
     {
-        $customer = $event->getSalesChannelContext()->getCustomer();
+        $shopwareCustomer = $event->getSalesChannelContext()->getCustomer();
 
-        if ($customer === null) {
+        if ($shopwareCustomer === null) {
             return null;
         }
 
-        $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($event->getSalesChannelContext()));
-        $customerNumber = $customer->getCustomerNumber();
-        $billingAddress = $customer->getActiveBillingAddress();
-
-        if ($billingAddress !== null && !empty($billingAddress->getCompany())) {
-            $customerNumber .= '_b';
-        }
-
+        $client = $this->clientFactory->createClientFromSalesChannelContext($event->getSalesChannelContext(), $event->getRequest());
+        $customerNumber = $this->customerResourceHydrator->getShopCustomerId($shopwareCustomer);
         try {
-            return $client->fetchCustomerByExtCustomerId($customerNumber);
-        } catch (Throwable) {
-            return null;
+            $existingCustomer = $client->fetchCustomerByExtCustomerId($customerNumber);
+            /** @var Customer $existingCustomer */
+            $existingCustomer = $this->customerResourceHydrator->hydrateExistingCustomer($existingCustomer, $shopwareCustomer, $event->getSalesChannelContext()->getContext());
+            $customer = $client->updateCustomer($existingCustomer);
+        } catch (\Throwable) {
+            $customer = null;
         }
+
+        if (empty($customer)) {
+            try {
+                // create one if not existing
+                $newCustomer = $this->customerResourceHydrator->hydrateObject(
+                    $event->getSalesChannelContext()->getPaymentMethod()->getId(),
+                    $shopwareCustomer,
+                    $event->getSalesChannelContext()->getContext()
+                );
+                $customer = $client->createCustomer($newCustomer);
+            } catch (\Throwable) {
+                $customer = null;
+            }
+        }
+
+        return $customer;
     }
 
     private function addPaymentFrameExtension(PageLoadedEvent $event): void
@@ -229,8 +229,15 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $extension->setPublicConfig([
-            'allowSaveAccount' => $this->configData->get(ConfigReader::CONFIG_KEY_ALLOW_SAVE_ACCOUNT),
+            'paypalShowSaveAccount' => $this->configData->get(ConfigReader::CONFIG_KEY_PAYPAL_SHOW_SAVE_ACCOUNT),
         ]);
+
+        if ($event->getRequest()->getSession()->get(ExpressCheckoutService::SESSION_PAYPAL_PAYMENT_ID)) {
+            $extension->setPayPalAccounts([]);
+            $extension->setPublicConfig([
+                'paypalShowSaveAccount' => false,
+            ]);
+        }
 
         $event->getPage()->addExtension(PayPalPageExtension::EXTENSION_NAME, $extension);
     }
@@ -290,29 +297,25 @@ class ConfirmPageEventListener implements EventSubscriberInterface
 
     private function addApplePayV2Extension(PageLoadedEvent $event): void
     {
-        $event->getPage()->addExtension(ApplePayV2PageExtension::EXTENSION_NAME, new ApplePayV2PageExtension());
+        $extension = $this->extensionFactory->getApplePayExtension($event->getSalesChannelContext()->getSalesChannelId());
+        $publicConfig = $extension->getPublicConfig();
+        $publicConfig['paymentTypeId'] = $event->getRequest()->getSession()->get(ExpressCheckoutService::SESSION_APPLEPAY_PAYMENT_TYPE_ID);
+        $extension->setPublicConfig($publicConfig);
+        $event->getPage()->addExtension(ApplePayV2PageExtension::EXTENSION_NAME, $extension);
     }
 
     private function addGooglePayExtension(PageLoadedEvent $event): void
     {
-        $extension = new GooglePayPageExtension();
-        $extension->setPublicConfig([
-            'merchantName' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_MERCHANT_NAME),
-            'merchantId' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_MERCHANT_ID),
-            'gatewayMerchantId' => $this->fetchGooglePayChannelId($event),
-            'countryCode' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_COUNTRY_CODE),
-            'allowedCardNetworks' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_CARD_NETWORKS),
-            'allowCreditCards' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_CREDIT_CARDS_ALLOWED),
-            'allowPrepaidCards' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_PREPAID_CARDS_ALLOWED),
-            'buttonColor' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_BUTTON_COLOR),
-            'buttonSizeMode' => $this->configData->get(ConfigReader::CONFIG_KEY_GOOGLE_PAY_BUTTON_SIZE_MODE),
-        ]);
+        $extension = $this->extensionFactory->getGooglePayExtension($event->getSalesChannelContext()->getSalesChannelId());
+        $publicConfig = $extension->getPublicConfig();
+        $publicConfig['paymentTypeId'] = $event->getRequest()->getSession()->get(ExpressCheckoutService::SESSION_GOOGLE_PAYMENT_TYPE_ID);
+        $extension->setPublicConfig($publicConfig);
         $event->getPage()->addExtension(GooglePayPageExtension::EXTENSION_NAME, $extension);
     }
 
     private function fetchGooglePayChannelId(PageLoadedEvent $event): string
     {
-        $client = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($event->getSalesChannelContext()));
+        $client = $this->clientFactory->createClientFromSalesChannelContext($event->getSalesChannelContext(), $event->getRequest());
 
         return UnzerGooglePayPaymentHandler::fetchChannelId($client);
     }

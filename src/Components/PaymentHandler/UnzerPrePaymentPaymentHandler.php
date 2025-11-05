@@ -12,8 +12,8 @@ use UnzerSDK\Resources\PaymentTypes\Prepayment;
 class UnzerPrePaymentPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use CanCharge;
-    use IsBasicPaymentMethod;
     use HasTransferInfoTrait;
+    use IsBasicPaymentMethod;
 
     protected function getUnzerPaymentTypeObject(): Prepayment
     {

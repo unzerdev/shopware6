@@ -42,7 +42,6 @@ readonly class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransfe
         return $this->entityRepository->search($criteria, $context)->getTotal() > 0;
     }
 
-
     public function read(string $transactionId, Context $context): ?UnzerPaymentTransferInfoEntity
     {
         $criteria = new Criteria();

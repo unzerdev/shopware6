@@ -22,6 +22,7 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_BOOKING_MODE_CARD = 'bookingModeCreditCard';
     public const CONFIG_KEY_BOOKING_MODE_PAYPAL = 'bookingModePayPal';
     public const CONFIG_KEY_BOOKING_MODE_APPLE_PAY = 'bookingModeApplePay';
+    public const CONFIG_KEY_BOOKING_MODE_WERO = 'bookingModeWero';
     public const CONFIG_KEY_PAYLATER_INSTALLMENT = 'paylaterInstallment';
     public const CONFIG_KEY_PAYLATER_INVOICE = 'paylaterInvoice';
     public const CONFIG_KEY_PAYLATER_DIRECT_DEBIT_SECURED = 'paylaterDirectDebitSecured';
@@ -39,9 +40,13 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_GOOGLE_PAY_BUTTON_COLOR = 'googlePayButtonColor';
     public const CONFIG_KEY_GOOGLE_PAY_BUTTON_SIZE_MODE = 'googlePayButtonSizeMode';
 
-    public const CONFIG_KEY_ALLOW_SAVE_ACCOUNT = 'allowSaveAccount';
+    public const CONFIG_KEY_PAYPAL_SHOW_SAVE_ACCOUNT = 'paypalShowSaveAccount';
     public const CONFIG_KEY_DELIVERY_STATUS_FOR_CAPTURE = 'deliveryStatusForAutomaticCapture';
     public const CONFIG_KEY_DELIVERY_STATUS_FOR_REFUND = 'deliveryStatusForAutomaticRefund';
+
+    public const CONFIG_KEY_USE_EXPRESS_PAYPAL = 'usePaypalExpress';
+    public const CONFIG_KEY_USE_EXPRESS_GOOGLE = 'useGooglePayExpress';
+    public const CONFIG_KEY_USE_EXPRESS_APPLEPAY = 'useApplePayExpress';
 
     private SystemConfigService $systemConfigService;
 

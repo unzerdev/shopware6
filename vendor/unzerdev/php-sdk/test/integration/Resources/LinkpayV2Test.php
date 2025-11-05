@@ -12,6 +12,14 @@ use UnzerSDK\test\BaseIntegrationTest;
  */
 class LinkpayV2Test extends BaseIntegrationTest
 {
+    private static ?string $token = null;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        self::$token = $this->unzer->prepareJwtToken(self::$token);
+    }
+
     /**
      * @test
      */
@@ -128,7 +136,8 @@ class LinkpayV2Test extends BaseIntegrationTest
         $this->assertEquals($paypage->getCurrency(), $updatePaypage->getCurrency());
         $this->assertEquals($paypage->getAlias(), $updatePaypage->getAlias());
         $this->assertEquals($paypage->getAmountSettings(), $updatePaypage->getAmountSettings());
-        $this->assertEquals($paypage->getResources(), $updatePaypage->getResources());
+
+        $this->assertNotEmpty($updatePaypage->getResources()->getMetadataId());
     }
 
     /**
@@ -167,8 +176,11 @@ class LinkpayV2Test extends BaseIntegrationTest
         $this->assertEquals($paypage->getCurrency(), $updatePaypage->getCurrency());
         $this->assertEquals($paypage->getAlias(), $updatePaypage->getAlias());
         $this->assertEquals($paypage->getAmountSettings(), $updatePaypage->getAmountSettings());
-        $this->assertEquals($paypage->getResources(), $updatePaypage->getResources());
         $this->assertEquals($paypage->getExpiresAt(), $updatePaypage->getExpiresAt());
+
+        $this->assertNotEmpty($updatePaypage->getResources()->getMetadataId());
+        $this->assertEmpty($updatePaypage->getResources()->getCustomerId());
+        $this->assertEmpty($updatePaypage->getResources()->getBasketId());
     }
 
     /**
@@ -208,8 +220,11 @@ class LinkpayV2Test extends BaseIntegrationTest
         $this->assertEquals($paypage->getAmount(), $updatePaypage->getAmount());
         $this->assertEquals($paypage->getCurrency(), $updatePaypage->getCurrency());
         $this->assertEquals($paypage->getExpiresAt(), $updatePaypage->getExpiresAt());
-        $this->assertEquals($paypage->getResources(), $updatePaypage->getResources());
         $this->assertEquals('linkpay', $paypage->getType());
+
+        $this->assertNotEmpty($updatePaypage->getResources()->getMetadataId());
+        $this->assertEmpty($updatePaypage->getResources()->getCustomerId());
+        $this->assertEmpty($updatePaypage->getResources()->getBasketId());
     }
 
     /**

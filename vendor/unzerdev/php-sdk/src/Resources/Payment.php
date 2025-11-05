@@ -829,11 +829,11 @@ class Payment extends AbstractUnzerResource
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
     public function cancelAmount(
-        float   $amount = null,
+        ?float  $amount = null,
         ?string $reasonCode = CancelReasonCodes::REASON_CODE_CANCEL,
-        string  $paymentReference = null,
-        float   $amountNet = null,
-        float   $amountVat = null
+        ?string $paymentReference = null,
+        ?float  $amountNet = null,
+        ?float  $amountVat = null
     ): array {
         return $this->getUnzerObject()->cancelPayment($this, $amount, $reasonCode, $paymentReference, $amountNet, $amountVat);
     }
@@ -850,7 +850,7 @@ class Payment extends AbstractUnzerResource
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
-    public function cancelAuthorizationAmount(float $amount = null): ?Cancellation
+    public function cancelAuthorizationAmount(?float $amount = null): ?Cancellation
     {
         return $this->getUnzerObject()->cancelPaymentAuthorization($this, $amount);
     }
@@ -865,7 +865,7 @@ class Payment extends AbstractUnzerResource
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
-    public function charge(float $amount = null): Charge
+    public function charge(?float $amount = null): Charge
     {
         return $this->getUnzerObject()->chargePayment($this, $amount);
     }
@@ -881,7 +881,7 @@ class Payment extends AbstractUnzerResource
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
-    public function ship(string $invoiceId = null, string $orderId = null)
+    public function ship(?string $invoiceId = null, ?string $orderId = null)
     {
         return $this->getUnzerObject()->ship($this, $invoiceId, $orderId);
     }

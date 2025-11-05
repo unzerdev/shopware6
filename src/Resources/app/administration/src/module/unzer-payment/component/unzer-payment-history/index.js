@@ -204,6 +204,7 @@ Component.register('unzer-payment-history', {
                     });
 
                     this.isCancelLoading = false;
+                    this.reload();
                 });
         },
         formatCurrency(value) {

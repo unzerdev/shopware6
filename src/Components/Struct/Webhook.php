@@ -6,7 +6,6 @@ namespace UnzerPayment6\Components\Struct;
 
 class Webhook
 {
-
     private string $event;
 
     private string $publicKey;

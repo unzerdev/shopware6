@@ -8,10 +8,10 @@
 
 namespace UnzerSDK\Interfaces;
 
+use RuntimeException;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\Webhook;
-use RuntimeException;
 
 interface WebhookServiceInterface
 {
@@ -106,5 +106,5 @@ interface WebhookServiceInterface
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
-    public function fetchResourceFromEvent(string $eventJson = null): AbstractUnzerResource;
+    public function fetchResourceFromEvent(?string $eventJson = null): AbstractUnzerResource;
 }

@@ -17,6 +17,7 @@ Component.register('unzer-payment-settings', {
         return {
             isLoading: true,
             isLoadingWebhooks: true,
+            isAdditionalKeysExpanded: false,
             selectedKeyPairForTesting: false,
             isTestSuccessful: false,
             isSaveSuccessful: false,
@@ -55,7 +56,6 @@ Component.register('unzer-payment-settings', {
                 },
             ],
             openModalKeyPair: null,
-            isAdditionalKeysExpanded: false,
         };
     },
 
@@ -168,7 +168,6 @@ Component.register('unzer-payment-settings', {
             this.isTestSuccessful = false;
         },
 
-
         getArrayKeyOfKeyPairSetting(keyPairSetting) {
             return this.keyPairSettings.findIndex((keyPairSettingItem) => {
                 return (
@@ -226,6 +225,10 @@ Component.register('unzer-payment-settings', {
                         title: this.$tc('global.default.success'),
                         message: messageSaveSuccess,
                     });
+
+                    document.dispatchEvent(
+                        new CustomEvent('unzer-settings-saved', {})
+                    );
                 })
                 .catch((err) => {
                     this.isSaveSuccessful = false;
@@ -305,6 +308,7 @@ Component.register('unzer-payment-settings', {
                 `unzer-payment.methods.${keyPairSetting.group}.${keyPairSetting.key}`
             );
         },
+
         keyPairSettingGroupTitle(keyPairSetting) {
             return this.$tc(
                 `unzer-payment.methods.${keyPairSetting.group}.main`

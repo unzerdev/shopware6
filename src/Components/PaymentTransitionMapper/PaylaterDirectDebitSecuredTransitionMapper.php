@@ -23,7 +23,7 @@ class PaylaterDirectDebitSecuredTransitionMapper extends AbstractTransitionMappe
         return $paymentType instanceof PaylaterDirectDebit;
     }
 
-    public function getTargetPaymentStatus(Payment $paymentObject): string
+    public function getTargetPaymentStatus(Payment $paymentObject, string $orderTransactionId): string
     {
         if ($paymentObject->isCanceled()) {
             $status = $this->checkForRefund($paymentObject);

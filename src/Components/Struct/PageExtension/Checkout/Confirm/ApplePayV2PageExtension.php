@@ -17,6 +17,8 @@ class ApplePayV2PageExtension extends Struct
 
     protected array $merchantCapabilities = ['supports3DS'];
 
+    protected array $publicConfig = [];
+
     public function getSupportedNetworks(): array
     {
         return $this->supportedNetworks;
@@ -25,5 +27,17 @@ class ApplePayV2PageExtension extends Struct
     public function getMerchantCapabilities(): array
     {
         return $this->merchantCapabilities;
+    }
+
+    public function getPublicConfig(): array
+    {
+        return $this->publicConfig;
+    }
+
+    public function setPublicConfig(array $publicConfig): self
+    {
+        $this->publicConfig = $publicConfig;
+
+        return $this;
     }
 }

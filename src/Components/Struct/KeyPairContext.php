@@ -21,26 +21,26 @@ class KeyPairContext extends Struct
 
     private ?string $company;
 
-    public function __construct(string $salesChannelId, PaymentMethodEntity $paymentMethod, CurrencyEntity $currency, ?string $company)
+    public function __construct(string $salesChannelId, PaymentMethodEntity $paymentMethod, CurrencyEntity $currency, ?string $company = null)
     {
         $this->salesChannelId = $salesChannelId;
-        $this->paymentMethod  = $paymentMethod;
-        $this->currency       = $currency;
-        $this->company        = $company;
+        $this->paymentMethod = $paymentMethod;
+        $this->currency = $currency;
+        $this->company = $company;
     }
 
     public static function createFromSalesChannelContext(SalesChannelContext $salesChannelContext): ?KeyPairContext
     {
-        if (!$salesChannelContext->getCustomer() || !$salesChannelContext->getCustomer()->getActiveBillingAddress()) {
-            return null;
-        }
-
-        return new self(
+        $arguments = [
             $salesChannelContext->getSalesChannelId(),
             $salesChannelContext->getPaymentMethod(),
             $salesChannelContext->getCurrency(),
-            $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany()
-        );
+        ];
+        if ($salesChannelContext->getCustomer() && $salesChannelContext->getCustomer()->getActiveBillingAddress()) {
+            $arguments[] = $salesChannelContext->getCustomer()->getActiveBillingAddress()->getCompany();
+        }
+
+        return new self(...$arguments);
     }
 
     public static function createFromSalesChannel(?SalesChannelEntity $salesChannel): ?KeyPairContext
@@ -52,8 +52,7 @@ class KeyPairContext extends Struct
         return new self(
             $salesChannel->getId(),
             $salesChannel->getPaymentMethod(),
-            $salesChannel->getCurrency(),
-            null
+            $salesChannel->getCurrency()
         );
     }
 

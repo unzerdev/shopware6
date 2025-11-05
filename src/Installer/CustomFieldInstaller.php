@@ -56,7 +56,6 @@ readonly class CustomFieldInstaller implements InstallerInterface
         ],
     ];
 
-
     public function __construct(private EntityRepository $customFieldSetRepository)
     {
     }

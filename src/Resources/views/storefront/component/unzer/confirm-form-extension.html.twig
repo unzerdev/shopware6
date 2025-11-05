@@ -1,0 +1,64 @@
+{% if page.order %}
+    {% set billingAddress = page.order.billingAddress %}
+    {% set summary = page.order %}
+{% else %}
+    {% set billingAddress = context.customer.activeBillingAddress %}
+    {% set summary = page.cart %}
+{% endif %}
+
+    {% block unzer_payment_frame_apple_pay %}
+        {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
+        {% set applePayV2ExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\ApplePayV2PageExtension::EXTENSION_NAME") %}
+        {% if page.extensions[applePayV2ExtensionName] %}
+            {% if page.extensions[applePayV2ExtensionName].publicConfig.paymentTypeId is empty %}
+                <div data-unzer-payment-apple-pay-v2 data-unzer-payment-apple-pay-v2-options="{{ {
+                    countryCode: billingAddress.country.iso,
+                    currency: context.currency.isoCode,
+                    shopName: page.extensions[paymentFrameExtensionName].shopName,
+                    amount: summary.price.rawTotal ?: summary.price.totalPrice,
+                    noApplePayMessage: "UnzerPayment.frame.applePay.missingMessage" | trans,
+                    supportedNetworks: page.extensions[applePayV2ExtensionName].supportedNetworks,
+                    merchantCapabilities: page.extensions[applePayV2ExtensionName].merchantCapabilities,
+                }|json_encode }}">
+                    {% block unzer_payment_frame_apple_pay_v2_test_data %}
+                        {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
+                        {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
+                            {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/apple-pay.html.twig' %}
+                        {% endif %}
+                    {% endblock %}
+                    <unzer-payment
+                            id="unzer-payment-component"
+                            publicKey="{{ page.extensions.unzerPaymentData.publicKey }}"
+                            locale="{{ page.extensions.unzerPaymentData.locale }}">
+                        <unzer-apple-pay></unzer-apple-pay>
+                    </unzer-payment>
+                    <unzer-checkout id="unzer-checkout-component"></unzer-checkout>
+                </div>
+            {% endif %}
+        {% endif %}
+
+
+    {% endblock %}
+
+    {% block unzer_payment_google_pay %}
+        {% set googlePayExtensionName = 'unzerGooglePay' %}
+        {% if page.extensions[googlePayExtensionName] %}
+            {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
+
+            {% set googlePayOptions = page.extensions[googlePayExtensionName].publicConfig|merge({
+                currency: context.currency.isoCode,
+                amount: summary.price.rawTotal ?: summary.price.totalPrice
+            }) %}
+            {% if googlePayOptions.paymentTypeId is empty %}
+                <div data-unzer-payment-google-pay data-unzer-payment-google-pay-options="{{ googlePayOptions|json_encode }}">
+                    <unzer-payment
+                            id="unzer-payment-component"
+                            publicKey="{{ page.extensions.unzerPaymentData.publicKey }}"
+                            locale="{{ page.extensions.unzerPaymentData.locale }}">
+                        <unzer-google-pay></unzer-google-pay>
+                    </unzer-payment>
+                    <unzer-checkout id="unzer-checkout-component"></unzer-checkout>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endblock %}

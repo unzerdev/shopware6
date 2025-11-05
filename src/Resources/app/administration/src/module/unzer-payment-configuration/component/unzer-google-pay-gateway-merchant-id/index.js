@@ -1,4 +1,4 @@
-const {Component} = Shopware;
+const { Component } = Shopware;
 
 import template from './unzer-google-pay-gateway-merchant-id.html.twig';
 
@@ -23,20 +23,22 @@ Component.register('unzer-google-pay-gateway-merchant-id', {
     },
     created() {
         this.getUnzerGooglePayGatewayMerchantId();
+        document.addEventListener(
+            'unzer-settings-saved',
+            this.getUnzerGooglePayGatewayMerchantId
+        );
     },
     methods: {
-
         getUnzerGooglePayGatewayMerchantId() {
             console.log('get', this.currentSalesChannelId);
             this.UnzerPaymentConfigurationService.getGooglePayGatewayMerchantId(
                 this.currentSalesChannelId
             )
                 .then((response) => {
-                    this.readOnlyUnzerGooglePayGatewayMerchantId = response.gatewayMerchantId;
+                    this.readOnlyUnzerGooglePayGatewayMerchantId =
+                        response.gatewayMerchantId;
                 })
-                .catch(() => {
-                });
-
+                .catch(() => {});
         },
     },
 });

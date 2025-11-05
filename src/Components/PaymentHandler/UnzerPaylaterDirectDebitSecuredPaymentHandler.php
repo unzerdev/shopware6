@@ -4,49 +4,29 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
-use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Struct;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
+use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
+use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasRiskDataTrait;
+use UnzerPayment6\Components\PaymentHandler\Traits\HasTransferInfoTrait;
+use UnzerPayment6\Components\PaymentHandler\Traits\IsBasicPaymentMethodWithBookingMode;
+use UnzerSDK\Resources\PaymentTypes\PaylaterDirectDebit;
 
 class UnzerPaylaterDirectDebitSecuredPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use CanAuthorize;
+    use CanCharge;
     use HasRiskDataTrait;
+    use HasTransferInfoTrait;
+    use IsBasicPaymentMethodWithBookingMode;
 
-    public function pay(
-        Request                  $request,
-        PaymentTransactionStruct $transaction,
-        Context                  $context,
-        ?Struct                  $validateStruct
-    ): RedirectResponse
+    protected function getUnzerPaymentTypeObject(): PaylaterDirectDebit
     {
-        parent::pay($request, $transaction, $context, $validateStruct);
-        $birthday = $request->get('unzerPaymentBirthday', '');
+        return new PaylaterDirectDebit();
+    }
 
-        try {
-            if (!empty($birthday)
-                && (empty($this->unzerCustomer->getBirthDate()) || $birthday !== $this->unzerCustomer->getBirthDate())) {
-                $this->unzerCustomer->setBirthDate($birthday);
-                $this->unzerClient->createOrUpdateCustomer($this->unzerCustomer);
-            }
-
-            $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
-            $riskData = $this->generateRiskDataResource($orderTransaction, $context);
-
-            $returnUrl = $this->authorize(
-                $transaction->getReturnUrl(),
-                null,
-                null,
-                $riskData
-            );
-
-            return new RedirectResponse($returnUrl);
-        } catch (\Throwable $exception) {
-            $this->handlePayException($exception, $request, $transaction, $context);
-        }
+    protected function setBookingMode(): void
+    {
+        $this->bookingMode = BookingMode::AUTHORIZE;
     }
 }

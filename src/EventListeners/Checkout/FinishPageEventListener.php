@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\Checkout;
 
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\ExpressCheckout\ExpressCheckoutService;
 use UnzerPayment6\Components\Struct\InstallmentSecured\InstallmentInfo;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
@@ -20,14 +21,11 @@ use UnzerSDK\Unzer;
 
 readonly class FinishPageEventListener implements EventSubscriberInterface
 {
-
-
     public function __construct(
         private ClientFactoryInterface $clientFactory,
         private LoggerInterface $logger,
-        private TransactionSelectionHelperInterface $transactionSelectionHelper)
-    {
-
+        private TransactionSelectionHelperInterface $transactionSelectionHelper
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -39,6 +37,7 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
 
     public function onCheckoutFinish(CheckoutFinishPageLoadedEvent $event): void
     {
+        $this->unsetExpressData($event->getRequest());
         $salesChannelContext = $event->getSalesChannelContext();
         $page = $event->getPage();
         $unzerTransaction = $this->transactionSelectionHelper->getBestUnzerTransaction($page->getOrder());
@@ -49,7 +48,7 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
 
         try {
             $unzerClient = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($salesChannelContext));
-        } catch (RuntimeException $ex) {
+        } catch (\RuntimeException $ex) {
             $this->logger->error($ex->getMessage());
 
             return;
@@ -91,5 +90,19 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
         }
 
         return null;
+    }
+
+    private function unsetExpressData(Request $request): void
+    {
+        try {
+            $session = $request->getSession();
+            $session->remove(ExpressCheckoutService::SESSION_APPLEPAY_PAYMENT_TYPE_ID);
+            $session->remove(ExpressCheckoutService::SESSION_GOOGLE_PAYMENT_TYPE_ID);
+            $session->remove(ExpressCheckoutService::SESSION_PAYPAL_PAYMENT_ID);
+            $session->remove(ExpressCheckoutService::SESSION_PAYPAL_PAYMENT_TYPE_ID);
+            $session->remove(ExpressCheckoutService::SESSION_SELECTED_EXPRESS_METHOD);
+        } catch (\Throwable $exception) {
+            // not worth handling
+        }
     }
 }

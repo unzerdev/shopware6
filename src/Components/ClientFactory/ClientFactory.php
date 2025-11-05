@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ClientFactory;
 
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Request;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\ConfigReader\KeyPairConfigReader;
@@ -32,6 +34,38 @@ class ClientFactory implements ClientFactoryInterface
         $this->applyGlobalClientSettings($client, $keyPairContext->getSalesChannelId());
 
         return $client;
+    }
+
+    /**
+     * This will always use the main keypair
+     */
+    public function createClientFromSalesChannelId(?string $salesChannelId, ?Request $request = null): Unzer
+    {
+        $locale = self::DEFAULT_LOCALE;
+        if ($request !== null) {
+            $locale = empty($request->getLocale()) ? $request->getDefaultLocale() : $request->getLocale();
+        }
+
+        $config = $this->configReader->read($salesChannelId);
+        $privateKey = $config->get(ConfigReader::CONFIG_KEY_PRIVATE_KEY);
+
+        return $this->createClientFromPrivateKey($privateKey, $salesChannelId, $locale);
+    }
+
+    /**
+     * This applies currency, payment method etc to use the correct keypair
+     */
+    public function createClientFromSalesChannelContext(SalesChannelContext $salesChannelContext, ?Request $request = null): Unzer
+    {
+        $locale = self::DEFAULT_LOCALE;
+        if ($request !== null) {
+            $locale = empty($request->getLocale()) ? $request->getDefaultLocale() : $request->getLocale();
+        }
+
+        return $this->createClient(
+            KeyPairContext::createFromSalesChannelContext($salesChannelContext),
+            $locale
+        );
     }
 
     public function createClientFromPrivateKey(string $privateKey, string $salesChannelId = '', string $locale = self::DEFAULT_LOCALE): Unzer

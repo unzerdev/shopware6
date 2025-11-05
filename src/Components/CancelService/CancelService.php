@@ -13,10 +13,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\KeyPairContext;
+use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Constants\CancelReasonCodes;
 use UnzerSDK\Resources\TransactionTypes\Cancellation;
+use UnzerSDK\Unzer;
 
 class CancelService implements CancelServiceInterface
 {
@@ -24,22 +26,15 @@ class CancelService implements CancelServiceInterface
         PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE,
         PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT,
         PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
+        PaymentInstaller::PAYMENT_ID_KLARNA, // same procedure for Klarna as for UPL!
     ];
 
-    private EntityRepository $orderTransactionRepository;
-
-    private ClientFactoryInterface $clientFactory;
-
-    private LoggerInterface $logger;
-
     public function __construct(
-        EntityRepository $orderTransactionRepository,
-        ClientFactoryInterface $clientFactory,
-        LoggerInterface $logger
+        private EntityRepository $orderTransactionRepository,
+        private ClientFactoryInterface $clientFactory,
+        private TransactionStateHandlerInterface $transactionStateHandler,
+        private LoggerInterface $logger
     ) {
-        $this->orderTransactionRepository = $orderTransactionRepository;
-        $this->clientFactory = $clientFactory;
-        $this->logger = $logger;
     }
 
     /**
@@ -85,19 +80,19 @@ class CancelService implements CancelServiceInterface
                 $orderTransactionId,
                 $cancellation
             );
-
-            return;
+        } else {
+            $client->cancelChargeById(
+                $orderTransactionId,
+                $chargeId,
+                $amountGross,
+                $this->getCancelReasonCode($reasonCode),
+                '',
+                $amountNet,
+                $amountVat
+            );
         }
 
-        $client->cancelChargeById(
-            $orderTransactionId,
-            $chargeId,
-            $amountGross,
-            $this->getCancelReasonCode($reasonCode),
-            '',
-            $amountNet,
-            $amountVat
-        );
+        $this->updateOrderStatus($client, $orderTransactionId, $context);
     }
 
     /**
@@ -117,11 +112,12 @@ class CancelService implements CancelServiceInterface
         if ($this->isPaylaterPaymentMethod($transaction->getPaymentMethodId())) {
             $this->logger->info('Canceling authorization by payment', ['authorization' => $authorization->getPayment()]);
             $client->cancelAuthorizedPayment($authorization->getPayment(), new Cancellation($amountGross));
-
-            return;
+        } else {
+            $this->logger->info('Canceling authorization', ['authorization' => $authorization]);
+            $authorization->cancel($amountGross);
         }
-        $this->logger->info('Canceling authorization', ['authorization' => $authorization]);
-        $authorization->cancel($amountGross);
+
+        $this->updateOrderStatus($client, $orderTransactionId, $context);
     }
 
     protected function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
@@ -145,5 +141,19 @@ class CancelService implements CancelServiceInterface
     protected function isPaylaterPaymentMethod(string $paymentMethodId): bool
     {
         return \in_array($paymentMethodId, self::PAYLATER_PAYMENT_METHODS, true);
+    }
+
+    private function updateOrderStatus(Unzer $client, string $orderTransactionId, Context $context): void
+    {
+        try {
+            $payment = $client->fetchPaymentByOrderId($orderTransactionId);
+            $this->transactionStateHandler->transformTransactionState(
+                $orderTransactionId,
+                $payment,
+                $context
+            );
+        } catch (\Throwable $e) {
+            $this->logger->error('error updating transaction state after cancel action: ' . $e->getMessage());
+        }
     }
 }

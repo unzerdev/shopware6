@@ -6,32 +6,19 @@ namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use stdClass;
-use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
-use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 
-/**
- * @property BasePaymentType $paymentType
- */
 trait HasDeviceVault
 {
-    protected readonly EntityRepository $customerRepository;
-
-    protected UnzerPaymentDeviceRepositoryInterface $deviceRepository;
-
-
     protected function tryToSaveToDeviceVault(string $customerId, string $deviceType, Context $context, array $additionalParams = []): void
     {
-
         try {
             $criteria = new Criteria([$customerId]);
             $criteria->addAssociations([
                 'defaultBillingAddress',
                 'defaultShippingAddress',
             ]);
-            //customer chose to save credit card
+            // customer chose to save credit card
             $customer = $this->customerRepository->search(
                 $criteria,
                 $context
@@ -59,7 +46,7 @@ trait HasDeviceVault
 
         $exposedPaymentType = $this->paymentType->expose();
 
-        if ($exposedPaymentType instanceof stdClass) {
+        if ($exposedPaymentType instanceof \stdClass) {
             $encoded = json_encode($exposedPaymentType);
 
             if (!$encoded) {

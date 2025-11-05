@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\TransactionStateHandler;
 
-use RuntimeException;
 use Shopware\Core\Framework\Context;
 use UnzerSDK\Resources\Payment;
 
@@ -13,7 +12,7 @@ interface TransactionStateHandlerInterface
     /**
      * Determines transition by payment and executes the transition if valid
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function transformTransactionState(
         string $transactionId,

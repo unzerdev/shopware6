@@ -31,7 +31,7 @@ abstract class AbstractTransitionMapper
     /**
      * @throws TransitionMapperException
      */
-    public function getTargetPaymentStatus(Payment $paymentObject): string
+    public function getTargetPaymentStatus(Payment $paymentObject, string $orderTransactionId): string
     {
         if ($paymentObject->isPending()) {
             return StateMachineTransitionActions::ACTION_REOPEN;
@@ -50,7 +50,7 @@ abstract class AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException($this->getResourceName());
+            return StateMachineTransitionActions::ACTION_FAIL;
         }
 
         return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));

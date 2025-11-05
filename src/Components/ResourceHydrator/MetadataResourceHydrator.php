@@ -14,19 +14,15 @@ use UnzerSDK\Resources\Metadata;
 
 readonly class MetadataResourceHydrator
 {
-
-
     public function __construct(
-        private string           $shopwareVersion,
+        private string $shopwareVersion,
         private EntityRepository $pluginRepository
-    )
-    {
+    ) {
     }
 
     public function hydrateObject(
         Context $context
-    ): Metadata
-    {
+    ): Metadata {
         $pluginData = $this->getPluginData($context);
 
         $unzerMetadata = new Metadata();
@@ -39,6 +35,11 @@ readonly class MetadataResourceHydrator
         }
 
         return $unzerMetadata;
+    }
+
+    public function setIsExpress(Metadata $unzerMetadata, bool $isExpress): void
+    {
+        $unzerMetadata->addMetadata('isExpress', $isExpress ? '1' : '0');
     }
 
     protected function getPluginData(Context $context): ?PluginEntity
