@@ -17,13 +17,10 @@ use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessExcepti
 #[Route(defaults: ['_routeScope' => ['storefront']])]
 class UnzerCheckoutController extends CheckoutController
 {
-
-
     public function __construct(
         readonly StorefrontController $innerService,
         readonly CheckoutFinishPageLoader $finishPageLoader
     ) {
-
     }
 
     public function cartPage(Request $request, SalesChannelContext $context): Response

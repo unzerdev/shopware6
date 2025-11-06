@@ -9,12 +9,11 @@ class JwtService
     public static function validateExpiryTime(string $jwt, int $expiryBufferSeconds = self::Expiry_Buffer): bool
     {
         $jwtData = self::extractPayload($jwt);
-        $expireTime = $jwtData['exp'];
-        $currentTime = time();
-        return ($expireTime - $expiryBufferSeconds) > $currentTime;
+        $expireTime = $jwtData['exp'] ?? 0;
+        return ($expireTime - $expiryBufferSeconds) > time();
     }
 
-    private static function extractPayload(string $jwt)
+    private static function extractPayload(string $jwt): ?array
     {
         $tokenSegments = explode('.', $jwt);
         return json_decode(base64_decode($tokenSegments[1]), true);

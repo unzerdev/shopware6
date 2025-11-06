@@ -36,7 +36,7 @@ class UnzerPayment6 extends Plugin
 
     public function build(ContainerBuilder $container): void
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/DependencyInjection'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/Resources/config/dependencies'));
         $loader->load('container.xml');
 
         parent::build($container);

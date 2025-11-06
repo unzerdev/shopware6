@@ -2,6 +2,8 @@
 
 namespace UnzerSDK\Resources\PaymentTypes;
 
+use RuntimeException;
+use stdClass;
 use UnzerSDK\Adapter\HttpAdapterInterface;
 use UnzerSDK\Resources\EmbeddedResources\CardDetails;
 use UnzerSDK\Traits\CanAuthorize;
@@ -9,8 +11,6 @@ use UnzerSDK\Traits\CanDirectCharge;
 use UnzerSDK\Traits\CanPayout;
 use UnzerSDK\Traits\CanRecur;
 use UnzerSDK\Validators\ExpiryDateValidator;
-use RuntimeException;
-use stdClass;
 
 /**
  * This represents the card payment type which supports credit card as well as debit card payments.
@@ -56,7 +56,7 @@ class Card extends BasePaymentType
      * @param string|null $expiryDate
      * @param string|null $email
      */
-    public function __construct(?string $number, ?string $expiryDate, string $email = null)
+    public function __construct(?string $number, ?string $expiryDate, ?string $email = null)
     {
         $this->setNumber($number);
         $this->setExpiryDate($expiryDate);

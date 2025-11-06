@@ -20,6 +20,30 @@ class Style extends AbstractUnzerResource
     protected ?string $logoImage = null;
     protected ?string $linkColor = null;
     protected ?string $textColor = null;
+    protected ?string $basketBackgroundColor = null;
+    protected ?string $paymentFormBackgroundColor = null;
+
+    public function getBasketBackgroundColor(): ?string
+    {
+        return $this->basketBackgroundColor;
+    }
+
+    public function setBasketBackgroundColor(?string $basketBackgroundColor): Style
+    {
+        $this->basketBackgroundColor = $basketBackgroundColor;
+        return $this;
+    }
+
+    public function getPaymentFormBackgroundColor(): ?string
+    {
+        return $this->paymentFormBackgroundColor;
+    }
+
+    public function setPaymentFormBackgroundColor(?string $paymentFormBackgroundColor): Style
+    {
+        $this->paymentFormBackgroundColor = $paymentFormBackgroundColor;
+        return $this;
+    }
 
     public function getHideBasket(): ?bool
     {

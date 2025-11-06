@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Administration;
 
-use Exception;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,7 +45,7 @@ class UnzerPaymentConfigurationController extends AbstractController
             if ($remoteKeypair->getPublicKey() !== $publicKey) {
                 $responseCode = Response::HTTP_BAD_REQUEST;
             }
-        } catch (UnzerApiException|RuntimeException) {
+        } catch (UnzerApiException|\RuntimeException) {
             $responseCode = Response::HTTP_BAD_REQUEST;
         }
 
@@ -76,7 +74,7 @@ class UnzerPaymentConfigurationController extends AbstractController
                 'success' => true,
                 'gatewayMerchantId' => $channelId,
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
                 'message' => $e->getMessage(),

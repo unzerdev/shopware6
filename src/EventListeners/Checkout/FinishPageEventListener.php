@@ -5,29 +5,29 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\Checkout;
 
 use Psr\Log\LoggerInterface;
-use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerPayment6\Components\ExpressCheckout\ExpressCheckoutService;
 use UnzerPayment6\Components\Struct\InstallmentSecured\InstallmentInfo;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
 use UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelperInterface;
-use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
 use UnzerSDK\Resources\InstalmentPlan;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Unzer;
 
 readonly class FinishPageEventListener implements EventSubscriberInterface
 {
-
-
     public function __construct(
         private ClientFactoryInterface $clientFactory,
         private LoggerInterface $logger,
-        private TransactionSelectionHelperInterface $transactionSelectionHelper)
-    {
-
+        private TransactionSelectionHelperInterface $transactionSelectionHelper,
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -39,6 +39,7 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
 
     public function onCheckoutFinish(CheckoutFinishPageLoadedEvent $event): void
     {
+        $this->unsetExpressData($event->getRequest());
         $salesChannelContext = $event->getSalesChannelContext();
         $page = $event->getPage();
         $unzerTransaction = $this->transactionSelectionHelper->getBestUnzerTransaction($page->getOrder());
@@ -49,21 +50,17 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
 
         try {
             $unzerClient = $this->clientFactory->createClient(KeyPairContext::createFromSalesChannelContext($salesChannelContext));
-        } catch (RuntimeException $ex) {
+        } catch (\RuntimeException $ex) {
             $this->logger->error($ex->getMessage());
 
             return;
         }
 
         $extension = new FinishPageExtension();
-        $payment = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getId());
+        $payment = $this->getPaymentByOrderTransaction($unzerClient, $unzerTransaction, $salesChannelContext->getContext());
 
         if (!$payment) {
-            $payment = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getOrderId());
-
-            if (!$payment) {
-                return;
-            }
+            return;
         }
 
         $paymentType = $payment->getPaymentType();
@@ -76,12 +73,11 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension(FinishPageExtension::EXTENSION_NAME, $extension);
     }
 
-    private function getPaymentByOrderId(Unzer $unzerClient, string $orderId): ?Payment
+    private function getPaymentByOrderTransaction(Unzer $unzerClient, OrderTransactionEntity $orderTransaction, Context $context): ?Payment
     {
         try {
-            return $unzerClient->fetchPaymentByOrderId($orderId);
-        } catch (UnzerApiException $exception) {
-            // catch payment not found exception so that shopware can handle its own errors
+            return UnzerTransactionUtil::fetchPaymentFromOrderTransaction($orderTransaction, $unzerClient);
+        } catch (\Throwable $exception) {
             $this->logger->error($exception->getMessage(), [
                 'code' => $exception->getCode(),
                 'clientMessage' => $exception->getClientMessage(),
@@ -91,5 +87,19 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
         }
 
         return null;
+    }
+
+    private function unsetExpressData(Request $request): void
+    {
+        try {
+            $session = $request->getSession();
+            $session->remove(ExpressCheckoutService::SESSION_APPLEPAY_PAYMENT_TYPE_ID);
+            $session->remove(ExpressCheckoutService::SESSION_GOOGLE_PAYMENT_TYPE_ID);
+            $session->remove(ExpressCheckoutService::SESSION_PAYPAL_PAYMENT_ID);
+            $session->remove(ExpressCheckoutService::SESSION_PAYPAL_PAYMENT_TYPE_ID);
+            $session->remove(ExpressCheckoutService::SESSION_SELECTED_EXPRESS_METHOD);
+        } catch (\Throwable $exception) {
+            // not worth handling
+        }
     }
 }

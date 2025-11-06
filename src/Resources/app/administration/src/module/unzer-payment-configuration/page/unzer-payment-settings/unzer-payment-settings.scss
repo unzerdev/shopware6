@@ -54,7 +54,9 @@
 
     &__content {
         overflow: hidden;
-        transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out;
+        transition:
+            max-height 0.3s ease-in-out,
+            opacity 0.2s ease-in-out;
         max-height: 0;
         opacity: 0;
 
@@ -81,9 +83,8 @@
         align-items: center;
         gap: 8px;
 
-
         &::before {
-            content: "";
+            content: '';
             width: 4px;
             height: 18px;
             background: var(--color-shopware-brand-500);
@@ -99,7 +100,9 @@
         padding: 24px;
         margin-bottom: 16px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        transition:
+            border-color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
 
         &:hover {
             border-color: var(--color-gray-400);
@@ -121,14 +124,14 @@
         gap: 8px;
 
         &::before {
-            content: "";
+            content: '';
             width: 8px;
             height: 8px;
             background: var(--color-gray-400);
             border-radius: 50%;
             flex-shrink: 0;
         }
-        &.is-used{
+        &.is-used {
             &::before {
                 background: var(--color-shopware-brand-500);
             }

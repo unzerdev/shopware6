@@ -26,10 +26,10 @@ class UnzerApiException extends Exception
      *
      * @param string      $merchantMessage
      * @param string      $clientMessage
-     * @param string      $code
+     * @param string|null $code
      * @param string|null $errorId
      */
-    public function __construct($merchantMessage = '', $clientMessage = '', $code = null, string $errorId = null)
+    public function __construct($merchantMessage = '', $clientMessage = '', $code = null, ?string $errorId = null)
     {
         $merchantMessage = empty($merchantMessage) ? static::MESSAGE : $merchantMessage;
         $this->clientMessage = empty($clientMessage) ? static::CLIENT_MESSAGE : $clientMessage;

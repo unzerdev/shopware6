@@ -14,6 +14,7 @@ use UnzerSDK\Constants\AdditionalTransactionDataKeys;
 use UnzerSDK\Resources\EmbeddedResources\CardTransactionData;
 use UnzerSDK\Resources\EmbeddedResources\RiskData;
 use UnzerSDK\Resources\EmbeddedResources\ShippingData;
+use UnzerSDK\Resources\EmbeddedResources\WeroTransactionData;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\TransactionTypes\AbstractTransactionType;
 use UnzerSDK\Services\ResourceService;
@@ -219,6 +220,31 @@ trait HasAdditionalTransactionData
     public function setCardTransactionData(?CardTransactionData $cardTransactionData): self
     {
         $this->addAdditionalTransactionData(AdditionalTransactionDataKeys::CARD, $cardTransactionData);
+        return $this;
+    }
+
+    /**
+     * Get the wero field from additional transaction Data.
+     *
+     * @return WeroTransactionData|null "wero" object of additionalTransaction data.
+     */
+    public function getWeroTransactionData(): ?WeroTransactionData
+    {
+        $key = AdditionalTransactionDataKeys::WERO;
+        $wero = $this->getAdditionalTransactionData()->$key ?? null;
+        return $wero instanceof WeroTransactionData ? $wero : null;
+    }
+
+    /**
+     * Sets WeroTransactionData object as "wero" field of additionalTransactionData.
+     *
+     * @param WeroTransactionData|null $weroTransactionData
+     *
+     * @return self
+     */
+    public function setWeroTransactionData(?WeroTransactionData $weroTransactionData): self
+    {
+        $this->addAdditionalTransactionData(AdditionalTransactionDataKeys::WERO, $weroTransactionData);
         return $this;
     }
 }

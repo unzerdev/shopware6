@@ -3,11 +3,11 @@
   "entryPoints": {
     "unzer-payment6": {
       "css": [
-        "/bundles/unzerpayment6/administration/assets/unzer-payment6-y2GmhhIw.css"
+        "/bundles/unzerpayment6/administration/assets/unzer-payment6-DRUMFxjr.css"
       ],
       "dynamic": [],
       "js": [
-        "/bundles/unzerpayment6/administration/assets/unzer-payment6-CkAaNePq.js"
+        "/bundles/unzerpayment6/administration/assets/unzer-payment6-BZBuK0tk.js"
       ],
       "legacy": false,
       "preload": []

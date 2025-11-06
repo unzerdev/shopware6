@@ -1,12 +1,8 @@
-const Plugin = window.PluginBaseClass;
+import UnzerPaymentBaseParent from './parents/unzer-payment.base-parent';
 
-
-
-export default class UnzerPaymentApplePayPlugin extends Plugin {
+export default class UnzerPaymentGooglePayPlugin extends UnzerPaymentBaseParent {
     static options = {
         googlePayButtonId: 'unzer-google-pay-button',
-        checkoutConfirmButtonSelector: '#confirmFormSubmit',
-
         merchantName: '',
         merchantId: '',
         gatewayMerchantId: '',
@@ -25,30 +21,10 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
      */
     static submitting = false;
 
-    /**
-     * @type {UnzerPaymentBasePlugin}
-     *
-     * @private
-     */
-    static _unzerPaymentPlugin = null;
-
-    /**
-     * @type {HttpClient}
-     *
-     * @public
-     */
-    static client;
-
     init() {
-        this._unzerPaymentPlugin =
-            window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
-        
-        this.googlePayInstance =
-            this._unzerPaymentPlugin.unzerInstance.Googlepay();
+        super.init();
 
-        this._createScript(() => {
-            this._registerGooglePayButton();
-        });
+        this._registerGooglePayButton();
         this._hideBuyButton();
     }
 
@@ -56,107 +32,73 @@ export default class UnzerPaymentApplePayPlugin extends Plugin {
      * @private
      */
     _registerGooglePayButton() {
-        const me = this;
-
-        const paymentDataRequestObject =
-            this.googlePayInstance.initPaymentDataRequestObject({
-                gatewayMerchantId: this.options.gatewayMerchantId,
-                merchantInfo: {
-                    merchantName: this.options.merchantName,
-                    merchantId: this.options.merchantId,
-                },
-                transactionInfo: {
-                    currencyCode: this.options.currency,
-                    countryCode: this.options.countryCode,
-                    totalPriceStatus: 'ESTIMATED',
-                    totalPrice: String(this.options.amount),
-                },
-                buttonOptions: {
-                    onClick: function(e){
-                        alert('click');
-                        console.log(e);
-                        e.preventDefault();
-                        e.stopPropagation();
+        Promise.all([customElements.whenDefined('unzer-payment')]).then(() => {
+            const unzerPaymentElement = document.getElementById(
+                'unzer-payment-component'
+            );
+            if (unzerPaymentElement) {
+                unzerPaymentElement.setGooglePayData({
+                    gatewayMerchantId: this.options.gatewayMerchantId,
+                    merchantInfo: {
+                        merchantName: this.options.merchantName,
+                        merchantId: this.options.merchantId,
                     },
-                    buttonColor: this.options.buttonColor,
-                    buttonSizeMode: this.options.buttonSizeMode,
-                },
-                allowedCardNetworks: this.options.allowedCardNetworks,
-                allowCreditCards: this.options.allowCreditCards,
-                allowPrepaidCards: this.options.allowPrepaidCards,
+                    transactionInfo: {
+                        currencyCode: this.options.currency,
+                        countryCode: this.options.countryCode,
+                        totalPriceStatus: 'ESTIMATED',
+                        totalPrice: String(this.options.amount),
+                    },
+                    buttonOptions: {
+                        buttonColor: this.options.buttonColor,
+                        buttonSizeMode: this.options.buttonSizeMode,
+                    },
+                    // onPaymentAuthorizedCallback: async (paymentData, approve, reject) => {
+                    //     if (!this._unzerPaymentPlugin._validateForm()) {
+                    //         reject({message: 'Payment requirements not met'});
+                    //     } else {
+                    //         const response = await unzerPaymentElement.submit();
+                    //         if (response.submitResponse.success) {
+                    //             approve();
+                    //         } else {
+                    //             reject({message: 'Payment processing failed'});
+                    //         }
+                    //     }
+                    // },
+                    allowedCardNetworks: this.options.allowedCardNetworks,
+                    allowCreditCards: this.options.allowCreditCards,
+                    allowPrepaidCards: this.options.allowPrepaidCards,
+                });
+                const unzerCheckout = document.getElementById(
+                    'unzer-checkout-component'
+                );
+                unzerCheckout.onPaymentSubmit = (response) => {
+                    if (
+                        response.submitResponse &&
+                        response.submitResponse.success
+                    ) {
+                        if (!this._unzerPaymentPlugin._validateForm()) {
+                            return;
+                        }
 
-                onPaymentAuthorizedCallback: (paymentData) => {
-                    const googlePayButton = document.getElementById(
-                        me.options.googlePayButtonId
-                    );
-                    googlePayButton.style.display = 'none';
-                    return me.googlePayInstance
-                        .createResource(paymentData)
-                        .then((createdResource) => {
-                            if (
-                                me._unzerPaymentPlugin._validateForm() !== false
-                            ) {
-                                me._unzerPaymentPlugin.submitting = true;
-                                me._unzerPaymentPlugin.submitResource(
-                                    createdResource
-                                );
-                            } else {
-                                googlePayButton.style.display = '';
-                            }
-                            return {
-                                status: 'success',
-                            };
-                        })
-                        .catch((error) => {
-                            googlePayButton.style.display = '';
-                            const publicError = error;
-                            publicError.message =
-                                error.customerMessage ||
-                                error.message ||
-                                'Error';
-                            me._handleError(publicError);
-                            return {
-                                status: 'error',
-                                message:
-                                    publicError.message || 'Unexpected error',
-                            };
-                        });
-                },
-            });
-        this.googlePayInstance.create(
-            {
-                containerId: me.options.googlePayButtonId,
-            },
-            paymentDataRequestObject
-        );
-    }
-
-    /**
-     * @private
-     */
-    _createScript(onloadCallback) {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://pay.google.com/gp/p/js/pay.js';
-        script.onload = onloadCallback;
-
-        document.head.appendChild(script);
+                        unzerPaymentElement.style.display = 'none';
+                        this._unzerPaymentPlugin.submitting = true;
+                        this._unzerPaymentPlugin.submitTypeId(
+                            response.submitResponse.data.id
+                        );
+                    } else {
+                        console.log('ERROR', response);
+                    }
+                };
+            }
+        });
     }
 
     /**
      * @private
      */
     _hideBuyButton() {
-        const confirmButton = document.querySelector(this.options.checkoutConfirmButtonSelector);
+        const confirmButton = this._getSubmitButton();
         confirmButton.style.display = 'none';
-    }
-
-    /**
-     * @param {Object} error
-     *
-     * @private
-     */
-    _handleError(error) {
-        this._unzerPaymentPlugin.showError(error);
     }
 }

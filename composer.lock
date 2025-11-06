@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "862c80903b16b79c5093dfa38bdbbaae",
+    "content-hash": "80c510250bb46a6933881795d36542c9",
     "packages": [
         {
             "name": "unzerdev/php-sdk",
-            "version": "3.11.0",
+            "version": "3.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unzerdev/php-sdk.git",
-                "reference": "274650b6120b8665c8867627210cd8adab65406b"
+                "reference": "0a26d70b33185d52e49b06cb500a6e01bb6f1087"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/274650b6120b8665c8867627210cd8adab65406b",
-                "reference": "274650b6120b8665c8867627210cd8adab65406b",
+                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/0a26d70b33185d52e49b06cb500a6e01bb6f1087",
+                "reference": "0a26d70b33185d52e49b06cb500a6e01bb6f1087",
                 "shasum": ""
             },
             "require": {
@@ -45,9 +45,9 @@
             "description": "This is the php sdk to connect to the Unzer rest API.",
             "support": {
                 "email": "support@unzer.com",
-                "source": "https://github.com/unzerdev/php-sdk/tree/3.11.0"
+                "source": "https://github.com/unzerdev/php-sdk/tree/3.13.1"
             },
-            "time": "2024-12-04T08:14:47+00:00"
+            "time": "2025-09-23T14:21:50+00:00"
         }
     ],
     "packages-dev": [
@@ -99,16 +99,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.26",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "84cbf8f018e01834b9b1ac3dacf3b9780e209e53"
-            },
+            "version": "1.12.32",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/84cbf8f018e01834b9b1ac3dacf3b9780e209e53",
-                "reference": "84cbf8f018e01834b9b1ac3dacf3b9780e209e53",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/2770dcdf5078d0b0d53f94317e06affe88419aa8",
+                "reference": "2770dcdf5078d0b0d53f94317e06affe88419aa8",
                 "shasum": ""
             },
             "require": {
@@ -153,17 +148,17 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-05-14T11:08:32+00:00"
+            "time": "2025-09-30T10:16:31+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.2 || <=8.3"
+        "php": ">=8.2 || <=8.4"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

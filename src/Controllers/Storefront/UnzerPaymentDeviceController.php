@@ -16,8 +16,7 @@ class UnzerPaymentDeviceController extends StorefrontController
 {
     public function __construct(
         private readonly UnzerPaymentDeviceRepositoryInterface $deviceRepository
-    )
-    {
+    ) {
     }
 
     // TODO: evaluate if GET is the correct method for this route

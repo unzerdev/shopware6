@@ -4,39 +4,34 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler;
 
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Struct;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
+use UnzerPayment6\Components\ExpressCheckout\ExpressCheckoutService;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanRecur;
 use UnzerPayment6\Components\PaymentHandler\Traits\HasDeviceVault;
-use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
-use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\Paypal;
+use UnzerSDK\Resources\TransactionTypes\Authorization;
+use UnzerSDK\Resources\TransactionTypes\Charge;
 
-/**
- * @property Payment $payment
- */
 class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
 {
     use CanAuthorize;
     use CanCharge;
     use CanRecur;
     use HasDeviceVault;
-
-    public const REMEMBER_PAYPAL_ACCOUNT_KEY = 'payPalRemember';
-
 
     /**
      * {@inheritdoc}
@@ -48,58 +43,77 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         ?Struct                  $validateStruct
     ): RedirectResponse
     {
+        $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
+        if ($request->getSession()->get(ExpressCheckoutService::SESSION_PAYPAL_PAYMENT_ID)) {
+            try {
+                return $this->payExpress(
+                    $request->getSession()->get(ExpressCheckoutService::SESSION_PAYPAL_PAYMENT_ID),
+                    $transaction,
+                    $orderTransaction,
+                    $request,
+                    $context
+                );
+            } catch (\Throwable $e) {
+                $request->getSession()->remove(ExpressCheckoutService::SESSION_PAYPAL_PAYMENT_ID);
+                // continue with default paypal flow
+            }
+        }
         parent::pay($request, $transaction, $context, $validateStruct);
 
         if (!empty($this->paymentType)) {
-            //return $this->handleRecurringPayment($transaction, $salesChannelContext);
+            // this is from a saved payment device
+            try {
+                return $this->handleRecurringPayment($request, $transaction, $context);
+            } catch (UnzerPaymentProcessException $e) {
+                // something went wrong with the API > fall back to the default flow
+                $this->paymentType = null;
+            }
         }
 
         $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
 
         try {
-            if (empty($this->paymentType)) {
-                $registerAccounts = $request->get(self::REMEMBER_PAYPAL_ACCOUNT_KEY) !== null;
-                $payPalPaymentType = new Paypal();
-
-                if (!empty($this->unzerCustomer->getEmail())) {
-                    $payPalPaymentType->setEmail($this->unzerCustomer->getEmail());
-                }
-
-                $this->paymentType = $this->unzerClient->createPaymentType($payPalPaymentType);
-
-//                if ($registerAccounts && $salesChannelContext->getCustomer() !== null && $salesChannelContext->getCustomer()->getGuest() === false) {
-//                    $returnUrl = $this->activateRecurring($transaction->getReturnUrl());
-//
-//                    if ($this->recurring !== null && !empty($this->recurring->getRedirectUrl())) {
-//                        $this->persistPaymentInformation(
-//                            [
-//                                CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY => $this->paymentType->getId(),
-//                                $this->sessionPaymentTypeKey => $this->paymentType->getId(),
-//                                $this->sessionCustomerIdKey => $this->unzerCustomer->getId(),
-//                                self::REMEMBER_PAYPAL_ACCOUNT_KEY => true,
-//                            ],
-//                            $transaction->getOrderTransaction()->getId(),
-//                            $salesChannelContext->getContext()
-//                        );
-//                    }
-//
-//                    return new RedirectResponse($returnUrl);
-//                }
+            $customer = $orderTransaction->getOrder()->getOrderCustomer()->getCustomer();
+            $savePaymentDevice = $request->get(self::SAVE_PAYMENT_DEVICE_KEY) && $customer !== null && $customer->getGuest() === false;
+            $payPalPaymentType = new Paypal();
+            if (!empty($this->unzerCustomer->getEmail())) {
+                $payPalPaymentType->setEmail($this->unzerCustomer->getEmail());
             }
+            $this->paymentType = $this->unzerClient->createPaymentType($payPalPaymentType);
+
+            if ($savePaymentDevice) {
+                $returnUrl = $this->activateRecurring($transaction->getReturnUrl());
+                if ($this->recurring !== null && !empty($this->recurring->getRedirectUrl())) {
+                    $this->persistPaymentInformation(
+                        [
+                            CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY => '',
+                            $this->sessionPaymentTypeKey => $this->paymentType->getId(),
+                            $this->sessionCustomerIdKey => $this->unzerCustomer->getId(),
+                            self::SAVE_PAYMENT_DEVICE_KEY => true,
+                        ],
+                        $transaction->getOrderTransactionId(),
+                        $context
+                    );
+
+                    return new RedirectResponse($returnUrl);
+                }
+            }
+
+            // at this point we are in the default process (no payment from express, saved device or with the command to save the device)
 
             $returnUrl = $bookingMode === BookingMode::CHARGE
                 ? $this->charge($transaction->getReturnUrl())
                 : $this->authorize($transaction->getReturnUrl());
 
-//            $this->persistPaymentInformation(
-//                [
-//                    $this->sessionIsRecurring => true,
-//                    $this->sessionPaymentTypeKey => $this->payment->getId(),
-//                    CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY => $this->payment->getId(),
-//                ],
-//                $transaction->getOrderTransaction()->getId(),
-//                $salesChannelContext->getContext()
-//            );
+            $this->persistPaymentInformation(
+                [
+                    $this->sessionIsRecurring => false,
+                    $this->sessionPaymentTypeKey => $this->payment->getId(),
+                    CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY => $this->payment->getId(),
+                ],
+                $transaction->getOrderTransactionId(),
+                $context
+            );
 
             return new RedirectResponse($returnUrl);
         } catch (\Throwable $exception) {
@@ -107,96 +121,96 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         }
     }
 
-//    public function finalize(
-//        AsyncPaymentTransactionStruct $transaction,
-//        Request                       $request,
-//        SalesChannelContext           $salesChannelContext
-//    ): void
-//    {
-//        $this->pluginConfig = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-//
-//        $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
-//
-//        $transactionCustomFields = $transaction->getOrderTransaction()->getCustomFields();
-//        $registerAccounts = !empty($transactionCustomFields[self::REMEMBER_PAYPAL_ACCOUNT_KEY]);
-//
-//        $this->unzerClient = $this->clientFactory->createClient(
-//            KeyPairContext::createFromSalesChannelContext($salesChannelContext)
-//        );
-//
-//        if (!$registerAccounts) {
-//            parent::finalize($transaction, $request, $salesChannelContext);
-//        }
-//
-//        if ($transactionCustomFields === null || !\array_key_exists(CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY, $transactionCustomFields)) {
-//            throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransaction()->getId(), 'missing payment id');
-//        }
-//
-//        $this->recur($transaction, $salesChannelContext);
-//
-//        try {
-//            if (!($transactionCustomFields[$this->sessionIsRecurring] ?? false)) {
-//                /** @phpstan-ignore-next-line */
-//                $this->paymentType = $this->fetchPaymentByTypeId($transactionCustomFields[$this->sessionPaymentTypeKey]);
-//
-//                if ($this->paymentType === null) {
-//                    throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransaction()->getId(), 'missing payment type');
-//                }
-//
-//                /** Return urls are needed but are not called */
-//                $bookingMode === BookingMode::CHARGE
-//                    ? $this->charge('https://not.needed')
-//                    : $this->authorize('https://not.needed');
-//
-//                if ($registerAccounts
-//                    && $salesChannelContext->getCustomer() !== null
-//                    && $salesChannelContext->getCustomer()->getGuest() === false
-//                    && $this->paymentType instanceof Paypal
-//                    && $this->paymentType->getEmail() !== null
-//                ) {
-//                    $this->saveToDeviceVault(
-//                        $salesChannelContext->getCustomer(),
-//                        UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL,
-//                        $salesChannelContext->getContext()
-//                    );
-//                }
-//            } else {
-//                $this->payment = $this->unzerClient->fetchPayment($transactionCustomFields[CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY]);
-//            }
-//
-//            $this->transactionStateHandler->transformTransactionState(
-//                $transaction->getOrderTransaction()->getId(),
-//                $this->payment,
-//                $salesChannelContext->getContext()
-//            );
-//
-//            $this->customFieldsHelper->setOrderTransactionCustomFields($transaction->getOrderTransaction(), $salesChannelContext->getContext());
-//        } catch (UnzerApiException $apiException) {
-//            $this->logger->error(
-//                \sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
-//                [
-//                    'transaction' => $transaction,
-//                    'exception' => $apiException,
-//                ]
-//            );
-//
-//            throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransaction()->getId(), $apiException->getMessage());
-//        } catch (\Throwable $exception) {
-//            $this->logger->error(
-//                \sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
-//                [
-//                    'transaction' => $transaction,
-//                    'exception' => $exception,
-//                ]
-//            );
-//
-//            throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransaction()->getId(), $exception->getMessage());
-//        }
-//    }
+    public function finalize(
+        Request                  $request,
+        PaymentTransactionStruct $transaction,
+        Context                  $context
+    ): void
+    {
+        $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
+        $this->pluginConfig = $this->configReader->read($orderTransaction->getOrder()->getSalesChannelId());
+
+        $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
+
+        $transactionCustomFields = $orderTransaction->getCustomFields();
+        $savePaymentDevice = !empty($transactionCustomFields[self::SAVE_PAYMENT_DEVICE_KEY]);
+
+        $this->unzerClient = $this->clientFactory->createClientFromSalesChannelId($orderTransaction->getOrder()->getSalesChannelId());
+
+        if (!$savePaymentDevice) {
+            parent::finalize($request, $transaction, $context);
+
+            return;
+        }
+
+        // else we have to do the charge from a freshly saved payment device
+
+        if ($transactionCustomFields === null || !\array_key_exists($this->sessionPaymentTypeKey, $transactionCustomFields)) {
+            throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransactionId(), 'missing payment id');
+        }
+
+        $this->recur($orderTransaction, $context);
+
+        try {
+            /** @phpstan-ignore-next-line */
+            $this->paymentType = $this->fetchPaymentByTypeId($transactionCustomFields[$this->sessionPaymentTypeKey]);
+
+            if ($this->paymentType === null) {
+                throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransactionId(), 'missing payment type');
+            }
+
+            /** Return urls are needed but are not called */
+            $bookingMode === BookingMode::CHARGE
+                ? $this->charge('https://not.needed')
+                : $this->authorize('https://not.needed');
+
+            $customer = $orderTransaction->getOrder()->getOrderCustomer()->getCustomer();
+            if ($customer !== null
+                && $customer->getGuest() === false
+                && $this->paymentType instanceof Paypal
+                && $this->paymentType->getEmail() !== null
+            ) {
+                $this->saveToDeviceVault(
+                    $customer,
+                    UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL,
+                    $context
+                );
+            }
+
+            $this->transactionStateHandler->transformTransactionState(
+                $transaction->getOrderTransactionId(),
+                $this->payment,
+                $context
+            );
+
+            $this->customFieldsHelper->setOrderTransactionCustomFields($orderTransaction, $context);
+        } catch (UnzerApiException $apiException) {
+            $this->logger->error(
+                \sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
+                [
+                    'transaction' => $transaction,
+                    'exception' => $apiException,
+                ]
+            );
+
+            throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransactionId(), $apiException->getMessage());
+        } catch (\Throwable $exception) {
+            $this->logger->error(
+                \sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
+                [
+                    'transaction' => $transaction,
+                    'exception' => $exception,
+                ]
+            );
+
+            throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransactionId(), $exception->getMessage());
+        }
+    }
 
     protected function handleRecurringPayment(
+        Request                  $request,
         PaymentTransactionStruct $transaction,
-        SalesChannelContext           $salesChannelContext
+        Context                  $context
     ): RedirectResponse
     {
         try {
@@ -212,36 +226,59 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                     $this->sessionPaymentTypeKey => $this->payment->getId(),
                     CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY => $this->payment->getId(),
                 ],
-                $transaction->getOrderTransaction()->getId(),
-                $salesChannelContext->getContext()
+                $transaction->getOrderTransactionId(),
+                $context
             );
 
             return new RedirectResponse($returnUrl);
-        } catch (UnzerApiException $apiException) {
-            $this->logger->error(
-                \sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
-                [
-                    'transaction' => $transaction,
-                    'exception' => $apiException,
-                ]
-            );
-
-            $this->executeFailTransition(
-                $transaction->getOrderTransaction()->getId(),
-                $salesChannelContext->getContext()
-            );
-
-            throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
         } catch (\Throwable $exception) {
-            $this->logger->error(
-                \sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
-                [
-                    'transaction' => $transaction,
-                    'exception' => $exception,
-                ]
-            );
-
-            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+            $this->handlePayException($exception, $request, $transaction, $context);
         }
+    }
+
+    private function payExpress(
+        string                   $unzerPaymentId,
+        PaymentTransactionStruct $transaction,
+        OrderTransactionEntity   $orderTransaction,
+        Request                  $currentRequest,
+        Context                  $context
+    )
+    {
+        $unzerClient = $this->unzerClient = $this->clientFactory->createClientFromSalesChannelId($orderTransaction->getOrder()->getSalesChannelId(), $currentRequest);
+        $payment = $unzerClient->fetchPayment($unzerPaymentId);
+        $unzerBasket = $this->basketHydrator->hydrateObject($orderTransaction);
+        $unzerBasket->setId($payment->getBasket()->getId());
+        $unzerBasket->setOrderId($orderTransaction->getId());
+        $unzerClient->updateBasket($unzerBasket);
+
+        // this does implicitly update the customer object
+        $this->getUnzerCustomer($payment->getCustomer()?->getId() ?? '', $orderTransaction->getPaymentMethodId(), $orderTransaction, $context);
+
+        if (empty($payment->getCharges())) {
+            $authorization = new Authorization(
+                $unzerBasket->getTotalValueGross(),
+                $unzerBasket->getCurrencyCode(),
+                $transaction->getReturnUrl()
+            );
+            $unzerClient->updateAuthorization($payment->getId(), $authorization);
+        } else {
+            $charge = new Charge(
+                $unzerBasket->getTotalValueGross(),
+                $unzerBasket->getCurrencyCode(),
+                $transaction->getReturnUrl()
+            );
+            $unzerClient->updateCharge($payment->getId(), $charge);
+        }
+        $this->persistPaymentInformation(
+            [
+                $this->sessionIsRecurring => false,
+                $this->sessionPaymentTypeKey => $payment->getPaymentType()->getId(),
+                CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY => $payment->getId(),
+            ],
+            $transaction->getOrderTransactionId(),
+            $context
+        );
+
+        return new RedirectResponse($transaction->getReturnUrl());
     }
 }

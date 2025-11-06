@@ -30,6 +30,7 @@
                 "refundButton": "Refund",
                 "defaultButton": "Done",
                 "cancelButton": "Cancel",
+                "noActions": "No actions possible",
                 "confirmCancelModal": {
                     "text": "Do you really want to cancel the authorization of the selected amount?",
                     "amountLabel": "Amount:",
@@ -108,6 +109,11 @@
         }
     },
     "unzer-payment-settings": {
+        "subheadings": {
+            "paymentSettingsBookingModes": "Booking Modes",
+            "paymentSettingsSaveDevices": "Save Payment Details",
+            "paymentSettingsExpressCheckout": "Express Checkout"
+        },
         "module": {
             "title": "Unzer Payment",
             "description": "Unzer Payment"

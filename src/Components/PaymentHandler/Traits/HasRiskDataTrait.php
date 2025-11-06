@@ -24,7 +24,7 @@ trait HasRiskDataTrait
         $riskData->setThreatMetrixId($fraudPreventionSessionId);
 
         $customer = $this->customerRepository->search(
-            (new Criteria([$orderTransaction->getOrder()->getOrderCustomer()->getCustomerId()])),
+            new Criteria([$orderTransaction->getOrder()->getOrderCustomer()->getCustomerId()]),
             $context
         )->first();
 
@@ -41,7 +41,7 @@ trait HasRiskDataTrait
     private function fetchFraudPreventionSessionId(OrderTransactionEntity $orderTransaction, Context $context): ?string
     {
         $currentRequest = $this->getCurrentRequestFromStack($orderTransaction->getId());
-        $fraudPreventionSessionId = $currentRequest->get('unzerPaymentFraudPreventionSessionId', '');
+        $fraudPreventionSessionId = $currentRequest->get('unzerThreatMetrixId', '');
 
         if (empty($fraudPreventionSessionId)) {
             $customFields = $orderTransaction->getCustomFields() ?? [];

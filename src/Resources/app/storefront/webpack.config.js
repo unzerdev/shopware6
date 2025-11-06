@@ -5,7 +5,13 @@ module.exports = {
     mode: 'production',
     entry: './src/custom.js',
     output: {
-        path: path.resolve(__dirname, 'dist', 'storefront', 'js'),
+        path: path.resolve(
+            __dirname,
+            'dist',
+            'storefront',
+            'js',
+            'unzer-payment6'
+        ),
         filename: 'unzer-payment6.js',
     },
     resolve: {

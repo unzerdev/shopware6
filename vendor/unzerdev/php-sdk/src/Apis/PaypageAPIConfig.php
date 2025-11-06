@@ -10,7 +10,7 @@ use UnzerSDK\Apis\Constants\AuthorizationMethods;
 class PaypageAPIConfig implements ApiConfig
 {
     private const DOMAIN = 'paypage.unzer.com';
-    private const TEST_DOMAIN = 'paypage.test.unzer.io';
+    private const TEST_DOMAIN = 'paypage.test.unzer.com';
     private const INT_DOMAIN = 'paypage.int.unzer.io';
 
     public static function getDomain(): string

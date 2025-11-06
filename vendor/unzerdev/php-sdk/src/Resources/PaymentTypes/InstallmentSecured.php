@@ -34,7 +34,7 @@ class InstallmentSecured extends InstalmentPlan
      * @param null|DateTime|string $invoiceDate
      * @param null|DateTime|string $invoiceDueDate
      */
-    public function __construct(InstalmentPlan $selectedPlan = null, $iban = null, $accountHolder = null, $orderDate = null, $bic = null, $invoiceDate = null, $invoiceDueDate = null)
+    public function __construct(?InstalmentPlan $selectedPlan = null, $iban = null, $accountHolder = null, $orderDate = null, $bic = null, $invoiceDate = null, $invoiceDueDate = null)
     {
         parent::__construct();
 

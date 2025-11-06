@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ShipService;
 
-use DateTime;
-use DateTimeInterface;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Document\Renderer\InvoiceRenderer;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -18,16 +16,15 @@ use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\Payment;
-use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
 use UnzerSDK\Unzer;
 
 readonly class ShipService implements ShipServiceInterface
 {
     public function __construct(
-        private ClientFactoryInterface           $clientFactory,
+        private ClientFactoryInterface $clientFactory,
         private TransactionStateHandlerInterface $transactionStateHandler,
-        private EntityRepository                 $orderTransactionRepository,
-        private LoggerInterface                  $logger
+        private EntityRepository $orderTransactionRepository,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -49,7 +46,7 @@ readonly class ShipService implements ShipServiceInterface
 
         foreach ($documents as $document) {
             if ($document->getDocumentType() && $document->getDocumentType()->getTechnicalName() === InvoiceRenderer::TYPE) {
-                $newDocumentDate = new DateTime($document->getConfig()['documentDate']);
+                $newDocumentDate = new \DateTime($document->getConfig()['documentDate']);
 
                 if ($documentDate === null || $newDocumentDate->getTimestamp() > $documentDate->getTimestamp()) {
                     $documentDate = $newDocumentDate;
@@ -110,31 +107,12 @@ readonly class ShipService implements ShipServiceInterface
         return $this->orderTransactionRepository->search($criteria, $context)->first();
     }
 
-    protected function getPayment(string $orderTransactionId, DateTimeInterface $documentDate, Unzer $client): ?Payment
+    protected function getPayment(string $orderTransactionId, \DateTimeInterface $documentDate, Unzer $client): ?Payment
     {
         try {
             $payment = $client->fetchPaymentByOrderId($orderTransactionId);
         } catch (UnzerApiException) {
             return null;
-        }
-
-        $paymentType = $payment->getPaymentType();
-
-        if ($paymentType instanceof InstallmentSecured) {
-            /** @var DateTime $invoiceDueDate */
-            $invoiceDueDate = clone $documentDate;
-            /** @var \DateInterval $dateInterval */
-            $dateInterval = \DateInterval::createFromDateString(\sprintf('%s months', $paymentType->getNumberOfRates()));
-            $invoiceDueDate->add($dateInterval);
-
-            $paymentType->setInvoiceDate($documentDate->format('Y-m-d'));
-            $paymentType->setInvoiceDueDate($invoiceDueDate->format('Y-m-d'));
-
-            try {
-                $payment->setPaymentType($client->updatePaymentType($paymentType));
-            } catch (UnzerApiException) {
-                return null;
-            }
         }
 
         return $payment;

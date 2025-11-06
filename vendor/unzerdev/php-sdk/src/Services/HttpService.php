@@ -18,7 +18,6 @@ use const PHP_VERSION;
  * This service provides for functionalities concerning http transactions.
  *
  * @link  https://docs.unzer.com/
- *
  */
 class HttpService
 {
@@ -82,32 +81,32 @@ class HttpService
     }
 
     /**
-     * @deprecated use sendRequest() instead.
-     *
      * send post request to payment server
      *
-     * @param                        $uri        string|null uri of the target system
-     * @param ?AbstractUnzerResource $resource
-     * @param string                 $httpMethod
-     * @param string                 $apiVersion
+     * @param string|null $uri uri of the target system
+     * @param AbstractUnzerResource|null $resource
+     * @param string $httpMethod
+     * @param string|null $apiVersion
      *
      * @return string
      *
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     * @deprecated use sendRequest() instead.
      */
     public function send(
         ?string                $uri = null,
         ?AbstractUnzerResource $resource = null,
         string                 $httpMethod = HttpAdapterInterface::REQUEST_GET,
-        string                 $apiVersion = Unzer::API_VERSION
-    ): string {
+        ?string $apiVersion = null
+    ): string
+    {
         if (!$resource instanceof AbstractUnzerResource) {
             throw new RuntimeException('Transfer object is empty!');
         }
         $unzerObj = $resource->getUnzerObject();
 
-        $apiRequest = (new ApiRequest($uri, $resource, $httpMethod, $unzerObj, $apiVersion));
+        $apiRequest = (new ApiRequest($uri, $resource, $httpMethod, $unzerObj, $apiVersion ?? $resource->getApiVersion()));
 
         return $this->sendRequest($apiRequest);
     }
@@ -115,15 +114,11 @@ class HttpService
     /**
      * send post request to payment server
      *
-     * @param ApiRequest $request
-     * @return string
-     *
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
-    public function sendRequest(
-        ApiRequest $request
-    ): string {
+    public function sendRequest(ApiRequest $request): string
+    {
         $unzerObj = $request->getResource()->getUnzerObject();
 
         $apiConfig = $request->getResource()->getApiConfig();
@@ -137,8 +132,8 @@ class HttpService
         $headers = $this->composeHttpHeaders($unzerObj, $apiConfig::getAuthorizationMethod());
         $httpMethod = $request->getHttpMethod();
         $this->initRequest($requestUrl, $payload, $httpMethod, $headers);
-        $httpAdapter  = $this->getAdapter();
-        $response     = $httpAdapter->execute();
+        $httpAdapter = $this->getAdapter();
+        $response = $httpAdapter->execute();
         $responseCode = $httpAdapter->getResponseCode();
         $httpAdapter->close();
 
@@ -158,7 +153,7 @@ class HttpService
      * @param string $uri
      * @param string $payload
      * @param string $httpMethod
-     * @param array  $httpHeaders
+     * @param array $httpHeaders
      *
      * @throws RuntimeException
      */
@@ -174,7 +169,7 @@ class HttpService
      * Handles error responses by throwing an UnzerApiException with the returned messages and error code.
      * Returns doing nothing if no error occurred.
      *
-     * @param string      $responseCode
+     * @param string $responseCode
      * @param string|null $response
      *
      * @throws UnzerApiException
@@ -187,15 +182,15 @@ class HttpService
 
         $responseObject = json_decode($response, false);
         if (!is_numeric($responseCode) || (int)$responseCode >= 400 || isset($responseObject->errors)) {
-            $code            = null;
-            $errorId         = null;
+            $code = null;
+            $errorId = null;
             $customerMessage = $code;
             $merchantMessage = $customerMessage;
             if (isset($responseObject->errors[0])) {
-                $errors          = $responseObject->errors[0];
+                $errors = $responseObject->errors[0];
                 $merchantMessage = $errors->merchantMessage ?? '';
                 $customerMessage = $errors->customerMessage ?? '';
-                $code            = $errors->code ?? '';
+                $code = $errors->code ?? '';
             }
             if (isset($responseObject->id)) {
                 $errorId = $responseObject->id;
@@ -209,23 +204,24 @@ class HttpService
     }
 
     /**
-     * @param Unzer       $unzerObj
-     * @param string      $payload
-     * @param mixed       $headers
-     * @param string      $responseCode
-     * @param string      $httpMethod
-     * @param string      $url
+     * @param Unzer $unzerObj
+     * @param string $payload
+     * @param mixed $headers
+     * @param string $responseCode
+     * @param string $httpMethod
+     * @param string $url
      * @param string|null $response
      */
     public function debugLog(
         Unzer  $unzerObj,
         string $payload,
-        $headers,
-        string    $responseCode,
+               $headers,
+        string $responseCode,
         string $httpMethod,
         string $url,
         ?string $response
-    ): void {
+    ): void
+    {
         // mask auth string
         $authHeader = explode(' ', $headers['Authorization']);
         $authHeader[1] = ValueService::maskValue($authHeader[1]);
@@ -275,16 +271,16 @@ class HttpService
      */
     public function composeHttpHeaders(Unzer $unzer, string $authorizationMethod = AuthorizationMethods::BASIC): array
     {
-        $locale      = $unzer->getLocale();
-        $clientIp    = $unzer->getClientIp();
-        $key         = $unzer->getKey();
+        $locale = $unzer->getLocale();
+        $clientIp = $unzer->getClientIp();
+        $key = $unzer->getKey();
 
         $httpHeaders = [
             'Authorization' => $this->findAuthentication($unzer, $authorizationMethod),
-            'Content-Type'  => 'application/json',
-            'SDK-VERSION'   => Unzer::SDK_VERSION,
-            'SDK-TYPE'      => Unzer::SDK_TYPE,
-            'PHP-VERSION'   => PHP_VERSION
+            'Content-Type' => 'application/json',
+            'SDK-VERSION' => Unzer::SDK_VERSION,
+            'SDK-TYPE' => Unzer::SDK_TYPE,
+            'PHP-VERSION' => PHP_VERSION
         ];
         if (!empty($locale)) {
             $httpHeaders['Accept-Language'] = $locale;
@@ -347,6 +343,7 @@ class HttpService
 
     /**
      * @param Unzer $unzer
+     *
      * @return string
      */
     private function findAuthentication(Unzer $unzer, string $authorizationMethod = AuthorizationMethods::BASIC): string

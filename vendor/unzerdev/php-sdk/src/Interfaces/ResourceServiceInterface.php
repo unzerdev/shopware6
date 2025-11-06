@@ -30,7 +30,7 @@ use UnzerSDK\Resources\TransactionTypes\Shipment;
 interface ResourceServiceInterface
 {
     /**
-     * Retrieves an Payout resource via the API using the corresponding Payment or paymentId.
+     * Retrieves a Payout resource via the API using the corresponding Payment or paymentId.
      * The Payout resource can not be fetched using its id since they are unique only within the Payment.
      * A Payment can have zero or one Payouts.
      *
@@ -57,7 +57,7 @@ interface ResourceServiceInterface
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
-    public function activateRecurringPayment($paymentType, string $returnUrl, string $recurrenceType = null): Recurring;
+    public function activateRecurringPayment($paymentType, string $returnUrl, ?string $recurrenceType = null): Recurring;
 
     /**
      * Fetch and return payment by given payment id or payment object.
@@ -162,7 +162,7 @@ interface ResourceServiceInterface
     public function fetchBasket($basket): Basket;
 
     /**
-     * Update the a basket resource with the given basket object (id must be set).
+     * Update a basket resource with the given basket object (id must be set).
      *
      * @param Basket $basket
      *
@@ -195,12 +195,12 @@ interface ResourceServiceInterface
      * @return BasePaymentType|AbstractUnzerResource The updated PaymentType object.
      *
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
-     * @throws RuntimeException  A RuntimeException is thrown when there is a error while using the SDK.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
     public function updatePaymentType(BasePaymentType $paymentType): BasePaymentType;
 
     /**
-     * Fetch the payment type with the given Id from the API.
+     * Fetch the payment type with the given ID from the API.
      *
      * @param string $typeId
      *
@@ -257,7 +257,7 @@ interface ResourceServiceInterface
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
-    public function fetchCustomerByExtCustomerId(string $customerId): Customer;
+    public function fetchCustomerByExtCustomerId(string $customerId, int $version): Customer;
 
     /**
      * Update and return a Customer object via API.
@@ -325,8 +325,8 @@ interface ResourceServiceInterface
      * Fetch a chargeback object by combination of payment id, chargeback id and charge id.
      * Chargeback ids are not unique to a merchant but to the payment.
      *
-     * @param Payment|string $payment      The payment object or payment id to fetch the authorization from.
-     * @param string         $chargebackId The id of the chargeback to fetch.
+     * @param string $paymentId The payment object or payment id to fetch the authorization from.
+     * @param string $chargebackId The id of the chargeback to fetch.
      *
      * @return Chargeback|AbstractUnzerResource The fetched chargeback.
      *

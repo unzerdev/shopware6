@@ -8,12 +8,15 @@
 
 namespace UnzerSDK\Resources\TransactionTypes;
 
+use RuntimeException;
+use stdClass;
 use UnzerSDK\Adapter\HttpAdapterInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\AbstractUnzerResource;
 use UnzerSDK\Resources\EmbeddedResources\CardTransactionData;
 use UnzerSDK\Resources\EmbeddedResources\RiskData;
 use UnzerSDK\Resources\EmbeddedResources\ShippingData;
+use UnzerSDK\Resources\EmbeddedResources\WeroTransactionData;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Traits\HasAdditionalTransactionData;
@@ -24,8 +27,6 @@ use UnzerSDK\Traits\HasOrderId;
 use UnzerSDK\Traits\HasStates;
 use UnzerSDK\Traits\HasTraceId;
 use UnzerSDK\Traits\HasUniqueAndShortId;
-use RuntimeException;
-use stdClass;
 
 abstract class AbstractTransactionType extends AbstractUnzerResource
 {
@@ -170,6 +171,7 @@ abstract class AbstractTransactionType extends AbstractUnzerResource
             $this->handleRiskData($additionalTransactionData);
             $this->handleShipping($additionalTransactionData);
             $this->handleCardTransactionData($additionalTransactionData);
+            $this->handleWeroTransactionData($additionalTransactionData);
         }
     }
 
@@ -221,6 +223,23 @@ abstract class AbstractTransactionType extends AbstractUnzerResource
             $cardTransactionData = $this->getCardTransactionData() ?? new CardTransactionData();
             $cardTransactionData->handleResponse($card);
             $this->setCardTransactionData($cardTransactionData);
+        }
+    }
+
+    /**
+     * Handle WeroTransactionData object contained in additional transaction data from API response.
+     *
+     * @param stdClass $additionalTransactionData
+     *
+     * @return void
+     */
+    protected function handleWeroTransactionData(stdClass $additionalTransactionData): void
+    {
+        $wero = $additionalTransactionData->wero ?? null;
+        if ($wero !== null) {
+            $weroTransactionData = $this->getWeroTransactionData() ?? new WeroTransactionData();
+            $weroTransactionData->handleResponse($wero);
+            $this->setWeroTransactionData($weroTransactionData);
         }
     }
 }

@@ -82,7 +82,9 @@ Component.register('unzer-payment-detail', {
         ship() {
             this.isLoading = true;
 
-            this.UnzerPaymentService.ship(this.paymentResource.orderId)
+            this.UnzerPaymentService.ship(
+                this.paymentResource.orderTransactionId
+            )
                 .then(() => {
                     this.createNotificationSuccess({
                         title: this.$tc(

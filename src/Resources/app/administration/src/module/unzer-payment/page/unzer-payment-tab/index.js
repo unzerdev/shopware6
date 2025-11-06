@@ -90,6 +90,9 @@ Component.register('unzer-payment-tab', {
                         )
                             .then((response) => {
                                 this.paymentResources[index] = response;
+                                this.paymentResources[
+                                    index
+                                ].orderTransactionId = orderTransaction.id;
                                 this.loadedResources++;
 
                                 this.isLoading =

@@ -15,7 +15,6 @@ use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelDomain\SalesChannelD
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
-use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
 
@@ -25,7 +24,6 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     public const EXIT_CODE_API_ERROR = 1;
     public const EXIT_CODE_UNKNOWN_ERROR = 2;
     public const EXIT_CODE_INVALID_HOST = 3;
-
 
     protected ?RequestContext $context;
 
@@ -69,7 +67,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                 ];
 
                 $this->logger->info(\sprintf('Webhooks registered for domain %s', $domainUrl));
-            } catch (UnzerApiException|Throwable $exception) {
+            } catch (UnzerApiException|\Throwable $exception) {
                 $returnData[$domainUrl] = [
                     'success' => false,
                     'message' => 'unzer-payment-settings.webhook.register.error',
@@ -104,7 +102,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
                 ];
 
                 $this->logger->info(\sprintf('Webhook %s (%s) deleted!', $webhookId, $data['url']));
-            } catch (UnzerApiException|Throwable $exception) {
+            } catch (UnzerApiException|\Throwable $exception) {
                 $returnData[$data['url']] = [
                     'success' => false,
                     'message' => 'unzer-payment-settings.webhook.clear.error',

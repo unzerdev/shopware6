@@ -12,7 +12,7 @@ class PaylaterDirectDebit extends BasePaymentType
     /** @var string $holder */
     protected $holder;
 
-    public function __construct(string $iban = null, string $holder = null)
+    public function __construct(?string $iban = null, ?string $holder = null)
     {
         $this->iban = $iban;
         $this->holder = $holder;

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\PaymentMethod;
 
 use Shopware\Core\Checkout\Payment\Cart\Error\PaymentMethodBlockedError;
+use Shopware\Core\Checkout\Payment\Event\PaymentMethodRouteCacheKeyEvent;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\Framework\DataAbstractionLayer\Event\EntitySearchResultLoadedEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\System\Currency\CurrencyEntity;
@@ -15,19 +17,19 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\ExpressCheckout\ExpressCheckoutService;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerPayment6\UnzerPayment6;
 
 readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterface
 {
-
-
     public function __construct(
-        private ConfigReaderInterface $configReader
-    )
-    {
+        private ConfigReaderInterface $configReader,
+        private RequestStack $requestStack
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -35,9 +37,22 @@ readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterf
         return [
             'sales_channel.payment_method.search.id.result.loaded' => ['onSalesChannelIdSearchResultLoaded', -1],
             'sales_channel.payment_method.search.result.loaded' => ['onSalesChannelSearchResultLoaded', -1],
+            'payment_method.search.result.loaded' => ['onSearchResultLoaded', -1],
             AccountEditOrderPageLoadedEvent::class => 'onAccountEditOrderPageLoaded',
             CheckoutConfirmPageLoadedEvent::class => 'onCheckoutConfirmPageLoaded',
+            PaymentMethodRouteCacheKeyEvent::class => 'addCacheKeyParts',
         ];
+    }
+
+    public function onSearchResultLoaded(EntitySearchResultLoadedEvent $event): void
+    {
+        foreach (PaymentInstaller::REMOVED_PAYMENT_METHOD_IDS as $removedPaymentMethodId) {
+            try {
+                $event->getResult()->remove($removedPaymentMethodId);
+            } catch (\Exception $e) {
+                // no worries
+            }
+        }
     }
 
     public function onSalesChannelIdSearchResultLoaded(SalesChannelEntityIdSearchResultLoadedEvent $event): void
@@ -52,6 +67,7 @@ readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterf
         }
 
         $blockedPaymentMethods = $this->getBlockedPaymentMethods($salesChannelContext);
+        $blockedPaymentMethods = array_merge($blockedPaymentMethods, $this->getUnselectedExpressPaymentMethods($result));
 
         if ($blockedPaymentMethods === []) {
             return;
@@ -72,6 +88,7 @@ readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterf
         }
 
         $blockedPaymentMethods = $this->getBlockedPaymentMethods($salesChannelContext);
+        $blockedPaymentMethods = array_merge($blockedPaymentMethods, $this->getUnselectedExpressPaymentMethods($result));
 
         if ($blockedPaymentMethods === []) {
             return;
@@ -119,6 +136,39 @@ readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterf
         }
     }
 
+    public function addCacheKeyParts(PaymentMethodRouteCacheKeyEvent $event): void
+    {
+        $salesChannelContext = $event->getContext();
+        $event->addPart('BlockedPaymentMethodsCurrency_' . $salesChannelContext->getCurrency()->getIsoCode());
+
+        $invoiceIso = $salesChannelContext
+            ->getCustomer()?->getActiveBillingAddress()?->getCountry()?->getIso();
+
+        if (!empty($invoiceIso)) {
+            $event->addPart('BlockedPaymentMethodsInvoiceCtry_' . $invoiceIso);
+        }
+
+        $customerCompany = $salesChannelContext->getCustomer()?->getActiveBillingAddress()?->getCompany();
+
+        if (!empty($customerCompany)) {
+            $event->addPart('BlockedPaymentMethodsB2B');
+        }
+
+        if (!$event->getRequest()->hasSession()) {
+            return;
+        }
+
+        $isExpress = $event->getRequest()->query->getBoolean('isExpressCheckout', false) ?? false;
+        if (!$isExpress) {
+            return;
+        }
+
+        $session = $event->getRequest()->getSession();
+        $expressPaymentMethodId = $session->get(ExpressCheckoutService::SESSION_SELECTED_EXPRESS_METHOD);
+
+        $event->addPart('unzerExpressActive_' . $expressPaymentMethodId);
+    }
+
     protected function removePaymentMethodsFromIdResult(IdSearchResult $result, array $paymentIdsToBeRemoved): void
     {
         $filteredPaymentMethods = array_filter($result->getIds(), static function ($paymentMethod) use ($paymentIdsToBeRemoved) {
@@ -163,12 +213,11 @@ readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterf
 
     protected function getBlockedPaymentMethods(SalesChannelContext $salesChannelContext): array
     {
-        $paymentMethodIdsToBeRemoved = [
-            PaymentInstaller::PAYMENT_ID_GIROPAY,
-        ];
+        $paymentMethodIdsToBeRemoved = PaymentInstaller::REMOVED_PAYMENT_METHOD_IDS;
 
         if ($salesChannelContext->getCurrency()->getIsoCode() !== 'EUR') {
             $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED;
+            $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_WERO;
         }
 
         $customer = $salesChannelContext->getCustomer();
@@ -188,7 +237,33 @@ readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterf
         if ($invoiceCountry !== null && $invoiceCountry->getIso() !== 'DE' && $invoiceCountry->getIso() !== 'AT') {
             $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED;
         }
+        if ($invoiceCountry !== null && $invoiceCountry->getIso() !== 'DE') {
+            $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_WERO;
+        }
+
+        if (!empty($customer->getActiveBillingAddress()?->getCompany())) {
+            $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED;
+            $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT;
+        }
 
         return $paymentMethodIdsToBeRemoved;
+    }
+
+    protected function getUnselectedExpressPaymentMethods(EntitySearchResult $result): array
+    {
+        $unselectedIds = [];
+        $request = $this->requestStack->getCurrentRequest();
+        $isExpress = $request?->query->getBoolean('isExpressCheckout', false) ?? false;
+        if ($isExpress) {
+            $session = $request && $request->hasSession() ? $request->getSession() : null;
+            $expressPaymentMethodId = $session->get(ExpressCheckoutService::SESSION_SELECTED_EXPRESS_METHOD);
+            foreach ($result->getIds() as $id) {
+                if ($id !== $expressPaymentMethodId) {
+                    $unselectedIds[] = $id;
+                }
+            }
+        }
+
+        return $unselectedIds;
     }
 }

@@ -10,8 +10,6 @@ use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Throwable;
-use Traversable;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Struct\Configuration;
@@ -22,15 +20,15 @@ use UnzerPayment6\Components\WebhookHandler\WebhookHandlerInterface;
 class UnzerPaymentWebhookController extends StorefrontController
 {
     /**
-     * @var Traversable|WebhookHandlerInterface[]
+     * @var \Traversable|WebhookHandlerInterface[]
      */
-    private Traversable $handlers;
+    private \Traversable $handlers;
 
     private ConfigReaderInterface $configReader;
 
     private LoggerInterface $logger;
 
-    public function __construct(Traversable $handlers, ConfigReaderInterface $configReader, LoggerInterface $logger)
+    public function __construct(\Traversable $handlers, ConfigReaderInterface $configReader, LoggerInterface $logger)
     {
         $this->handlers = $handlers;
         $this->configReader = $configReader;
@@ -72,7 +70,7 @@ class UnzerPaymentWebhookController extends StorefrontController
                 );
 
                 $handler->execute($webhook, $salesChannelContext);
-            } catch (Throwable $exception) {
+            } catch (\Throwable $exception) {
                 $this->logger->error(
                     'An exception was caught when handling a webhook, but this may not be a failure.',
                     [

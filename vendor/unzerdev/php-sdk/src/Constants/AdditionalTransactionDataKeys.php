@@ -18,4 +18,5 @@ class AdditionalTransactionDataKeys
     public const CHECKOUTTYPE = 'checkoutType';
 
     public const CARD = 'card';
+    public const WERO = 'wero';
 }

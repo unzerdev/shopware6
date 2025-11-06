@@ -8,13 +8,12 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\Request;
-use Throwable;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 use UnzerSDK\Exceptions\UnzerApiException;
 
 trait ExceptionHandler
 {
-    protected function handlePayException(Throwable $exception, Request $request, PaymentTransactionStruct $transaction, Context $context)
+    protected function handlePayException(\Throwable $exception, Request $request, PaymentTransactionStruct $transaction, Context $context): void
     {
         if ($exception instanceof UnzerApiException) {
             $this->logger->error(
@@ -32,16 +31,15 @@ trait ExceptionHandler
 
             $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
             throw new UnzerPaymentProcessException($orderTransaction->getOrderId(), $transaction->getOrderTransactionId(), $exception);
-        } else {
-            $this->logger->error(
-                \sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
-                [
-                    'request' => $this->getLoggableRequest($request),
-                    'transaction' => $transaction,
-                    'exception' => $exception,
-                ]
-            );
-            throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransactionId(), $exception->getMessage());
         }
+        $this->logger->error(
+            \sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
+            [
+                'request' => $this->getLoggableRequest($request),
+                'transaction' => $transaction,
+                'exception' => $exception,
+            ]
+        );
+        throw PaymentException::asyncProcessInterrupted($transaction->getOrderTransactionId(), $exception->getMessage());
     }
 }

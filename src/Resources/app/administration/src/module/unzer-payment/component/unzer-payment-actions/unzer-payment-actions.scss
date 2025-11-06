@@ -2,6 +2,16 @@
     z-index: 10000 !important;
 }
 
-.unzer-payment-actions--button .sw-field {
+.unzer-payment-actions--button .mt-field,
+.unzer-payment-actions--button .sw-field, /* we still need this in 6.7 */
+.unzer-payment-actions--input .mt-field {
     margin-bottom: 0;
+}
+
+.unzer-payment-actions--button {
+}
+
+.unzer-payment-actions--button .mt-button {
+    margin-bottom: 12px;
+    width: 100%;
 }

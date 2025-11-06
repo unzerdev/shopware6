@@ -16,9 +16,6 @@ class PaymentMethodPageExtension extends Struct
      */
     protected array $savedDevices = [];
 
-    /**
-     * @var bool
-     */
     protected bool $deviceRemoved = false;
 
     public function addPaymentDevices(array $paymentDevices): self

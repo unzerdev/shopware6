@@ -6,7 +6,6 @@ use UnzerSDK\Adapter\HttpAdapterInterface;
 use UnzerSDK\Constants\CancelReasonCodes;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\InstallmentSecured;
-
 use function in_array;
 
 /**
@@ -49,7 +48,7 @@ class Cancellation extends AbstractTransactionType
      *
      * @param float|null $amount The amount to be cancelled, is transferred as grossAmount in case of Installment Secured.
      */
-    public function __construct(float $amount = null)
+    public function __construct(?float $amount = null)
     {
         $this->setAmount($amount);
     }

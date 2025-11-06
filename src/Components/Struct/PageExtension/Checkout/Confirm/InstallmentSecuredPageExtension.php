@@ -10,7 +10,6 @@ class InstallmentSecuredPageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerInstallmentSecured';
 
-
     private float $amount = 0.0;
 
     private string $currency = 'EUR';

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\TransactionStateHandler;
 
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
@@ -21,9 +20,9 @@ use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 readonly class TransactionStateHandler implements TransactionStateHandlerInterface
 {
     public function __construct(
-        private StateMachineRegistry           $stateMachineRegistry,
+        private StateMachineRegistry $stateMachineRegistry,
         private PaymentTransitionMapperFactory $transitionMapperFactory,
-        private LoggerInterface                $logger
+        private LoggerInterface $logger
     ) {
     }
 
@@ -43,17 +42,21 @@ readonly class TransactionStateHandler implements TransactionStateHandlerInterfa
             return;
         }
 
-        $transition = $this->getTargetTransition($payment);
+        $transition = $this->getTargetTransition($payment, $transactionId);
 
         if (empty($transition)) {
             $this->logger->error('Due to an empty transition, the FAIL transition is executed');
 
             $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_FAIL, $context);
 
-            throw new RuntimeException('Invalid transition status');
+            throw new \RuntimeException('Invalid transition status');
         }
+        $this->logger->debug('Transaction state transition for ' . $payment->getId() . ': ' . $transition, ['orderTransactionId' => $transactionId, 'payment' => $payment]);
 
         $this->executeTransition($transactionId, $transition, $context);
+        if ($transition === StateMachineTransitionActions::ACTION_FAIL) {
+            throw new \RuntimeException('Payment ' . $payment->getId() . ' has a failed.');
+        }
     }
 
     public function fail(string $transactionId, Context $context): void
@@ -74,13 +77,13 @@ readonly class TransactionStateHandler implements TransactionStateHandlerInterfa
         );
     }
 
-    protected function getTargetTransition(Payment $payment): string
+    protected function getTargetTransition(Payment $payment, string $orderTransactionId): string
     {
         try {
             /** @var BasePaymentType $paymentType */
             $paymentType = $payment->getPaymentType();
             $transitionMapper = $this->transitionMapperFactory->getTransitionMapper($paymentType);
-            $transition = $transitionMapper->getTargetPaymentStatus($payment);
+            $transition = $transitionMapper->getTargetPaymentStatus($payment, $orderTransactionId);
         } catch (NoTransitionMapperFoundException|TransitionMapperException $exception) {
             $this->logger->error($exception->getMessage(), [
                 'code' => $exception->getCode(),

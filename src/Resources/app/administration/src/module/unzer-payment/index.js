@@ -8,7 +8,7 @@ import './extension/sw-order-detail';
 import './extension/sw-order-list';
 import './page/unzer-payment-tab';
 
-const {Module} = Shopware;
+const { Module } = Shopware;
 
 Module.register('unzer-payment', {
     type: 'plugin',

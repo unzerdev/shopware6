@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm;
 
-use ReflectionClass;
 use Shopware\Core\Framework\Struct\Struct;
 use UnzerSDK\Constants\CompanyTypes;
 use UnzerSDK\Resources\Customer;
@@ -14,6 +13,7 @@ class UnzerDataPageExtension extends Struct
     public const EXTENSION_NAME = 'unzerPaymentData';
 
     private string $publicKey;
+
     private string $locale;
 
     private bool $showTestData;
@@ -62,6 +62,6 @@ class UnzerDataPageExtension extends Struct
 
     public function getCompanyTypes(): array
     {
-        return (new ReflectionClass(CompanyTypes::class))->getConstants();
+        return (new \ReflectionClass(CompanyTypes::class))->getConstants();
     }
 }

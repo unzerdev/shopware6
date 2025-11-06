@@ -30,8 +30,7 @@ Component.extend(
 
                     return criteria;
                 },
-            }
-
+            },
         },
     }
 );

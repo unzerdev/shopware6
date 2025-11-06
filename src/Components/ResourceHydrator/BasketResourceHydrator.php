@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ResourceHydrator;
 
-use InvalidArgumentException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
@@ -23,18 +22,14 @@ class BasketResourceHydrator
 {
     private const UNDEFINED_SHIPPING_METHOD_NAME = 'UndefinedShippingMethod';
 
-
     public function hydrateObject(
         OrderTransactionEntity $orderTransaction
-    ): Basket
-    {
-
+    ): Basket {
         $order = $orderTransaction->getOrder();
 
         if ($order === null) {
-            throw new InvalidArgumentException('Order can not be null');
+            throw new \InvalidArgumentException('Order can not be null');
         }
-
 
         return $this->generateUnzerBasket($orderTransaction);
     }
@@ -83,11 +78,10 @@ class BasketResourceHydrator
 
     protected function hydrateLineItems(
         OrderLineItemCollection $lineItemCollection,
-        Basket                  $unzerBasket,
-        int                     $currencyPrecision,
-        ?string                 $taxStatus
-    ): void
-    {
+        Basket $unzerBasket,
+        int $currencyPrecision,
+        ?string $taxStatus
+    ): void {
         $customProductLabels = $this->mapCustomProductsLabel($lineItemCollection);
 
         /** @var OrderLineItemEntity $lineItem */
@@ -105,7 +99,15 @@ class BasketResourceHydrator
             $basketItem->setTitle($label);
             $basketItem->setQuantity($lineItem->getQuantity());
             $basketItem->setType($lineItem->getUnitPrice() < 0 ? BasketItemTypes::VOUCHER : BasketItemTypes::GOODS);
-            $basketItem->setImageUrl($lineItem->getCover()?->getUrl());
+            if (!empty($lineItem->getCover()?->getUrl()) && !str_contains($lineItem->getCover()?->getUrl(), '.ddev.site')) {
+                try {
+                    $media = $lineItem->getCover();
+                    $url = $media?->getThumbnails()?->first()?->getUrl() ?? $media?->getUrl();
+                    $basketItem->setImageUrl($url);
+                } catch (\Exception $e) {
+                    $basketItem->setImageUrl($lineItem->getCover()?->getUrl());
+                }
+            }
 
             $taxCounter = 0;
             $amountTax = 0.0;
@@ -143,11 +145,10 @@ class BasketResourceHydrator
 
     protected function hydrateShippingCosts(
         OrderEntity $order,
-        Basket      $basket,
-        int         $currencyPrecision,
-        string      $shippingMethodName
-    ): void
-    {
+        Basket $basket,
+        int $currencyPrecision,
+        string $shippingMethodName
+    ): void {
         $shippingCosts = $order->getShippingCosts();
 
         $dispatchBasketItem = new BasketItem();
@@ -210,9 +211,8 @@ class BasketResourceHydrator
 
     protected function isCustomProduct(
         OrderLineItemCollection $lineItemCollection,
-        OrderLineItemEntity     $lineItemEntity
-    ): bool
-    {
+        OrderLineItemEntity $lineItemEntity
+    ): bool {
         if (!class_exists(CustomizedProductsCartDataCollector::class)) {
             return false;
         }
@@ -231,9 +231,8 @@ class BasketResourceHydrator
 
     protected function isParentCustomProduct(
         OrderLineItemCollection $lineItemCollection,
-        OrderLineItemEntity     $lineItemEntity
-    ): bool
-    {
+        OrderLineItemEntity $lineItemEntity
+    ): bool {
         if (!class_exists(CustomizedProductsCartDataCollector::class)) {
             return false;
         }
@@ -273,7 +272,7 @@ class BasketResourceHydrator
 
     protected function isFreeBasketItem(BasketItem $basketItem, int $currencyPrecision): bool
     {
-        if ((int)round($basketItem->getAmountPerUnitGross() * (10 ** $currencyPrecision)) === 0 && (int)round($basketItem->getAmountDiscountPerUnitGross() * (10 ** $currencyPrecision)) === 0) {
+        if ((int) round($basketItem->getAmountPerUnitGross() * (10 ** $currencyPrecision)) === 0 && (int) round($basketItem->getAmountDiscountPerUnitGross() * (10 ** $currencyPrecision)) === 0) {
             return true;
         }
 

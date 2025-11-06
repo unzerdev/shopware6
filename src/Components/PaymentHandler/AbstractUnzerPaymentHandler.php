@@ -16,7 +16,7 @@ use Shopware\Core\Framework\Struct\Struct;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Throwable;
+use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
@@ -28,6 +28,8 @@ use UnzerPayment6\Components\Struct\Configuration;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
+use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
+use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\Basket;
 use UnzerSDK\Resources\Customer;
@@ -40,8 +42,9 @@ use UnzerSDK\Unzer;
 abstract class AbstractUnzerPaymentHandler extends AbstractPaymentHandler
 {
     use ExceptionHandler;
+    public const string SAVE_PAYMENT_DEVICE_KEY = 'save_payment_device';
 
-    protected BasePaymentType $paymentType;
+    protected ?BasePaymentType $paymentType = null;
 
     protected ?Payment $payment;
 
@@ -57,21 +60,25 @@ abstract class AbstractUnzerPaymentHandler extends AbstractPaymentHandler
 
     protected Configuration $pluginConfig;
 
+    protected bool $isExpress = false;
+
+    protected string $bookingMode = BookingMode::CHARGE;
+
     public function __construct(
-        protected readonly BasketResourceHydrator            $basketHydrator,
+        protected readonly BasketResourceHydrator $basketHydrator,
         protected readonly CustomerResourceHydratorInterface $customerHydrator,
-        protected readonly MetadataResourceHydrator          $metadataHydrator,
-        protected readonly EntityRepository                  $transactionRepository,
-        protected readonly ConfigReaderInterface             $configReader,
-        protected readonly TransactionStateHandlerInterface  $transactionStateHandler,
-        protected readonly ClientFactoryInterface            $clientFactory,
-        protected readonly RequestStack                      $requestStack,
-        protected readonly LoggerInterface                   $logger,
-        protected readonly CustomFieldsHelperInterface       $customFieldsHelper,
-        protected readonly UnzerTransactionUtil              $transactionUtil,
-        protected readonly EntityRepository                  $customerRepository
-    )
-    {
+        protected readonly MetadataResourceHydrator $metadataHydrator,
+        protected readonly EntityRepository $transactionRepository,
+        protected readonly ConfigReaderInterface $configReader,
+        protected readonly TransactionStateHandlerInterface $transactionStateHandler,
+        protected readonly ClientFactoryInterface $clientFactory,
+        protected readonly RequestStack $requestStack,
+        protected readonly LoggerInterface $logger,
+        protected readonly CustomFieldsHelperInterface $customFieldsHelper,
+        protected readonly UnzerTransactionUtil $transactionUtil,
+        protected readonly EntityRepository $customerRepository,
+        protected ?UnzerPaymentDeviceRepositoryInterface $deviceRepository = null
+    ) {
     }
 
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
@@ -81,15 +88,14 @@ abstract class AbstractUnzerPaymentHandler extends AbstractPaymentHandler
     }
 
     public function pay(
-        Request                  $request,
+        Request $request,
         PaymentTransactionStruct $transaction,
-        Context                  $context,
-        ?Struct                  $validateStruct
-    ): RedirectResponse
-    {
+        Context $context,
+        ?Struct $validateStruct
+    ): RedirectResponse {
+        $this->logger->debug('Starting pay() base method in ' . static::class);
         $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
         try {
-
             $salesChannelId = $orderTransaction->getOrder()->getSalesChannelId();
 
             $this->pluginConfig = $this->configReader->read($salesChannelId);
@@ -100,6 +106,8 @@ abstract class AbstractUnzerPaymentHandler extends AbstractPaymentHandler
 
             $this->unzerBasket = $this->basketHydrator->hydrateObject($orderTransaction);
             $this->unzerMetadata = $this->metadataHydrator->hydrateObject($context);
+            $this->metadataHydrator->setIsExpress($this->unzerMetadata, $this->isExpress);
+
             $this->unzerCustomer = $this->getUnzerCustomer($request->get('unzerCustomerId', ''), $orderTransaction->getPaymentMethodId(), $orderTransaction, $context);
 
             $resourceId = $request->get('unzerResourceId', '');
@@ -111,26 +119,35 @@ abstract class AbstractUnzerPaymentHandler extends AbstractPaymentHandler
             $this->customFieldsHelper->setOrderTransactionUnzerFlag($orderTransaction, $context);
 
             return new RedirectResponse($transaction->getReturnUrl());
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->handlePayException($exception, $request, $transaction, $context);
         }
     }
 
     public function finalize(
-        Request                  $request,
+        Request $request,
         PaymentTransactionStruct $transaction,
-        Context                  $context
-    ): void
-    {
+        Context $context
+    ): void {
+        $this->logger->debug('Starting finalize() base method in ' . static::class);
         $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
         try {
             $this->pluginConfig = $this->configReader->read($orderTransaction->getOrder()->getSalesChannelId());
             $this->unzerClient = $this->clientFactory->createClient(
                 KeyPairContext::createFromOrderTransaction($orderTransaction),
             );
-            $this->payment = $this->unzerClient->fetchPaymentByOrderId(
-                $orderTransaction->getId()
-            );
+            try {
+                $this->payment = $this->unzerClient->fetchPaymentByOrderId(
+                    $orderTransaction->getId()
+                );
+            } catch (UnzerApiException) {
+                $paymentId = $orderTransaction->getCustomFields()[CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY] ?? null;
+                if ($paymentId) {
+                    $this->payment = $this->unzerClient->fetchPayment($paymentId);
+                } else {
+                    throw PaymentException::asyncFinalizeInterrupted($transaction->getOrderTransaction()->getId(), 'no payment found');
+                }
+            }
 
             $this->transactionStateHandler->transformTransactionState(
                 $orderTransaction->getId(),
@@ -150,7 +167,7 @@ abstract class AbstractUnzerPaymentHandler extends AbstractPaymentHandler
             );
 
             throw PaymentException::asyncFinalizeInterrupted($orderTransaction->getId(), $apiException->getMessage());
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->logger->error(
                 \sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
@@ -198,43 +215,37 @@ abstract class AbstractUnzerPaymentHandler extends AbstractPaymentHandler
 
     protected function getUnzerCustomer(string $unzerCustomerId, string $paymentMethodId, OrderTransactionEntity $orderTransaction, Context $context): Customer
     {
-
         $fetchedCustomer = null;
         if (!empty($unzerCustomerId)) {
             try {
                 $fetchedCustomer = $this->unzerClient->fetchCustomer($unzerCustomerId);
-            } catch (Throwable) {
+            } catch (\Throwable) {
                 // silent fail
             }
         }
         $orderCustomer = $orderTransaction->getOrder()->getOrderCustomer();
         if (!$fetchedCustomer) {
-            $customerNumber = $orderCustomer->getCustomerNumber();
-            $billingAddress = $orderTransaction->getOrder()->getBillingAddress();
-
-            if ($billingAddress !== null && !empty($billingAddress->getCompany())) {
-                $customerNumber .= '_b';
-            }
-
+            $orderBillingAddress = $orderTransaction->getOrder()->getBillingAddress();
+            $customerNumber = $this->customerHydrator->getShopCustomerId($orderCustomer->getCustomer(), $orderBillingAddress);
             try {
                 $fetchedCustomer = $this->unzerClient->fetchCustomerByExtCustomerId($customerNumber);
-            } catch (Throwable) {
+            } catch (\Throwable) {
                 // silent fail
             }
         }
 
         if ($fetchedCustomer) {
-            $updatedCustomer = $this->customerHydrator->hydrateExistingCustomer($fetchedCustomer, $orderCustomer, $orderTransaction, $context);
+            $updatedCustomer = $this->customerHydrator->hydrateExistingCustomer($fetchedCustomer, $orderCustomer, $context, $orderTransaction);
             try {
                 $updatedCustomer = $this->unzerClient->updateCustomer($updatedCustomer);
-            } catch (Throwable) {
+            } catch (\Throwable) {
                 // silent fail
             }
 
             return $updatedCustomer;
         }
 
-        return $this->customerHydrator->hydrateObject($paymentMethodId, $orderCustomer, $orderTransaction, $context);
+        return $this->customerHydrator->hydrateObject($paymentMethodId, $orderCustomer, $context, $orderTransaction);
     }
 
     protected function getLoggableRequest(Request $request): array

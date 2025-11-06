@@ -17,6 +17,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  */
 class UnzerPaymentDeviceCollection extends EntityCollection
 {
+    public function filterByDeviceType(string $deviceType): self
+    {
+        return $this->filter(function (UnzerPaymentDeviceEntity $deviceEntity) use ($deviceType) {
+            return $deviceEntity->getDeviceType() === $deviceType;
+        });
+    }
+
     protected function getExpectedClass(): string
     {
         return UnzerPaymentDeviceEntity::class;
