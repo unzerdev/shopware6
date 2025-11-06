@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\Checkout;
 
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +16,7 @@ use UnzerPayment6\Components\Struct\InstallmentSecured\InstallmentInfo;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\FinishPageExtension;
 use UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelperInterface;
-use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
 use UnzerSDK\Resources\InstalmentPlan;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Unzer;
@@ -24,7 +26,7 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
     public function __construct(
         private ClientFactoryInterface $clientFactory,
         private LoggerInterface $logger,
-        private TransactionSelectionHelperInterface $transactionSelectionHelper
+        private TransactionSelectionHelperInterface $transactionSelectionHelper,
     ) {
     }
 
@@ -55,14 +57,10 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
         }
 
         $extension = new FinishPageExtension();
-        $payment = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getId());
+        $payment = $this->getPaymentByOrderTransaction($unzerClient, $unzerTransaction, $salesChannelContext->getContext());
 
         if (!$payment) {
-            $payment = $this->getPaymentByOrderId($unzerClient, $unzerTransaction->getOrderId());
-
-            if (!$payment) {
-                return;
-            }
+            return;
         }
 
         $paymentType = $payment->getPaymentType();
@@ -75,12 +73,11 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension(FinishPageExtension::EXTENSION_NAME, $extension);
     }
 
-    private function getPaymentByOrderId(Unzer $unzerClient, string $orderId): ?Payment
+    private function getPaymentByOrderTransaction(Unzer $unzerClient, OrderTransactionEntity $orderTransaction, Context $context): ?Payment
     {
         try {
-            return $unzerClient->fetchPaymentByOrderId($orderId);
-        } catch (UnzerApiException $exception) {
-            // catch payment not found exception so that shopware can handle its own errors
+            return UnzerTransactionUtil::fetchPaymentFromOrderTransaction($orderTransaction, $unzerClient);
+        } catch (\Throwable $exception) {
             $this->logger->error($exception->getMessage(), [
                 'code' => $exception->getCode(),
                 'clientMessage' => $exception->getClientMessage(),

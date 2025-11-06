@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
+use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerPayment6\UnzerPayment6;
 use UnzerSDK\Constants\CancelReasonCodes;
@@ -72,17 +73,17 @@ class CancelService implements CancelServiceInterface
         $amountVat = $roundedAmountVat / (10 ** $decimalPrecision);
 
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
-
+        $payment = UnzerTransactionUtil::fetchPaymentFromOrderTransaction($transaction, $client);
         if ($this->isPaylaterPaymentMethod($transaction->getPaymentMethodId())) {
             $cancellation = new Cancellation($amountGross);
 
             $client->cancelChargedPayment(
-                $orderTransactionId,
+                $payment,
                 $cancellation
             );
         } else {
             $client->cancelChargeById(
-                $orderTransactionId,
+                $payment,
                 $chargeId,
                 $amountGross,
                 $this->getCancelReasonCode($reasonCode),
@@ -92,7 +93,7 @@ class CancelService implements CancelServiceInterface
             );
         }
 
-        $this->updateOrderStatus($client, $orderTransactionId, $context);
+        $this->updateOrderStatus($client, $transaction, $context);
     }
 
     /**
@@ -117,7 +118,7 @@ class CancelService implements CancelServiceInterface
             $authorization->cancel($amountGross);
         }
 
-        $this->updateOrderStatus($client, $orderTransactionId, $context);
+        $this->updateOrderStatus($client, $transaction, $context);
     }
 
     protected function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
@@ -143,12 +144,12 @@ class CancelService implements CancelServiceInterface
         return \in_array($paymentMethodId, self::PAYLATER_PAYMENT_METHODS, true);
     }
 
-    private function updateOrderStatus(Unzer $client, string $orderTransactionId, Context $context): void
+    private function updateOrderStatus(Unzer $client, OrderTransactionEntity $orderTransaction, Context $context): void
     {
         try {
-            $payment = $client->fetchPaymentByOrderId($orderTransactionId);
+            $payment = UnzerTransactionUtil::fetchPaymentFromOrderTransaction($orderTransaction, $client);
             $this->transactionStateHandler->transformTransactionState(
-                $orderTransactionId,
+                $orderTransaction->getId(),
                 $payment,
                 $context
             );

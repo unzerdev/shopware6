@@ -171,7 +171,7 @@ Component.register('unzer-payment-history', {
             this.isCancelLoading = true;
 
             this.UnzerPaymentService.cancelTransaction(
-                this.paymentResource.orderId,
+                this.paymentResource.orderTransactionId,
                 this.paymentResource.id,
                 this.cancelAmount
             )

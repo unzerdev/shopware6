@@ -37,11 +37,12 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
      * {@inheritdoc}
      */
     public function pay(
-        Request $request,
+        Request                  $request,
         PaymentTransactionStruct $transaction,
-        Context $context,
-        ?Struct $validateStruct
-    ): RedirectResponse {
+        Context                  $context,
+        ?Struct                  $validateStruct
+    ): RedirectResponse
+    {
         $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
         if ($request->getSession()->get(ExpressCheckoutService::SESSION_PAYPAL_PAYMENT_ID)) {
             try {
@@ -121,10 +122,11 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
     }
 
     public function finalize(
-        Request $request,
+        Request                  $request,
         PaymentTransactionStruct $transaction,
-        Context $context
-    ): void {
+        Context                  $context
+    ): void
+    {
         $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
         $this->pluginConfig = $this->configReader->read($orderTransaction->getOrder()->getSalesChannelId());
 
@@ -206,10 +208,11 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
     }
 
     protected function handleRecurringPayment(
-        Request $request,
+        Request                  $request,
         PaymentTransactionStruct $transaction,
-        Context $context
-    ): RedirectResponse {
+        Context                  $context
+    ): RedirectResponse
+    {
         try {
             $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_PAYPAL, BookingMode::CHARGE);
 
@@ -234,18 +237,22 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
     }
 
     private function payExpress(
-        string $unzerPaymentId,
+        string                   $unzerPaymentId,
         PaymentTransactionStruct $transaction,
-        OrderTransactionEntity $orderTransaction,
-        Request $currentRequest,
-        Context $context
-    ) {
-        $unzerClient = $this->clientFactory->createClientFromSalesChannelId($orderTransaction->getOrder()->getSalesChannelId(), $currentRequest);
+        OrderTransactionEntity   $orderTransaction,
+        Request                  $currentRequest,
+        Context                  $context
+    )
+    {
+        $unzerClient = $this->unzerClient = $this->clientFactory->createClientFromSalesChannelId($orderTransaction->getOrder()->getSalesChannelId(), $currentRequest);
         $payment = $unzerClient->fetchPayment($unzerPaymentId);
         $unzerBasket = $this->basketHydrator->hydrateObject($orderTransaction);
         $unzerBasket->setId($payment->getBasket()->getId());
         $unzerBasket->setOrderId($orderTransaction->getId());
         $unzerClient->updateBasket($unzerBasket);
+
+        // this does implicitly update the customer object
+        $this->getUnzerCustomer($payment->getCustomer()?->getId() ?? '', $orderTransaction->getPaymentMethodId(), $orderTransaction, $context);
 
         if (empty($payment->getCharges())) {
             $authorization = new Authorization(

@@ -1,2 +1,672 @@
-(()=>{"use strict";let e=window.PluginBaseClass;class t extends e{static #e=this.options={publicKey:null,shopLocale:null,unzerCustomer:null,submitButtonId:"confirmFormSubmit",disabledClass:"disabled",resourceIdElementId:"unzerResourceId",threatMetrixIdElementId:"unzerThreatMetrixId",confirmFormId:"confirmOrderForm",errorWrapperClass:"unzer-payment--error-wrapper",errorContentSelector:".unzer-payment--error-wrapper .alert-content-container",errorShouldNotBeEmpty:"%field% should not be empty",isOrderEdit:!1,savedDeviceRadioButtonSelector:'*[name="savedPaymentDevice"]',savedDeviceRadioButtonNewAccountId:"device-new",savedDeviceSelectedRadioButtonSelector:'*[name="savedPaymentDevice"]:checked'};static #t=this.submitting=!1;init(){this._registerElements(),this._registerEvents()}_registerElements(){this.submitButton=this.getSubmitButton()}getSubmitButton(){let e=document.getElementById(this.options.submitButtonId);return e||(e=document.getElementById(this.options.confirmFormId).getElementsByTagName("button")[0]),e||null}_registerEvents(){this.submitButton.addEventListener("click",this._onSubmitButtonClick.bind(this)),this.options.unzerCustomer&&Promise.all([customElements.whenDefined("unzer-payment")]).then(()=>{let e=document.getElementById("unzer-payment-component");e&&(console.log("set customer data",this.options.unzerCustomer),e.setCustomerData(this.options.unzerCustomer))})}setSubmitButtonActive(e){e?(this.submitButton.classList.remove(this.options.disabledClass),this.submitButton.disabled=!1):(this.submitButton.classList.add(this.options.disabledClass),this.submitButton.disabled=!0)}submitTypeId(e,t){if(document.getElementById(this.options.resourceIdElementId).value=e,t){let e=document.getElementById(this.options.threatMetrixIdElementId);e&&(e.value=t)}this.setSubmitButtonActive(!0),this.submitButton.click(),this.setSubmitButtonActive(!1)}showError(e){let t=arguments.length>1&&void 0!==arguments[1]&&arguments[1],n=document.getElementsByClassName(this.options.errorWrapperClass).item(0),s=document.querySelectorAll(this.options.errorContentSelector)[0];t&&""!==s.innerText?s.innerText=`${s.innerText}
-${e.message}`:s.innerText=e.message,n.hidden=!1,n.scrollIntoView({block:"end",behavior:"smooth"}),this.setSubmitButtonActive(!0),this.submitting=!1}renderErrorToElement(e,t){let n=document.getElementsByClassName(this.options.errorWrapperClass).item(0),s=document.querySelectorAll(this.options.errorContentSelector)[0];n.hidden=!1,s.innerText=e.message,t.appendChild(n)}async _onSubmitButtonClick(e){if(!0===this.submitting)return;if(this.submitting=!0,e.preventDefault(),!this._validateForm()){this.submitting=!1,this.setSubmitButtonActive(!0);return}this.setSubmitButtonActive(!1);let t=document.querySelector(this.options.savedDeviceSelectedRadioButtonSelector);if(t&&t.id!==this.options.savedDeviceRadioButtonNewAccountId)this.submitTypeId(t.value,null);else{let e=document.getElementById("unzer-payment-component");if(e)try{let t=await e.submit();t.submitResponse?!0===t.submitResponse.success?(console.log("submit response: ",t.submitResponse),this.submitTypeId(t.submitResponse.data.id,t.threatMetrixId||null)):this.showError({message:"GENERAL ERROR"}):this.showError({message:"EXCEPTIONAL ERROR"})}catch(t){e.scrollIntoView({block:"end",behavior:"smooth"}),this.submitting=!1,this.setSubmitButtonActive(!0)}else this.setSubmitButtonActive(!0),this.submitButton.click(),this.setSubmitButtonActive(!1)}}_validateForm(){let e=!0,t=document.forms[this.options.confirmFormId].elements;this._clearErrorMessage();for(let n=0;n<t.length;n++){let s=t[n];if(!s.checkValidity())return s.dataset.customError&&this.showError({message:s.dataset.customError}),s.classList.add("is-invalid"),!1;s.required&&""===s.value?(s.classList.add("is-invalid"),0===s.labels.length&&e?s.scrollIntoView({block:"end",behavior:"smooth"}):s.labels.length>0&&this.showError({message:this.options.errorShouldNotBeEmpty.replace(/%field%/,s.labels[0].innerText)},!0),e=!1):s.classList.remove("is-invalid")}return e}_clearErrorMessage(){let e=document.getElementsByClassName(this.options.errorWrapperClass).item(0),t=document.querySelectorAll(this.options.errorContentSelector)[0];e.hidden=!0,t.innerText=""}getB2bCustomerObject(e){let t=`${e.firstName} ${e.lastName}`,n=e.birthday?new Date(e.birthday):null,s={firstname:e.firstName,lastname:e.lastName,email:e.email,company:e.activeBillingAddress.company,salutation:e.salutation.salutationKey,billingAddress:{name:t,street:e.activeBillingAddress.street,zip:e.activeBillingAddress.zipcode,city:e.activeBillingAddress.city,country:e.activeBillingAddress.country.iso},shippingAddress:{name:t,street:e.activeShippingAddress.street,zip:e.activeShippingAddress.zipcode,city:e.activeShippingAddress.city,country:e.activeShippingAddress.country.iso}};return n&&(s.birthDate=n.getFullYear()+"-"+(n.getMonth()+1).toString().padStart(2,"0")+"-"+n.getDay().toString().padStart(2,"0")),s}}let n=window.PluginBaseClass;class s extends n{static #e=this._unzerPaymentPlugin=null;init(){this._unzerPaymentPlugin=window.PluginManager.getPluginInstances("UnzerPaymentBase")[0]}_handleError(e){this._unzerPaymentPlugin.showError(e)}_setSubmitButtonActive(e){this._unzerPaymentPlugin.setSubmitButtonActive(e)}_getSubmitButton(){return this._unzerPaymentPlugin.getSubmitButton()}}window.PluginBaseClass;class o extends s{static #e=this.options={elementWrapperSelector:".unzer-payment-create-component-container",radioButtonSelector:'*[name="savedPaymentDevice"]',radioButtonNewAccountId:"device-new",selectedRadioButtonSelector:'*[name="savedPaymentDevice"]:checked',hasSavedDevices:!1};init(){super.init(),this._registerEvents()}_registerEvents(){if(this.options.hasSavedDevices){let e=this.el.querySelectorAll(this.options.radioButtonSelector);for(let t=0;t<e.length;t++)e[t].addEventListener("change",e=>this._onRadioButtonChange(e));document.querySelector(this.options.selectedRadioButtonSelector).dispatchEvent(new Event("change"))}}_onRadioButtonChange(e){let t=e.target;this.el.querySelector(this.options.elementWrapperSelector).hidden=t.id!==this.options.radioButtonNewAccountId}}window.PluginBaseClass;class i extends s{static #e=this.options={countryCode:"DE",currency:"EUR",shopName:"Unzer GmbH",amount:"0.0",applePayButtonSelector:".apple-pay-button",checkoutConfirmButtonSelector:"#confirmFormSubmit",applePayMethodSelector:".unzer-payment-apple-pay-v2-method-wrapper",authorizePaymentUrl:"",merchantValidationUrl:"",noApplePayMessage:"",supportedNetworks:["masterCard","visa"]};init(){super.init(),this._hasCapability()?(this._createForm(),this._hideBuyButton()):this._disableApplePay()}_hasCapability(){return window.ApplePaySession&&window.ApplePaySession.canMakePayments()&&window.ApplePaySession.supportsVersion(6)}_disableApplePay(){document.querySelector(this.options.applePayMethodSelector).remove(),document.querySelectorAll("[data-unzer-payment-apple-pay-v2]").forEach(e=>e.remove()),this._handleError({message:this.options.noApplePayMessage}),this._unzerPaymentPlugin.setSubmitButtonActive(!1)}_createForm(){Promise.all([customElements.whenDefined("unzer-payment")]).then(()=>{let e=document.getElementById("unzer-payment-component");e&&(e.setApplePayData(this._getApplePayPaymentRequest()),document.getElementById("unzer-checkout-component").onPaymentSubmit=t=>{t.submitResponse&&t.submitResponse.success&&this._unzerPaymentPlugin._validateForm()&&(e.style.display="none",this._unzerPaymentPlugin.submitting=!0,this._unzerPaymentPlugin.submitTypeId(t.submitResponse.data.id))})})}_getApplePayPaymentRequest(){return{countryCode:this.options.countryCode,currencyCode:this.options.currency,supportedNetworks:this.options.supportedNetworks,merchantCapabilities:this.options.merchantCapabilities,total:{label:this.options.shopName,amount:this.options.amount}}}_hideBuyButton(){document.querySelector(this.options.checkoutConfirmButtonSelector).style.display="none"}}class a extends s{static #e=this.options={countryIso:"",paylaterInstallmentAmount:"",paylaterInstallmentCurrency:""};init(){super.init(),Promise.all([customElements.whenDefined("unzer-payment")]).then(()=>{let e=document.getElementById("unzer-payment-component");e&&e.setBasketData({amount:this.options.paylaterInstallmentAmount,currencyType:this.options.paylaterInstallmentCurrency,country:this.options.countryIso})})}}class r extends s{static #e=this.options={googlePayButtonId:"unzer-google-pay-button",merchantName:"",merchantId:"",gatewayMerchantId:"",currency:"EUR",amount:"0.0",countryCode:"DE",allowedCardNetworks:[],allowCreditCards:!0,allowPrepaidCards:!0,buttonColor:"default",buttonSizeMode:"fill"};static #t=this.submitting=!1;init(){super.init(),this._registerGooglePayButton(),this._hideBuyButton()}_registerGooglePayButton(){Promise.all([customElements.whenDefined("unzer-payment")]).then(()=>{let e=document.getElementById("unzer-payment-component");e&&(e.setGooglePayData({gatewayMerchantId:this.options.gatewayMerchantId,merchantInfo:{merchantName:this.options.merchantName,merchantId:this.options.merchantId},transactionInfo:{currencyCode:this.options.currency,countryCode:this.options.countryCode,totalPriceStatus:"ESTIMATED",totalPrice:String(this.options.amount)},buttonOptions:{buttonColor:this.options.buttonColor,buttonSizeMode:this.options.buttonSizeMode},allowedCardNetworks:this.options.allowedCardNetworks,allowCreditCards:this.options.allowCreditCards,allowPrepaidCards:this.options.allowPrepaidCards}),document.getElementById("unzer-checkout-component").onPaymentSubmit=t=>{t.submitResponse&&t.submitResponse.success?!this._unzerPaymentPlugin._validateForm()||(e.style.display="none",this._unzerPaymentPlugin.submitting=!0,this._unzerPaymentPlugin.submitTypeId(t.submitResponse.data.id)):console.log("ERROR",t)})})}_hideBuyButton(){this._getSubmitButton().style.display="none"}}let l=window.PluginBaseClass;class u extends l{static #e=this.options={googlePay:{},applePay:{}};init(){this.includeJs(),this.registerActions()}includeJs(){if(!document.querySelector('script[src*="static-v2.unzer.com/v2/ui-components/index.js"]')){let e=document.createElement("script");e.type="module",e.src="https://static-v2.unzer.com/v2/ui-components/index.js",document.head.appendChild(e)}}registerActions(){Promise.all([customElements.whenDefined("unzer-payment"),customElements.whenDefined("unzer-google-pay"),customElements.whenDefined("unzer-paypal-express"),customElements.whenDefined("unzer-apple-pay")]).then(()=>{let e=this.el.querySelector(".unzer-express-payment"),t=this.el.querySelector(".unzer-paypal-express"),n=this.el.querySelector(".unzer-google-pay"),s=this.el.querySelector(".unzer-apple-pay");e&&(t&&this.registerPaypalExpress(t,e),n&&this.registerGooglePay(n,e),s&&(window.ApplePaySession&&window.ApplePaySession.canMakePayments()&&window.ApplePaySession.supportsVersion(6)?this.registerApplePay(s,e):document.querySelector(".unzer-applepay-express-container").style.display="none"))})}registerPaypalExpress(e,t){e.id="unzer-paypal-button-"+Math.floor(1e4*Math.random()),e.addEventListener("click",async e=>{e.stopPropagation();let n=await t.submit();n.submitResponse&&n.submitResponse.success&&fetch("/unzer/paypal-express",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({paymentTypeId:n.submitResponse.data.id})}).then(e=>e.json()).then(e=>{location.href=e.redirectUrl})})}registerGooglePay(e,t){t.setGooglePayData({gatewayMerchantId:this.options.googlePay.gatewayMerchantId,merchantInfo:{merchantName:this.options.googlePay.merchantName,merchantId:this.options.googlePay.merchantId},transactionInfo:{currencyCode:this.options.googlePay.currency,countryCode:this.options.googlePay.countryCode,totalPriceStatus:"ESTIMATED",checkoutOption:"DEFAULT",totalPrice:String(this.options.googlePay.amount)},buttonOptions:{buttonColor:this.options.googlePay.buttonColor,buttonSizeMode:this.options.googlePay.buttonSizeMode},allowedCardNetworks:this.options.googlePay.allowedCardNetworks,allowCreditCards:this.options.googlePay.allowCreditCards,allowPrepaidCards:this.options.googlePay.allowPrepaidCards,billingAddressParameters:{format:"MIN"},billingAddressRequired:!0,emailRequired:!0,onPaymentDataChangedCallback:()=>({}),shippingOptionParameters:{},onPaymentAuthorizedCallback:async(e,n,s)=>{console.log("paymentData:",e);let o=await t.submit(),i=o.submitResponse.data.id;console.log(o,"--- success paymentTypeId",i),console.log("submit response: ",o),fetch("/unzer/google-pay-express",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({paymentTypeId:i,paymentData:e})}).then(e=>e.json()).then(e=>{console.log(JSON.stringify(e)),location.href=e.redirectUrl})},shippingAddressRequired:!0,shippingOptionRequired:!1})}registerApplePay(e,t){let n={countryCode:this.options.applePay.countryCode,currencyCode:this.options.applePay.currency,supportedNetworks:this.options.applePay.supportedNetworks,merchantCapabilities:this.options.applePay.merchantCapabilities,total:{label:this.options.applePay.shopName,amount:String(this.options.applePay.amount)},requiredShippingContactFields:["postalAddress","name","email","phone"],requiredBillingContactFields:["postalAddress","name","email","phone"],onPaymentAuthorizedCallback:async(e,n,s)=>{console.log("paymentData:",e);let o=event.payment.shippingContact,i=event.payment.billingContact;console.log(o),console.log(i);let a=await t.submit(),r=a.submitResponse.data.id;console.log(a,"--- success paymentTypeId",r),console.log("submit response: ",a),fetch("/unzer/applepay-express",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({paymentTypeId:r,paymentData:e,shippingContact:o,billingContact:i})}).then(e=>e.json()).then(e=>{console.log(JSON.stringify(e)),location.href=e.redirectUrl})}};n.initApplePaySession=e=>{},t?.setApplePayData(n)}}window.PluginManager.register("UnzerPaymentBase",t,"[data-unzer-payment-base]"),window.PluginManager.register("UnzerPaymentCreditCard",class extends o{},"[data-unzer-payment-credit-card]"),window.PluginManager.register("UnzerPaymentPayPal",class extends o{},"[data-unzer-payment-paypal]"),window.PluginManager.register("UnzerPaymentSepaDirectDebit",class extends o{},"[data-unzer-payment-sepa-direct-debit]"),window.PluginManager.register("UnzerPaymentApplePayV2",i,"[data-unzer-payment-apple-pay-v2]"),window.PluginManager.register("UnzerPaymentPaylaterInvoice",class extends s{},"[data-unzer-payment-paylater-invoice]"),window.PluginManager.register("UnzerPaymentPaylaterInstallment",a,"[data-unzer-payment-paylater-installment]"),window.PluginManager.register("UnzerPaymentPaylaterDirectDebitSecured",class extends s{},"[data-unzer-payment-paylater-direct-debit-secured]"),window.PluginManager.register("UnzerPaymentGooglePay",r,"[data-unzer-payment-google-pay]"),window.PluginManager.register("UnzerPaymentExpressButtons",u,"[data-unzer-payment-express-buttons]")})();
+(() => {
+    'use strict';
+    let e = window.PluginBaseClass;
+    class t extends e {
+        static #e = (this.options = {
+            publicKey: null,
+            shopLocale: null,
+            unzerCustomer: null,
+            submitButtonId: 'confirmFormSubmit',
+            disabledClass: 'disabled',
+            resourceIdElementId: 'unzerResourceId',
+            threatMetrixIdElementId: 'unzerThreatMetrixId',
+            confirmFormId: 'confirmOrderForm',
+            errorWrapperClass: 'unzer-payment--error-wrapper',
+            errorContentSelector:
+                '.unzer-payment--error-wrapper .alert-content-container',
+            errorShouldNotBeEmpty: '%field% should not be empty',
+            isOrderEdit: !1,
+            savedDeviceRadioButtonSelector: '*[name="savedPaymentDevice"]',
+            savedDeviceRadioButtonNewAccountId: 'device-new',
+            savedDeviceSelectedRadioButtonSelector:
+                '*[name="savedPaymentDevice"]:checked',
+        });
+        static #t = (this.submitting = !1);
+        init() {
+            this._registerElements(), this._registerEvents();
+        }
+        _registerElements() {
+            this.submitButton = this.getSubmitButton();
+        }
+        getSubmitButton() {
+            let e = document.getElementById(this.options.submitButtonId);
+            return (
+                e ||
+                    (e = document
+                        .getElementById(this.options.confirmFormId)
+                        .getElementsByTagName('button')[0]),
+                e || null
+            );
+        }
+        _registerEvents() {
+            this.submitButton.addEventListener(
+                'click',
+                this._onSubmitButtonClick.bind(this)
+            ),
+                this.options.unzerCustomer &&
+                    Promise.all([
+                        customElements.whenDefined('unzer-payment'),
+                    ]).then(() => {
+                        let e = document.getElementById(
+                            'unzer-payment-component'
+                        );
+                        e &&
+                            (console.log(
+                                'set customer data',
+                                this.options.unzerCustomer
+                            ),
+                            e.setCustomerData(this.options.unzerCustomer));
+                    });
+        }
+        setSubmitButtonActive(e) {
+            e
+                ? (this.submitButton.classList.remove(
+                      this.options.disabledClass
+                  ),
+                  (this.submitButton.disabled = !1))
+                : (this.submitButton.classList.add(this.options.disabledClass),
+                  (this.submitButton.disabled = !0));
+        }
+        submitTypeId(e, t) {
+            if (
+                ((document.getElementById(
+                    this.options.resourceIdElementId
+                ).value = e),
+                t)
+            ) {
+                let e = document.getElementById(
+                    this.options.threatMetrixIdElementId
+                );
+                e && (e.value = t);
+            }
+            this.setSubmitButtonActive(!0),
+                this.submitButton.click(),
+                this.setSubmitButtonActive(!1);
+        }
+        showError(e) {
+            let t =
+                    arguments.length > 1 &&
+                    void 0 !== arguments[1] &&
+                    arguments[1],
+                n = document
+                    .getElementsByClassName(this.options.errorWrapperClass)
+                    .item(0),
+                s = document.querySelectorAll(
+                    this.options.errorContentSelector
+                )[0];
+            t && '' !== s.innerText
+                ? (s.innerText = `${s.innerText}
+${e.message}`)
+                : (s.innerText = e.message),
+                (n.hidden = !1),
+                n.scrollIntoView({ block: 'end', behavior: 'smooth' }),
+                this.setSubmitButtonActive(!0),
+                (this.submitting = !1);
+        }
+        renderErrorToElement(e, t) {
+            let n = document
+                    .getElementsByClassName(this.options.errorWrapperClass)
+                    .item(0),
+                s = document.querySelectorAll(
+                    this.options.errorContentSelector
+                )[0];
+            (n.hidden = !1), (s.innerText = e.message), t.appendChild(n);
+        }
+        async _onSubmitButtonClick(e) {
+            if (!0 === this.submitting) return;
+            if (
+                ((this.submitting = !0),
+                e.preventDefault(),
+                !this._validateForm())
+            ) {
+                (this.submitting = !1), this.setSubmitButtonActive(!0);
+                return;
+            }
+            this.setSubmitButtonActive(!1);
+            let t = document.querySelector(
+                this.options.savedDeviceSelectedRadioButtonSelector
+            );
+            if (t && t.id !== this.options.savedDeviceRadioButtonNewAccountId)
+                this.submitTypeId(t.value, null);
+            else {
+                let e = document.getElementById('unzer-payment-component');
+                if (e)
+                    try {
+                        let t = await e.submit();
+                        t.submitResponse
+                            ? !0 === t.submitResponse.success
+                                ? (console.log(
+                                      'submit response: ',
+                                      t.submitResponse
+                                  ),
+                                  this.submitTypeId(
+                                      t.submitResponse.data.id,
+                                      t.threatMetrixId || null
+                                  ))
+                                : this.showError({ message: 'GENERAL ERROR' })
+                            : this.showError({ message: 'EXCEPTIONAL ERROR' });
+                    } catch (t) {
+                        e.scrollIntoView({ block: 'end', behavior: 'smooth' }),
+                            (this.submitting = !1),
+                            this.setSubmitButtonActive(!0);
+                    }
+                else
+                    this.setSubmitButtonActive(!0),
+                        this.submitButton.click(),
+                        this.setSubmitButtonActive(!1);
+            }
+        }
+        _validateForm() {
+            let e = !0,
+                t = document.forms[this.options.confirmFormId].elements;
+            this._clearErrorMessage();
+            for (let n = 0; n < t.length; n++) {
+                let s = t[n];
+                if (!s.checkValidity())
+                    return (
+                        s.dataset.customError &&
+                            this.showError({ message: s.dataset.customError }),
+                        s.classList.add('is-invalid'),
+                        !1
+                    );
+                s.required && '' === s.value
+                    ? (s.classList.add('is-invalid'),
+                      0 === s.labels.length && e
+                          ? s.scrollIntoView({
+                                block: 'end',
+                                behavior: 'smooth',
+                            })
+                          : s.labels.length > 0 &&
+                            this.showError(
+                                {
+                                    message:
+                                        this.options.errorShouldNotBeEmpty.replace(
+                                            /%field%/,
+                                            s.labels[0].innerText
+                                        ),
+                                },
+                                !0
+                            ),
+                      (e = !1))
+                    : s.classList.remove('is-invalid');
+            }
+            return e;
+        }
+        _clearErrorMessage() {
+            let e = document
+                    .getElementsByClassName(this.options.errorWrapperClass)
+                    .item(0),
+                t = document.querySelectorAll(
+                    this.options.errorContentSelector
+                )[0];
+            (e.hidden = !0), (t.innerText = '');
+        }
+        getB2bCustomerObject(e) {
+            let t = `${e.firstName} ${e.lastName}`,
+                n = e.birthday ? new Date(e.birthday) : null,
+                s = {
+                    firstname: e.firstName,
+                    lastname: e.lastName,
+                    email: e.email,
+                    company: e.activeBillingAddress.company,
+                    salutation: e.salutation.salutationKey,
+                    billingAddress: {
+                        name: t,
+                        street: e.activeBillingAddress.street,
+                        zip: e.activeBillingAddress.zipcode,
+                        city: e.activeBillingAddress.city,
+                        country: e.activeBillingAddress.country.iso,
+                    },
+                    shippingAddress: {
+                        name: t,
+                        street: e.activeShippingAddress.street,
+                        zip: e.activeShippingAddress.zipcode,
+                        city: e.activeShippingAddress.city,
+                        country: e.activeShippingAddress.country.iso,
+                    },
+                };
+            return (
+                n &&
+                    (s.birthDate =
+                        n.getFullYear() +
+                        '-' +
+                        (n.getMonth() + 1).toString().padStart(2, '0') +
+                        '-' +
+                        n.getDay().toString().padStart(2, '0')),
+                s
+            );
+        }
+    }
+    let n = window.PluginBaseClass;
+    class s extends n {
+        static #e = (this._unzerPaymentPlugin = null);
+        init() {
+            this._unzerPaymentPlugin =
+                window.PluginManager.getPluginInstances('UnzerPaymentBase')[0];
+        }
+        _handleError(e) {
+            this._unzerPaymentPlugin.showError(e);
+        }
+        _setSubmitButtonActive(e) {
+            this._unzerPaymentPlugin.setSubmitButtonActive(e);
+        }
+        _getSubmitButton() {
+            return this._unzerPaymentPlugin.getSubmitButton();
+        }
+    }
+    window.PluginBaseClass;
+    class o extends s {
+        static #e = (this.options = {
+            elementWrapperSelector: '.unzer-payment-create-component-container',
+            radioButtonSelector: '*[name="savedPaymentDevice"]',
+            radioButtonNewAccountId: 'device-new',
+            selectedRadioButtonSelector: '*[name="savedPaymentDevice"]:checked',
+            hasSavedDevices: !1,
+        });
+        init() {
+            super.init(), this._registerEvents();
+        }
+        _registerEvents() {
+            if (this.options.hasSavedDevices) {
+                let e = this.el.querySelectorAll(
+                    this.options.radioButtonSelector
+                );
+                for (let t = 0; t < e.length; t++)
+                    e[t].addEventListener('change', (e) =>
+                        this._onRadioButtonChange(e)
+                    );
+                document
+                    .querySelector(this.options.selectedRadioButtonSelector)
+                    .dispatchEvent(new Event('change'));
+            }
+        }
+        _onRadioButtonChange(e) {
+            let t = e.target;
+            this.el.querySelector(this.options.elementWrapperSelector).hidden =
+                t.id !== this.options.radioButtonNewAccountId;
+        }
+    }
+    window.PluginBaseClass;
+    class i extends s {
+        static #e = (this.options = {
+            countryCode: 'DE',
+            currency: 'EUR',
+            shopName: 'Unzer GmbH',
+            amount: '0.0',
+            applePayButtonSelector: '.apple-pay-button',
+            checkoutConfirmButtonSelector: '#confirmFormSubmit',
+            applePayMethodSelector:
+                '.unzer-payment-apple-pay-v2-method-wrapper',
+            authorizePaymentUrl: '',
+            merchantValidationUrl: '',
+            noApplePayMessage: '',
+            supportedNetworks: ['masterCard', 'visa'],
+        });
+        init() {
+            super.init(),
+                this._hasCapability()
+                    ? (this._createForm(), this._hideBuyButton())
+                    : this._disableApplePay();
+        }
+        _hasCapability() {
+            return (
+                window.ApplePaySession &&
+                window.ApplePaySession.canMakePayments() &&
+                window.ApplePaySession.supportsVersion(6)
+            );
+        }
+        _disableApplePay() {
+            document
+                .querySelector(this.options.applePayMethodSelector)
+                .remove(),
+                document
+                    .querySelectorAll('[data-unzer-payment-apple-pay-v2]')
+                    .forEach((e) => e.remove()),
+                this._handleError({ message: this.options.noApplePayMessage }),
+                this._unzerPaymentPlugin.setSubmitButtonActive(!1);
+        }
+        _createForm() {
+            Promise.all([customElements.whenDefined('unzer-payment')]).then(
+                () => {
+                    let e = document.getElementById('unzer-payment-component');
+                    e &&
+                        (e.setApplePayData(this._getApplePayPaymentRequest()),
+                        (document.getElementById(
+                            'unzer-checkout-component'
+                        ).onPaymentSubmit = (t) => {
+                            t.submitResponse &&
+                                t.submitResponse.success &&
+                                this._unzerPaymentPlugin._validateForm() &&
+                                ((e.style.display = 'none'),
+                                (this._unzerPaymentPlugin.submitting = !0),
+                                this._unzerPaymentPlugin.submitTypeId(
+                                    t.submitResponse.data.id
+                                ));
+                        }));
+                }
+            );
+        }
+        _getApplePayPaymentRequest() {
+            return {
+                countryCode: this.options.countryCode,
+                currencyCode: this.options.currency,
+                supportedNetworks: this.options.supportedNetworks,
+                merchantCapabilities: this.options.merchantCapabilities,
+                total: {
+                    label: this.options.shopName,
+                    amount: this.options.amount,
+                },
+            };
+        }
+        _hideBuyButton() {
+            document.querySelector(
+                this.options.checkoutConfirmButtonSelector
+            ).style.display = 'none';
+        }
+    }
+    class a extends s {
+        static #e = (this.options = {
+            countryIso: '',
+            paylaterInstallmentAmount: '',
+            paylaterInstallmentCurrency: '',
+        });
+        init() {
+            super.init(),
+                Promise.all([customElements.whenDefined('unzer-payment')]).then(
+                    () => {
+                        let e = document.getElementById(
+                            'unzer-payment-component'
+                        );
+                        e &&
+                            e.setBasketData({
+                                amount: this.options.paylaterInstallmentAmount,
+                                currencyType:
+                                    this.options.paylaterInstallmentCurrency,
+                                country: this.options.countryIso,
+                            });
+                    }
+                );
+        }
+    }
+    class r extends s {
+        static #e = (this.options = {
+            googlePayButtonId: 'unzer-google-pay-button',
+            merchantName: '',
+            merchantId: '',
+            gatewayMerchantId: '',
+            currency: 'EUR',
+            amount: '0.0',
+            countryCode: 'DE',
+            allowedCardNetworks: [],
+            allowCreditCards: !0,
+            allowPrepaidCards: !0,
+            buttonColor: 'default',
+            buttonSizeMode: 'fill',
+        });
+        static #t = (this.submitting = !1);
+        init() {
+            super.init(),
+                this._registerGooglePayButton(),
+                this._hideBuyButton();
+        }
+        _registerGooglePayButton() {
+            Promise.all([customElements.whenDefined('unzer-payment')]).then(
+                () => {
+                    let e = document.getElementById('unzer-payment-component');
+                    e &&
+                        (e.setGooglePayData({
+                            gatewayMerchantId: this.options.gatewayMerchantId,
+                            merchantInfo: {
+                                merchantName: this.options.merchantName,
+                                merchantId: this.options.merchantId,
+                            },
+                            transactionInfo: {
+                                currencyCode: this.options.currency,
+                                countryCode: this.options.countryCode,
+                                totalPriceStatus: 'ESTIMATED',
+                                totalPrice: String(this.options.amount),
+                            },
+                            buttonOptions: {
+                                buttonColor: this.options.buttonColor,
+                                buttonSizeMode: this.options.buttonSizeMode,
+                            },
+                            allowedCardNetworks:
+                                this.options.allowedCardNetworks,
+                            allowCreditCards: this.options.allowCreditCards,
+                            allowPrepaidCards: this.options.allowPrepaidCards,
+                        }),
+                        (document.getElementById(
+                            'unzer-checkout-component'
+                        ).onPaymentSubmit = (t) => {
+                            t.submitResponse && t.submitResponse.success
+                                ? !this._unzerPaymentPlugin._validateForm() ||
+                                  ((e.style.display = 'none'),
+                                  (this._unzerPaymentPlugin.submitting = !0),
+                                  this._unzerPaymentPlugin.submitTypeId(
+                                      t.submitResponse.data.id
+                                  ))
+                                : console.log('ERROR', t);
+                        }));
+                }
+            );
+        }
+        _hideBuyButton() {
+            this._getSubmitButton().style.display = 'none';
+        }
+    }
+    let l = window.PluginBaseClass;
+    class u extends l {
+        static #e = (this.options = { googlePay: {}, applePay: {} });
+        init() {
+            this.includeJs(), this.registerActions();
+        }
+        includeJs() {
+            if (
+                !document.querySelector(
+                    'script[src*="static-v2.unzer.com/v2/ui-components/index.js"]'
+                )
+            ) {
+                let e = document.createElement('script');
+                (e.type = 'module'),
+                    (e.src =
+                        'https://static-v2.unzer.com/v2/ui-components/index.js'),
+                    document.head.appendChild(e);
+            }
+        }
+        registerActions() {
+            Promise.all([
+                customElements.whenDefined('unzer-payment'),
+                customElements.whenDefined('unzer-google-pay'),
+                customElements.whenDefined('unzer-paypal-express'),
+                customElements.whenDefined('unzer-apple-pay'),
+            ]).then(() => {
+                let e = this.el.querySelector('.unzer-express-payment'),
+                    t = this.el.querySelector('.unzer-paypal-express'),
+                    n = this.el.querySelector('.unzer-google-pay'),
+                    s = this.el.querySelector('.unzer-apple-pay');
+                e &&
+                    (t && this.registerPaypalExpress(t, e),
+                    n && this.registerGooglePay(n, e),
+                    s &&
+                        (window.ApplePaySession &&
+                        window.ApplePaySession.canMakePayments() &&
+                        window.ApplePaySession.supportsVersion(6)
+                            ? this.registerApplePay(s, e)
+                            : (document.querySelector(
+                                  '.unzer-applepay-express-container'
+                              ).style.display = 'none')));
+            });
+        }
+        registerPaypalExpress(e, t) {
+            (e.id = 'unzer-paypal-button-' + Math.floor(1e4 * Math.random())),
+                e.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    let n = await t.submit();
+                    n.submitResponse &&
+                        n.submitResponse.success &&
+                        fetch('/unzer/paypal-express', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                paymentTypeId: n.submitResponse.data.id,
+                            }),
+                        })
+                            .then((e) => e.json())
+                            .then((e) => {
+                                location.href = e.redirectUrl;
+                            });
+                });
+        }
+        registerGooglePay(e, t) {
+            t.setGooglePayData({
+                gatewayMerchantId: this.options.googlePay.gatewayMerchantId,
+                merchantInfo: {
+                    merchantName: this.options.googlePay.merchantName,
+                    merchantId: this.options.googlePay.merchantId,
+                },
+                transactionInfo: {
+                    currencyCode: this.options.googlePay.currency,
+                    countryCode: this.options.googlePay.countryCode,
+                    totalPriceStatus: 'ESTIMATED',
+                    checkoutOption: 'DEFAULT',
+                    totalPrice: String(this.options.googlePay.amount),
+                },
+                buttonOptions: {
+                    buttonColor: this.options.googlePay.buttonColor,
+                    buttonSizeMode: this.options.googlePay.buttonSizeMode,
+                },
+                allowedCardNetworks: this.options.googlePay.allowedCardNetworks,
+                allowCreditCards: this.options.googlePay.allowCreditCards,
+                allowPrepaidCards: this.options.googlePay.allowPrepaidCards,
+                billingAddressParameters: { format: 'MIN' },
+                billingAddressRequired: !0,
+                emailRequired: !0,
+                onPaymentDataChangedCallback: () => ({}),
+                shippingOptionParameters: {},
+                onPaymentAuthorizedCallback: async (e, n, s) => {
+                    console.log('paymentData:', e);
+                    let o = await t.submit(),
+                        i = o.submitResponse.data.id;
+                    console.log(o, '--- success paymentTypeId', i),
+                        console.log('submit response: ', o),
+                        fetch('/unzer/google-pay-express', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                paymentTypeId: i,
+                                paymentData: e,
+                            }),
+                        })
+                            .then((e) => e.json())
+                            .then((e) => {
+                                console.log(JSON.stringify(e)),
+                                    (location.href = e.redirectUrl);
+                            });
+                },
+                shippingAddressRequired: !0,
+                shippingOptionRequired: !1,
+            });
+        }
+        registerApplePay(e, t) {
+            let n = {
+                countryCode: this.options.applePay.countryCode,
+                currencyCode: this.options.applePay.currency,
+                supportedNetworks: this.options.applePay.supportedNetworks,
+                merchantCapabilities:
+                    this.options.applePay.merchantCapabilities,
+                total: {
+                    label: this.options.applePay.shopName,
+                    amount: String(this.options.applePay.amount),
+                },
+                requiredShippingContactFields: [
+                    'postalAddress',
+                    'name',
+                    'email',
+                    'phone',
+                ],
+                requiredBillingContactFields: [
+                    'postalAddress',
+                    'name',
+                    'email',
+                    'phone',
+                ],
+                onPaymentAuthorizedCallback: async (e, n, s) => {
+                    console.log('paymentData:', e);
+                    let o = event.payment.shippingContact,
+                        i = event.payment.billingContact;
+                    console.log(o), console.log(i);
+                    let a = await t.submit(),
+                        r = a.submitResponse.data.id;
+                    console.log(a, '--- success paymentTypeId', r),
+                        console.log('submit response: ', a),
+                        fetch('/unzer/applepay-express', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                paymentTypeId: r,
+                                paymentData: e,
+                                shippingContact: o,
+                                billingContact: i,
+                            }),
+                        })
+                            .then((e) => e.json())
+                            .then((e) => {
+                                console.log(JSON.stringify(e)),
+                                    (location.href = e.redirectUrl);
+                            });
+                },
+            };
+            (n.initApplePaySession = (e) => {}), t?.setApplePayData(n);
+        }
+    }
+    window.PluginManager.register(
+        'UnzerPaymentBase',
+        t,
+        '[data-unzer-payment-base]'
+    ),
+        window.PluginManager.register(
+            'UnzerPaymentCreditCard',
+            class extends o {},
+            '[data-unzer-payment-credit-card]'
+        ),
+        window.PluginManager.register(
+            'UnzerPaymentPayPal',
+            class extends o {},
+            '[data-unzer-payment-paypal]'
+        ),
+        window.PluginManager.register(
+            'UnzerPaymentSepaDirectDebit',
+            class extends o {},
+            '[data-unzer-payment-sepa-direct-debit]'
+        ),
+        window.PluginManager.register(
+            'UnzerPaymentApplePayV2',
+            i,
+            '[data-unzer-payment-apple-pay-v2]'
+        ),
+        window.PluginManager.register(
+            'UnzerPaymentPaylaterInvoice',
+            class extends s {},
+            '[data-unzer-payment-paylater-invoice]'
+        ),
+        window.PluginManager.register(
+            'UnzerPaymentPaylaterInstallment',
+            a,
+            '[data-unzer-payment-paylater-installment]'
+        ),
+        window.PluginManager.register(
+            'UnzerPaymentPaylaterDirectDebitSecured',
+            class extends s {},
+            '[data-unzer-payment-paylater-direct-debit-secured]'
+        ),
+        window.PluginManager.register(
+            'UnzerPaymentGooglePay',
+            r,
+            '[data-unzer-payment-google-pay]'
+        ),
+        window.PluginManager.register(
+            'UnzerPaymentExpressButtons',
+            u,
+            '[data-unzer-payment-express-buttons]'
+        );
+})();

@@ -67,15 +67,10 @@ Component.register('unzer-payment-actions', {
         maxTransactionAmount() {
             let amount = 0;
 
+            let isAmountForPrepaymentRefund = this.isRefundPossible && this.paymentResource.paymentMethodId === '085b64d0028a8bd447294e03c4eb411a';
+
             if (this.isRefundPossible) {
-                if (
-                    this.paymentResource.paymentMethodId ===
-                    '085b64d0028a8bd447294e03c4eb411a'
-                ) {
-                    amount = this.paymentResource.amount.remaining;
-                } else {
-                    amount = this.transactionResource.amount;
-                }
+                amount = this.transactionResource.amount;
             }
 
             if (this.isChargePossible) {
@@ -84,6 +79,10 @@ Component.register('unzer-payment-actions', {
 
             if ('remainingAmount' in this.transactionResource) {
                 amount = this.transactionResource.remainingAmount;
+            }
+
+            if (isAmountForPrepaymentRefund) {
+                amount = this.paymentResource.amount.remaining;
             }
 
             return amount / 10 ** this.paymentResource.amount.decimalPrecision;
@@ -122,7 +121,7 @@ Component.register('unzer-payment-actions', {
             this.isLoading = true;
 
             this.UnzerPaymentService.chargeTransaction(
-                this.paymentResource.orderId,
+                this.paymentResource.orderTransactionId,
                 this.transactionResource.id,
                 this.transactionAmount
             )
@@ -170,7 +169,7 @@ Component.register('unzer-payment-actions', {
             this.isLoading = true;
 
             this.UnzerPaymentService.refundTransaction(
-                this.paymentResource.orderId,
+                this.paymentResource.orderTransactionId,
                 this.transactionResource.id,
                 this.transactionAmount,
                 this.reasonCode

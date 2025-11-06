@@ -20,7 +20,6 @@ use UnzerPayment6\Components\ResourceHydrator\PaymentResourceHydrator\PaymentRes
 use UnzerPayment6\Components\ShipService\ShipServiceInterface;
 use UnzerPayment6\Components\Struct\KeyPairContext;
 use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
-use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\TransactionTypes\Charge;
@@ -51,19 +50,7 @@ class UnzerPaymentTransactionController extends AbstractController
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
 
         try {
-            try {
-                $payment = $client->fetchPaymentByOrderId($orderTransactionId);
-                // not sure what this is for - we'll leave it here for now:
-                $payment = $client->fetchPayment($payment);
-            } catch (UnzerApiException $e) {
-                $paymentId = $transaction->getCustomFields()[CustomFieldInstaller::UNZER_PAYMENT_PAYMENT_ID_KEY] ?? null;
-                if ($paymentId) {
-                    $payment = $client->fetchPayment($paymentId);
-                } else {
-                    throw new \RuntimeException('no payment found');
-                }
-            }
-
+            $payment = UnzerTransactionUtil::fetchPaymentFromOrderTransaction($transaction, $client);
             $data = $this->hydrator->hydrateArray($payment, $transaction, $client);
 
             if (!empty($data['basket']['totalValueGross'])) {
@@ -89,7 +76,7 @@ class UnzerPaymentTransactionController extends AbstractController
         }
 
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($transaction));
-
+        $payment = UnzerTransactionUtil::fetchPaymentFromOrderTransaction($transaction, $client);
         try {
             $charge = new Charge($amount);
 
@@ -101,7 +88,8 @@ class UnzerPaymentTransactionController extends AbstractController
                 }
             }
 
-            $client->performChargeOnPayment($orderTransactionId, $charge);
+            $client->performChargeOnPayment($payment, $charge);
+            $this->unzerTransactionUtil->updateOrderTransactionStatus($client, $transaction, $context);
         } catch (UnzerApiException|\Throwable $exception) {
             $exceptionReturnValues = $this->handleException($exception, \sprintf('Error while executing charge transaction for order transaction [%s]: %s', $orderTransactionId, $exception->getMessage()));
 
