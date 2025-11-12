@@ -19,7 +19,8 @@ class Migration1605179799ForeignKeyChanges extends MigrationStep
         $transferInfoSql = $connection->fetchOne('SHOW KEYS FROM `unzer_payment_transfer_info` WHERE Key_name = "fk.heidelpay_transfer_info.transaction_id";');
 
         if (!$transferInfoSql) {
-            $connection->executeStatement(<<<SQL
+            $connection->executeStatement(
+                <<<SQL
             ALTER TABLE unzer_payment_transfer_info
                 DROP FOREIGN KEY `fk.heidelpay_transfer_info.transaction_id`,
                 ADD CONSTRAINT `fk.unzer_payment_transfer_info.transaction_id`
@@ -33,7 +34,8 @@ SQL
         $paymentDeviceResult = $connection->fetchOne('SHOW KEYS FROM `unzer_payment_payment_device` WHERE Key_name = "fk.heidelpay_payment_device.customer_id";');
 
         if (!$paymentDeviceResult) {
-            $connection->executeStatement(<<<SQL
+            $connection->executeStatement(
+                <<<SQL
             ALTER TABLE unzer_payment_payment_device
                 DROP FOREIGN KEY `fk.heidelpay_payment_device.customer_id`,
                 ADD CONSTRAINT `fk.unzer_payment_payment_device.customer_id`
@@ -47,6 +49,6 @@ SQL
 
     public function updateDestructive(Connection $connection): void
     {
-        //Nothing to do
+        // Nothing to do
     }
 }

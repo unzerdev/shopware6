@@ -1,4 +1,5 @@
 {% block unzer_payment_frame_credit_card %}
+    {% set showAccountSave = not context.customer.guest and config('UnzerPayment6.settings.allowSaveCard') %}
     {% block unzer_payment_checkout_confirm_frame_card_body_title %}
         <div class="card-title">
             {{ context.paymentMethod.translated.name }}
@@ -8,7 +9,7 @@
     <div class="unzer-payment-credit-card-wrapper"
          data-unzer-payment-credit-card="true"
          data-unzer-payment-credit-card-options='{
-            "hasSavedCards": "{{ page.extensions.unzerCreditCard.creditCards|length > 0 }}"
+            "hasSavedDevices": "{{ page.extensions.unzerCreditCard.creditCards|length > 0 }}"
          }'>
 
         {% block unzer_payment_frame_credit_card_test_data %}
@@ -27,7 +28,7 @@
                     {# @var creditCard \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
                     {% for creditCard in page.extensions.unzerCreditCard.creditCards %}
                         <div class="form-check payment-method-radio custom-control custom-radio payment-control">
-                            <input type="radio" value="{{ creditCard.typeId }}" name="savedCreditCard" id="card-{{ creditCard.id }}" class="form-check-input custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
+                            <input type="radio" value="{{ creditCard.typeId }}" name="savedPaymentDevice" id="card-{{ creditCard.id }}" class="form-check-input custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
                             <label for="card-{{ creditCard.id }}" class="form-check-label custom-control-label payment-method-label">
                                 <strong>{{ creditCard.data['number'] }}</strong>
                             </label>
@@ -40,76 +41,35 @@
 
                 {% block unzer_payment_frame_credit_card_saved_device_new %}
                     <div class="form-check payment-method-radio custom-control custom-radio payment-control">
-                        <input type="radio" value="new" name="savedCreditCard" id="card-new" class="form-check-input custom-control-input payment-method-input">
-                        <label for="card-new" class="form-check-label custom-control-label payment-method-label">
+                        <input type="radio" value="new" name="savedPaymentDevice" id="device-new" class="form-check-input custom-control-input payment-method-input">
+                        <label for="device-new" class="form-check-label custom-control-label payment-method-label">
                             {{ "UnzerPayment.frame.creditCard.new"|trans }}
                         </label>
                     </div>
                 {% endblock %}
             </div>
         {% endif %}
-
-        <div class="unzer-payment-credit-card-wrapper-elements">
-            {% block unzer_payment_frame_credit_card_number %}
-                <div class="unzer-payment-frame-row">
-                    <label for="unzer-payment-credit-card-number">{{ "UnzerPayment.frame.creditCard.number"|trans }}</label>
-                    <div id="unzer-payment-credit-card-number" class="unzer-payment-text-input form-control">
-                        <img id="unzer-payment-credit-card-icon" src="https://static.unzer.com/assets/images/common/group-5.svg" alt=""/>
-                        <div id="unzer-payment-credit-card-number-input"></div>
-                    </div>
-                    <div id="unzer-payment-credit-card-number-error" class="unzer-payment-error" hidden>
-                        <div class="unzer-payment-error-message">
-                        </div>
-                    </div>
-                </div>
-            {% endblock %}
-
-            {% block unzer_payment_frame_credit_card_expiry %}
-                <div class="unzer-payment-frame-row">
-                    <label for="unzer-payment-credit-card-expiry">{{ "UnzerPayment.frame.creditCard.expiry"|trans }}</label>
-                    <div id="unzer-payment-credit-card-expiry" class="unzer-payment-text-input form-control"></div>
-                    <div id="unzer-payment-credit-card-expiry-error" class="unzer-payment-error" hidden>
-                        <div class="unzer-payment-error-message">
-                        </div>
-                    </div>
-                </div>
-            {% endblock %}
-
-            {% block unzer_payment_frame_credit_card_cvc %}
-                <div class="unzer-payment-frame-row">
-                    <label for="unzer-payment-credit-card-cvc">{{ "UnzerPayment.frame.creditCard.cvc"|trans }}</label>
-                    <div id="unzer-payment-credit-card-cvc" class="unzer-payment-text-input form-control"></div>
-                    <div id="unzer-payment-credit-card-cvc-error" class="unzer-payment-error" hidden>
-                        <div class="unzer-error-message">
-                        </div>
-                    </div>
-                </div>
-            {% endblock %}
-
-            {% block unzer_payment_frame_credit_card_holder %}
-                <div class="unzer-payment-frame-row">
-                    <label for="unzer-payment-credit-card-number">{{ "UnzerPayment.frame.creditCard.holder"|trans }}</label>
-                    <div id="unzer-payment-credit-card-holder" class="unzer-payment-text-input form-control"></div>
-                    <div id="unzer-payment-credit-card-holder-error" class="unzer-payment-error" hidden>
-                        <div class="unzer-payment-error-message">
-                        </div>
-                    </div>
-                </div>
-            {% endblock %}
-
-            {% block unzer_payment_frame_credit_card_remember %}
-                {% if not context.customer.guest %}
-                    <div class="unzer-payment-frame-row custom-control custom-checkbox">
-                        <input type="checkbox"
-                               class="custom-control-input"
-                               form="confirmOrderForm"
-                               name="{{ constant('UnzerPayment6\\Components\\PaymentHandler\\UnzerCreditCardPaymentHandler::REMEMBER_CREDIT_CARD_KEY') }}"
-                               id="unzer-payment-credit-card-remember"
-                        />
-                        <label for="unzer-payment-credit-card-remember" class="custom-control-label">{{ "UnzerPayment.frame.creditCard.remember"|trans }}</label>
-                    </div>
+        <div class="unzer-payment-create-component-container">
+            <div class="unzer-payment-credit-card-wrapper-elements">
+                {% block unzer_payment_frame_credit_card_ui_element %}
+                    <unzer-payment
+                            id="unzer-payment-component"
+                            publicKey="{{ page.extensions.unzerPaymentData.publicKey }}"
+                            locale="{{ page.extensions.unzerPaymentData.locale }}"
+                            {% if not config('UnzerPayment6.settings.allowCtp') %}disableCTP{% endif %}
+                    >
+                        <unzer-card id="unzer-card"></unzer-card>
+                    </unzer-payment>
+                {% endblock %}
+                {% if showAccountSave %}
+                    {% block unzer_payment_frame_save_device %}
+                        {% sw_include '@Storefront/storefront/component/unzer/frames/component/save-device-checkbox.html.twig'  with {
+                            context:context,
+                            label: "UnzerPayment.frame.creditCard.remember"|trans
+                        } %}
+                    {% endblock %}
                 {% endif %}
-            {% endblock %}
+            </div>
         </div>
     </div>
 {% endblock %}

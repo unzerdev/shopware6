@@ -16,11 +16,10 @@ class UnzerPaymentDeviceController extends StorefrontController
 {
     public function __construct(
         private readonly UnzerPaymentDeviceRepositoryInterface $deviceRepository
-    )
-    {
+    ) {
     }
 
-    //TODO: evaluate if GET is the correct method for this route
+    // TODO: evaluate if GET is the correct method for this route
     #[Route(path: '/unzer/deleteDevice', name: 'frontend.unzer.device.delete', methods: ['GET'])]
     /**
      * @Route("/unzer/deleteDevice", name="frontend.unzer.device.delete", methods={"GET"})
@@ -31,9 +30,9 @@ class UnzerPaymentDeviceController extends StorefrontController
             return new RedirectResponse($this->generateUrl('frontend.account.payment.page'));
         }
 
-        $context  = $salesChannelContext->getContext();
+        $context = $salesChannelContext->getContext();
         $deviceId = $request->get('id');
-        $device   = $this->deviceRepository->read($deviceId, $context);
+        $device = $this->deviceRepository->read($deviceId, $context);
 
         if ($device === null || $device->getCustomerId() !== $salesChannelContext->getCustomer()->getId()) {
             return new RedirectResponse($this->generateUrl('frontend.account.payment.page'));

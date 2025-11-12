@@ -3,10 +3,10 @@
 namespace UnzerSDK\Resources;
 
 use DateTime;
+use stdClass;
 use UnzerSDK\Adapter\HttpAdapterInterface;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Traits\CanAuthorizeWithCustomer;
-use stdClass;
 
 /**
  * Resource representing the installment plan for Installment Secured.
@@ -77,17 +77,17 @@ class InstalmentPlan extends BasePaymentType
      * @param float|null  $lastRate
      */
     public function __construct(
-        int    $numberOfRates = null,
-        string $dayOfPurchase = null,
-        float  $totalPurchaseAmount = null,
-        float  $totalInterestAmount = null,
-        float  $totalAmount = null,
-        float  $effectiveInterestRate = null,
-        float  $nominalInterestRate = null,
-        float  $feeFirstRate = null,
-        float  $feePerRate = null,
-        float  $monthlyRate = null,
-        float  $lastRate = null
+        ?int   $numberOfRates = null,
+        ?string $dayOfPurchase = null,
+        ?float $totalPurchaseAmount = null,
+        ?float $totalInterestAmount = null,
+        ?float $totalAmount = null,
+        ?float $effectiveInterestRate = null,
+        ?float $nominalInterestRate = null,
+        ?float $feeFirstRate = null,
+        ?float $feePerRate = null,
+        ?float $monthlyRate = null,
+        ?float $lastRate = null
     ) {
         $this->numberOfRates         = $numberOfRates;
         $this->dayOfPurchase         = $dayOfPurchase;

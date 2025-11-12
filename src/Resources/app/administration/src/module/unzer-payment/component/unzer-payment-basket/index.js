@@ -8,8 +8,8 @@ Component.register('unzer-payment-basket', {
     props: {
         paymentResource: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
 
     computed: {
@@ -30,7 +30,11 @@ Component.register('unzer-payment-basket', {
                     );
 
                     amountNet = this.formatCurrency(
-                        parseFloat((basketItem.amountDiscount - basketItem.amountVat).toFixed(2)) * -1
+                        parseFloat(
+                            (
+                                basketItem.amountDiscount - basketItem.amountVat
+                            ).toFixed(2)
+                        ) * -1
                     );
                 }
 
@@ -38,7 +42,7 @@ Component.register('unzer-payment-basket', {
                     quantity: basketItem.quantity,
                     title: basketItem.title,
                     amountGross: amountGross,
-                    amountNet: amountNet
+                    amountNet: amountNet,
                 });
             });
 
@@ -49,35 +53,41 @@ Component.register('unzer-payment-basket', {
             return [
                 {
                     property: 'quantity',
-                    label: this.$tc('unzer-payment.paymentDetails.basket.column.quantity'),
-                    rawData: true
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.basket.column.quantity'
+                    ),
+                    rawData: true,
                 },
                 {
                     property: 'title',
-                    label: this.$tc('unzer-payment.paymentDetails.basket.column.title'),
-                    rawData: true
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.basket.column.title'
+                    ),
+                    rawData: true,
                 },
                 {
                     property: 'amountGross',
-                    label: this.$tc('unzer-payment.paymentDetails.basket.column.amountGross'),
-                    rawData: true
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.basket.column.amountGross'
+                    ),
+                    rawData: true,
                 },
                 {
                     property: 'amountNet',
-                    label: this.$tc('unzer-payment.paymentDetails.basket.column.amountNet'),
-                    rawData: true
-                }
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.basket.column.amountNet'
+                    ),
+                    rawData: true,
+                },
             ];
-        }
+        },
     },
-    methods:{
-
-    formatCurrency(value) {
-        return Shopware.Utils.format.currency(
-            value || 0.0,
-            this.paymentResource.currency
-        );
-    }
-
-    }
+    methods: {
+        formatCurrency(value) {
+            return Shopware.Utils.format.currency(
+                value || 0.0,
+                this.paymentResource.currency
+            );
+        },
+    },
 });

@@ -15,24 +15,12 @@ use Symfony\Component\Routing\Attribute\Route;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 
 #[Route(defaults: ['_routeScope' => ['storefront']])]
-
 class UnzerCheckoutController extends CheckoutController
 {
-    /**
-     * For compatibility to other plugins, we set StorefrontController as the type hint for the argument.
-     *
-     * @var CheckoutController|StorefrontController
-     */
-    protected $innerService;
-
-    private CheckoutFinishPageLoader $finishPageLoader;
-
     public function __construct(
-        StorefrontController $innerService,
-        CheckoutFinishPageLoader $finishPageLoader
+        readonly StorefrontController $innerService,
+        readonly CheckoutFinishPageLoader $finishPageLoader
     ) {
-        $this->innerService     = $innerService;
-        $this->finishPageLoader = $finishPageLoader;
     }
 
     public function cartPage(Request $request, SalesChannelContext $context): Response
@@ -68,9 +56,9 @@ class UnzerCheckoutController extends CheckoutController
             return $this->forwardToRoute(
                 'frontend.checkout.finish.page',
                 [
-                    'orderId'                      => $apiException->getOrderId(),
-                    'changedPayment'               => false,
-                    'paymentFailed'                => true,
+                    'orderId' => $apiException->getOrderId(),
+                    'changedPayment' => false,
+                    'paymentFailed' => true,
                     'unzerPaymentExceptionMessage' => $apiException->getClientMessage(),
                 ]
             );
@@ -90,7 +78,7 @@ class UnzerCheckoutController extends CheckoutController
 
             $this->addFlash(
                 'danger',
-                sprintf(
+                \sprintf(
                     '%s %s',
                     $unzerPaymentExceptionMessage,
                     $this->trans(

@@ -27,6 +27,6 @@ SQL;
 
     public function updateDestructive(Connection $connection): void
     {
-        //Nothing to do
+        // Nothing to do
     }
 }

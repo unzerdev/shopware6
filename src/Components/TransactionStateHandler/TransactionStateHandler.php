@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\TransactionStateHandler;
 
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
@@ -18,12 +17,12 @@ use UnzerPayment6\Components\PaymentTransitionMapper\Exception\TransitionMapperE
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 
-class TransactionStateHandler implements TransactionStateHandlerInterface
+readonly class TransactionStateHandler implements TransactionStateHandlerInterface
 {
     public function __construct(
-        private readonly StateMachineRegistry $stateMachineRegistry,
-        private readonly PaymentTransitionMapperFactory $transitionMapperFactory,
-        private readonly LoggerInterface $logger
+        private StateMachineRegistry $stateMachineRegistry,
+        private PaymentTransitionMapperFactory $transitionMapperFactory,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -36,24 +35,28 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         Context $context
     ): void {
         if ($payment->getPaymentType() === null) {
-            $this->logger->error(sprintf('The payment has no payment type for transition mapping. TransactionId: %s', $transactionId), [
+            $this->logger->error(\sprintf('The payment has no payment type for transition mapping. TransactionId: %s', $transactionId), [
                 'payment' => $payment,
             ]);
 
             return;
         }
 
-        $transition = $this->getTargetTransition($payment);
+        $transition = $this->getTargetTransition($payment, $transactionId);
 
         if (empty($transition)) {
             $this->logger->error('Due to an empty transition, the FAIL transition is executed');
 
             $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_FAIL, $context);
 
-            throw new RuntimeException('Invalid transition status');
+            throw new \RuntimeException('Invalid transition status');
         }
+        $this->logger->debug('Transaction state transition for ' . $payment->getId() . ': ' . $transition, ['orderTransactionId' => $transactionId, 'payment' => $payment]);
 
         $this->executeTransition($transactionId, $transition, $context);
+        if ($transition === StateMachineTransitionActions::ACTION_FAIL) {
+            throw new \RuntimeException('Payment ' . $payment->getId() . ' has a failed.');
+        }
     }
 
     public function fail(string $transactionId, Context $context): void
@@ -74,18 +77,18 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
         );
     }
 
-    protected function getTargetTransition(Payment $payment): string
+    protected function getTargetTransition(Payment $payment, string $orderTransactionId): string
     {
         try {
             /** @var BasePaymentType $paymentType */
-            $paymentType      = $payment->getPaymentType();
+            $paymentType = $payment->getPaymentType();
             $transitionMapper = $this->transitionMapperFactory->getTransitionMapper($paymentType);
-            $transition       = $transitionMapper->getTargetPaymentStatus($payment);
-        } catch (NoTransitionMapperFoundException | TransitionMapperException $exception) {
+            $transition = $transitionMapper->getTargetPaymentStatus($payment, $orderTransactionId);
+        } catch (NoTransitionMapperFoundException|TransitionMapperException $exception) {
             $this->logger->error($exception->getMessage(), [
-                'code'  => $exception->getCode(),
-                'file'  => $exception->getFile(),
-                'line'  => $exception->getLine(),
+                'code' => $exception->getCode(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
                 'trace' => $exception->getTraceAsString(),
             ]);
         }
@@ -105,14 +108,14 @@ class TransactionStateHandler implements TransactionStateHandlerInterface
                 ),
                 $context
             );
-        } catch (IllegalTransitionException $exception) {
+        } catch (IllegalTransitionException) {
             // false positive handling (state to state) like open -> open, paid -> paid, etc.
         }
 
         // If payment should be in state "paid", `do_pay` is given -> finalize state
         if ($transition === StateMachineTransitionActions::ACTION_DO_PAY) {
             $this->logger->debug(
-                sprintf(
+                \sprintf(
                     '%s transition is executed as fallback for %s',
                     StateMachineTransitionActions::ACTION_PAID,
                     StateMachineTransitionActions::ACTION_DO_PAY

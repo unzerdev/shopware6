@@ -11,25 +11,20 @@ class UnzerPaymentDeviceEntity extends Entity
 {
     use EntityIdTrait;
 
-    public const DEVICE_TYPE_CREDIT_CARD          = 'credit_card';
-    public const DEVICE_TYPE_PAYPAL               = 'paypal_account';
-    public const DEVICE_TYPE_DIRECT_DEBIT         = 'direct_debit';
+    public const DEVICE_TYPE_CREDIT_CARD = 'credit_card';
+    public const DEVICE_TYPE_PAYPAL = 'paypal_account';
+    public const DEVICE_TYPE_DIRECT_DEBIT = 'direct_debit';
     public const DEVICE_TYPE_DIRECT_DEBIT_SECURED = 'direct_debit_secured';
 
-    /** @var string */
-    protected $customerId;
+    protected string $customerId;
 
-    /** @var string */
-    protected $deviceType;
+    protected string $deviceType;
 
-    /** @var string */
-    protected $typeId;
+    protected string $typeId;
 
-    /** @var array */
-    protected $data;
+    protected array $data;
 
-    /** @var string */
-    protected $addressHash;
+    protected string $addressHash;
 
     public function getCustomerId(): string
     {

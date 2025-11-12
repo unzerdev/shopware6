@@ -24,7 +24,7 @@ class Chargeback extends AbstractTransactionType
     /**
      * @param float|null $amount The amount to be cancelled, is transferred as grossAmount in case of Installment Secured.
      */
-    public function __construct(float $amount = null)
+    public function __construct(?float $amount = null)
     {
         $this->setAmount($amount);
     }

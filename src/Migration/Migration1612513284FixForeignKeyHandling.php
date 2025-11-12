@@ -22,7 +22,7 @@ class Migration1612513284FixForeignKeyHandling extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        //Nothing to do
+        // Nothing to do
     }
 
     private function migrateTransferInfo(Connection $connection): void
@@ -33,7 +33,8 @@ class Migration1612513284FixForeignKeyHandling extends MigrationStep
         $this->dropIndex($connection, 'unzer_payment_transfer_info', 'fk.unzer_payment_transfer_info.transaction_id');
 
         try {
-            $connection->executeStatement(<<<SQL
+            $connection->executeStatement(
+                <<<SQL
                 ALTER TABLE unzer_payment_transfer_info
                     ADD `transaction_version_id` BINARY(16) NOT NULL AFTER `transaction_id`;
 
@@ -45,9 +46,9 @@ class Migration1612513284FixForeignKeyHandling extends MigrationStep
                         ON DELETE CASCADE ON UPDATE CASCADE;
                 SET FOREIGN_KEY_CHECKS = 1;
 SQL
-                );
+            );
         } catch (\Throwable $t) {
-//                silentfail - already created
+            //                silentfail - already created
         }
     }
 
@@ -62,7 +63,8 @@ SQL
             $this->dropIndex($connection, 'unzer_payment_payment_device', 'fk.heidelpay_payment_device.customer_id');
 
             try {
-                $connection->executeStatement(<<<SQL
+                $connection->executeStatement(
+                    <<<SQL
                 ALTER TABLE unzer_payment_payment_device
                 ADD CONSTRAINT `fk.unzer_payment_payment_device.customer_id`
                     FOREIGN KEY (`customer_id`)
@@ -71,7 +73,7 @@ SQL
 SQL
                 );
             } catch (\Throwable $t) {
-//                silentfail - already created
+                //                silentfail - already created
             }
         }
     }
@@ -79,26 +81,28 @@ SQL
     private function dropForeignKey(Connection $connection, string $table, string $keyName): void
     {
         try {
-            $connection->executeStatement(<<<SQL
+            $connection->executeStatement(
+                <<<SQL
             ALTER TABLE `$table`
                 DROP FOREIGN KEY `$keyName`
 SQL
             );
         } catch (\Throwable $t) {
-//                silentfail - already deleted
+            //                silentfail - already deleted
         }
     }
 
     private function dropIndex(Connection $connection, string $table, string $indexName): void
     {
         try {
-            $connection->executeStatement(<<<SQL
+            $connection->executeStatement(
+                <<<SQL
             ALTER TABLE `$table`
                 DROP INDEX `$indexName`
 SQL
             );
         } catch (\Throwable $t) {
-//                silentfail - already deleted
+            //                silentfail - already deleted
         }
     }
 }

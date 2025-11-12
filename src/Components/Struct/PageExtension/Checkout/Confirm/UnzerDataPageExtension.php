@@ -12,17 +12,13 @@ class UnzerDataPageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerPaymentData';
 
-    /** @var string */
-    private $publicKey;
+    private string $publicKey;
 
-    /** @var string */
-    private $locale;
+    private string $locale;
 
-    /** @var bool */
-    private $showTestData;
+    private bool $showTestData;
 
-    /** @var null|Customer */
-    private $unzerCustomer;
+    private ?Customer $unzerCustomer;
 
     public function getPublicKey(): string
     {

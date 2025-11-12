@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components;
 
-use Exception;
-
-abstract class AbstractUnzerPaymentException extends Exception
+abstract class AbstractUnzerPaymentException extends \Exception
 {
-    /** @var string */
-    protected $customerMessage = 'exception/statusMapper';
+    protected string $customerMessage = 'exception/statusMapper';
 
     public function getCustomerMessage(): string
     {

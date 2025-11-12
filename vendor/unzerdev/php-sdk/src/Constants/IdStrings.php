@@ -52,6 +52,7 @@ class IdStrings
     public const SOFORT = 'sft';
     public const TWINT = 'twt';
     public const WECHATPAY = 'wcp';
+    public const WERO = 'wro';
 
     public const OPEN_BANKING = 'obp';
 
@@ -95,6 +96,7 @@ class IdStrings
         self::SOFORT,
         self::TWINT,
         self::WECHATPAY,
+        self::WERO,
         self::OPEN_BANKING,
     ];
 }

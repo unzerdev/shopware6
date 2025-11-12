@@ -21,8 +21,6 @@ use UnzerSDK\test\BaseIntegrationTest;
 
 class BasketV2Test extends BaseIntegrationTest
 {
-    //<editor-fold desc="Basket v2 tests">
-
     /**
      * Verify basket can be created and fetched.
      *
@@ -299,10 +297,6 @@ class BasketV2Test extends BaseIntegrationTest
         $this->assertEquals($basket->expose(), $fetchedPayment->getBasket()->expose());
     }
 
-    //</editor-fold>
-
-    //<editor-fold desc="Data Providers">
-
     /**
      * @return array
      */
@@ -315,6 +309,4 @@ class BasketV2Test extends BaseIntegrationTest
             'invalid not available' => [true, 'https://files.readme.io/does-not-exist.jpg', ApiResponseCodes::API_ERROR_BASKET_ITEM_IMAGE_INVALID_URL]
         ];
     }
-
-    //</editor-fold>
 }

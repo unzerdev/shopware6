@@ -9,3 +9,16 @@
     padding-bottom: 16px;
     margin-bottom: 16px;
 }
+
+.unzer-payment-sepa-wrapper .unzer-save-payment-device-container {
+    margin-top: 25px;
+}
+
+#unzer-save-payment-device-checkbox {
+    float: left;
+    margin-top: 4px;
+    margin-right: 8px;
+}
+label[for='unzer-save-payment-device-checkbox'] {
+    max-width: 85%;
+}

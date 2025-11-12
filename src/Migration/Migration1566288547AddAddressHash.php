@@ -6,7 +6,6 @@ namespace UnzerPayment6\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
-use Throwable;
 
 class Migration1566288547AddAddressHash extends MigrationStep
 {
@@ -30,8 +29,8 @@ SQL;
 
         try {
             $connection->executeStatement($sql);
-        } catch (Throwable $ex) {
-            //The column may exist already
+        } catch (\Throwable $ex) {
+            // The column may exist already
         }
     }
 

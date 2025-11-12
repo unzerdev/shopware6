@@ -12,9 +12,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use UnzerPayment6\Components\Struct\TransferInformation\TransferInformation;
 use UnzerPayment6\DataAbstractionLayer\Entity\TransferInfo\UnzerPaymentTransferInfoEntity;
 
-class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransferInfoRepositoryInterface
+readonly class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransferInfoRepositoryInterface
 {
-    public function __construct(private readonly EntityRepository $entityRepository)
+    public function __construct(private EntityRepository $entityRepository)
     {
     }
 

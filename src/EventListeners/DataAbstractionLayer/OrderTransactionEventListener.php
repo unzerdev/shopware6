@@ -10,14 +10,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepositoryInterface;
 
-class OrderTransactionEventListener implements EventSubscriberInterface
+readonly class OrderTransactionEventListener implements EventSubscriberInterface
 {
-    /** @var UnzerPaymentTransferInfoRepositoryInterface */
-    private $transferInfoRepository;
-
-    public function __construct(UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository)
-    {
-        $this->transferInfoRepository = $transferInfoRepository;
+    public function __construct(
+        private UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository
+    ) {
     }
 
     /**

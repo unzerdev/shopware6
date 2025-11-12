@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice;
 
-use RuntimeException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -16,23 +15,21 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use UnzerPayment6\Components\AddressHashGenerator\AddressHashGeneratorInterface;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 
-class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceRepositoryInterface
+readonly class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceRepositoryInterface
 {
-
     public function __construct(
-        private readonly EntityRepository $entityRepository,
-        private readonly AddressHashGeneratorInterface $addressHashService
-    )
-    {
+        private EntityRepository $entityRepository,
+        private AddressHashGeneratorInterface $addressHashService
+    ) {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getCollectionByCustomer(CustomerEntity $customer, Context $context, string $deviceType = null): EntitySearchResult
+    public function getCollectionByCustomer(CustomerEntity $customer, Context $context, ?string $deviceType = null): EntitySearchResult
     {
         if ($customer->getActiveBillingAddress() === null || $customer->getActiveShippingAddress() === null) {
-            throw new RuntimeException('Customer has no active billing or shipping address');
+            throw new \RuntimeException('Customer has no active billing or shipping address');
         }
 
         $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
@@ -61,17 +58,17 @@ class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceRepositoryInterf
         Context $context
     ): EntityWrittenContainerEvent {
         if ($customer->getActiveBillingAddress() === null || $customer->getActiveShippingAddress() === null) {
-            throw new RuntimeException('Customer has no active billing or shipping address');
+            throw new \RuntimeException('Customer has no active billing or shipping address');
         }
 
         $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
 
         $createData = [
-            'id'          => Uuid::randomHex(),
-            'deviceType'  => $deviceType,
-            'typeId'      => $typeId,
-            'data'        => $data,
-            'customerId'  => $customer->getId(),
+            'id' => Uuid::randomHex(),
+            'deviceType' => $deviceType,
+            'typeId' => $typeId,
+            'data' => $data,
+            'customerId' => $customer->getId(),
             'addressHash' => $addressHash,
         ];
 

@@ -9,24 +9,27 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
+use UnzerPayment6\Components\PaymentTransitionMapper\AbstractTransitionMapper;
 use UnzerSDK\Resources\Payment;
+use UnzerSDK\Resources\TransactionTypes\Authorization;
 
 /**
  * @property ConfigReaderInterface $configReader
- * @property EntityRepository      $orderTransactionRepository
+ * @property EntityRepository $orderTransactionRepository
  */
 trait HasBookingMode
 {
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    public function __construct(
+        protected readonly ConfigReaderInterface $configReader,
+        protected readonly EntityRepository $orderTransactionRepository
+    ) {
+    }
 
-    /** @var EntityRepository */
-    private $orderTransactionRepository;
-
-    protected function getBookingMode(Payment $paymentObject): string
+    protected function getBookingMode(string $orderTransactionId): string
     {
-        $order = $this->getOrderByPayment($paymentObject->getOrderId());
+        $order = $this->getOrderByPayment($orderTransactionId);
 
         if ($order === null) {
             return self::DEFAULT_MODE;
@@ -60,5 +63,34 @@ trait HasBookingMode
         $orderSearchResult = $this->orderTransactionRepository->search($criteria, Context::createDefaultContext());
 
         return $orderSearchResult->first();
+    }
+
+    protected function mapForAuthorizeMode(Payment $paymentObject): string
+    {
+        if ($paymentObject->isCanceled()) {
+            $status = $this->checkForRefund($paymentObject);
+
+            if ($status !== self::INVALID_TRANSITION) {
+                return $status;
+            }
+
+            $status = $this->checkForCancellation($paymentObject);
+
+            if ($status !== self::INVALID_TRANSITION) {
+                return $status;
+            }
+
+            return StateMachineTransitionActions::ACTION_FAIL;
+        }
+
+        if ($this->stateMachineTransitionExists(AbstractTransitionMapper::CONST_KEY_AUTHORIZE) && $paymentObject->isPending()) {
+            $authorization = $paymentObject->getAuthorization();
+
+            if ($authorization instanceof Authorization && $authorization->isSuccess()) {
+                return \constant(\sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
+            }
+        }
+
+        return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
     }
 }

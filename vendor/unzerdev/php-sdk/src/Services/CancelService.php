@@ -12,7 +12,6 @@ use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Cancellation;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Unzer;
-
 use function in_array;
 use function is_string;
 
@@ -67,7 +66,7 @@ class CancelService implements CancelServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function cancelAuthorization(Authorization $authorization, float $amount = null): Cancellation
+    public function cancelAuthorization(Authorization $authorization, ?float $amount = null): Cancellation
     {
         $cancellation = new Cancellation($amount);
         $cancellation->setPayment($authorization->getPayment())->setParentResource($authorization);
@@ -80,7 +79,7 @@ class CancelService implements CancelServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function cancelAuthorizationByPayment($payment, float $amount = null): Cancellation
+    public function cancelAuthorizationByPayment($payment, ?float $amount = null): Cancellation
     {
         $authorization = $this->getResourceService()->fetchAuthorization($payment);
         return $this->cancelAuthorization($authorization, $amount);
@@ -92,11 +91,11 @@ class CancelService implements CancelServiceInterface
     public function cancelChargeById(
         $payment,
         string $chargeId,
-        float $amount = null,
-        string $reasonCode = null,
-        string $referenceText = null,
-        float $amountNet = null,
-        float $amountVat = null
+        ?float $amount = null,
+        ?string $reasonCode = null,
+        ?string $referenceText = null,
+        ?float $amountNet = null,
+        ?float $amountVat = null
     ): Cancellation {
         $charge = $this->getResourceService()->fetchChargeById($payment, $chargeId);
         return $this->cancelCharge($charge, $amount, $reasonCode, $referenceText, $amountNet, $amountVat);
@@ -107,11 +106,11 @@ class CancelService implements CancelServiceInterface
      */
     public function cancelCharge(
         Charge $charge,
-        float $amount = null,
-        string $reasonCode = null,
-        string $referenceText = null,
-        float $amountNet = null,
-        float $amountVat = null
+        ?float $amount = null,
+        ?string $reasonCode = null,
+        ?string $referenceText = null,
+        ?float $amountNet = null,
+        ?float $amountVat = null
     ): Cancellation {
         $cancellation = new Cancellation($amount);
         $cancellation
@@ -131,11 +130,11 @@ class CancelService implements CancelServiceInterface
      */
     public function cancelPayment(
         $payment,
-        float $amount = null,
+        ?float $amount = null,
         ?string $reasonCode = CancelReasonCodes::REASON_CODE_CANCEL,
-        string $referenceText = null,
-        float $amountNet = null,
-        float $amountVat = null
+        ?string $referenceText = null,
+        ?float $amountNet = null,
+        ?float $amountVat = null
     ): array {
         $paymentObject = $payment;
         if (is_string($payment)) {
@@ -186,7 +185,7 @@ class CancelService implements CancelServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function cancelPaymentAuthorization($payment, float $amount = null): ?Cancellation
+    public function cancelPaymentAuthorization($payment, ?float $amount = null): ?Cancellation
     {
         $cancellation   = null;
         $completeCancel = $amount === null;

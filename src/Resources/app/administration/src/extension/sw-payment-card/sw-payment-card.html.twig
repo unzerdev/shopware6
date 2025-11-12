@@ -1,9 +1,11 @@
 {% block sw_payment_card_description %}
     <div class="sw-payment-card__description">
-        <div v-if="paymentMethod.customFields && paymentMethod.customFields.isDeprecated">
+        <div
+            v-if="paymentMethod.customFields && paymentMethod.customFields.isDeprecated"
+        >
             <sw-label
-                    variant="danger"
-                    size="medium"
+                variant="danger"
+                size="medium"
             >
                 {{ $tc('sw-payment-card.deprecated') }}
             </sw-label>

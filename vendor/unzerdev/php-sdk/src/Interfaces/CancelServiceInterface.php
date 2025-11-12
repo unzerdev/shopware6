@@ -8,13 +8,13 @@
 
 namespace UnzerSDK\Interfaces;
 
+use RuntimeException;
 use UnzerSDK\Constants\CancelReasonCodes;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\Payment;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Cancellation;
 use UnzerSDK\Resources\TransactionTypes\Charge;
-use RuntimeException;
 
 interface CancelServiceInterface
 {
@@ -30,7 +30,7 @@ interface CancelServiceInterface
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
-    public function cancelAuthorization(Authorization $authorization, float $amount = null): Cancellation;
+    public function cancelAuthorization(Authorization $authorization, ?float $amount = null): Cancellation;
 
     /**
      * Performs a Cancellation transaction for the Authorization of the given Payment object.
@@ -44,7 +44,7 @@ interface CancelServiceInterface
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
-    public function cancelAuthorizationByPayment($payment, float $amount = null): Cancellation;
+    public function cancelAuthorizationByPayment($payment, ?float $amount = null): Cancellation;
 
     /**
      * Performs a Cancellation transaction for the given Charge and returns the resulting Cancellation object.
@@ -67,11 +67,11 @@ interface CancelServiceInterface
     public function cancelChargeById(
         $payment,
         string $chargeId,
-        float $amount = null,
-        string $reasonCode = null,
-        string $referenceText = null,
-        float $amountNet = null,
-        float $amountVat = null
+        ?float $amount = null,
+        ?string $reasonCode = null,
+        ?string $referenceText = null,
+        ?float $amountNet = null,
+        ?float $amountVat = null
     ): Cancellation;
 
     /**
@@ -93,11 +93,11 @@ interface CancelServiceInterface
      */
     public function cancelCharge(
         Charge $charge,
-        float $amount = null,
-        string $reasonCode = null,
-        string $referenceText = null,
-        float $amountNet = null,
-        float $amountVat = null
+        ?float $amount = null,
+        ?string $reasonCode = null,
+        ?string $referenceText = null,
+        ?float $amountNet = null,
+        ?float $amountVat = null
     ): Cancellation;
 
     /**
@@ -119,11 +119,11 @@ interface CancelServiceInterface
      */
     public function cancelPayment(
         $payment,
-        float $amount = null,
+        ?float $amount = null,
         ?string $reasonCode = CancelReasonCodes::REASON_CODE_CANCEL,
-        string $referenceText = null,
-        float $amountNet = null,
-        float $amountVat = null
+        ?string $referenceText = null,
+        ?float $amountNet = null,
+        ?float $amountVat = null
     ): array;
 
     /**
@@ -167,5 +167,5 @@ interface CancelServiceInterface
      * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
      * @throws RuntimeException  A RuntimeException is thrown when there is a error while using the SDK.
      */
-    public function cancelPaymentAuthorization($payment, float $amount = null): ?Cancellation;
+    public function cancelPaymentAuthorization($payment, ?float $amount = null): ?Cancellation;
 }

@@ -1,141 +1,178 @@
 {% block unzer_payment_settings %}
     <sw-page class="unzer-payment-settings">
         {% block unzer_payment_settings_header %}
-            <template #smart-bar-header>
-                <h2>
-                    {{ $tc('sw-settings.index.title') }}
-                    <sw-icon :name="arrowIconName" small></sw-icon>
-                    {{ $tc('unzer-payment-settings.module.title') }}
-                </h2>
-            </template>
+        <template #smart-bar-header>
+            <h2>
+                {{ $tc('sw-settings.index.title') }}
+                <sw-icon
+                    :name="arrowIconName"
+                    small
+                ></sw-icon>
+                {{ $tc('unzer-payment-settings.module.title') }}
+            </h2>
+        </template>
         {% endblock %}
 
         {% block unzer_payment_settings_actions %}
-            <template #smart-bar-actions>
-                {% block unzer_payment_settings_actions_save %}
-                    <sw-button-process
-                        class="sw-settings-login-registration__save-action"
-                        :isLoading="isLoading"
-                        :disabled="isLoading || selectedKeyPairForTesting"
-                        :processSuccess="isSaveSuccessful"
-                        @process-finish="isSaveSuccessful = false"
-                        variant="primary"
-                        @click="onSave">
-                        {{ $tc('global.default.save') }}
-                    </sw-button-process>
-                {% endblock %}
-            </template>
+        <template #smart-bar-actions>
+            {% block unzer_payment_settings_actions_save %}
+            <sw-button-process
+                class="sw-settings-login-registration__save-action"
+                :isLoading="isLoading"
+                :disabled="isLoading || selectedKeyPairForTesting"
+                :processSuccess="isSaveSuccessful"
+                @process-finish="isSaveSuccessful = false"
+                variant="primary"
+                @click="onSave"
+            >
+                {{ $tc('global.default.save') }}
+            </sw-button-process>
+            {% endblock %}
+        </template>
         {% endblock %}
 
         {% block unzer_payment_settings_content %}
-            <template #content>
-                <sw-card-view>
-                    <sw-system-config
-                        ref="systemConfig"
-                        salesChannelSwitchable
-                        inherit
-                        @config-changed="onConfigChange"
-                        @loading-changed="onLoadingChanged"
-                        @sales-channel-changed="onSalesChannelChanged"
-                        domain="UnzerPayment6.settings">
-                        <template #afterElements="{index}">
-                            <template v-if="index == 0">
-                                <sw-button
-                                    @click="openModalKeyPair = defaultKeyPair"
-                                    :disabled="!isShowWebhooksButtonEnabled(defaultKeyPair)"
-                                >
-                                    {{ $tc('unzer-payment-settings.webhook.show') }}
-                                </sw-button>
-
-                                <unzer-payment-register-webhook
-                                    :isLoading="isLoading"
-                                    :isDisabled="!isRegisterWebhooksButtonEnabled(defaultKeyPair)"
-                                    :webhooks="webhooks"
-                                    :selectedSalesChannelId="selectedSalesChannelId"
-                                    :privateKey="defaultKeyPair.privateKey"
-                                    @modal-open="loadWebhooks(defaultKeyPair.privateKey)"
-                                    @webhook-registered="onWebhookRegistered(defaultKeyPair.privateKey)">
+        <template #content>
+            <sw-card-view>
+                <sw-system-config
+                    ref="systemConfig"
+                    salesChannelSwitchable
+                    inherit
+                    @config-changed="onConfigChange"
+                    @loading-changed="onLoadingChanged"
+                    @sales-channel-changed="onSalesChannelChanged"
+                    domain="UnzerPayment6.settings"
+                >
+                    <template #afterElements="{index}">
+                        <template v-if="index == 0">
+                            <sw-button
+                                @click="openModalKeyPair = defaultKeyPair"
+                                :disabled="!isShowWebhooksButtonEnabled(defaultKeyPair)"
+                            >
+                                {{ $tc('unzer-payment-settings.webhook.show') }}
+                            </sw-button>
+                            <unzer-payment-register-webhook
+                                :isLoading="isLoading"
+                                :isDisabled="!isRegisterWebhooksButtonEnabled(defaultKeyPair)"
+                                :webhooks="webhooks"
+                                :selectedSalesChannelId="selectedSalesChannelId"
+                                :privateKey="defaultKeyPair.privateKey"
+                                @modal-open="loadWebhooks(defaultKeyPair.privateKey)"
+                                @webhook-registered="onWebhookRegistered(defaultKeyPair.privateKey)"
+                            >
                                 </unzer-payment-register-webhook>
-
-                                <sw-button-process
-                                    :isLoading="selectedKeyPairForTesting === defaultKeyPair || isLoading"
-                                    :disabled="selectedKeyPairForTesting === defaultKeyPair || !isRegisterWebhooksButtonEnabled(defaultKeyPair)"
-                                    :processSuccess="selectedKeyPairForTesting === defaultKeyPair && isTestSuccessful"
-                                    @process-finish="onTestFinished()"
-                                    @click="onValidateCredentials(defaultKeyPair)">
-                                    {{ $tc('unzer-payment-settings.form.testButton') }}
-                                </sw-button-process>
-                            </template>
+                            <sw-button-process
+                                :isLoading="selectedKeyPairForTesting === defaultKeyPair || isLoading"
+                                :disabled="selectedKeyPairForTesting === defaultKeyPair || !isRegisterWebhooksButtonEnabled(defaultKeyPair)"
+                                :processSuccess="selectedKeyPairForTesting === defaultKeyPair && isTestSuccessful"
+                                @process-finish="onTestFinished()"
+                                @click="onValidateCredentials(defaultKeyPair)"
+                            >
+                                {{ $tc('unzer-payment-settings.form.testButton') }}
+                            </sw-button-process>
+                            <!-- additional keys start -->
+                            <div class="unzer-additional-keys">
+                                <div
+                                    class="unzer-additional-keys__title"
+                                    @click="toggleAdditionalKeys"
+                                >
+                                    <div
+                                        class="unzer-additional-keys__title-content"
+                                    >
+                                        {{ $tc('unzer-payment-settings.form.additionalKeys') }}
+                                    </div>
+                                    <sw-icon
+                                        :name="arrowIconName"
+                                        size="16px"
+                                        :class="{'unzer-additional-keys__title-icon': true, 'is-expanded': isAdditionalKeysExpanded}"
+                                    ></sw-icon>
+                                </div>
+                                <div
+                                    :class="{'unzer-additional-keys__content': true, 'is-expanded': isAdditionalKeysExpanded}"
+                                >
+                                    <template
+                                        v-for="(keyPairSetting, index) in keyPairSettings"
+                                        :key="keyPairSetting.key"
+                                    >
+                                        <div
+                                            v-if="keyPairSetting.group !== keyPairSettings[index - 1]?.group"
+                                        >
+                                            <div
+                                                class="unzer-additional-keys__group-title"
+                                            >
+                                                {{ keyPairSettingGroupTitle(keyPairSetting) }}
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="unzer-additional-keys__key-setting"
+                                        >
+                                            <div
+                                                :class="{'unzer-additional-keys__setting-title':true, 'is-used':keyPairSetting.publicKey && keyPairSetting.privateKey}"
+                                            >
+                                                {{ keyPairSettingTitle(keyPairSetting) }}
+                                            </div>
+                                            <sw-text-field
+                                                :label="$tc('unzer-payment-settings.form.publicKey')"
+                                                :value="keyPairSetting.publicKey"
+                                                @update:value="setPublicKey(keyPairSetting, $event)"
+                                            ></sw-text-field>
+                                            <sw-text-field
+                                                :label="$tc('unzer-payment-settings.form.privateKey')"
+                                                :value="keyPairSetting.privateKey"
+                                                @update:value="setPrivateKey(keyPairSetting, $event)"
+                                                v-if="keyPairSetting.publicKey"
+                                            ></sw-text-field>
+                                            <div
+                                                class="unzer-additional-keys__actions"
+                                                v-if="keyPairSetting.publicKey && keyPairSetting.privateKey"
+                                            >
+                                                <sw-button
+                                                    @click="openModalKeyPair = keyPairSetting"
+                                                    :disabled="!isShowWebhooksButtonEnabled(keyPairSetting)"
+                                                    variant="secondary"
+                                                    size="small"
+                                                >
+                                                    {{ $tc('unzer-payment-settings.webhook.show') }}
+                                                </sw-button>
+                                                <unzer-payment-register-webhook
+                                                    :isLoading="isLoading"
+                                                    :isDisabled="!isRegisterWebhooksButtonEnabled(keyPairSetting)"
+                                                    :webhooks="webhooks"
+                                                    :selectedSalesChannelId="selectedSalesChannelId"
+                                                    :privateKey="keyPairSetting.privateKey"
+                                                    @modal-open="loadWebhooks(keyPairSetting.privateKey)"
+                                                    @webhook-registered="onWebhookRegistered(keyPairSetting.privateKey)"
+                                                >
+                                                    </unzer-payment-register-webhook>
+                                                <sw-button-process
+                                                    :isLoading="selectedKeyPairForTesting === keyPairSetting || isLoading"
+                                                    :disabled="selectedKeyPairForTesting === keyPairSetting || !isRegisterWebhooksButtonEnabled(keyPairSetting)"
+                                                    :processSuccess="selectedKeyPairForTesting === keyPairSetting && isTestSuccessful"
+                                                    @process-finish="onTestFinished()"
+                                                    @click="onValidateCredentials(keyPairSetting)"
+                                                    size="small"
+                                                >
+                                                    {{ $tc('unzer-payment-settings.form.testButton') }}
+                                                </sw-button-process>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            <!-- additional keys end -->
                         </template>
-                    </sw-system-config>
-
-                    <sw-card
-                        :is-loading="isLoading"
-                        :title="$tc(`unzer-payment-settings.apple-pay.certificates.title`)"
-                        class="unzer--apple-pay-card"
-                    >
-                        <unzer-payment-apple-pay-certificates
-                            ref="applePayCertificates"
-                            :selectedSalesChannelId="selectedSalesChannelId"
-                            :parentRefs="$refs"
-                            :isLoading="isLoading">
-                        </unzer-payment-apple-pay-certificates>
-                    </sw-card>
-
-                    <template v-for="keyPairSetting in keyPairSettings" :key="keyPairSetting.key">
-                        <sw-card :title="keyPairSettingTitle(keyPairSetting)">
-                            <sw-text-field
-                                :label="$tc('unzer-payment-settings.form.publicKey')"
-                                class="sw-field sw-block-field"
-                                :value="keyPairSetting.publicKey"
-                                @update:value="setPublicKey(keyPairSetting, $event)"
-                            ></sw-text-field>
-                            <sw-text-field
-                                :label="$tc('unzer-payment-settings.form.privateKey')"
-                                class="sw-field sw-block-field"
-                                :value="keyPairSetting.privateKey"
-                                @update:value="setPrivateKey(keyPairSetting, $event)"
-                            ></sw-text-field>
-
-                            <template #footer>
-                                <sw-button
-                                    @click="openModalKeyPair = keyPairSetting"
-                                    :disabled="!isShowWebhooksButtonEnabled(keyPairSetting)"
-                                >
-                                    {{ $tc('unzer-payment-settings.webhook.show') }}
-                                </sw-button>
-
-                                <unzer-payment-register-webhook
-                                    :isLoading="isLoading"
-                                    :isDisabled="!isRegisterWebhooksButtonEnabled(keyPairSetting)"
-                                    :webhooks="webhooks"
-                                    :selectedSalesChannelId="selectedSalesChannelId"
-                                    :privateKey="keyPairSetting.privateKey"
-                                    @modal-open="loadWebhooks(keyPairSetting.privateKey)"
-                                    @webhook-registered="onWebhookRegistered(keyPairSetting.privateKey)">
-                                </unzer-payment-register-webhook>
-
-                                <sw-button-process
-                                    :isLoading="selectedKeyPairForTesting === keyPairSetting || isLoading"
-                                    :disabled="selectedKeyPairForTesting === keyPairSetting || !isRegisterWebhooksButtonEnabled(keyPairSetting)"
-                                    :processSuccess="selectedKeyPairForTesting === keyPairSetting && isTestSuccessful"
-                                    @process-finish="onTestFinished()"
-                                    @click="onValidateCredentials(keyPairSetting)">
-                                    {{ $tc('unzer-payment-settings.form.testButton') }}
-                                </sw-button-process>
-                            </template>
-                        </sw-card>
                     </template>
-                    <unzer-webhooks-modal
-                        v-show="openModalKeyPair"
-                        :keyPair="openModalKeyPair"
-                        :webhooks="webhooks"
-                        :isLoadingWebhooks="isLoadingWebhooks"
-                        @modal-close="openModalKeyPair = false"
-                        @load-webhooks="loadWebhooks"
-                    ></unzer-webhooks-modal>
-                </sw-card-view>
-            </template>
+                </sw-system-config>
+                <unzer-webhooks-modal
+                    v-show="openModalKeyPair"
+                    :keyPair="openModalKeyPair"
+                    :webhooks="webhooks"
+                    :isLoadingWebhooks="isLoadingWebhooks"
+                    @modal-close="openModalKeyPair = false"
+                    @load-webhooks="loadWebhooks"
+                ></unzer-webhooks-modal>
+            </sw-card-view>
+        </template>
         {% endblock %}
     </sw-page>
 {% endblock %}
