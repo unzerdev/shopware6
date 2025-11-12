@@ -21,7 +21,6 @@ use UnzerPayment6\Components\UnzerPaymentClassLoader;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerPayment6\Installer\PaymentInstaller;
 
-
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     (new UnzerPaymentClassLoader())->register();
 }
@@ -37,7 +36,7 @@ class UnzerPayment6 extends Plugin
 
     public function build(ContainerBuilder $container): void
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/DependencyInjection'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/Resources/config/dependencies'));
         $loader->load('container.xml');
 
         parent::build($container);
@@ -136,7 +135,8 @@ class UnzerPayment6 extends Plugin
 
         if (!$uninstallContext->keepUserData()) {
             (new CustomFieldInstaller($customFieldSetRepository))->uninstall($uninstallContext);
-            $connection->executeStatement('
+            $connection->executeStatement(
+                '
             DROP TABLE IF EXISTS `unzer_payment_transfer_info`;
             DROP TABLE IF EXISTS `unzer_payment_payment_device`;
         '

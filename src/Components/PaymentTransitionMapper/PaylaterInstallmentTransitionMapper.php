@@ -13,7 +13,9 @@ use UnzerSDK\Resources\TransactionTypes\Authorization;
 
 class PaylaterInstallmentTransitionMapper extends AbstractTransitionMapper
 {
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $isShipmentAllowed = true;
 
     public function supports(BasePaymentType $paymentType): bool
@@ -21,7 +23,7 @@ class PaylaterInstallmentTransitionMapper extends AbstractTransitionMapper
         return $paymentType instanceof PaylaterInstallment;
     }
 
-    public function getTargetPaymentStatus(Payment $paymentObject): string
+    public function getTargetPaymentStatus(Payment $paymentObject, string $orderTransactionId): string
     {
         if ($paymentObject->isCanceled()) {
             $status = $this->checkForRefund($paymentObject);
@@ -43,7 +45,7 @@ class PaylaterInstallmentTransitionMapper extends AbstractTransitionMapper
             $authorization = $paymentObject->getAuthorization();
 
             if ($authorization instanceof Authorization && $authorization->isSuccess()) {
-                return constant(sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
+                return \constant(\sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
             }
         }
 

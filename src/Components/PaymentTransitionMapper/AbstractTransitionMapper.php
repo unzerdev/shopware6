@@ -14,12 +14,16 @@ use UnzerSDK\Resources\TransactionTypes\Shipment;
 abstract class AbstractTransitionMapper
 {
     public const CONST_KEY_CHARGEBACK = 'ACTION_CHARGEBACK';
-    public const CONST_KEY_AUTHORIZE  = 'ACTION_AUTHORIZE';
+    public const CONST_KEY_AUTHORIZE = 'ACTION_AUTHORIZE';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public const INVALID_TRANSITION = 'invalid';
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $isShipmentAllowed = false;
 
     abstract public function supports(BasePaymentType $paymentType): bool;
@@ -27,7 +31,7 @@ abstract class AbstractTransitionMapper
     /**
      * @throws TransitionMapperException
      */
-    public function getTargetPaymentStatus(Payment $paymentObject): string
+    public function getTargetPaymentStatus(Payment $paymentObject, string $orderTransactionId): string
     {
         if ($paymentObject->isPending()) {
             return StateMachineTransitionActions::ACTION_REOPEN;
@@ -46,7 +50,7 @@ abstract class AbstractTransitionMapper
                 return $status;
             }
 
-            throw new TransitionMapperException($this->getResourceName());
+            return StateMachineTransitionActions::ACTION_FAIL;
         }
 
         return $this->checkForRefund($paymentObject, $this->mapPaymentStatus($paymentObject));
@@ -64,7 +68,7 @@ abstract class AbstractTransitionMapper
             $status = StateMachineTransitionActions::ACTION_CANCEL;
 
             if ($this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)) {
-                return constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK));
+                return \constant(\sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK));
             }
         } elseif ($paymentObject->isPending()) {
             $status = StateMachineTransitionActions::ACTION_REOPEN;
@@ -83,7 +87,7 @@ abstract class AbstractTransitionMapper
 
     protected function checkForRefund(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
-        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $totalAmount = (int) round($paymentObject->getAmount()->getTotal() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
         $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
         $remainingAmount = (int) round($paymentObject->getAmount()->getRemaining() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
 
@@ -91,7 +95,7 @@ abstract class AbstractTransitionMapper
             && $currentStatus !== StateMachineTransitionActions::ACTION_CANCEL
             && !(
                 $this->stateMachineTransitionExists(self::CONST_KEY_CHARGEBACK)
-                && $currentStatus === constant(sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK))
+                && $currentStatus === \constant(\sprintf('%s::%s', StateMachineTransitionActions::class, self::CONST_KEY_CHARGEBACK))
             )
         ) {
             return StateMachineTransitionActions::ACTION_REFUND;
@@ -102,12 +106,12 @@ abstract class AbstractTransitionMapper
 
     protected function checkForCancellation(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
-        $amount    = $paymentObject->getAmount();
-        $total     = (int) round($amount->getTotal() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
-        $charged   = (int) round($amount->getCharged() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $amount = $paymentObject->getAmount();
+        $total = (int) round($amount->getTotal() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $charged = (int) round($amount->getCharged() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
         $cancelled = (int) round($amount->getCanceled() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
 
-        if ($total === 0 && $charged === 0 && $cancelled === 0 && count($paymentObject->getCancellations()) > 0) {
+        if ($total === 0 && $charged === 0 && $cancelled === 0 && \count($paymentObject->getCancellations()) > 0) {
             return StateMachineTransitionActions::ACTION_CANCEL;
         }
 
@@ -116,8 +120,8 @@ abstract class AbstractTransitionMapper
 
     protected function checkForShipment(Payment $paymentObject, string $currentStatus = self::INVALID_TRANSITION): string
     {
-        $shippedAmount   = 0;
-        $totalAmount     = (int) round($paymentObject->getAmount()->getTotal() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
+        $shippedAmount = 0;
+        $totalAmount = (int) round($paymentObject->getAmount()->getTotal() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
         $cancelledAmount = (int) round($paymentObject->getAmount()->getCanceled() * (10 ** UnzerPayment6::MAX_DECIMAL_PRECISION));
 
         if (empty($paymentObject->getShipments())) {
@@ -151,6 +155,6 @@ abstract class AbstractTransitionMapper
      */
     protected function stateMachineTransitionExists(string $stateMachineActionConstantName): bool
     {
-        return defined(sprintf('%s::%s', StateMachineTransitionActions::class, $stateMachineActionConstantName));
+        return \defined(\sprintf('%s::%s', StateMachineTransitionActions::class, $stateMachineActionConstantName));
     }
 }

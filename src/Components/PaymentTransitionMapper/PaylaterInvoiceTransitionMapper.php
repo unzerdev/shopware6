@@ -18,7 +18,7 @@ class PaylaterInvoiceTransitionMapper extends AbstractTransitionMapper
         return $paymentType instanceof PaylaterInvoice;
     }
 
-    public function getTargetPaymentStatus(Payment $paymentObject): string
+    public function getTargetPaymentStatus(Payment $paymentObject, string $orderTransactionId): string
     {
         if ($paymentObject->isCanceled()) {
             $status = $this->checkForRefund($paymentObject);
@@ -40,7 +40,7 @@ class PaylaterInvoiceTransitionMapper extends AbstractTransitionMapper
             $authorization = $paymentObject->getAuthorization();
 
             if ($authorization instanceof Authorization && $authorization->isSuccess()) {
-                return constant(sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
+                return \constant(\sprintf('%s::%s', StateMachineTransitionActions::class, AbstractTransitionMapper::CONST_KEY_AUTHORIZE));
             }
         }
 

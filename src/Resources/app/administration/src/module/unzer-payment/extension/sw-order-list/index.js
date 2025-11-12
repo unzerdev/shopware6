@@ -10,10 +10,10 @@ Shopware.Component.override('sw-order-list', {
             baseColumns.splice(1, 0, {
                 property: 'unzerPaymentTransactionId',
                 label: 'unzer-payment.order-list.transactionId',
-                allowResize: true
+                allowResize: true,
             });
 
             return baseColumns;
-        }
-    }
+        },
+    },
 });

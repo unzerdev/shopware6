@@ -10,10 +10,10 @@ use UnzerSDK\Resources\Payment;
 
 trait IsBasicPaymentMethodTransitionMapper
 {
-    public function getTargetPaymentStatus(Payment $paymentObject): string
+    public function getTargetPaymentStatus(Payment $paymentObject, string $orderTransactionId): string
     {
         try {
-            return parent::getTargetPaymentStatus($paymentObject);
+            return parent::getTargetPaymentStatus($paymentObject, $orderTransactionId);
         } catch (TransitionMapperException $exception) {
             if ($paymentObject->isPending()) {
                 return StateMachineTransitionActions::ACTION_REOPEN;

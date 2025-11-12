@@ -67,7 +67,7 @@ class ApplepayAdapter
      *                             This is necessary if the ssl cert file doesn't contain key already.
      * @param string|null $caCert  Path to CA certificate.
      */
-    public function init(string $sslCert, string $sslKey = null, string $caCert = null): void
+    public function init(string $sslCert, ?string $sslKey = null, ?string $caCert = null): void
     {
         $timeout = EnvironmentService::getTimeout();
         $curlVerbose = EnvironmentService::isCurlVerbose();

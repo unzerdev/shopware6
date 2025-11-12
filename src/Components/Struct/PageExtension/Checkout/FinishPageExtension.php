@@ -11,8 +11,10 @@ class FinishPageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerFinishPage';
 
-    /** @var InstallmentInfo[] */
-    protected $installmentInformation = [];
+    /**
+     * @var InstallmentInfo[]
+     */
+    protected array $installmentInformation = [];
 
     public function getInstallmentInformation(): array
     {

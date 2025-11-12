@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ResourceHydrator;
 
-use InvalidArgumentException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
@@ -31,17 +30,16 @@ class BasketResourceHydrator implements ResourceHydratorInterface
      */
     public function hydrateObject(
         SalesChannelContext $channelContext,
-                            $transaction = null
-    ): AbstractUnzerResource
-    {
+        $transaction = null
+    ): AbstractUnzerResource {
         if (!($transaction instanceof AsyncPaymentTransactionStruct) && !($transaction instanceof OrderTransactionEntity)) {
-            throw new InvalidArgumentException('Transaction struct can not be null');
+            throw new \InvalidArgumentException('Transaction struct can not be null');
         }
 
         $order = $transaction->getOrder();
 
         if ($order === null) {
-            throw new InvalidArgumentException('Order can not be null');
+            throw new \InvalidArgumentException('Order can not be null');
         }
 
         if ($transaction instanceof AsyncPaymentTransactionStruct) {
@@ -49,6 +47,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         } else {
             $transactionId = $transaction->getId();
         }
+
         return $this->generateUnzerBasket($order, $transactionId, $channelContext);
     }
 
@@ -88,11 +87,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function hydrateLineItems(
         OrderLineItemCollection $lineItemCollection,
-        Basket                  $unzerBasket,
-        int                     $currencyPrecision,
-        ?string                 $taxStatus
-    ): void
-    {
+        Basket $unzerBasket,
+        int $currencyPrecision,
+        ?string $taxStatus
+    ): void {
         $customProductLabels = $this->mapCustomProductsLabel($lineItemCollection);
 
         /** @var OrderLineItemEntity $lineItem */
@@ -102,15 +100,23 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             }
             $basketItem = new BasketItem();
             $label = $lineItem->getLabel();
-            if (!empty($customProductLabels) && array_key_exists($lineItem->getId(), $customProductLabels)) {
+            if (!empty($customProductLabels) && \array_key_exists($lineItem->getId(), $customProductLabels)) {
                 $label = $customProductLabels[$lineItem->getId()]
-                    ? sprintf('%s: %s', $lineItem->getLabel(), $customProductLabels[$lineItem->getId()])
+                    ? \sprintf('%s: %s', $lineItem->getLabel(), $customProductLabels[$lineItem->getId()])
                     : $lineItem->getLabel();
             }
             $basketItem->setTitle($label);
             $basketItem->setQuantity($lineItem->getQuantity());
             $basketItem->setType($lineItem->getUnitPrice() < 0 ? BasketItemTypes::VOUCHER : BasketItemTypes::GOODS);
-            $basketItem->setImageUrl($lineItem->getCover() ? $lineItem->getCover()->getUrl() : null);
+            if (!empty($lineItem->getCover()?->getUrl()) && !str_contains($lineItem->getCover()?->getUrl(), '.ddev.site')) {
+                try {
+                    $media = $lineItem->getCover();
+                    $url = $media?->getThumbnails()?->first()?->getUrl() ?? $media?->getUrl();
+                    $basketItem->setImageUrl($url);
+                } catch (\Exception $e) {
+                    $basketItem->setImageUrl($lineItem->getCover()?->getUrl());
+                }
+            }
 
             $taxCounter = 0;
             $amountTax = 0.0;
@@ -122,7 +128,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
                 foreach ($lineItem->getPrice()->getCalculatedTaxes() as $tax) {
                     $amountTax += round($tax->getTax(), $currencyPrecision);
                     $taxRate += $tax->getTaxRate();
-                    $taxCounter++;
+                    ++$taxCounter;
                 }
                 $amountGross = round($lineItem->getTotalPrice(), $currencyPrecision);
                 if ($taxStatus === CartPrice::TAX_STATE_NET) {
@@ -148,11 +154,10 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function hydrateShippingCosts(
         OrderEntity $order,
-        Basket      $basket,
-        int         $currencyPrecision,
-        string      $shippingMethodName
-    ): void
-    {
+        Basket $basket,
+        int $currencyPrecision,
+        string $shippingMethodName
+    ): void {
         $shippingCosts = $order->getShippingCosts();
 
         $dispatchBasketItem = new BasketItem();
@@ -217,14 +222,13 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function isCustomProduct(
         OrderLineItemCollection $lineItemCollection,
-        OrderLineItemEntity     $lineItemEntity
-    ): bool
-    {
+        OrderLineItemEntity $lineItemEntity
+    ): bool {
         if (!class_exists(CustomizedProductsCartDataCollector::class)) {
             return false;
         }
 
-        $isCustomProductOption = in_array(
+        $isCustomProductOption = \in_array(
             $lineItemEntity->getType(),
             [
                 CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_OPTION_LINE_ITEM_TYPE,
@@ -238,9 +242,8 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function isParentCustomProduct(
         OrderLineItemCollection $lineItemCollection,
-        OrderLineItemEntity     $lineItemEntity
-    ): bool
-    {
+        OrderLineItemEntity $lineItemEntity
+    ): bool {
         if (!class_exists(CustomizedProductsCartDataCollector::class)) {
             return false;
         }
@@ -270,7 +273,7 @@ class BasketResourceHydrator implements ResourceHydratorInterface
         }
 
         if (!empty($shippingMethod->getTranslated())
-            && array_key_exists('name', $shippingMethod->getTranslated())
+            && \array_key_exists('name', $shippingMethod->getTranslated())
             && !empty($shippingMethod->getTranslated()['name'])) {
             return $shippingMethod->getTranslated()['name'];
         }
@@ -280,25 +283,25 @@ class BasketResourceHydrator implements ResourceHydratorInterface
 
     protected function isFreeBasketItem(BasketItem $basketItem, int $currencyPrecision): bool
     {
-        if ((int)round($basketItem->getAmountPerUnitGross() * (10 ** $currencyPrecision)) === 0 && (int)round($basketItem->getAmountDiscountPerUnitGross() * (10 ** $currencyPrecision)) === 0) {
+        if ((int) round($basketItem->getAmountPerUnitGross() * (10 ** $currencyPrecision)) === 0 && (int) round($basketItem->getAmountDiscountPerUnitGross() * (10 ** $currencyPrecision)) === 0) {
             return true;
         }
 
         return false;
     }
 
-    private function makeBasketValid(Basket $unzerBasket, int $currencyPrecision)
+    private function makeBasketValid(Basket $unzerBasket, int $currencyPrecision): void
     {
         $total = $unzerBasket->getTotalValueGross();
-        foreach($unzerBasket->getBasketItems() as $item) {
+        foreach ($unzerBasket->getBasketItems() as $item) {
             $total -= $item->getAmountPerUnitGross() * $item->getQuantity();
             $total += $item->getAmountDiscountPerUnitGross() * $item->getQuantity();
         }
-        if(number_format($total, $currencyPrecision) !== number_format(0, $currencyPrecision)) {
+        if (number_format($total, $currencyPrecision) !== number_format(0, $currencyPrecision)) {
             $basketItem = new BasketItem();
             $basketItem->setTitle('Unzer Shortfall');
             $basketItem->setQuantity(1);
-            if($total > 0) {
+            if ($total > 0) {
                 $basketItem->setAmountPerUnitGross($total);
                 $basketItem->setType(BasketItemTypes::GOODS);
             } else {

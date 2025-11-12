@@ -5,18 +5,14 @@ const { Component, Mixin, Context } = Shopware;
 Component.register('unzer-webhooks-modal', {
     template,
 
-    mixins: [
-        Mixin.getByName('notification'),
-    ],
+    mixins: [Mixin.getByName('notification')],
 
-    inject: [
-        'UnzerPaymentConfigurationService'
-    ],
+    inject: ['UnzerPaymentConfigurationService'],
 
     props: {
         keyPair: {
             type: Array,
-            required: true
+            required: true,
         },
         webhooks: {
             type: Array,
@@ -24,7 +20,7 @@ Component.register('unzer-webhooks-modal', {
         },
         isLoadingWebhooks: {
             type: Boolean,
-        }
+        },
     },
 
     data() {
@@ -42,13 +38,13 @@ Component.register('unzer-webhooks-modal', {
                 {
                     property: 'event',
                     dataIndex: 'event',
-                    label: 'Event'
+                    label: 'Event',
                 },
                 {
                     property: 'url',
                     dataIndex: 'url',
-                    label: 'URL'
-                }
+                    label: 'URL',
+                },
             ];
         },
     },
@@ -62,7 +58,7 @@ Component.register('unzer-webhooks-modal', {
 
             this.UnzerPaymentConfigurationService.clearWebhooks({
                 privateKey: privateKey,
-                selection: this.webhookSelection
+                selection: this.webhookSelection,
             })
                 .then((response) => {
                     me.isClearingSuccessful = true;
@@ -79,8 +75,12 @@ Component.register('unzer-webhooks-modal', {
                 })
                 .catch(() => {
                     this.createNotificationError({
-                        title: this.$tc('unzer-payment-settings.webhook.globalError.title'),
-                        message: this.$tc('unzer-payment-settings.webhook.globalError.message')
+                        title: this.$tc(
+                            'unzer-payment-settings.webhook.globalError.title'
+                        ),
+                        message: this.$tc(
+                            'unzer-payment-settings.webhook.globalError.message'
+                        ),
                     });
                 })
                 .finally(() => {
@@ -106,15 +106,23 @@ Component.register('unzer-webhooks-modal', {
                 if (data[url].success) {
                     this.createNotificationSuccess({
                         title: this.$tc(data[url].message, domainAmount),
-                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + url
+                        message:
+                            this.$tc(
+                                'unzer-payment-settings.webhook.messagePrefix',
+                                domainAmount
+                            ) + url,
                     });
                 } else {
                     this.createNotificationError({
                         title: this.$tc(data[url].message, domainAmount),
-                        message: this.$tc('unzer-payment-settings.webhook.messagePrefix', domainAmount) + url
+                        message:
+                            this.$tc(
+                                'unzer-payment-settings.webhook.messagePrefix',
+                                domainAmount
+                            ) + url,
                     });
                 }
             });
         },
-    }
+    },
 });

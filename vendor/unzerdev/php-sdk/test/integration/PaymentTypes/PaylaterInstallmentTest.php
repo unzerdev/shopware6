@@ -13,18 +13,18 @@
 namespace UnzerSDK\test\integration\PaymentTypes;
 
 use UnzerSDK\Constants\CustomerTypes;
+use UnzerSDK\Constants\ShippingTypes;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\Customer;
 use UnzerSDK\Resources\CustomerFactory;
 use UnzerSDK\Resources\EmbeddedResources\Address;
-use UnzerSDK\Resources\EmbeddedResources\Paylater\InstallmentPlansQuery;
 use UnzerSDK\Resources\EmbeddedResources\Paylater\InstallmentPlan;
+use UnzerSDK\Resources\EmbeddedResources\Paylater\InstallmentPlansQuery;
 use UnzerSDK\Resources\PaymentTypes\PaylaterInstallment;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Cancellation;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\test\BaseIntegrationTest;
-
 use function count;
 
 class PaylaterInstallmentTest extends BaseIntegrationTest
@@ -232,7 +232,7 @@ class PaylaterInstallmentTest extends BaseIntegrationTest
         $ins = new PaylaterInstallment($plans->getId(), $selectedPlan->getNumberOfRates(), 'DE89370400440532013000', 'DE', 'Peter Mustermann');
         $this->unzer->createPaymentType($ins);
 
-        $customer = $this->getCustomer()->setFirstname('Peter')->setLastname('Mustermann');
+        $customer = $this->getCustomer();
         $basket = $this->createBasket();
 
         $authorization = new Authorization(99.99, 'EUR', self::RETURN_URL);
@@ -244,17 +244,22 @@ class PaylaterInstallmentTest extends BaseIntegrationTest
      */
     public function getCustomer(): Customer
     {
-        $customer = CustomerFactory::createCustomer('Manuel', 'Weißmann');
+        $customer = CustomerFactory::createCustomer('Maximilian', 'Mustermann');
         $address = (new Address())
-            ->setStreet('Hugo-Junckers-Straße 3')
+            ->setName('Maximilian Mustermann')
+            ->setStreet('Hugo-Junkers-Str. 3')
             ->setState('DE-BO')
             ->setZip('60386')
             ->setCity('Frankfurt am Main')
             ->setCountry('DE');
         $customer
+            ->setSalutation('mr')
             ->setBillingAddress($address)
-            ->setBirthDate('2000-12-12')
-            ->setEmail('manuel-weissmann@unzer.com');
+            ->setCustomerId('c' . substr(self::generateRandomId(), 0, 7))
+            ->setShippingAddress((clone $address)->setShippingType(ShippingTypes::EQUALS_BILLING))
+            ->setLanguage('de')
+            ->setBirthDate('1974-10-02')
+            ->setEmail('accept@unzer.com');
 
         return $customer;
     }

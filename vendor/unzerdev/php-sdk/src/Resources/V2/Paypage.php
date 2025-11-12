@@ -6,6 +6,7 @@ use DateTime;
 use stdClass;
 use UnzerSDK\Adapter\HttpAdapterInterface;
 use UnzerSDK\Apis\PaypageAPIConfig;
+use UnzerSDK\Constants\ApiVersions;
 use UnzerSDK\Constants\PaypageCheckoutTypes;
 use UnzerSDK\Constants\TransactionTypes;
 use UnzerSDK\Resources\AbstractUnzerResource;
@@ -154,7 +155,7 @@ class Paypage extends AbstractUnzerResource
 
     public function getApiVersion(): string
     {
-        return 'v2';
+        return ApiVersions::V2;
     }
 
     public function getCurrency(): ?string

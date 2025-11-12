@@ -6,6 +6,7 @@ use UnzerSDK\Constants\CompanyCommercialSectorItems;
 use UnzerSDK\Constants\CompanyRegistrationTypes;
 use UnzerSDK\Resources\EmbeddedResources\Address;
 use UnzerSDK\Resources\EmbeddedResources\CompanyInfo;
+use UnzerSDK\Resources\V2\Customer as CustomerV2;
 
 /**
  * Creates the different Customer objects.
@@ -15,6 +16,18 @@ use UnzerSDK\Resources\EmbeddedResources\CompanyInfo;
  */
 class CustomerFactory
 {
+    private static int $version = 1;
+
+    public static function setVersion(int $version): void
+    {
+        self::$version = $version;
+    }
+
+    public static function getVersion(): int
+    {
+        return self::$version;
+    }
+
     /**
      * Creates a local Customer object for B2C transactions.
      * Please use Unzer::createCustomer(...) to create the customer resource on the API side.
@@ -26,7 +39,7 @@ class CustomerFactory
      */
     public static function createCustomer(string $firstname, string $lastname): Customer
     {
-        return (new Customer())->setFirstname($firstname)->setLastname($lastname);
+        return self::getCustomer()->setFirstname($firstname)->setLastname($lastname);
     }
 
     /**
@@ -58,7 +71,7 @@ class CustomerFactory
             ->setFunction('OWNER')
             ->setCommercialSector($commercialSector);
 
-        return (new Customer())
+        return self::getCustomer()
             ->setFirstname($firstname)
             ->setLastname($lastname)
             ->setBirthDate($birthDate)
@@ -89,9 +102,17 @@ class CustomerFactory
             ->setCommercialRegisterNumber($commercialRegisterNumber)
             ->setCommercialSector($commercialSector);
 
-        return (new Customer())
+        return self::getCustomer()
             ->setCompany($company)
             ->setBillingAddress($billingAddress)
             ->setCompanyInfo($companyInfo);
+    }
+
+    /**
+     * @return Customer
+     */
+    protected static function getCustomer(): Customer
+    {
+        return (self::$version == 2) ? new CustomerV2() : new Customer();
     }
 }

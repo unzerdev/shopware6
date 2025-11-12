@@ -25,7 +25,7 @@ interface HttpAdapterInterface
      * @param string|null $payload    Json encoded payload string.
      * @param string      $httpMethod The Http method to perform.
      */
-    public function init(string $url, string $payload = null, string $httpMethod = HttpAdapterInterface::REQUEST_GET): void;
+    public function init(string $url, ?string $payload = null, string $httpMethod = HttpAdapterInterface::REQUEST_GET): void;
 
     /**
      * Executes the request and returns the response.

@@ -5,51 +5,78 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\Struct\InstallmentSecured;
 
 use Shopware\Core\Framework\Struct\Struct;
-use stdClass;
 use UnzerSDK\Resources\InstalmentPlan;
 
 class InstallmentInfo extends Struct
 {
-    /** @var float */
+    /**
+     * @var float
+     */
     protected $totalAmount;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     protected $totalInterest;
 
-    /** @var int */
+    /**
+     * @var int
+     */
     protected $numberOfRates;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $dayOfPurchase;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     protected $totalPurchaseAmount;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     protected $totalInterestAmount;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     protected $effectiveInterestRate;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     protected $nominalInterestRate;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     protected $feeFirstRate;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     protected $feePerRate;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     protected $monthlyRate;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     protected $lastRate;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $invoiceDate;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $invoiceDueDate;
 
     public function getTotalAmount(): float
@@ -224,7 +251,7 @@ class InstallmentInfo extends Struct
     {
         $values = $instalmentPlan->expose();
 
-        if ($values instanceof stdClass) {
+        if ($values instanceof \stdClass) {
             $encoded = json_encode($values);
 
             if (!$encoded) {
@@ -233,7 +260,7 @@ class InstallmentInfo extends Struct
 
             $values = json_decode($encoded, true);
 
-            if (!is_array($values) || empty($values)) {
+            if (!\is_array($values) || empty($values)) {
                 return $this;
             }
         }

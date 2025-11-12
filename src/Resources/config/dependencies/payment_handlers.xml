@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerCreditCardPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepository"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerEpsPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepository"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPisPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerDirectDebitPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+            <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepository" />
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerIdealPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerWeChatPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerBancontactHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerApplePayV2PaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInstallmentPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPaylaterDirectDebitSecuredPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerGooglePayPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerTwintPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerOpenBankingPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerKlarnaPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerWeroPaymentHandler">
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\BasketResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandler"/>
+            <argument type="service" id="UnzerPayment6\Components\ClientFactory\ClientFactory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+    </services>
+</container>

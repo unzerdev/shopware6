@@ -1,0 +1,44 @@
+{% set googlePayExtension = page.extensions['unzerGooglePay'] %}
+{% if googlePayExtension is not empty %}
+{% set googlePayOptions = googlePayExtension.publicConfig|merge({
+    currency: context.currency.isoCode,
+    amount:  page.cart.price.totalPrice
+}) %}
+{% else %}
+    {% set googlePayOptions = null %}
+{% endif %}
+
+{% set applePayExtension = page.extensions['unzerApplePayV2'] %}
+{% if applePayExtension is not empty %}
+    {% set applePayOptions = applePayExtension.publicConfig|merge({
+        currency: context.currency.isoCode,
+        amount:  page.cart.price.totalPrice
+    }) %}
+{% else %}
+    {% set applePayOptions = null %}
+{% endif %}
+
+{% set expressCheckoutOptions = {
+    googlePay:googlePayOptions,
+    applePay:applePayOptions
+} %}
+
+<div class="unzer-express-buttons" data-unzer-payment-express-buttons="true" data-unzer-payment-express-buttons-options="{{ expressCheckoutOptions|json_encode }}">
+    <unzer-payment class="unzer-express-payment" publicKey="{{ expressExtension.publicKey }}">
+        {% if expressExtension.usePaypal %}
+            <div class="unzer-paypal-express-container mt-1">
+                <unzer-paypal-express class="unzer-paypal-express"></unzer-paypal-express>
+            </div>
+        {% endif %}
+        {% if expressExtension.useGooglePay and googlePayOptions is not empty %}
+            <div class="unzer-google-pay-express-container mt-1">
+                <unzer-google-pay class="unzer-google-pay"></unzer-google-pay>
+            </div>
+        {% endif %}
+        {% if expressExtension.useApplePay and applePayOptions is not empty %}
+            <div class="unzer-applepay-express-container mt-1">
+                <unzer-apple-pay class="unzer-apple-pay"></unzer-apple-pay>
+            </div>
+        {% endif %}
+    </unzer-payment>
+</div>

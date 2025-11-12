@@ -10,11 +10,10 @@
 
 namespace UnzerSDK\Adapter;
 
-use UnzerSDK\Unzer;
-use UnzerSDK\Services\EnvironmentService;
-use UnzerSDK\Exceptions\UnzerApiException;
 use RuntimeException;
-
+use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Services\EnvironmentService;
+use UnzerSDK\Unzer;
 use function extension_loaded;
 use function in_array;
 
@@ -37,7 +36,7 @@ class CurlAdapter implements HttpAdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function init(string $url, string $payload = null, string $httpMethod = HttpAdapterInterface::REQUEST_GET): void
+    public function init(string $url, ?string $payload = null, string $httpMethod = HttpAdapterInterface::REQUEST_GET): void
     {
         $timeout = EnvironmentService::getTimeout();
         $curlVerbose = EnvironmentService::isCurlVerbose();

@@ -30,6 +30,7 @@
                 "refundButton": "Refund",
                 "defaultButton": "Done",
                 "cancelButton": "Cancel",
+                "noActions": "No actions possible",
                 "confirmCancelModal": {
                     "text": "Do you really want to cancel the authorization of the selected amount?",
                     "amountLabel": "Amount:",
@@ -56,7 +57,7 @@
             },
             "basket": {
                 "cardTitle": "Basket",
-                "column":{
+                "column": {
                     "quantity": "Quantity",
                     "title": "Title",
                     "amountGross": "Amount (gross)",
@@ -90,78 +91,32 @@
         },
         "methods": {
             "paylaterInvoice": {
+                "main": "Invoice",
                 "b2b-eur": "Invoice B2B EUR",
                 "b2b-chf": "Invoice B2B CHF",
                 "b2c-eur": "Invoice B2C EUR",
                 "b2c-chf": "Invoice B2C CHF"
             },
             "paylaterInstallment": {
+                "main": "Installment",
                 "b2c-eur": "Installment B2C EUR",
                 "b2c-chf": "Installment B2C CHF"
             },
             "paylaterDirectDebitSecured": {
+                "main": "Direct Debit",
                 "b2c-eur": "Direct Debit B2C EUR"
             }
         }
     },
     "unzer-payment-settings": {
+        "subheadings": {
+            "paymentSettingsBookingModes": "Booking Modes",
+            "paymentSettingsSaveDevices": "Save Payment Details",
+            "paymentSettingsExpressCheckout": "Express Checkout"
+        },
         "module": {
             "title": "Unzer Payment",
             "description": "Unzer Payment"
-        },
-        "apple-pay": {
-            "certificates": {
-                "title": "Apple Pay Certificates (Deprecated)",
-                "textExisting": "We have updated our integration with Apple Pay, but since you already have it set up, you don't need to do anything just now.<br><br>However, when your Apple Pay certificates are about to expire, you can change to the new integration.<br><br>You can of course change to the new integration now, if you want, and then you don't have to worry about expiring certificates, changing integration, etc. in the future.",
-                "textAll": "Before you activate Apple Pay, please make sure you have read our <a href='https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/#prerequisites-for-accepting-apple-pay-transactions' target='_blank'>checklist</a>.",
-                "check": {
-                    "paymentProcessingValid": {
-                        "true": "The Payment Processing certificate is present and valid",
-                        "false": "The Payment Processing certificate is missing"
-                    },
-                    "paymentProcessingActive": {
-                        "true": "The Payment Processing certificate is active",
-                        "false": "The Payment Processing certificate is inactive"
-                    },
-                    "merchantIdentificationValid": {
-                        "true": "The Merchant Identification certificate is present",
-                        "false": "The Merchant Identification certificate is missing"
-                    },
-                    "merchantIdentificationValidUntil": {
-                        "true": "The Merchant Identification certificate is valid",
-                        "false": "The Merchant Identification certificate is expired and must be renewed"
-                    }
-                },
-                "update": {
-                    "success": {
-                        "title": "Success",
-                        "message": "Certificates were updated successfully"
-                    },
-                    "error": {
-                        "title": "Error",
-                        "message": "An error occurred during certificate update",
-                        "messageInvalidCertificate": "The given certificate data for {type} is invalid",
-                        "messageMissingCertificateFiles": "The given certificate data for {type} is incomplete"
-                    }
-                }
-            },
-            "paymentProcessingCertificate": {
-                "label": "Payment Processing Certificate",
-                "helpText": "Certificate and Key have to be prepared as specified in <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">the Unzer documentation</a>."
-            },
-            "paymentProcessingKey": {
-                "label": "Payment Processing Certificate Key (Private Key)"
-            },
-            "publicKey": {
-                "changeNotice": "Please note: After changing the Unzer keys, you have to re-upload your Apple Pay Payment Processing Certificate."
-            },
-            "merchantIdentificationCertificate": {
-                "label": "Merchant Identification Certificate",
-                "helpText": "Certificate and Key have to be prepared as specified in <a href=\"https://docs.unzer.com/payment-methods/applepay/applepay-prerequisites/\" target=\"_blank\" rel=\"noopener\">the Unzer documentation</a>."
-            },
-            "merchantIdentificationKey": {
-                "label": "Merchant Identification Certificate Key (Private Key)"
-            }
         },
         "google-pay": {
             "gatewayMerchantId": "Gateway Merchant ID"
@@ -180,7 +135,8 @@
             "testButton": "Test API credentials",
             "webhookButton": "Register webhooks",
             "privateKey": "Private Key",
-            "publicKey": "Public Key"
+            "publicKey": "Public Key",
+            "additionalKeys": "API Keys for additional payment methods"
         },
         "modal": {
             "close": "Close",

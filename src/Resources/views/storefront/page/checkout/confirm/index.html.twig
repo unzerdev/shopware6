@@ -11,38 +11,17 @@
     </div>
 {% endblock %}
 
-{% block layout_head_meta_tags %}
-    {{ parent() }}
-
-    {% set fraudPreventionExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
-
-    {% if page.extensions[fraudPreventionExtensionName] %}
-        <script type="text/javascript" src="https://h.online-metrix.net/fp/tags.js?org_id=363t8kgq&session_id={{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"></script>
-    {% endif %}
-{% endblock %}
-
-{% block base_noscript %}
-    {{ parent() }}
-
-    {% set fraudPreventionExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
-
-    {% if page.extensions[fraudPreventionExtensionName] %}
-        <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://h.online-metrix.net/fp/tags?org_id=363t8kgq&session_id={{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"></iframe>
-    {% endif %}
-{% endblock %}
-
-{% block page_checkout_confirm_product_table %}
-    {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
-    {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
-    {% if page.extensions[paymentDataExtensionName] %}
+{% block unzer_payment_checkout_confirm_payment_frame_container %}
+    {% if page.extensions.unzerPaymentData %}
         {% block unzer_payment_checkout_confirm_library %}
             {% sw_include '@Storefront/storefront/component/unzer/base/unzer-library.html.twig' %}
         {% endblock %}
-        {% if page.extensions[paymentFrameExtensionName].paymentFrame %}
+        {% if page.extensions.unzerPaymentFrame.paymentFrame %}
             {% block unzer_payment_checkout_confirm_frame %}
 
                 {% block page_checkout_unzer_payment_form_elements %}
                     <input type="hidden" id="unzerResourceId" name="unzerResourceId" form="confirmOrderForm">
+                    <input type="hidden" id="unzerThreatMetrixId" name="unzerThreatMetrixId" form="confirmOrderForm">
                 {% endblock %}
 
                 {% block unzer_payment_checkout_confirm_frame_card %}
@@ -50,15 +29,16 @@
                          id="unzer-payment-base"
                          data-unzer-payment-base="true"
                          data-unzer-payment-base-options='{
-                     "publicKey": "{{ page.extensions[paymentDataExtensionName].publicKey }}",
-                     "shopLocale": "{{ page.extensions[paymentDataExtensionName].locale }}",
+                     "publicKey": "{{ page.extensions.unzerPaymentData.publicKey }}",
+                     "shopLocale": "{{ page.extensions.unzerPaymentData.locale }}",
+                     "unzerCustomer": {% if page.extensions.unzerPaymentData.getUnzerCustomer() is not empty %}{{ page.extensions.unzerPaymentData.getUnzerCustomer().expose()|json_encode }}{% else %}null{% endif %},
                      "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
                  }'>
                         <div class="unzer-payment-base-body">
                             {% block unzer_payment_checkout_confirm_frame_card_body %}
                                 {% block unzer_payment_checkout_confirm_frame_card_body_frame %}
                                     <div class="unzer-payment-frame">
-                                        {% sw_include page.extensions[paymentFrameExtensionName].paymentFrame ignore missing %}
+                                        {% sw_include page.extensions.unzerPaymentFrame.paymentFrame ignore missing %}
                                     </div>
                                 {% endblock %}
                             {% endblock %}
@@ -69,97 +49,24 @@
 
         {% endif %}
     {% endif %}
-
-    {% set fraudPreventionExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\FraudPreventionPageExtension::EXTENSION_NAME") %}
-
-    {% if page.extensions[fraudPreventionExtensionName] %}
-        <input
-                name="unzerPaymentFraudPreventionSessionId"
-                type="hidden"
-                value="{{ page.extensions[fraudPreventionExtensionName].fraudPreventionSessionId }}"
-                form="confirmOrderForm"
-        />
-    {% endif %}
-
-    {{ parent() }}
 {% endblock %}
+
+{% block page_checkout_confirm_payment_shipping %}
+    {{ parent() }}
+    {% if not (premsOnePageCheckout and premsOnePageCheckout.useOnePageCheckout) %}
+        {{ block('unzer_payment_checkout_confirm_payment_frame_container') }}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_confirm_payment %}
+    {{ parent() }}
+    {% if premsOnePageCheckout and premsOnePageCheckout.useOnePageCheckout %}
+        {{ block('unzer_payment_checkout_confirm_payment_frame_container') }}
+    {% endif %}
+{% endblock %}
+
 
 {% block page_checkout_confirm_form_submit %}
     {{ parent() }}
-
-    {% if page.order %}
-        {% set billingAddress = page.order.billingAddress %}
-        {% set summary = page.order %}
-    {% else %}
-        {% set billingAddress = context.customer.activeBillingAddress %}
-        {% set summary = page.cart %}
-    {% endif %}
-
-    {% block unzer_payment_frame_apple_pay %}
-        {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
-        {% set applePayExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\ApplePayPageExtension::EXTENSION_NAME") %}
-
-        {% if page.extensions[applePayExtensionName] %}
-            <div data-unzer-payment-apple-pay data-unzer-payment-apple-pay-options="{{ {
-                countryCode: billingAddress.country.iso,
-                currency: context.currency.isoCode,
-                shopName: page.extensions[paymentFrameExtensionName].shopName,
-                amount: summary.price.rawTotal ?: summary.price.totalPrice,
-                authorizePaymentUrl: path('frontend.unzer.apple_pay.authorize_payment'),
-                merchantValidationUrl: path('frontend.unzer.apple_pay.validate_merchant'),
-                noApplePayMessage: "UnzerPayment.frame.applePay.missingMessage" | trans,
-                supportedNetworks: page.extensions[applePayExtensionName].supportedNetworks,
-            }|json_encode }}">
-                {% block unzer_payment_frame_apple_pay_test_data %}
-                    {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
-                    {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
-                        {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/apple-pay.html.twig' %}
-                    {% endif %}
-                {% endblock %}
-                <apple-pay-button buttonstyle="black" type="buy" locale="{{ context.salesChannel.locale.code }}" style="--apple-pay-button-width: 100%;"></apple-pay-button>
-            </div>
-        {% endif %}
-
-
-        {% set applePayV2ExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\ApplePayV2PageExtension::EXTENSION_NAME") %}
-        {% if page.extensions[applePayV2ExtensionName] %}
-            <div data-unzer-payment-apple-pay-v2 data-unzer-payment-apple-pay-v2-options="{{ {
-                countryCode: billingAddress.country.iso,
-                currency: context.currency.isoCode,
-                shopName: page.extensions[paymentFrameExtensionName].shopName,
-                amount: summary.price.rawTotal ?: summary.price.totalPrice,
-                noApplePayMessage: "UnzerPayment.frame.applePay.missingMessage" | trans,
-                supportedNetworks: page.extensions[applePayV2ExtensionName].supportedNetworks,
-                merchantCapabilities: page.extensions[applePayV2ExtensionName].merchantCapabilities,
-            }|json_encode }}">
-                {% block unzer_payment_frame_apple_pay_v2_test_data %}
-                    {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
-                    {% if page.extensions[paymentDataExtensionName] and page.extensions[paymentDataExtensionName].showTestData %}
-                        {% sw_include '@Storefront/storefront/component/unzer/frames/testdata/apple-pay.html.twig' %}
-                    {% endif %}
-                {% endblock %}
-                <div class="apple-pay-button apple-pay-button-black" lang="{{ context.salesChannel.locale.code }}" role="link" tabindex="0"></div>
-            </div>
-        {% endif %}
-
-
-    {% endblock %}
-
-    {% block unzer_payment_google_pay %}
-        {% set googlePayExtensionName = 'unzerGooglePay' %}
-        {% if page.extensions[googlePayExtensionName] %}
-            {% set paymentFrameExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\PaymentFramePageExtension::EXTENSION_NAME") %}
-
-            {% set googlePayOptions = page.extensions[googlePayExtensionName].publicConfig|merge({
-                currency: context.currency.isoCode,
-                amount: summary.price.rawTotal ?: summary.price.totalPrice
-            }) %}
-            {% if page.extensions[googlePayExtensionName] %}
-                <div data-unzer-payment-google-pay data-unzer-payment-google-pay-options="{{ googlePayOptions|json_encode }}">
-                    <div id="unzer-google-pay-button"></div>
-                </div>
-            {% endif %}
-        {% endif %}
-    {% endblock %}
-
+    {% sw_include '@Storefront/storefront/component/unzer/confirm-form-extension.html.twig' %}
 {% endblock %}

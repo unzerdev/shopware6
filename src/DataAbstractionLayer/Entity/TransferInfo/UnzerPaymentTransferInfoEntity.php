@@ -11,26 +11,19 @@ class UnzerPaymentTransferInfoEntity extends Entity
 {
     use EntityIdTrait;
 
-    /** @var string */
-    protected $transactionId;
+    protected string $transactionId;
 
-    /** @var null|string */
-    protected $transactionVersionId;
+    protected ?string $transactionVersionId;
 
-    /** @var string */
-    protected $iban;
+    protected string $iban;
 
-    /** @var string */
-    protected $bic;
+    protected string $bic;
 
-    /** @var string */
-    protected $holder;
+    protected string $holder;
 
-    /** @var string */
-    protected $descriptor;
+    protected string $descriptor;
 
-    /** @var float */
-    protected $amount;
+    protected float $amount;
 
     public function getTransactionId(): string
     {

@@ -41,15 +41,15 @@ class TransactionSelectionHelper implements TransactionSelectionHelperInterface
                     continue;
                 }
 
-                if (empty($latest) || (array_key_exists('timestamp', $latest) && $latest['timestamp'] < $transaction->getCreatedAt()->getTimestamp())) {
+                if (empty($latest) || (\array_key_exists('timestamp', $latest) && $latest['timestamp'] < $transaction->getCreatedAt()->getTimestamp())) {
                     $latest = [
                         'timestamp' => $transaction->getCreatedAt()->getTimestamp(),
-                        'id'        => $transaction->getId(),
+                        'id' => $transaction->getId(),
                     ];
                 }
             }
 
-            if (!empty($latest) && array_key_exists('id', $latest)) {
+            if (!empty($latest) && \array_key_exists('id', $latest)) {
                 $latestTransaction = $transactions->get($latest['id']);
 
                 if ($latestTransaction !== null) {
@@ -64,14 +64,14 @@ class TransactionSelectionHelper implements TransactionSelectionHelperInterface
     protected function filterByPaymentMethod(OrderTransactionCollection $transactions): OrderTransactionCollection
     {
         return $transactions->filter(static function (OrderTransactionEntity $transaction) {
-            return in_array($transaction->getPaymentMethodId(), PaymentInstaller::PAYMENT_METHOD_IDS);
+            return \in_array($transaction->getPaymentMethodId(), PaymentInstaller::PAYMENT_METHOD_IDS, true);
         });
     }
 
     protected function filterByState(OrderTransactionCollection $transactions): OrderTransactionCollection
     {
         return $transactions->filter(static function (OrderTransactionEntity $transaction) {
-            if (null === $transaction->getStateMachineState() || null === $transaction->getPaymentMethod()) {
+            if ($transaction->getStateMachineState() === null || $transaction->getPaymentMethod() === null) {
                 return false;
             }
 

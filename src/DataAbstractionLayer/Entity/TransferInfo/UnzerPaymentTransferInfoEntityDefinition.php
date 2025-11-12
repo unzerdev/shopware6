@@ -42,13 +42,13 @@ class UnzerPaymentTransferInfoEntityDefinition extends EntityDefinition
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
 
             (new FkField('transaction_id', 'transactionId', OrderTransactionDefinition::class))->addFlags(new Required()),
-            (new FkField('transaction_version_id', 'transactionVersionId', OrderTransactionDefinition::class)),
+            new FkField('transaction_version_id', 'transactionVersionId', OrderTransactionDefinition::class),
 
-            (new StringField('iban', 'iban')),
-            (new StringField('bic', 'bic')),
-            (new StringField('holder', 'holder')),
-            (new StringField('descriptor', 'descriptor')),
-            (new FloatField('amount', 'amount')),
+            new StringField('iban', 'iban'),
+            new StringField('bic', 'bic'),
+            new StringField('holder', 'holder'),
+            new StringField('descriptor', 'descriptor'),
+            new FloatField('amount', 'amount'),
 
             new OneToOneAssociationField('transaction', 'transaction_id', 'id', OrderTransactionDefinition::class, false),
 

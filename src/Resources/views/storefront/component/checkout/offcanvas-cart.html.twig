@@ -1,0 +1,13 @@
+{% sw_extends '@Storefront/storefront/component/checkout/offcanvas-cart.html.twig' %}
+
+{% block component_offcanvas_cart_actions_checkout %}
+    {{ parent() }}
+
+    {% if isCartNotEmpty and page.extensions.UnzerExpressButtons.publicKey is not empty %}
+        {% sw_include '@Storefront/storefront/component/unzer/express-buttons.html.twig' with {
+            page:page,
+            expressExtension:page.extensions.UnzerExpressButtons
+        }%}
+    {% endif %}
+
+{% endblock %}

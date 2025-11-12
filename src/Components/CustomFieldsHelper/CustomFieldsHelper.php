@@ -23,7 +23,7 @@ class CustomFieldsHelper implements CustomFieldsHelperInterface
         OrderTransactionEntity $transaction,
         Context $context
     ): void {
-        $shipmentExecuted = !in_array(
+        $shipmentExecuted = !\in_array(
             $transaction->getPaymentMethodId(),
             AutomaticShippingValidatorInterface::HANDLED_PAYMENT_METHODS,
             true
@@ -32,11 +32,11 @@ class CustomFieldsHelper implements CustomFieldsHelperInterface
         $customFields = $transaction->getCustomFields() ?? [];
         $customFields = array_merge($customFields, [
             CustomFieldInstaller::UNZER_PAYMENT_IS_TRANSACTION => true,
-            CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED     => $shipmentExecuted,
+            CustomFieldInstaller::UNZER_PAYMENT_IS_SHIPPED => $shipmentExecuted,
         ]);
 
         $update = [
-            'id'           => $transaction->getId(),
+            'id' => $transaction->getId(),
             'customFields' => $customFields,
         ];
 
@@ -51,7 +51,7 @@ class CustomFieldsHelper implements CustomFieldsHelperInterface
         ]);
 
         $update = [
-            'id'           => $transaction->getId(),
+            'id' => $transaction->getId(),
             'customFields' => $customFields,
         ];
 

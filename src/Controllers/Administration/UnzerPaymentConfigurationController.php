@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Controllers\Administration;
 
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,11 +21,10 @@ use UnzerSDK\Exceptions\UnzerApiException;
 class UnzerPaymentConfigurationController extends AbstractController
 {
     public function __construct(
-        private readonly ClientFactoryInterface      $clientFactory,
-        private readonly LoggerInterface             $logger,
+        private readonly ClientFactoryInterface $clientFactory,
+        private readonly LoggerInterface $logger,
         private readonly WebhookRegistratorInterface $webhookRegistrator
-    )
-    {
+    ) {
     }
 
     #[Route(path: '/api/_action/unzer-payment/validate-credentials', name: 'api.action.unzer.validate.credentials', methods: ['POST'])]
@@ -47,7 +45,7 @@ class UnzerPaymentConfigurationController extends AbstractController
             if ($remoteKeypair->getPublicKey() !== $publicKey) {
                 $responseCode = Response::HTTP_BAD_REQUEST;
             }
-        } catch (UnzerApiException|RuntimeException $apiException) {
+        } catch (UnzerApiException|\RuntimeException) {
             $responseCode = Response::HTTP_BAD_REQUEST;
         }
 
@@ -71,6 +69,7 @@ class UnzerPaymentConfigurationController extends AbstractController
             $configuration = $configReader->read($salesChannelId);
             $client = $this->clientFactory->createClientFromPrivateKey($configuration->get(ConfigReader::CONFIG_KEY_PRIVATE_KEY));
             $channelId = UnzerGooglePayPaymentHandler::fetchChannelId($client);
+
             return new JsonResponse([
                 'success' => true,
                 'gatewayMerchantId' => $channelId,

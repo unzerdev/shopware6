@@ -10,6 +10,6 @@ class TransitionMapperException extends AbstractUnzerPaymentException
 {
     public function __construct(string $paymentName)
     {
-        parent::__construct(sprintf('Payment status transition is not allowed for payment method: %s', $paymentName));
+        parent::__construct(\sprintf('Payment status transition is not allowed for payment method: %s', $paymentName));
     }
 }

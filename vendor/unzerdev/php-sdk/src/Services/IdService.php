@@ -3,7 +3,6 @@
 namespace UnzerSDK\Services;
 
 use RuntimeException;
-
 use function count;
 
 /**
@@ -22,7 +21,7 @@ class IdService
      *
      * @param string $url
      * @param string $idString
-     * @param bool   $onlyLast
+     * @param bool $onlyLast
      *
      * @return string
      *
@@ -31,7 +30,7 @@ class IdService
     public static function getResourceIdFromUrl(string $url, string $idString, bool $onlyLast = false): string
     {
         $matches = [];
-        $pattern = '/\/([s|p]{1}-' . $idString . '-[a-z\d]+)\/?' . ($onlyLast ? '$' : '') . '/';
+        $pattern = '/\/([s|p]{1}-' . $idString . '-[a-z\d-]+)\/?' . ($onlyLast ? '$' : '') . '/';
         preg_match($pattern, $url, $matches);
 
         if (count($matches) < 2) {
@@ -76,7 +75,7 @@ class IdService
      *
      * @param string $url
      * @param string $idString
-     * @param bool   $onlyLast
+     * @param bool $onlyLast
      *
      * @return string|null
      */
@@ -116,5 +115,11 @@ class IdService
         }
 
         return $typeIdString;
+    }
+
+    public static function isUUIDResource(string $id): bool
+    {
+        preg_match('/^[sp]-([a-z]{3}|p24)-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/', $id, $matches);
+        return count($matches) > 0;
     }
 }

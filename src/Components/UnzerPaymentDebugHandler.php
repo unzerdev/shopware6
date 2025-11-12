@@ -7,14 +7,10 @@ namespace UnzerPayment6\Components;
 use Psr\Log\LoggerInterface;
 use UnzerSDK\Interfaces\DebugHandlerInterface;
 
-class UnzerPaymentDebugHandler implements DebugHandlerInterface
+readonly class UnzerPaymentDebugHandler implements DebugHandlerInterface
 {
-    /** @var LoggerInterface */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     /**

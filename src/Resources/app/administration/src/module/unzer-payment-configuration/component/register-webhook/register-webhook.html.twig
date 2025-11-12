@@ -1,84 +1,90 @@
 {% block unzer_payment_payment_register_webhook %}
     <div class="register-webhook--container">
         {% block unzer_payment_payment_register_webhook_button %}
-            <sw-button-process
-                :isLoading="isRegistering || isLoading"
-                :disabled="isDisabled"
-                :processSuccess="isRegistrationSuccessful"
-                @process-finish="onRegistrationFinished()"
-                @click="openModal">
-                {{ $tc('unzer-payment-settings.form.webhookButton') }}
-            </sw-button-process>
+        <sw-button-process
+            :isLoading="isRegistering || isLoading"
+            :disabled="isDisabled"
+            :processSuccess="isRegistrationSuccessful"
+            @process-finish="onRegistrationFinished()"
+            @click="openModal"
+        >
+            {{ $tc('unzer-payment-settings.form.webhookButton') }}
+        </sw-button-process>
         {% endblock %}
 
         {% block unzer_payment_payment_register_webhook_modal %}
-            <sw-modal v-if="isModalActive" @modal-close="closeModal"
-                      :title="$tc(`unzer-payment-settings.modal.webhook.title`)"
-                      class="unzer-payment-detail--webhook-modal">
-
-                <template #default>
+        <sw-modal
+            v-if="isModalActive"
+            @modal-close="closeModal"
+            :title="$tc(`unzer-payment-settings.modal.webhook.title`)"
+            class="unzer-payment-detail--webhook-modal"
+        >
+            <template #default>
+                <sw-alert
+                    variant="info"
+                    appearance="default"
+                    :showIcon="true"
+                    :closable="false"
+                >
+                    {{ $tc('unzer-payment-settings.modal.webhook.httpsInfo') }}
+                </sw-alert>
+                <sw-card
+                    v-for="salesChannel in salesChannels"
+                    v-if="!selectedSalesChannelId || selectedSalesChannelId === salesChannel.id"
+                    :isLoading="isDataLoading"
+                    :key="salesChannel.id"
+                    :title="salesChannel.translated.name"
+                    :large="true"
+                >
+                    <sw-entity-single-select
+                        v-if="!isWebhookRegisteredForSalesChannel(salesChannel.id)"
+                        v-model:value="selection[salesChannel.id]"
+                        :placeholder="$tc(`unzer-payment-settings.modal.webhook.placeholder`)"
+                        :criteria="getSalesChannelDomainCriteria(salesChannel.id)"
+                        entity="sales_channel_domain"
+                        label-property="url"
+                        @update:value="onSelectItem"
+                    >
+                        </sw-entity-single-select>
                     <sw-alert
-                        variant="info"
+                        v-else
+                        variant="success"
                         appearance="default"
                         :showIcon="true"
-                        :closable="false">
-                        {{ $tc('unzer-payment-settings.modal.webhook.httpsInfo') }}
+                        :closable="false"
+                    >
+                        {{ $tc('unzer-payment-settings.modal.webhook.registered') }}
                     </sw-alert>
-
-                    <sw-card
-                        v-for="salesChannel in salesChannels"
-                        v-if="!selectedSalesChannelId || selectedSalesChannelId === salesChannel.id"
-                        :isLoading="isDataLoading"
-                        :key="salesChannel.id"
-                        :title="salesChannel.translated.name"
-                        :large="true"
-                        >
-
-                        <sw-entity-single-select
-                            v-if="!isWebhookRegisteredForSalesChannel(salesChannel.id)"
-                            v-model:value="selection[salesChannel.id]"
-                            :placeholder="$tc(`unzer-payment-settings.modal.webhook.placeholder`)"
-                            :criteria="getSalesChannelDomainCriteria(salesChannel.id)"
-                            entity="sales_channel_domain"
-                            label-property="url"
-                            @update:value="onSelectItem">
-                        </sw-entity-single-select>
-
-                        <sw-alert
-                            v-else
-                            variant="success"
-                            appearance="default"
-                            :showIcon="true"
-                            :closable="false">
-                            {{ $tc('unzer-payment-settings.modal.webhook.registered') }}
-                        </sw-alert>
-                    </sw-card>
-
-                    <sw-pagination
-                        :total="salesChannels.total"
-                        :limit="salesChannels.total"
-                        :page="salesChannels.criteria.page"
-                        :steps="[2,10,25,100]"
-                        @page-change="onPageChange">
+                </sw-card>
+                <sw-pagination
+                    :total="salesChannels.total"
+                    :limit="salesChannels.total"
+                    :page="salesChannels.criteria.page"
+                    :steps="[2,10,25,100]"
+                    @page-change="onPageChange"
+                >
                     </sw-pagination>
+            </template>
 
-                </template>
-
-                <template #modal-footer>
-
-                    <sw-button :disabled="isLoading" @click="closeModal">
-                        {{ $tc('unzer-payment-settings.modal.close') }}
-                    </sw-button>
-
-                    <sw-button-process
-                        @click="registerWebhooks"
-                        @process-finish="onRegistrationFinished()"
-                        :isLoading="isLoading" :processSuccess="isRegistrationSuccessful" :disabled="isLoading"
-                        variant="primary">
-                        {{ $tc('unzer-payment-settings.modal.webhook.submit.register') }}
-                    </sw-button-process>
-                </template>
-            </sw-modal>
+            <template #modal-footer>
+                <sw-button
+                    :disabled="isLoading"
+                    @click="closeModal"
+                >
+                    {{ $tc('unzer-payment-settings.modal.close') }}
+                </sw-button>
+                <sw-button-process
+                    @click="registerWebhooks"
+                    @process-finish="onRegistrationFinished()"
+                    :isLoading="isLoading"
+                    :processSuccess="isRegistrationSuccessful"
+                    :disabled="isLoading"
+                    variant="primary"
+                >
+                    {{ $tc('unzer-payment-settings.modal.webhook.submit.register') }}
+                </sw-button-process>
+            </template>
+        </sw-modal>
         {% endblock %}
     </div>
 {% endblock %}

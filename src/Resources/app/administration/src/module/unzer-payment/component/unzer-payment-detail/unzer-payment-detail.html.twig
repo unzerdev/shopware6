@@ -1,54 +1,85 @@
 {% block unzer_payment_detail %}
-    <sw-card class="unzer-payment-detail" :title="$tc('unzer-payment.paymentDetails.detail.cardTitle')">
+    <sw-card
+        class="unzer-payment-detail"
+        :title="$tc('unzer-payment.paymentDetails.detail.cardTitle')"
+    >
         <template>
             {% block unzer_payment_detail_container %}
-                <sw-container columns="1fr 1fr" gap="0 20px">
-                    {% block unzer_payment_detail_container_left %}
-                        <sw-description-list class="unzer-payment-detail">
-                            <dt>{{ $tc('unzer-payment.paymentDetails.detail.amountRemaining') }}</dt>
-                            <dd>{{ formatCurrency(remainingAmount) }}</dd>
-
-                            <dt>{{ $tc('unzer-payment.paymentDetails.detail.amountCancelled') }}</dt>
-                            <dd>{{ formatCurrency(cancelledAmount) }}</dd>
-
-                            <dt>{{ $tc('unzer-payment.paymentDetails.detail.amountCharged') }}</dt>
-                            <dd>{{ formatCurrency(chargedAmount) }}</dd>
-
-                            {% block unzer_payment_detail_container_left_inner %}{% endblock %}
-                        </sw-description-list>
-                    {% endblock %}
+            <sw-container
+                columns="1fr 1fr"
+                gap="0 20px"
+            >
+                {% block unzer_payment_detail_container_left %}
+                <sw-description-list class="unzer-payment-detail">
+                    <dt>
+                        {{ $tc('unzer-payment.paymentDetails.detail.amountRemaining') }}
+                    </dt>
+                    <dd>
+                        {{ formatCurrency(remainingAmount) }}
+                    </dd>
+                    <dt>
+                        {{ $tc('unzer-payment.paymentDetails.detail.amountCancelled') }}
+                    </dt>
+                    <dd>
+                        {{ formatCurrency(cancelledAmount) }}
+                    </dd>
+                    <dt>
+                        {{ $tc('unzer-payment.paymentDetails.detail.amountCharged') }}
+                    </dt>
+                    <dd>
+                        {{ formatCurrency(chargedAmount) }}
+                    </dd>
+                    {% block unzer_payment_detail_container_left_inner %}{% endblock %}
+                </sw-description-list>
+                {% endblock %}
 
                     {% block unzer_payment_detail_container_right %}
-                        <sw-description-list class="unzer-payment-detail">
-                            <dt>{{ $tc('unzer-payment.paymentDetails.detail.shortId') }}</dt>
-                            <dd>{{ paymentResource.shortId }}</dd>
-
-                            <dt>{{ $tc('unzer-payment.paymentDetails.detail.id') }}</dt>
-                            <dd>{{ paymentResource.id }}</dd>
-
-                            <dt>{{ $tc('unzer-payment.paymentDetails.detail.state') }}</dt>
-                            <dd>{{ paymentResource.state.name }}</dd>
-
-                            <span v-if="isPaylaterPaymentMethod(paymentResource.paymentMethodId)">
-                                <dt>{{ $tc('unzer-payment.paymentDetails.detail.descriptor') }}</dt>
-                                <dd>{{ paymentResource.descriptor }}</dd>
-                            </span>
-
-                            {% block unzer_payment_detail_container_right_inner %}{% endblock %}
-                        </sw-description-list>
-                    {% endblock %}
-                </sw-container>
+                <sw-description-list class="unzer-payment-detail">
+                    <dt>
+                        {{ $tc('unzer-payment.paymentDetails.detail.shortId') }}
+                    </dt>
+                    <dd>{{ paymentResource.shortId }}</dd>
+                    <dt>
+                        {{ $tc('unzer-payment.paymentDetails.detail.id') }}
+                    </dt>
+                    <dd>{{ paymentResource.id }}</dd>
+                    <dt>
+                        {{ $tc('unzer-payment.paymentDetails.detail.state') }}
+                    </dt>
+                    <dd>
+                        {{ paymentResource.state.name }}
+                    </dd>
+                    <span
+                        v-if="isPaylaterPaymentMethod(paymentResource.paymentMethodId)"
+                    >
+                        <dt>
+                            {{ $tc('unzer-payment.paymentDetails.detail.descriptor') }}
+                        </dt>
+                        <dd>
+                            {{ paymentResource.descriptor }}
+                        </dd>
+                    </span>
+                    {% block unzer_payment_detail_container_right_inner %}{% endblock %}
+                </sw-description-list>
+                {% endblock %}
+            </sw-container>
             {% endblock %}
         </template>
-
         {% block unzer_payment_detail_footer %}
-            <template #footer v-if="paymentResource.isShipmentAllowed">
-                {% block unzer_payment_detail_ship_button %}
-                    <sw-button-process :isLoading="isLoading" :processSuccess="isSuccessful" @click="ship">
-                        {{ $tc('unzer-payment.paymentDetails.actions.shipButton') }}
-                    </sw-button-process>
-                {% endblock %}
-            </template>
+        <template
+            #footer
+            v-if="paymentResource.isShipmentAllowed"
+        >
+            {% block unzer_payment_detail_ship_button %}
+            <sw-button-process
+                :isLoading="isLoading"
+                :processSuccess="isSuccessful"
+                @click="ship"
+            >
+                {{ $tc('unzer-payment.paymentDetails.actions.shipButton') }}
+            </sw-button-process>
+            {% endblock %}
+        </template>
         {% endblock %}
     </sw-card>
 {% endblock %}

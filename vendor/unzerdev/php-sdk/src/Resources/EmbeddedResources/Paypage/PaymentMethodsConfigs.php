@@ -11,6 +11,7 @@ class PaymentMethodsConfigs extends AbstractUnzerResource
     const PAYPAGE_TYPE_NAME_MAPPING = [
         'card' => 'cards',
         'eps' => 'eps',
+        'openbankingpis' => 'openbankingpis',
         'payu' => 'payu',
         'postfinanceefinance' => 'pfefinance',
         'postfinancecard' => 'pfcard'
