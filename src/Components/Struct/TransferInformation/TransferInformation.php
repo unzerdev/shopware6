@@ -11,19 +11,29 @@ use UnzerSDK\Resources\TransactionTypes\Charge;
 
 class TransferInformation extends Struct
 {
-    /** @var null|string */
+    /**
+     * @var string|null
+     */
     protected $iban;
 
-    /** @var null|string */
+    /**
+     * @var string|null
+     */
     protected $bic;
 
-    /** @var null|string */
+    /**
+     * @var string|null
+     */
     protected $holder;
 
-    /** @var null|string */
+    /**
+     * @var string|null
+     */
     protected $descriptor;
 
-    /** @var null|float */
+    /**
+     * @var float|null
+     */
     protected $amount;
 
     /**
@@ -31,24 +41,24 @@ class TransferInformation extends Struct
      */
     public function __construct(AbstractTransactionType $payment)
     {
-        $this->iban       = $payment->getIban();
-        $this->bic        = $payment->getBic();
-        $this->holder     = $payment->getHolder();
+        $this->iban = $payment->getIban();
+        $this->bic = $payment->getBic();
+        $this->holder = $payment->getHolder();
         $this->descriptor = $payment->getDescriptor();
 
         /** @var float $amount */
-        $amount       = $payment->getAmount();
+        $amount = $payment->getAmount();
         $this->amount = round($amount, 2);
     }
 
     public function getEntityData(): array
     {
         return [
-            'iban'       => $this->getIban(),
-            'bic'        => $this->getBic(),
-            'holder'     => $this->getHolder(),
+            'iban' => $this->getIban(),
+            'bic' => $this->getBic(),
+            'holder' => $this->getHolder(),
             'descriptor' => $this->getDescriptor(),
-            'amount'     => $this->getAmount(),
+            'amount' => $this->getAmount(),
         ];
     }
 

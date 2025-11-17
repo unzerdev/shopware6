@@ -21,14 +21,14 @@ class BasketConverter implements BasketConverterInterface
 
     private function updateBasketItem(array $item, float $vat): array
     {
-        $vat = $vat / 100;
+        $vat /= 100;
 
         if ($item['type'] === 'voucher') {
             $item['amountDiscount'] = round((float) $item['amountDiscountPerUnitGross'] * (int) $item['quantity'], UnzerPayment6::MAX_DECIMAL_PRECISION);
         }
 
         $item['amountPerUnit'] = $item['amountPerUnitGross'];
-        $item['amountGross']   = $item['amountPerUnitGross'] * $item['quantity'];
+        $item['amountGross'] = $item['amountPerUnitGross'] * $item['quantity'];
 
         $amountNet = (float) $item['amountGross'] / (1 + $vat);
 

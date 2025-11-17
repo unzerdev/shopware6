@@ -12,7 +12,7 @@ class UnzerPaymentConfigurationService extends ApiService {
                 `_action/${this.getApiBasePath()}/validate-credentials`,
                 credentials,
                 {
-                    headers: this.getBasicHeaders()
+                    headers: this.getBasicHeaders(),
                 }
             )
             .then((response) => {
@@ -22,13 +22,9 @@ class UnzerPaymentConfigurationService extends ApiService {
 
     registerWebhooks(data) {
         return this.httpClient
-            .post(
-                `_action/${this.getApiBasePath()}/register-webhooks`,
-                data,
-                {
-                    headers: this.getBasicHeaders()
-                }
-            )
+            .post(`_action/${this.getApiBasePath()}/register-webhooks`, data, {
+                headers: this.getBasicHeaders(),
+            })
             .then((response) => {
                 return ApiService.handleResponse(response);
             });
@@ -36,13 +32,9 @@ class UnzerPaymentConfigurationService extends ApiService {
 
     clearWebhooks(data) {
         return this.httpClient
-            .post(
-                `_action/${this.getApiBasePath()}/clear-webhooks`,
-                data,
-                {
-                    headers: this.getBasicHeaders()
-                }
-            )
+            .post(`_action/${this.getApiBasePath()}/clear-webhooks`, data, {
+                headers: this.getBasicHeaders(),
+            })
             .then((response) => {
                 return ApiService.handleResponse(response);
             });
@@ -52,9 +44,9 @@ class UnzerPaymentConfigurationService extends ApiService {
         return this.httpClient
             .post(
                 `_action/${this.getApiBasePath()}/get-webhooks`,
-                {'privateKey': privateKey},
+                { privateKey: privateKey },
                 {
-                    headers: this.getBasicHeaders()
+                    headers: this.getBasicHeaders(),
                 }
             )
             .then((response) => {
@@ -65,9 +57,9 @@ class UnzerPaymentConfigurationService extends ApiService {
     getGooglePayGatewayMerchantId(salesChannelId) {
         return this.httpClient
             .get(
-                `_action/${this.getApiBasePath()}/get-google-pay-gateway-merchant-id?salesChannelId=${salesChannelId||''}`,
+                `_action/${this.getApiBasePath()}/get-google-pay-gateway-merchant-id?salesChannelId=${salesChannelId || ''}`,
                 {
-                    headers: this.getBasicHeaders()
+                    headers: this.getBasicHeaders(),
                 }
             )
             .then((response) => {
@@ -76,9 +68,14 @@ class UnzerPaymentConfigurationService extends ApiService {
     }
 }
 
-Application.addServiceProvider('UnzerPaymentConfigurationService', (container) => {
-    const initContainer = Application.getContainer('init');
+Application.addServiceProvider(
+    'UnzerPaymentConfigurationService',
+    (container) => {
+        const initContainer = Application.getContainer('init');
 
-    return new UnzerPaymentConfigurationService(initContainer.httpClient, container.loginService);
-});
-
+        return new UnzerPaymentConfigurationService(
+            initContainer.httpClient,
+            container.loginService
+        );
+    }
+);

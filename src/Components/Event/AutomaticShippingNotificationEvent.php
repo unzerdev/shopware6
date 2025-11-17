@@ -19,8 +19,8 @@ class AutomaticShippingNotificationEvent extends Event
     public function __construct(OrderEntity $orderEntity, string $invoiceId, Context $context)
     {
         $this->orderEntity = $orderEntity;
-        $this->invoiceId   = $invoiceId;
-        $this->context     = $context;
+        $this->invoiceId = $invoiceId;
+        $this->context = $context;
     }
 
     public function getOrderEntity(): OrderEntity

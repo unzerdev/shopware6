@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Throwable;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistrator;
 use UnzerPayment6\Components\WebhookRegistrator\WebhookRegistratorInterface;
 use UnzerSDK\Exceptions\UnzerApiException;
@@ -29,7 +28,7 @@ class RegisterWebhookCommand extends Command
     public function __construct(WebhookRegistratorInterface $webhookRegistrator, EntityRepository $domainRepository)
     {
         $this->webhookRegistrator = $webhookRegistrator;
-        $this->domainRepository   = $domainRepository;
+        $this->domainRepository = $domainRepository;
 
         parent::__construct();
     }
@@ -53,7 +52,7 @@ class RegisterWebhookCommand extends Command
 
         $host = $input->getArgument('host') ?? '';
 
-        if (!is_string($host)) {
+        if (!\is_string($host)) {
             return WebhookRegistrator::EXIT_CODE_INVALID_HOST;
         }
 
@@ -66,7 +65,7 @@ class RegisterWebhookCommand extends Command
         try {
             $domainDataBag = new RequestDataBag([
                 new RequestDataBag([
-                    'id'  => $domain->getId(),
+                    'id' => $domain->getId(),
                     'url' => $domain->getUrl(),
                 ]),
             ]);
@@ -76,7 +75,7 @@ class RegisterWebhookCommand extends Command
             $style->error($exception->getMerchantMessage());
 
             return WebhookRegistrator::EXIT_CODE_API_ERROR;
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $style->error($exception->getMessage());
 
             return WebhookRegistrator::EXIT_CODE_UNKNOWN_ERROR;
@@ -87,7 +86,7 @@ class RegisterWebhookCommand extends Command
         }
 
         $style->success(
-            sprintf('The webhooks have been registered to the following URL: %s', $host)
+            \sprintf('The webhooks have been registered to the following URL: %s', $host)
         );
 
         return WebhookRegistrator::EXIT_CODE_SUCCESS;
@@ -97,7 +96,7 @@ class RegisterWebhookCommand extends Command
     {
         $parsedHost = parse_url($providedHost);
 
-        if (!is_array($parsedHost) || empty($parsedHost['host']) || empty($parsedHost['scheme'])) {
+        if (!\is_array($parsedHost) || empty($parsedHost['host']) || empty($parsedHost['scheme'])) {
             $style->warning('The provided host is invalid.');
 
             return null;

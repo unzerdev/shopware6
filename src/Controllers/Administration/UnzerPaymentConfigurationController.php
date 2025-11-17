@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Controllers\Administration;
 
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -21,25 +20,31 @@ use UnzerSDK\Exceptions\UnzerApiException;
 
 /**
  * @RouteScope(scopes={"api"})
+ *
  * @Route(defaults={"_routeScope": {"api"}})
  */
 class UnzerPaymentConfigurationController extends AbstractController
 {
-    /** @var ClientFactoryInterface */
+    /**
+     * @var ClientFactoryInterface
+     */
     private $clientFactory;
 
-    /** @var LoggerInterface */
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
-    /** @var WebhookRegistratorInterface */
+    /**
+     * @var WebhookRegistratorInterface
+     */
     private $webhookRegistrator;
 
     public function __construct(
-        ClientFactoryInterface      $clientFactory,
-        LoggerInterface             $logger,
+        ClientFactoryInterface $clientFactory,
+        LoggerInterface $logger,
         WebhookRegistratorInterface $webhookRegistrator
-    )
-    {
+    ) {
         $this->clientFactory = $clientFactory;
         $this->logger = $logger;
         $this->webhookRegistrator = $webhookRegistrator;
@@ -68,7 +73,7 @@ class UnzerPaymentConfigurationController extends AbstractController
             }
         } catch (UnzerApiException $apiException) {
             $responseCode = Response::HTTP_BAD_REQUEST;
-        } catch (RuntimeException $ex) {
+        } catch (\RuntimeException $ex) {
             $responseCode = Response::HTTP_BAD_REQUEST;
         }
 
@@ -95,6 +100,7 @@ class UnzerPaymentConfigurationController extends AbstractController
             $configuration = $configReader->read($salesChannelId);
             $client = $this->clientFactory->createClientFromPrivateKey($configuration->get(ConfigReader::CONFIG_KEY_PRIVATE_KEY));
             $channelId = UnzerGooglePayPaymentHandler::fetchChannelId($client);
+
             return new JsonResponse([
                 'success' => true,
                 'gatewayMerchantId' => $channelId,

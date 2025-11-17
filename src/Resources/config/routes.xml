@@ -3,12 +3,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing
     http://symfony.com/schema/routing/routing-1.0.xsd">
-
-    <import resource="@UnzerPayment6/Controllers/Storefront/UnzerPaymentWebhookController.php" type="annotation" />
-    <import resource="@UnzerPayment6/Controllers/Storefront/UnzerPaymentDeviceController.php" type="annotation" />
-    <import resource="@UnzerPayment6/Controllers/Storefront/UnzerPaymentApplePayController.php" type="annotation" />
-
-    <import resource="@UnzerPayment6/Controllers/Administration/UnzerPaymentTransactionController.php" type="annotation" />
-    <import resource="@UnzerPayment6/Controllers/Administration/UnzerPaymentConfigurationController.php" type="annotation" />
-    <import resource="@UnzerPayment6/Controllers/Administration/UnzerPaymentApplePayController.php" type="annotation" />
+    <import resource="../../Controllers/Administration/*Controller.php" type="annotation" />
+    <import resource="../../Controllers/Storefront/*Controller.php" type="annotation" />
 </routes>

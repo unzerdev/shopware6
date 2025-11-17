@@ -13,7 +13,6 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Throwable;
 use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
@@ -35,13 +34,13 @@ use UnzerSDK\Resources\PaymentTypes\Card;
 
 class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
 {
-    use CanCharge;
     use CanAuthorize;
+    use CanCharge;
     use HasDeviceVault;
 
-    public const REMEMBER_CREDIT_CARD_KEY = 'creditCardRemember';
-
-    /** @var BasePaymentType|Card */
+    /**
+     * @var BasePaymentType|Card
+     */
     protected $paymentType;
 
     public function __construct(
@@ -87,10 +86,10 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Can not process payment without a valid payment resource.');
         }
 
-        $customer            = $salesChannelContext->getCustomer();
-        $bookingMode         = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_CARD, BookingMode::CHARGE);
-        $registerCreditCards = $dataBag->has(self::REMEMBER_CREDIT_CARD_KEY);
-        $saveToDeviceVault   = $this->canSaveToDeviceVault($registerCreditCards, $customer);
+        $customer = $salesChannelContext->getCustomer();
+        $bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_CARD, BookingMode::CHARGE);
+        $savePaymentDevice = $dataBag->has(self::SAVE_PAYMENT_DEVICE_KEY);
+        $saveToDeviceVault = $this->canSaveToDeviceVault($savePaymentDevice, $customer);
 
         try {
             $recurrenceType = ($this->deviceRepository->exists($this->paymentType->getId(), $salesChannelContext->getContext()) || $saveToDeviceVault)
@@ -112,11 +111,11 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
-                sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
+                \sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'dataBag' => $dataBag,
                     'transaction' => $transaction,
-                    'exception'   => $apiException,
+                    'exception' => $apiException,
                 ]
             );
 
@@ -126,16 +125,15 @@ class UnzerCreditCardPaymentHandler extends AbstractUnzerPaymentHandler
             );
 
             throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->logger->error(
-                sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
+                \sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'dataBag' => $dataBag,
                     'transaction' => $transaction,
-                    'exception'   => $exception,
+                    'exception' => $exception,
                 ]
             );
-
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
     }

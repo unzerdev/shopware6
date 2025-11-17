@@ -16,15 +16,19 @@ use UnzerSDK\Resources\Metadata;
 
 class MetadataResourceHydrator implements ResourceHydratorInterface
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $shopwareVersion;
 
-    /** @var EntityRepository */
+    /**
+     * @var EntityRepository
+     */
     private $pluginRepository;
 
     public function __construct(string $shopwareVersion, EntityRepository $pluginRepository)
     {
-        $this->shopwareVersion  = $shopwareVersion;
+        $this->shopwareVersion = $shopwareVersion;
         $this->pluginRepository = $pluginRepository;
     }
 
@@ -44,6 +48,11 @@ class MetadataResourceHydrator implements ResourceHydratorInterface
         }
 
         return $unzerMetadata;
+    }
+
+    public function setIsExpress(Metadata $unzerMetadata, bool $isExpress): void
+    {
+        $unzerMetadata->addMetadata('isExpress', $isExpress ? '1' : '0');
     }
 
     protected function getPluginData(Context $context): ?PluginEntity

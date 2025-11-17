@@ -8,13 +8,17 @@ namespace Shopware\Core\Framework\Routing\Annotation;
 if (!class_exists('\Shopware\Core\Framework\Routing\Annotation\RouteScope')) {
     /**
      * @Annotation
+     *
      * @Attributes({
+     *
      *     @Attribute("scopes",  type="array"),
      * })
      */
     class RouteScope
     {
-        /** @var array */
+        /**
+         * @var array
+         */
         public $scopes = [];
     }
 }

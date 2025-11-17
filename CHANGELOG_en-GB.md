@@ -1,3 +1,9 @@
+# 5.12.0
+* Migration from Unzer UI Component V1 to Unzer UI Component V2
+* Express checkout for Apple Pay, Google Pay and Paypal has been added
+* EAA Support, https://docs.unzer.com/online-payments/compliance/eaa/
+* Deprecated payment methods have been replaced with new ones, removed or renamed. For full list see https://docs.unzer.com/plugins/shopware-6/shop6-migrate-v1-v2/
+
 # 5.11.5
 * Customer object change from old version to latest
 

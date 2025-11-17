@@ -10,7 +10,9 @@ use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 
 class PaymentTransitionMapperFactory
 {
-    /** @var AbstractTransitionMapper[] */
+    /**
+     * @var AbstractTransitionMapper[]
+     */
     protected iterable $transitionMapperCollection = [];
 
     public function __construct(iterable $transitionMapperCollection)
@@ -18,6 +20,9 @@ class PaymentTransitionMapperFactory
         $this->transitionMapperCollection = $transitionMapperCollection;
     }
 
+    /**
+     * @throws NoTransitionMapperFoundException
+     */
     public function getTransitionMapper(BasePaymentType $paymentType): AbstractTransitionMapper
     {
         foreach ($this->transitionMapperCollection as $transitionMapper) {

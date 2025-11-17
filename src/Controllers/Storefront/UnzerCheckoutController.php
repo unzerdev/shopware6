@@ -32,7 +32,7 @@ class UnzerCheckoutController extends CheckoutController
         StorefrontController $innerService,
         CheckoutFinishPageLoader $finishPageLoader
     ) {
-        $this->innerService     = $innerService;
+        $this->innerService = $innerService;
         $this->finishPageLoader = $finishPageLoader;
     }
 
@@ -64,9 +64,9 @@ class UnzerCheckoutController extends CheckoutController
             return $this->forwardToRoute(
                 'frontend.checkout.finish.page',
                 [
-                    'orderId'                      => $apiException->getOrderId(),
-                    'changedPayment'               => false,
-                    'paymentFailed'                => true,
+                    'orderId' => $apiException->getOrderId(),
+                    'changedPayment' => false,
+                    'paymentFailed' => true,
                     'unzerPaymentExceptionMessage' => $apiException->getClientMessage(),
                 ]
             );
@@ -86,7 +86,7 @@ class UnzerCheckoutController extends CheckoutController
 
             $this->addFlash(
                 'danger',
-                sprintf(
+                \sprintf(
                     '%s %s',
                     $unzerPaymentExceptionMessage,
                     $this->trans(

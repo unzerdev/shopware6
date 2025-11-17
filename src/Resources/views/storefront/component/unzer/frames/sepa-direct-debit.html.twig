@@ -1,4 +1,5 @@
 {% block unzer_payment_frame_sepa_direct_debit %}
+    {% set showAccountSave = not context.customer.guest and config('UnzerPayment6.settings.allowSaveSepa') %}
     {% block unzer_payment_checkout_confirm_frame_card_body_title %}
         <div class="card-title">
             {{ context.paymentMethod.translated.name }}
@@ -8,7 +9,7 @@
     <div class="unzer-payment-sepa-wrapper"
          data-unzer-payment-sepa-direct-debit="true"
          data-unzer-payment-sepa-direct-debit-options='{
-            "hasSepaDevices": {% if page.extensions.unzerDirectDebit.directDebitDevices|length > 0 %}true{% else %}false{% endif %}
+            "hasSavedDevices": {% if page.extensions.unzerDirectDebit.directDebitDevices|length > 0 %}true{% else %}false{% endif %}
          }'>
 
         {% block unzer_payment_frame_sepa_direct_debit_test_data %}
@@ -19,15 +20,15 @@
         {% endblock %}
 
         {% if page.extensions.unzerDirectDebit.directDebitDevices|length > 0 %}
-            <div class="unzer-payment-saved-sepa-wrapper">
-                <div class="unzer-payment-saved-sepa--message">
+            <div class="unzer-payment-saved-devices-wrapper">
+                <div class="unzer-payment-saved-devices--message">
                     {{ "UnzerPayment.frame.sepa.device.choose"|trans }}
                 </div>
                 {% block unzer_payment_frame_direct_debit_saved_device %}
                     {# @var sepaDevice \UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity #}
                     {% for sepaDevice in page.extensions.unzerDirectDebit.directDebitDevices %}
                         <div class="form-check payment-method-radio custom-control custom-radio payment-control">
-                            <input type="radio" value="{{ sepaDevice.typeId }}" name="savedDirectDebitDevice" form="confirmOrderForm" id="device-{{ sepaDevice.id }}" class="form-check-input custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
+                            <input type="radio" value="{{ sepaDevice.typeId }}" name="savedPaymentDevice" form="confirmOrderForm" id="device-{{ sepaDevice.id }}" class="form-check-input custom-control-input payment-method-input"{% if loop.first %} checked="checked"{% endif %}>
                             <label for="device-{{ sepaDevice.id }}" class="form-check-label custom-control-label payment-method-label">
                                 <strong>{{ sepaDevice.data['iban'] }}</strong>
                             </label>
@@ -37,7 +38,7 @@
 
                 {% block unzer_payment_frame_direct_debit_saved_device_new %}
                     <div class="form-check payment-method-radio custom-control custom-radio payment-control">
-                        <input type="radio" value="new" name="savedDirectDebitDevice" form="confirmOrderForm" id="device-new" class="form-check-input custom-control-input payment-method-input">
+                        <input type="radio" value="new" name="savedPaymentDevice" form="confirmOrderForm" id="device-new" class="form-check-input custom-control-input payment-method-input">
                         <label for="device-new" class="form-check-label custom-control-label payment-method-label">
                             {{ "UnzerPayment.frame.sepa.device.new"|trans }}
                         </label>
@@ -46,14 +47,25 @@
             </div>
         {% endif %}
 
-        <div class="unzer-payment-sepa-wrapper-elements">
-            {% block unzer_payment_frame_sepa_direct_debit_iban %}
-                <div id="unzer-payment-sepa-container"></div>
+        <div class="unzer-payment-create-component-container">
+            {% block unzer_payment_frame_sepa_direct_debit_ui_element %}
+                <unzer-payment
+                        id="unzer-payment-component"
+                        publicKey="{{ page.extensions.unzerPaymentData.publicKey }}"
+                        locale="{{ page.extensions.unzerPaymentData.locale }}"                >
+                    <unzer-sepa-direct-debit id="unzer-sepa-direct-debit"></unzer-sepa-direct-debit>
+                </unzer-payment>
             {% endblock %}
 
-            {% block unzer_payment_frame_sepa_direct_debit_mandate %}
-                {% sw_include '@Storefront/storefront/component/unzer/frames/sepa/mandate.html.twig' %}
+            {% if showAccountSave %}
+            {% block unzer_payment_frame_save_device %}
+               {% sw_include '@Storefront/storefront/component/unzer/frames/component/save-device-checkbox.html.twig' with {
+                   context:context,
+                   label: "UnzerPayment.frame.sepa.mandate.remember"|trans
+               }%}
             {% endblock %}
+            {% endif %}
+
         </div>
     </div>
 {% endblock %}

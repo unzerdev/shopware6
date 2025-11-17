@@ -1,0 +1,17 @@
+[class*='unzer-subheading'] {
+    label {
+        display: none;
+    }
+}
+.unzer-subheading {
+    margin: 3em 0 0.5em 0;
+    font-weight: 600;
+}
+
+.sw-card__content {
+    .sw-inherit-wrapper:first-child {
+        .unzer-subheading {
+            margin-top: 0;
+        }
+    }
+}

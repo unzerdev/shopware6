@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use RuntimeException;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\EmbeddedResources\RiskData;
 use UnzerSDK\Resources\TransactionTypes\Charge;
@@ -17,18 +16,19 @@ trait CanCharge
     public function charge(
         string $returnUrl,
         ?string $recurrenceType = null,
-        ?RiskData $riskData = null
+        ?RiskData $riskData = null,
+        ?callable $chargeModifier = null
     ): string {
         if ($this->unzerClient === null) {
-            throw new RuntimeException('UnzerClient can not be null');
+            throw new \RuntimeException('UnzerClient can not be null');
         }
 
         if (!method_exists($this->unzerClient, 'performAuthorization')) {
-            throw new RuntimeException('The SDK Version is older then expected');
+            throw new \RuntimeException('The SDK Version is older then expected');
         }
 
         if ($this->paymentType === null) {
-            throw new RuntimeException('PaymentType can not be null');
+            throw new \RuntimeException('PaymentType can not be null');
         }
 
         $charge = new Charge(
@@ -46,6 +46,10 @@ trait CanCharge
 
         if ($riskData !== null) {
             $charge->setRiskData($riskData);
+        }
+
+        if ($chargeModifier !== null) {
+            $chargeModifier($charge);
         }
 
         $paymentResult = $this->unzerClient->performCharge(

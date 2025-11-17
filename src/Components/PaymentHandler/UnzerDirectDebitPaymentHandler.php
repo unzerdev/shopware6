@@ -12,7 +12,6 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Throwable;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
@@ -33,9 +32,9 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
     use CanCharge;
     use HasDeviceVault;
 
-    public const REMEMBER_SEPA_MANDATE_KEY = 'rememberSepaMandate';
-
-    /** @var BasePaymentType|SepaDirectDebit */
+    /**
+     * @var BasePaymentType|SepaDirectDebit
+     */
     protected $paymentType;
 
     public function __construct(
@@ -77,16 +76,12 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
     ): RedirectResponse {
         parent::pay($transaction, $dataBag, $salesChannelContext);
 
-        if (!$this->isPaymentAllowed($transaction->getOrderTransaction()->getId())) {
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'SEPA direct debit mandate has not been accepted by the customer.');
-        }
-
-        $registerDirectDebit = $dataBag->has(self::REMEMBER_SEPA_MANDATE_KEY);
+        $savePaymentDevice = $dataBag->has(self::SAVE_PAYMENT_DEVICE_KEY);
 
         try {
             $returnUrl = $this->charge($transaction->getReturnUrl());
 
-            if ($registerDirectDebit && $salesChannelContext->getCustomer() !== null && $salesChannelContext->getCustomer()->getGuest() === false) {
+            if ($savePaymentDevice && $salesChannelContext->getCustomer() !== null && $salesChannelContext->getCustomer()->getGuest() === false) {
                 $this->saveToDeviceVault(
                     $salesChannelContext->getCustomer(),
                     UnzerPaymentDeviceEntity::DEVICE_TYPE_DIRECT_DEBIT,
@@ -97,11 +92,11 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
             return new RedirectResponse($returnUrl);
         } catch (UnzerApiException $apiException) {
             $this->logger->error(
-                sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
+                \sprintf('Caught an API exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'dataBag' => $dataBag,
                     'transaction' => $transaction,
-                    'exception'   => $apiException,
+                    'exception' => $apiException,
                 ]
             );
 
@@ -111,27 +106,16 @@ class UnzerDirectDebitPaymentHandler extends AbstractUnzerPaymentHandler
             );
 
             throw new UnzerPaymentProcessException($transaction->getOrder()->getId(), $transaction->getOrderTransaction()->getId(), $apiException);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->logger->error(
-                sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
+                \sprintf('Caught a generic exception in %s of %s', __METHOD__, __CLASS__),
                 [
-                    'dataBag'     => $dataBag,
+                    'dataBag' => $dataBag,
                     'transaction' => $transaction,
-                    'exception'   => $exception,
+                    'exception' => $exception,
                 ]
             );
-
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
-    }
-
-    private function isPaymentAllowed(string $transactionId): bool
-    {
-        $currentRequest = $this->getCurrentRequestFromStack($transactionId);
-
-        $isSepaAccepted = ((string) $currentRequest->get('acceptSepaMandate', 'off')) === 'on';
-        $isNewAccount   = ((string) $currentRequest->get('savedDirectDebitDevice', 'new')) === 'new';
-
-        return ($isSepaAccepted && $isNewAccount) || !$isNewAccount;
     }
 }

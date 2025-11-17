@@ -1,28 +1,6 @@
 {% sw_extends '@Storefront/storefront/page/account/order/index.html.twig' %}
 
-{% block unzer_payment_checkout_confirm_frame_card %}
-    {% if 'paypal' in page.extensions.unzerPaymentFrame.paymentFrame and page.extensions.unzerPayPal.displayPayPalAccountSelection
-        or 'paypal' not in page.extensions.unzerPaymentFrame.paymentFrame %}
-        {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
-
-        <div class="unzer-payment-card"
-             id="unzer-payment-card"
-             data-unzer-payment-base="true"
-             data-unzer-payment-base-options='{
-                     "publicKey": "{{ page.extensions[paymentDataExtensionName].publicKey }}",
-                     "shopLocale": "{{ page.extensions[paymentDataExtensionName].locale }}",
-                     "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}",
-                     "isOrderEdit": true
-                 }'>
-            <div class="card-body">
-                {% block unzer_payment_checkout_confirm_frame_card_body %}
-                    {% block unzer_payment_checkout_confirm_frame_card_body_frame %}
-                        <div class="unzer-payment-frame">
-                            {% sw_include page.extensions.unzerPaymentFrame.paymentFrame ignore missing %}
-                        </div>
-                    {% endblock %}
-                {% endblock %}
-            </div>
-        </div>
-    {% endif %}
+{% block page_checkout_confirm_form_submit %}
+    {{ parent() }}
+    {% sw_include '@Storefront/storefront/component/unzer/confirm-form-extension.html.twig' %}
 {% endblock %}

@@ -1,27 +1,35 @@
-const {Component} = Shopware;
+const { Component } = Shopware;
 
 import template from './sw-system-config.html.twig';
 
 Component.override('sw-system-config', {
     template,
-    inject: [
-        'UnzerPaymentConfigurationService'
-    ],
+    inject: ['UnzerPaymentConfigurationService'],
     data() {
         return {
-            readOnlyUnzerGooglePayGatewayMerchantId: {}
+            readOnlyUnzerGooglePayGatewayMerchantId: {},
         };
     },
     watch: {
         currentSalesChannelId() {
             this.getUnzerGooglePayGatewayMerchantId();
-            this.$emit('sales-channel-changed', this.actualConfigData[this.currentSalesChannelId], this.currentSalesChannelId);
+            this.$emit(
+                'sales-channel-changed',
+                this.actualConfigData[this.currentSalesChannelId],
+                this.currentSalesChannelId
+            );
+        },
+        isLoading(value) {
+            this.$emit('loading-changed', value);
+            if (value === false) {
+                this.getUnzerGooglePayGatewayMerchantId();
+            }
         },
     },
     computed: {
         unzerGooglePayGatewayMerchantId() {
             return this.readOnlyUnzerGooglePayGatewayMerchantId || '';
-        }
+        },
     },
     methods: {
         async createdComponent() {
@@ -30,13 +38,15 @@ Component.override('sw-system-config', {
         },
         getUnzerGooglePayGatewayMerchantId() {
             if (this.domain === 'UnzerPayment6.settings') {
-                this.UnzerPaymentConfigurationService.getGooglePayGatewayMerchantId(this.currentSalesChannelId).then((response) => {
-                    this.readOnlyUnzerGooglePayGatewayMerchantId = response.gatewayMerchantId;
-                })
-                    .catch(() => {
-
-                    });
+                this.UnzerPaymentConfigurationService.getGooglePayGatewayMerchantId(
+                    this.currentSalesChannelId
+                )
+                    .then((response) => {
+                        this.readOnlyUnzerGooglePayGatewayMerchantId =
+                            response.gatewayMerchantId;
+                    })
+                    .catch(() => {});
             }
-        }
-    }
+        },
+    },
 });

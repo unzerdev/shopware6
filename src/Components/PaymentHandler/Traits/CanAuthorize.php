@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
-use RuntimeException;
 use UnzerSDK\Resources\EmbeddedResources\RiskData;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 
@@ -14,18 +13,19 @@ trait CanAuthorize
         string $returnUrl,
         ?float $amount = null,
         ?string $recurrenceType = null,
-        ?RiskData $riskData = null
+        ?RiskData $riskData = null,
+        ?callable $authorizationModifier = null
     ): string {
         if ($this->unzerClient === null) {
-            throw new RuntimeException('UnzerClient can not be null');
+            throw new \RuntimeException('UnzerClient can not be null');
         }
 
         if (!method_exists($this->unzerClient, 'performAuthorization')) {
-            throw new RuntimeException('The SDK Version is older then expected');
+            throw new \RuntimeException('The SDK Version is older then expected');
         }
 
         if ($this->paymentType === null) {
-            throw new RuntimeException('PaymentType can not be null');
+            throw new \RuntimeException('PaymentType can not be null');
         }
 
         $authorization = new Authorization(
@@ -43,6 +43,10 @@ trait CanAuthorize
 
         if ($riskData !== null) {
             $authorization->setRiskData($riskData);
+        }
+
+        if ($authorizationModifier !== null) {
+            $authorizationModifier($authorization);
         }
 
         $paymentResult = $this->unzerClient->performAuthorization(

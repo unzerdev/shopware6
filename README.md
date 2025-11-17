@@ -24,7 +24,7 @@ Unzer payment integration for Shopware 6 includes the following payment methods:
 * Alipay
 * Apple Pay
 * Bancontact
-* Credit Card
+* Credit Card and Click to Pay
 * Unzer Direct Bank Transfer
 * EPS
 * Google Pay
@@ -32,15 +32,19 @@ Unzer payment integration for Shopware 6 includes the following payment methods:
 * PayPal
 * Prepayment
 * SEPA Direct Debit
-* SOFORT
 * TWINT
 * Unzer Direct Debit
-* Unzer direct Debit (secured)
+* Unzer Direct Debit (secured)
 * Unzer Invoice B2C / B2B (secured)
 * Unzer Installment (secured)
 * WeChat Pay
+* Wero
 
 Regarding plugin compatibility, please take a look at the release notes for more information.
+
+## Updating
+
+Version 5.12.0 is a breaking change - please see https://docs.unzer.com/plugins/shopware-6/shop6-migrate-v1-v2/
 
 ## Installation
 

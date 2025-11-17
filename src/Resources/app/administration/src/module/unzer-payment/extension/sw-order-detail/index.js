@@ -8,14 +8,14 @@ Component.override('sw-order-detail', {
 
     data() {
         return {
-            isUnzerPayment: false
+            isUnzerPayment: false,
         };
     },
 
     computed: {
         showTabs() {
             return true; // TODO remove with PT-10455
-        }
+        },
     },
 
     watch: {
@@ -32,22 +32,28 @@ Component.override('sw-order-detail', {
                 const orderCriteria = new Criteria(1, 1);
                 orderCriteria.addAssociation('transactions');
 
-                orderRepository.get(this.orderId, Context.api, orderCriteria).then((order) => {
-                    order.transactions.forEach((orderTransaction) => {
-                        if (!orderTransaction.customFields) {
-                            return;
-                        }
+                orderRepository
+                    .get(this.orderId, Context.api, orderCriteria)
+                    .then((order) => {
+                        order.transactions.forEach((orderTransaction) => {
+                            if (!orderTransaction.customFields) {
+                                return;
+                            }
 
-                        if (!orderTransaction.customFields.unzer_payment_is_transaction
-                            && !orderTransaction.customFields.heidelpay_is_transaction) {
-                            return;
-                        }
+                            if (
+                                !orderTransaction.customFields
+                                    .unzer_payment_is_transaction &&
+                                !orderTransaction.customFields
+                                    .heidelpay_is_transaction
+                            ) {
+                                return;
+                            }
 
-                        this.isUnzerPayment = true;
+                            this.isUnzerPayment = true;
+                        });
                     });
-                });
             },
-            immediate: true
-        }
-    }
+            immediate: true,
+        },
+    },
 });

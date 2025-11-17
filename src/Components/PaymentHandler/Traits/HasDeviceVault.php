@@ -6,7 +6,6 @@ namespace UnzerPayment6\Components\PaymentHandler\Traits;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
-use stdClass;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 
@@ -15,7 +14,9 @@ use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
  */
 trait HasDeviceVault
 {
-    /** @var UnzerPaymentDeviceRepositoryInterface */
+    /**
+     * @var UnzerPaymentDeviceRepositoryInterface
+     */
     protected $deviceRepository;
 
     protected function saveToDeviceVault(CustomerEntity $customer, string $deviceType, Context $context, array $additionalParams = []): void
@@ -26,7 +27,7 @@ trait HasDeviceVault
 
         $exposedPaymentType = $this->paymentType->expose();
 
-        if ($exposedPaymentType instanceof stdClass) {
+        if ($exposedPaymentType instanceof \stdClass) {
             $encoded = json_encode($exposedPaymentType);
 
             if (!$encoded) {
@@ -34,7 +35,7 @@ trait HasDeviceVault
             } else {
                 $exposedPaymentType = json_decode($encoded, true);
 
-                if (!is_array($exposedPaymentType) || empty($exposedPaymentType)) {
+                if (!\is_array($exposedPaymentType) || empty($exposedPaymentType)) {
                     $exposedPaymentType = [];
                 }
             }

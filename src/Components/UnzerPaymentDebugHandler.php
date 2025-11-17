@@ -9,7 +9,9 @@ use UnzerSDK\Interfaces\DebugHandlerInterface;
 
 class UnzerPaymentDebugHandler implements DebugHandlerInterface
 {
-    /** @var LoggerInterface */
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
     public function __construct(LoggerInterface $logger)

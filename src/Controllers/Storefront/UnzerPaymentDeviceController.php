@@ -14,11 +14,14 @@ use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDevi
 
 /**
  * @RouteScope(scopes={"storefront"})
+ *
  * @Route(defaults={"_routeScope": {"storefront"}})
  */
 class UnzerPaymentDeviceController extends StorefrontController
 {
-    /** @var UnzerPaymentDeviceRepositoryInterface */
+    /**
+     * @var UnzerPaymentDeviceRepositoryInterface
+     */
     private $deviceRepository;
 
     public function __construct(UnzerPaymentDeviceRepositoryInterface $deviceRepository)
@@ -35,9 +38,9 @@ class UnzerPaymentDeviceController extends StorefrontController
             return new RedirectResponse($this->generateUrl('frontend.account.payment.page'));
         }
 
-        $context  = $salesChannelContext->getContext();
+        $context = $salesChannelContext->getContext();
         $deviceId = $request->get('id');
-        $device   = $this->deviceRepository->read($deviceId, $context);
+        $device = $this->deviceRepository->read($deviceId, $context);
 
         if ($device === null || $device->getCustomerId() !== $salesChannelContext->getCustomer()->getId()) {
             return new RedirectResponse($this->generateUrl('frontend.account.payment.page'));
