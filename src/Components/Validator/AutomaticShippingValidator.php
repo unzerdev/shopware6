@@ -13,18 +13,10 @@ use UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelp
 
 class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
 {
-    /** @var ConfigReaderInterface */
-    private $configReader;
-
-    /** @var TransactionSelectionHelperInterface */
-    private $transactionSelectionHelper;
-
     public function __construct(
-        ConfigReaderInterface $configReader,
-        TransactionSelectionHelperInterface $transactionSelectionHelper
+        private readonly ConfigReaderInterface $configReader,
+        private readonly TransactionSelectionHelperInterface $transactionSelectionHelper
     ) {
-        $this->configReader               = $configReader;
-        $this->transactionSelectionHelper = $transactionSelectionHelper;
     }
 
     /**
@@ -32,12 +24,12 @@ class AutomaticShippingValidator implements AutomaticShippingValidatorInterface
      */
     public function shouldSendAutomaticShipping(OrderEntity $orderEntity, StateMachineStateEntity $deliveryState): bool
     {
-        $config             = $this->configReader->read($orderEntity->getSalesChannelId());
+        $config = $this->configReader->read($orderEntity->getSalesChannelId());
         $configuredStatusId = $config->get(ConfigReader::CONFIG_KEY_SHIPPING_STATUS);
 
         $transaction = $this->transactionSelectionHelper->getBestUnzerTransaction($orderEntity);
 
-        if (!$transaction || !in_array($transaction->getPaymentMethodId(), self::HANDLED_PAYMENT_METHODS, false)) {
+        if (!$transaction || !\in_array($transaction->getPaymentMethodId(), self::HANDLED_PAYMENT_METHODS, false)) {
             return false;
         }
 

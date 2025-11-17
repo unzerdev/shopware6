@@ -8,15 +8,13 @@ Component.register('unzer-payment-tab', {
 
     inject: ['UnzerPaymentService', 'repositoryFactory'],
 
-    mixins: [
-        Mixin.getByName('notification')
-    ],
+    mixins: [Mixin.getByName('notification')],
 
     data() {
         return {
             paymentResources: [],
             loadedResources: 0,
-            isLoading: true
+            isLoading: true,
         };
     },
 
@@ -27,14 +25,14 @@ Component.register('unzer-payment-tab', {
     computed: {
         orderRepository() {
             return this.repositoryFactory.create('order');
-        }
+        },
     },
 
     watch: {
-        '$route'() {
+        $route() {
             this.resetDataAttributes();
             this.createdComponent();
-        }
+        },
     },
 
     methods: {
@@ -60,44 +58,61 @@ Component.register('unzer-payment-tab', {
                 .getAssociation('transactions')
                 .addSorting(Criteria.sort('createdAt', 'DESC'));
 
-            this.orderRepository.get(orderId, Context.api, criteria).then((order) => {
-                this.order = order;
+            this.orderRepository
+                .get(orderId, Context.api, criteria)
+                .then((order) => {
+                    this.order = order;
 
-                if (!order.transactions) {
-                    return;
-                }
-
-                order.transactions.forEach((orderTransaction, index) => {
-                    if (!orderTransaction.customFields) {
-                        this.loadedResources++;
-
+                    if (!order.transactions) {
                         return;
                     }
 
-                    if (!orderTransaction.customFields.unzer_payment_is_transaction
-                        && !orderTransaction.customFields.heidelpay_is_transaction) {
-                        this.loadedResources++;
-
-                        return;
-                    }
-
-                    this.UnzerPaymentService.fetchPaymentDetails(orderTransaction.id)
-                        .then((response) => {
-                            this.paymentResources[index] = response;
+                    order.transactions.forEach((orderTransaction, index) => {
+                        if (!orderTransaction.customFields) {
                             this.loadedResources++;
 
-                            this.isLoading = this.order.transactions.length !== this.loadedResources;
-                        })
-                        .catch(() => {
-                            this.createNotificationError({
-                                title: this.$tc('unzer-payment.paymentDetails.notifications.genericErrorMessage'),
-                                message: this.$tc('unzer-payment.paymentDetails.notifications.couldNotRetrieveMessage')
-                            });
+                            return;
+                        }
 
-                            this.isLoading = false;
-                        });
+                        if (
+                            !orderTransaction.customFields
+                                .unzer_payment_is_transaction &&
+                            !orderTransaction.customFields
+                                .heidelpay_is_transaction
+                        ) {
+                            this.loadedResources++;
+
+                            return;
+                        }
+
+                        this.UnzerPaymentService.fetchPaymentDetails(
+                            orderTransaction.id
+                        )
+                            .then((response) => {
+                                this.paymentResources[index] = response;
+                                this.paymentResources[
+                                    index
+                                ].orderTransactionId = orderTransaction.id;
+                                this.loadedResources++;
+
+                                this.isLoading =
+                                    this.order.transactions.length !==
+                                    this.loadedResources;
+                            })
+                            .catch(() => {
+                                this.createNotificationError({
+                                    title: this.$tc(
+                                        'unzer-payment.paymentDetails.notifications.genericErrorMessage'
+                                    ),
+                                    message: this.$tc(
+                                        'unzer-payment.paymentDetails.notifications.couldNotRetrieveMessage'
+                                    ),
+                                });
+
+                                this.isLoading = false;
+                            });
+                    });
                 });
-            });
         },
 
         reloadOrderDetails() {
@@ -126,5 +141,5 @@ Component.register('unzer-payment-tab', {
             // we reinitialize the orderDetail component, because there is no other way to update  it is not updating the order state
             parent.createdComponent();
         },
-    }
+    },
 });

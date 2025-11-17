@@ -1,0 +1,11 @@
+{% if not context.customer.guest %}
+    <div class="unzer-payment-frame-row custom-control custom-checkbox unzer-save-payment-device-container">
+        <input type="checkbox"
+               class="custom-control-input"
+               form="confirmOrderForm"
+               name="{{ constant('UnzerPayment6\\Components\\PaymentHandler\\AbstractUnzerPaymentHandler::SAVE_PAYMENT_DEVICE_KEY') }}"
+               id="unzer-save-payment-device-checkbox"
+        />
+        <label for="unzer-save-payment-device-checkbox" class="custom-control-label">{{ label }}</label>
+    </div>
+{% endif %}

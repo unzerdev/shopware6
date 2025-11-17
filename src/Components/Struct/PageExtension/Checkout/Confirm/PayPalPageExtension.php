@@ -11,7 +11,9 @@ class PayPalPageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerPayPal';
 
-    /** @var UnzerPaymentDeviceEntity[] */
+    /**
+     * @var UnzerPaymentDeviceEntity[]
+     */
     protected $payPalAccounts = [];
 
     protected array $publicConfig = [];
@@ -45,8 +47,6 @@ class PayPalPageExtension extends Struct
 
     /**
      * @param UnzerPaymentDeviceEntity[] $payPalAccounts
-     *
-     * @return PayPalPageExtension
      */
     public function setPayPalAccounts(array $payPalAccounts): self
     {

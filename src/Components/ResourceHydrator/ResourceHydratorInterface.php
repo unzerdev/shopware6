@@ -12,7 +12,7 @@ use UnzerSDK\Resources\AbstractUnzerResource;
 interface ResourceHydratorInterface
 {
     /**
-     * @param null|AsyncPaymentTransactionStruct|OrderTransactionEntity $transaction
+     * @param AsyncPaymentTransactionStruct|OrderTransactionEntity|null $transaction
      */
     public function hydrateObject(SalesChannelContext $channelContext, $transaction = null): AbstractUnzerResource;
 }

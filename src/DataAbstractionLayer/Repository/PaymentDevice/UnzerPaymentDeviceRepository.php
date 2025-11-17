@@ -17,22 +17,16 @@ use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEn
 
 class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceRepositoryInterface
 {
-    /** @var EntityRepository */
-    private $entityRepository;
-
-    /** @var AddressHashGeneratorInterface */
-    private $addressHashService;
-
-    public function __construct(EntityRepository $entityRepository, AddressHashGeneratorInterface $addressHashGenerator)
-    {
-        $this->entityRepository   = $entityRepository;
-        $this->addressHashService = $addressHashGenerator;
+    public function __construct(
+        private readonly EntityRepository $entityRepository,
+        private readonly AddressHashGeneratorInterface $addressHashService
+    ) {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getCollectionByCustomer(CustomerEntity $customer, Context $context, string $deviceType = null): EntitySearchResult
+    public function getCollectionByCustomer(CustomerEntity $customer, Context $context, ?string $deviceType = null): EntitySearchResult
     {
         if ($customer->getActiveBillingAddress() === null || $customer->getActiveShippingAddress() === null) {
             throw new \RuntimeException('Customer has no active billing or shipping address');
@@ -70,11 +64,11 @@ class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceRepositoryInterf
         $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
 
         $createData = [
-            'id'          => Uuid::randomHex(),
-            'deviceType'  => $deviceType,
-            'typeId'      => $typeId,
-            'data'        => $data,
-            'customerId'  => $customer->getId(),
+            'id' => Uuid::randomHex(),
+            'deviceType' => $deviceType,
+            'typeId' => $typeId,
+            'data' => $data,
+            'customerId' => $customer->getId(),
             'addressHash' => $addressHash,
         ];
 

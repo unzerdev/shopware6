@@ -11,10 +11,14 @@ class PaymentMethodPageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerPaymentMethod';
 
-    /** @var UnzerPaymentDeviceEntity[] */
+    /**
+     * @var UnzerPaymentDeviceEntity[]
+     */
     protected $savedDevices = [];
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $deviceRemoved = false;
 
     public function addPaymentDevices(array $paymentDevices): self
@@ -34,8 +38,6 @@ class PaymentMethodPageExtension extends Struct
 
     /**
      * @param UnzerPaymentDeviceEntity[] $savedDevices
-     *
-     * @return PaymentMethodPageExtension
      */
     public function setSavedDevices(array $savedDevices): self
     {

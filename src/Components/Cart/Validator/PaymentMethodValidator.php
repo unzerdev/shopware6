@@ -28,7 +28,7 @@ class PaymentMethodValidator implements CartValidatorInterface
 
     public function validate(Cart $cart, ErrorCollection $errors, SalesChannelContext $context): void
     {
-        if (!in_array($context->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS)) {
+        if (!\in_array($context->getPaymentMethod()->getId(), PaymentInstaller::PAYMENT_METHOD_IDS, true)) {
             return;
         }
 
@@ -42,7 +42,7 @@ class PaymentMethodValidator implements CartValidatorInterface
             return;
         }
 
-        if (!in_array($context->getCurrency()->getIsoCode(), ['EUR', 'CHF'])) {
+        if (!\in_array($context->getCurrency()->getIsoCode(), ['EUR', 'CHF'], true)) {
             $errors->add(new PaymentMethodBlockedError((string) $context->getPaymentMethod()->getTranslation('name')));
 
             return;
@@ -52,7 +52,7 @@ class PaymentMethodValidator implements CartValidatorInterface
             return;
         }
 
-        if (!in_array($context->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(), ['DE', 'AT', 'CH'])) {
+        if (!\in_array($context->getCustomer()->getActiveBillingAddress()->getCountry()->getIso(), ['DE', 'AT', 'CH'], true)) {
             $errors->add(new PaymentMethodBlockedError((string) $context->getPaymentMethod()->getTranslation('name')));
         }
     }

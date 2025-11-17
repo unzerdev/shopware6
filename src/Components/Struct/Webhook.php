@@ -6,13 +6,19 @@ namespace UnzerPayment6\Components\Struct;
 
 class Webhook
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $event;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $publicKey;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $retrieveUrl;
 
     public function __construct(string $jsonData)
@@ -24,8 +30,8 @@ class Webhook
     {
         $webhookData = json_decode($jsonData, true);
 
-        $this->event       = $webhookData['event'] ?? '';
-        $this->publicKey   = $webhookData['publicKey'] ?? '';
+        $this->event = $webhookData['event'] ?? '';
+        $this->publicKey = $webhookData['publicKey'] ?? '';
         $this->retrieveUrl = $webhookData['retrieveUrl'] ?? '';
     }
 

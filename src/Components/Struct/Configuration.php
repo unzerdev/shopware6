@@ -6,7 +6,9 @@ namespace UnzerPayment6\Components\Struct;
 
 class Configuration
 {
-    /** @var array */
+    /**
+     * @var array
+     */
     private $configuration;
 
     public function __construct(array $configuration)
@@ -14,10 +16,12 @@ class Configuration
         $this->configuration = $configuration;
     }
 
-    /** @phpstan-ignore-next-line  */
+    /**
+     * @phpstan-ignore-next-line
+     */
     public function get(string $key, $default = '')
     {
-        if (!array_key_exists($key, $this->configuration)) {
+        if (!\array_key_exists($key, $this->configuration)) {
             return $default;
         }
 

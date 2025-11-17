@@ -12,7 +12,9 @@ use UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTrans
 
 class OrderTransactionEventListener implements EventSubscriberInterface
 {
-    /** @var UnzerPaymentTransferInfoRepositoryInterface */
+    /**
+     * @var UnzerPaymentTransferInfoRepositoryInterface
+     */
     private $transferInfoRepository;
 
     public function __construct(UnzerPaymentTransferInfoRepositoryInterface $transferInfoRepository)

@@ -24,7 +24,7 @@ Module.register('unzer-payment', {
 
     snippets: {
         'de-DE': deDE,
-        'en-GB': enGB
+        'en-GB': enGB,
     },
 
     routeMiddleware(next, currentRoute) {
@@ -35,11 +35,11 @@ Module.register('unzer-payment', {
                 path: '/sw/order/detail/:id/unzer-payment',
                 isChildren: true,
                 meta: {
-                    parentPath: 'sw.order.index'
-                }
+                    parentPath: 'sw.order.index',
+                },
             });
         }
 
         next(currentRoute);
-    }
+    },
 });

@@ -8,8 +8,8 @@ Component.register('unzer-payment-basket', {
     props: {
         paymentResource: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
 
     computed: {
@@ -17,24 +17,24 @@ Component.register('unzer-payment-basket', {
             const data = [];
 
             this.paymentResource.basket.basketItems.forEach((basketItem) => {
-                let amountGross = this.$options.filters.currency(
-                    parseFloat(basketItem.amountGross.toFixed(2)),
-                    this.paymentResource.currency
+                let amountGross = this.formatCurrency(
+                    parseFloat(basketItem.amountGross.toFixed(2))
                 );
-                let amountNet = this.$options.filters.currency(
-                    parseFloat(basketItem.amountNet.toFixed(2)),
-                    this.paymentResource.currency
+                let amountNet = this.formatCurrency(
+                    parseFloat(basketItem.amountNet.toFixed(2))
                 );
 
                 if (basketItem.amountDiscount > 0) {
-                    amountGross = this.$options.filters.currency(
-                        parseFloat(basketItem.amountDiscount.toFixed(2)) * -1,
-                        this.paymentResource.currency
+                    amountGross = this.formatCurrency(
+                        parseFloat(basketItem.amountDiscount.toFixed(2)) * -1
                     );
 
-                    amountNet = this.$options.filters.currency(
-                        parseFloat((basketItem.amountDiscount - basketItem.amountVat).toFixed(2)) * -1,
-                        this.paymentResource.currency
+                    amountNet = this.formatCurrency(
+                        parseFloat(
+                            (
+                                basketItem.amountDiscount - basketItem.amountVat
+                            ).toFixed(2)
+                        ) * -1
                     );
                 }
 
@@ -42,7 +42,7 @@ Component.register('unzer-payment-basket', {
                     quantity: basketItem.quantity,
                     title: basketItem.title,
                     amountGross: amountGross,
-                    amountNet: amountNet
+                    amountNet: amountNet,
                 });
             });
 
@@ -53,25 +53,41 @@ Component.register('unzer-payment-basket', {
             return [
                 {
                     property: 'quantity',
-                    label: this.$tc('unzer-payment.paymentDetails.basket.column.quantity'),
-                    rawData: true
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.basket.column.quantity'
+                    ),
+                    rawData: true,
                 },
                 {
                     property: 'title',
-                    label: this.$tc('unzer-payment.paymentDetails.basket.column.title'),
-                    rawData: true
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.basket.column.title'
+                    ),
+                    rawData: true,
                 },
                 {
                     property: 'amountGross',
-                    label: this.$tc('unzer-payment.paymentDetails.basket.column.amountGross'),
-                    rawData: true
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.basket.column.amountGross'
+                    ),
+                    rawData: true,
                 },
                 {
                     property: 'amountNet',
-                    label: this.$tc('unzer-payment.paymentDetails.basket.column.amountNet'),
-                    rawData: true
-                }
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.basket.column.amountNet'
+                    ),
+                    rawData: true,
+                },
             ];
-        }
-    }
+        },
+    },
+    methods: {
+        formatCurrency(value) {
+            return this.$options.filters.currency(
+                value || 0.0,
+                this.paymentResource.currency
+            );
+        },
+    },
 });

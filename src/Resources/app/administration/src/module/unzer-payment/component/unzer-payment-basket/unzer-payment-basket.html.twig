@@ -1,12 +1,16 @@
 {% block unzer_payment_basket %}
-    <sw-card class="unzer-payment-basket" :title="$tc('unzer-payment.paymentDetails.basket.cardTitle')">
+    <sw-card
+        class="unzer-payment-basket"
+        :title="$tc('unzer-payment.paymentDetails.basket.cardTitle')"
+    >
         <template #grid>
             {% block unzer_payment_basket_container %}
-                <sw-data-grid
-                    :dataSource="data"
-                    :columns="columns"
-                    :showSelection="false"
-                    :showActions="false">
+            <sw-data-grid
+                :dataSource="data"
+                :columns="columns"
+                :showSelection="false"
+                :showActions="false"
+            >
                 </sw-data-grid>
             {% endblock %}
         </template>

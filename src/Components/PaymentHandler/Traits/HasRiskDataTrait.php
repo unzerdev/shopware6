@@ -15,7 +15,7 @@ trait HasRiskDataTrait
     {
         $fraudPreventionSessionId = $this->fetchFraudPreventionSessionId($transaction, $context);
 
-        if (null === $fraudPreventionSessionId) {
+        if ($fraudPreventionSessionId === null) {
             return null;
         }
 
@@ -24,7 +24,7 @@ trait HasRiskDataTrait
 
         $customer = $context->getCustomer();
 
-        if (null !== $customer) {
+        if ($customer !== null) {
             $date = $customer->getCreatedAt() ? $customer->getCreatedAt()->format('Ymd') : null;
 
             $riskData->setRegistrationLevel($customer->getGuest() ? '0' : '1');
@@ -36,9 +36,9 @@ trait HasRiskDataTrait
 
     private function fetchFraudPreventionSessionId(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $context): ?string
     {
-        $orderTransaction         = $transaction->getOrderTransaction();
-        $currentRequest           = $this->getCurrentRequestFromStack($orderTransaction->getId());
-        $fraudPreventionSessionId = $currentRequest->get('unzerPaymentFraudPreventionSessionId', '');
+        $orderTransaction = $transaction->getOrderTransaction();
+        $currentRequest = $this->getCurrentRequestFromStack($orderTransaction->getId());
+        $fraudPreventionSessionId = $currentRequest->get('unzerThreatMetrixId', '');
 
         if (empty($fraudPreventionSessionId)) {
             $customFields = $orderTransaction->getCustomFields() ?? [];
@@ -54,7 +54,7 @@ trait HasRiskDataTrait
 
         $this->transactionRepository->upsert([
             [
-                'id'           => $orderTransaction->getId(),
+                'id' => $orderTransaction->getId(),
                 'customFields' => [
                     CustomFieldInstaller::UNZER_PAYMENT_FRAUD_PREVENTION_SESSION_ID => $fraudPreventionSessionId,
                 ],

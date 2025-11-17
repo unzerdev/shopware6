@@ -11,7 +11,9 @@ class CreditCardPageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerCreditCard';
 
-    /** @var UnzerPaymentDeviceEntity[] */
+    /**
+     * @var UnzerPaymentDeviceEntity[]
+     */
     protected $creditCards = [];
 
     public function addCreditCard(UnzerPaymentDeviceEntity $creditCard): self
@@ -31,8 +33,6 @@ class CreditCardPageExtension extends Struct
 
     /**
      * @param UnzerPaymentDeviceEntity[] $creditCards
-     *
-     * @return CreditCardPageExtension
      */
     public function setCreditCards(array $creditCards): self
     {

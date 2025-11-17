@@ -8,8 +8,8 @@ Component.register('unzer-payment-metadata', {
     props: {
         paymentResource: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
 
     computed: {
@@ -19,7 +19,7 @@ Component.register('unzer-payment-metadata', {
             this.paymentResource.metadata.forEach((meta) => {
                 data.push({
                     key: meta.key,
-                    value: meta.value
+                    value: meta.value,
                 });
             });
 
@@ -30,15 +30,19 @@ Component.register('unzer-payment-metadata', {
             return [
                 {
                     property: 'key',
-                    label: this.$tc('unzer-payment.paymentDetails.metadata.column.key'),
-                    rawData: true
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.metadata.column.key'
+                    ),
+                    rawData: true,
                 },
                 {
                     property: 'value',
-                    label: this.$tc('unzer-payment.paymentDetails.metadata.column.value'),
-                    rawData: true
-                }
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.metadata.column.value'
+                    ),
+                    rawData: true,
+                },
             ];
-        }
-    }
+        },
+    },
 });
