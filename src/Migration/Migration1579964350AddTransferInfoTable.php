@@ -34,13 +34,7 @@ class Migration1579964350AddTransferInfoTable extends MigrationStep
                 `created_at` DATETIME(3) NOT NULL,
                 `updated_at` DATETIME(3) NULL,
 
-                PRIMARY KEY (`id`),
-                KEY `fk.heidelpay_transfer_info.transaction_id` (`transaction_id`),
-
-                CONSTRAINT `fk.heidelpay_transfer_info.transaction_id`
-                    FOREIGN KEY (`transaction_id`)
-                    REFERENCES `order_transaction` (`id`)
-                    ON DELETE RESTRICT ON UPDATE CASCADE
+                PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 SQL;
 
