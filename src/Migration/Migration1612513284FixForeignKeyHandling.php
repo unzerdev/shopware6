@@ -54,12 +54,8 @@ SQL
 
     private function migratePaymentDevices(Connection $connection): void
     {
-        $paymentDeviceResult = $connection->fetchAssociative(
-            'SHOW KEYS FROM `unzer_payment_payment_device` WHERE Key_name = "fk.heidelpay_payment_device.customer_id";'
-        );
-
-        if (!empty($paymentDeviceResult)) {
             $this->dropForeignKey($connection, 'unzer_payment_payment_device', 'fk.heidelpay_payment_device.customer_id');
+            $this->dropForeignKey($connection, 'unzer_payment_payment_device', 'fk.unzer_payment_payment_device.customer_id');
             $this->dropIndex($connection, 'unzer_payment_payment_device', 'fk.heidelpay_payment_device.customer_id');
 
             try {
@@ -75,7 +71,7 @@ SQL
             } catch (\Throwable $t) {
                 //                silentfail - already created
             }
-        }
+
     }
 
     private function dropForeignKey(Connection $connection, string $table, string $keyName): void

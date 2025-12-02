@@ -1,3 +1,7 @@
+# 7.1.1
+* Fix foreign key issue in migrations
+* PHP8.2 compatibility fix
+
 # 7.1.0
 * Migration from Unzer UI Component V1 to Unzer UI Component V2
 * Express checkout for Apple Pay, Google Pay and Paypal has been added

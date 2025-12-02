@@ -42,7 +42,7 @@ use UnzerSDK\Unzer;
 abstract class AbstractUnzerPaymentHandler extends AbstractPaymentHandler
 {
     use ExceptionHandler;
-    public const string SAVE_PAYMENT_DEVICE_KEY = 'save_payment_device';
+    public const SAVE_PAYMENT_DEVICE_KEY = 'save_payment_device';
 
     protected ?BasePaymentType $paymentType = null;
 
