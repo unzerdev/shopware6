@@ -206,9 +206,9 @@ class CustomerResourceHydrator implements CustomerResourceHydratorInterface
             if (empty($companyInfo->getCompanyType()) || $updatedCompany) {
                 $companyInfo->setCompanyType('Company Type');
             }
-//            if (empty($companyInfo->getRegistrationType()) || $updatedCompany) {
-//                $companyInfo->setRegistrationType('not_registered');
-//            }
+            if (empty($companyInfo->getRegistrationType()) || $updatedCompany) {
+                $companyInfo->setRegistrationType('not_registered');
+            }
             if (empty($companyInfo->getFunction()) || $updatedCompany) {
                 $companyInfo->setFunction('OWNER');
             }
