@@ -1,3 +1,6 @@
+# 5.12.1
+* Minor Fix am Customer-Objekt für besseren PayPal-B2B-Support
+
 # 5.12.0
 * Migration von Unzer UI Component V1 zu Unzer UI Component V2
 * Express-Checkout für Apple Pay, Google Pay und PayPal wurde hinzugefügt

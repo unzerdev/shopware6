@@ -1,3 +1,6 @@
+# 5.12.1
+* Minor fix to customer object for better Paypal B2B support
+
 # 5.12.0
 * Migration from Unzer UI Component V1 to Unzer UI Component V2
 * Express checkout for Apple Pay, Google Pay and Paypal has been added
