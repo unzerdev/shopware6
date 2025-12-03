@@ -1,3 +1,6 @@
+# 7.1.2
+* Minor Fix am Customer-Objekt für besseren PayPal-B2B-Support
+
 # 7.1.1
 * Bugfix PHP8.2 Kompatibilität
 * Fix foreign key issue in Migrationen
