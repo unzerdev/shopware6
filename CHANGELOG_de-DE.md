@@ -1,3 +1,11 @@
+# 7.1.3
+* Fehler behoben, bei dem die AGB nicht bis zum Akzeptieren-Häkchen gescrollt wurden
+* Falsche UI-Komponente für B2B-Rechnung korrigiert
+* Fehlerhafte Kundendaten für UPL behoben
+* Fehlerbehebung für Apple Pay in Nicht-Safari-Browsern
+* Apple-Pay-Button wird nun immer angezeigt, wenn Apple Pay aktiv ist
+* Buchungsmodus-Fix für Wero
+
 # 7.1.2
 * Minor Fix am Customer-Objekt für besseren PayPal-B2B-Support
 

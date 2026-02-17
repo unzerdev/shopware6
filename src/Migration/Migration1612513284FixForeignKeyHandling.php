@@ -71,7 +71,6 @@ SQL
             } catch (\Throwable $t) {
                 //                silentfail - already created
             }
-
     }
 
     private function dropForeignKey(Connection $connection, string $table, string $keyName): void

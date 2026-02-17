@@ -249,7 +249,7 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         for (let i = 0; i < form.length; i++) {
             const element = form[i];
 
-            if (!element.checkValidity()) {
+            if (!element.reportValidity()) {
                 if (element.dataset.customError) {
                     this.showError({
                         message: element.dataset.customError,

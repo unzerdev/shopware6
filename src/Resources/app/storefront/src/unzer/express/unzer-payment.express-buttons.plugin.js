@@ -61,17 +61,7 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
             }
 
             if (unzerApplePay) {
-                if (
-                    window.ApplePaySession &&
-                    window.ApplePaySession.canMakePayments() &&
-                    window.ApplePaySession.supportsVersion(6)
-                ) {
-                    this.registerApplePay(unzerApplePay, unzerExpressPayment);
-                } else {
-                    document.querySelector(
-                        '.unzer-applepay-express-container'
-                    ).style.display = 'none';
-                }
+                this.registerApplePay(unzerApplePay, unzerExpressPayment);
             }
         });
     }
@@ -194,7 +184,8 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
             onPaymentAuthorizedCallback: async (
                 paymentData,
                 approve,
-                reject
+                reject,
+                event
             ) => {
                 console.log('paymentData:', paymentData);
                 let shippingContact = event.payment.shippingContact; // Store the shipping contact data for express checkout
@@ -205,6 +196,11 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
 
                 // You can create customer here based on paymentData
                 const response = await unzerExpressPayment.submit();
+                if (response.submitResponse.success) {
+                    approve();
+                } else {
+                    reject();
+                }
                 const paymentTypeId = response.submitResponse.data.id;
                 console.log(
                     response,

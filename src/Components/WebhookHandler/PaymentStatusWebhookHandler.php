@@ -54,6 +54,8 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
 
         $transaction = $this->getOrderTransaction($payment->getOrderId(), $context->getContext());
 
+        $context->getContext()->assign(['languageIdChain' => [$transaction->getOrder()->getLanguageId()]]);
+
         if ($transaction === null) {
             $this->logger->error(
                 \sprintf(

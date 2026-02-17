@@ -1,3 +1,11 @@
+# 7.1.3
+* Fix for Terms and Conditions no scroll to accept checkmark
+* Fix incorrect UI Comp. for B2B invoice
+* Fix for incorrect customer data for UPL
+* Fix for Apple Pay in Non-Safari browsers
+* Fix to always show Apple Pay button when Apple Pay is active
+* Booking mode fix for Wero
+
 # 7.1.2
 * Minor fix to customer object for better Paypal B2B support
 

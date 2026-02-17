@@ -36,7 +36,8 @@
                     :isLoading="isLoading"
                     :processSuccess="isSuccessful"
                     @click="startCancel"
-                    variant="ghost-danger"
+                    variant="critical"
+                    ghost
                 >
                     {{ $tc('unzer-payment.paymentDetails.actions.cancelButton') }}
                 </sw-button-process>

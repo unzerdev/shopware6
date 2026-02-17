@@ -5,6 +5,7 @@ import './component/unzer-entity-multi-select-delivery-status';
 import './component/unzer-google-pay-gateway-merchant-id';
 import './component/unzer-payment-plugin-icon';
 import './component/unzer-settings-subheading';
+import './extension/sw-system-config';
 
 import './page/unzer-payment-settings';
 
