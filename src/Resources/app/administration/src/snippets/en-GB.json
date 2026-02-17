@@ -136,7 +136,8 @@
             "webhookButton": "Register webhooks",
             "privateKey": "Private Key",
             "publicKey": "Public Key",
-            "additionalKeys": "API Keys for additional payment methods"
+            "additionalKeys": "API Keys for additional payment methods",
+            "additionalKeysHelpText": "If additional keypairs fields are empty, main keypairs will be inherited by default."
         },
         "modal": {
             "close": "Close",

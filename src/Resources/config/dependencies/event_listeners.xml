@@ -67,6 +67,7 @@
         <service id="UnzerPayment6\EventListeners\ExpressButtons\ExpressButtonsEventListener">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="UnzerPayment6\Components\Storefront\ExtensionFactory"/>
+            <argument type="service" id="sales_channel.repository" />
 
             <tag name="kernel.event_subscriber"/>
         </service>
