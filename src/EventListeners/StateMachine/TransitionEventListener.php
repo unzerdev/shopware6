@@ -20,6 +20,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
+use UnzerPayment6\Components\PaymentActions\PaymentActionService;
 use UnzerPayment6\Components\ShipService\ShipServiceInterface;
 use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
@@ -36,7 +37,7 @@ readonly class TransitionEventListener implements EventSubscriberInterface
         private EventDispatcherInterface $eventDispatcher,
         private ShipServiceInterface $shipService,
         private ConfigReaderInterface $configReader,
-        private UnzerTransactionUtil $unzerTransactionUtil
+        private PaymentActionService $paymentActionService
     ) {
     }
 
@@ -119,7 +120,7 @@ readonly class TransitionEventListener implements EventSubscriberInterface
         if (\is_array($autoCaptureStatus) && \in_array($event->getToPlace()->getId(), $autoCaptureStatus, true)) {
             $this->logger->info(\sprintf('Automatic capture for order [%s] was triggered', $order->getOrderNumber()));
             try {
-                $this->unzerTransactionUtil->captureOrder($order, $event->getContext());
+                $this->paymentActionService->captureOrder($order, $event->getContext());
             } catch (\Throwable $exception) {
                 $this->logger->error(\sprintf('Error while executing automatic capture for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                     'trace' => $exception->getTraceAsString(),
@@ -134,13 +135,30 @@ readonly class TransitionEventListener implements EventSubscriberInterface
         if (\is_array($autoRefundStatus) && \in_array($event->getToPlace()->getId(), $autoRefundStatus, true)) {
             $this->logger->info(\sprintf('Automatic refund for order [%s] was triggered', $order->getOrderNumber()));
             try {
-                $this->unzerTransactionUtil->refundOrder($order, $event->getContext());
+                $this->paymentActionService->refundOrder($order, $event->getContext());
             } catch (\Throwable $exception) {
                 $this->logger->error(\sprintf('Error while executing automatic refund for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
                     'trace' => $exception->getTraceAsString(),
                 ]);
             }
         }
+
+        $autoReturnRefundStatus = $config->get(ConfigReader::CONFIG_KEY_DELIVERY_STATUS_FOR_RETURNS_REFUND);
+        if (\is_scalar($autoReturnRefundStatus)) {
+            $autoReturnRefundStatus = [$autoReturnRefundStatus];
+        }
+        if (\is_array($autoReturnRefundStatus) && \in_array($event->getToPlace()->getId(), $autoReturnRefundStatus, true)) {
+            $this->logger->info(\sprintf('Automatic return refund for order [%s] was triggered', $order->getOrderNumber()));
+            try {
+                $this->paymentActionService->executeReturnRefunds($order, $event->getContext());
+            } catch (\Throwable $exception) {
+                $this->logger->error(\sprintf('Error while executing automatic return refund for order [%s]: %s', $order->getOrderNumber(), $exception->getMessage()), [
+                    'trace' => $exception->getTraceAsString(),
+                ]);
+            }
+        }
+
+
     }
 
     protected function setCustomFields(
