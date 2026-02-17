@@ -6,6 +6,7 @@ namespace UnzerPayment6\Components\CancelService;
 
 use Shopware\Core\Framework\Context;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\TransactionTypes\Cancellation;
 
 interface CancelServiceInterface
 {
@@ -18,8 +19,9 @@ interface CancelServiceInterface
         string $chargeId,
         float $amountGross,
         ?string $reasonCode,
-        Context $context
-    ): void;
+        Context $context,
+        string $referenceText = ''
+    ): Cancellation;
 
     /**
      * @throws UnzerApiException
@@ -31,4 +33,6 @@ interface CancelServiceInterface
         float $amountGross,
         Context $context
     ): void;
+
+    public function isPaylaterPaymentMethod(string $paymentMethodId): bool;
 }

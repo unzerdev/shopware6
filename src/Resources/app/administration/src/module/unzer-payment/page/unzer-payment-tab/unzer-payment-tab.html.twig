@@ -11,9 +11,16 @@
                         @reloadOrderDetails="reloadOrderDetails"
                     >
                             </unzer-payment-detail>
+                        <unzer-refunds
+                                @reload="reloadPaymentDetails"
+                                @reloadOrderDetails="reloadOrderDetails"
+                                :order="order"
+                                :paymentResource="paymentResource"
+                                :orderTransactionId="paymentResource.orderTransactionId"
+                        ></unzer-refunds>
                     {% endblock %}
 
-                        {% block unzer_payment_payment_details_content_payment_history %}
+                    {% block unzer_payment_payment_details_content_payment_history %}
                     <unzer-payment-history
                         :paymentResource="paymentResource"
                         @reload="reloadPaymentDetails"

@@ -9,6 +9,7 @@ use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
@@ -59,10 +60,10 @@ class UnzerPaymentConfigurationController extends AbstractController
     }
 
     #[Route(path: '/api/_action/unzer-payment/get-google-pay-gateway-merchant-id', name: 'api.action.unzer.get.google.pay.gateway.merchant.id', methods: ['GET'])]
-    public function getGooglePayGatewayMerchantId(RequestDataBag $dataBag): JsonResponse
+    public function getGooglePayGatewayMerchantId(Request $request): JsonResponse
     {
         try {
-            $salesChannelId = $dataBag->get('salesChannelId', '');
+            $salesChannelId = $request->get('salesChannelId', '');
 
             /** @var ConfigReader $configReader */
             $configReader = $this->container->get(ConfigReader::class);

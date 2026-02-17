@@ -370,6 +370,7 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
         return [
             'id' => $item->getId(),
             'shortId' => $item->getShortId(),
+            'reference'=>method_exists($item, 'getPaymentReference')?$item->getPaymentReference():'',
             'state' => $state,
             'date' => $item->getDate(),
             'type' => $type,

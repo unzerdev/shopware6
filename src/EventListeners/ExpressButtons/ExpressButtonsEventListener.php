@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\EventListeners\ExpressButtons;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\Struct\ArrayStruct;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Checkout\Cart\CheckoutCartPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Offcanvas\OffcanvasCartPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
@@ -14,12 +19,14 @@ use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Storefront\ExtensionFactory;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayV2PageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\GooglePayPageExtension;
+use UnzerPayment6\Installer\PaymentInstaller;
 
 class ExpressButtonsEventListener implements EventSubscriberInterface
 {
     public function __construct(
         private ConfigReaderInterface $configReader,
         private ExtensionFactory $extensionFactory,
+        private EntityRepository $salesChannelRepository
     ) {
     }
 
@@ -43,14 +50,32 @@ class ExpressButtonsEventListener implements EventSubscriberInterface
 
         $event->getPage()->addExtension('UnzerExpressButtons', new ArrayStruct([
             'publicKey' => $config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY),
-            'usePaypal' => $config->get(ConfigReader::CONFIG_KEY_USE_EXPRESS_PAYPAL),
-            'useGooglePay' => $config->get(ConfigReader::CONFIG_KEY_USE_EXPRESS_GOOGLE),
-            'useApplePay' => $config->get(ConfigReader::CONFIG_KEY_USE_EXPRESS_APPLEPAY),
+            'usePaypal' => $config->get(ConfigReader::CONFIG_KEY_USE_EXPRESS_PAYPAL) && $this->isPaymentMethodActive(PaymentInstaller::PAYMENT_ID_PAYPAL, $event->getSalesChannelContext()),
+            'useGooglePay' => $config->get(ConfigReader::CONFIG_KEY_USE_EXPRESS_GOOGLE) && $this->isPaymentMethodActive(PaymentInstaller::PAYMENT_ID_GOOGLE_PAY, $event->getSalesChannelContext()),
+            'useApplePay' => $config->get(ConfigReader::CONFIG_KEY_USE_EXPRESS_APPLEPAY) && $this->isPaymentMethodActive(PaymentInstaller::PAYMENT_ID_APPLE_PAY_V2, $event->getSalesChannelContext()),
         ]));
         $googlePayExtension = $this->extensionFactory->getGooglePayExtension($event->getSalesChannelContext()->getSalesChannelId());
         $event->getPage()->addExtension(GooglePayPageExtension::EXTENSION_NAME, $googlePayExtension);
 
         $applePayExtension = $this->extensionFactory->getApplePayExtension($event->getSalesChannelContext()->getSalesChannelId());
         $event->getPage()->addExtension(ApplePayV2PageExtension::EXTENSION_NAME, $applePayExtension);
+    }
+
+    public function isPaymentMethodActive(string $paymentMethodId, SalesChannelContext $context): bool
+    {
+        $criteria = new Criteria();
+        $criteria->setLimit(1);
+        $criteria->addFilter(
+            new MultiFilter(
+                MultiFilter::CONNECTION_AND,
+                [
+                    new EqualsFilter('id', $context->getSalesChannel()->getId()),
+                    new EqualsFilter('paymentMethods.id', $paymentMethodId),
+                    new EqualsFilter('paymentMethods.active', true),
+                ]
+            )
+        );
+
+        return $this->salesChannelRepository->searchIds($criteria, $context->getContext())->firstId() !== null;
     }
 }

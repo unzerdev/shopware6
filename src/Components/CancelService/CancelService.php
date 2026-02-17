@@ -23,7 +23,7 @@ use UnzerSDK\Unzer;
 
 class CancelService implements CancelServiceInterface
 {
-    private const PAYLATER_PAYMENT_METHODS = [
+    public const PAYLATER_PAYMENT_METHODS = [
         PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE,
         PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT,
         PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED,
@@ -41,7 +41,7 @@ class CancelService implements CancelServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function cancelChargeById(string $orderTransactionId, string $chargeId, float $amountGross, ?string $reasonCode, Context $context): void
+    public function cancelChargeById(string $orderTransactionId, string $chargeId, float $amountGross, ?string $reasonCode, Context $context, string $referenceText = ''): Cancellation
     {
         $decimalPrecision = UnzerPayment6::MAX_DECIMAL_PRECISION;
 
@@ -76,24 +76,26 @@ class CancelService implements CancelServiceInterface
         $payment = UnzerTransactionUtil::fetchPaymentFromOrderTransaction($transaction, $client);
         if ($this->isPaylaterPaymentMethod($transaction->getPaymentMethodId())) {
             $cancellation = new Cancellation($amountGross);
+            $cancellation->setPaymentReference($referenceText);
 
-            $client->cancelChargedPayment(
+            $responseCancellation = $client->cancelChargedPayment(
                 $payment,
                 $cancellation
             );
         } else {
-            $client->cancelChargeById(
+            $responseCancellation = $client->cancelChargeById(
                 $payment,
                 $chargeId,
                 $amountGross,
                 $this->getCancelReasonCode($reasonCode),
-                '',
+                $referenceText,
                 $amountNet,
                 $amountVat
             );
         }
 
         $this->updateOrderStatus($client, $transaction, $context);
+        return $responseCancellation;
     }
 
     /**
@@ -139,7 +141,7 @@ class CancelService implements CancelServiceInterface
         return $reasonCode ?? CancelReasonCodes::REASON_CODE_CANCEL;
     }
 
-    protected function isPaylaterPaymentMethod(string $paymentMethodId): bool
+    public function isPaylaterPaymentMethod(string $paymentMethodId): bool
     {
         return \in_array($paymentMethodId, self::PAYLATER_PAYMENT_METHODS, true);
     }

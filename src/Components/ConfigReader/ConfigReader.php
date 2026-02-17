@@ -43,6 +43,7 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_PAYPAL_SHOW_SAVE_ACCOUNT = 'paypalShowSaveAccount';
     public const CONFIG_KEY_DELIVERY_STATUS_FOR_CAPTURE = 'deliveryStatusForAutomaticCapture';
     public const CONFIG_KEY_DELIVERY_STATUS_FOR_REFUND = 'deliveryStatusForAutomaticRefund';
+    public const CONFIG_KEY_DELIVERY_STATUS_FOR_RETURNS_REFUND = 'deliveryStatusForAutomaticReturnsRefund';
 
     public const CONFIG_KEY_USE_EXPRESS_PAYPAL = 'usePaypalExpress';
     public const CONFIG_KEY_USE_EXPRESS_GOOGLE = 'useGooglePayExpress';
