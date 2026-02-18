@@ -1,3 +1,12 @@
+# 5.12.2
+* Fix for Terms and Conditions no scroll to accept checkmark
+* Fix incorrect UI Comp. for B2B invoice
+* Fix for incorrect customer data for UPL
+* Fix for Apple Pay in Non-Safari browsers
+* Fix to always show Apple Pay button when Apple Pay is active
+* Fix for Apple Pay not always working
+* Booking mode fix for Wero
+
 # 5.12.1
 * Minor fix to customer object for better Paypal B2B support
 
