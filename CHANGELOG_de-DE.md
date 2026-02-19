@@ -1,3 +1,12 @@
+# 5.12.2
+* Fehler behoben, bei dem die AGB nicht bis zum Akzeptieren-Häkchen gescrollt wurden
+* Falsche UI-Komponente für B2B-Rechnung korrigiert
+* Fehlerhafte Kundendaten für UPL behoben
+* Fehlerbehebung für Apple Pay in Nicht-Safari-Browsern
+* Apple-Pay-Button wird nun immer angezeigt, wenn Apple Pay aktiv ist
+* Problem behoben, bei dem Apple Pay nicht immer funktioniert hat
+* Buchungsmodus-Fix für Wero
+
 # 5.12.1
 * Minor Fix am Customer-Objekt für besseren PayPal-B2B-Support
 
