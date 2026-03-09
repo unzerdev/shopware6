@@ -54,8 +54,6 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
 
         $transaction = $this->getOrderTransaction($payment->getOrderId(), $context->getContext());
 
-        $context->getContext()->assign(['languageIdChain' => [$transaction->getOrder()->getLanguageId()]]);
-
         if ($transaction === null) {
             $this->logger->error(
                 \sprintf(
@@ -67,6 +65,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
             return;
         }
 
+        $context->getContext()->assign(['languageIdChain' => [$transaction->getOrder()->getLanguageId()]]);
         $this->customFieldsHelper->setOrderTransactionCustomFields($transaction, $context->getContext());
 
         $this->transactionStateHandler->transformTransactionState(
@@ -83,6 +82,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
         }
 
         $criteria = new Criteria([$orderId]);
+        $criteria->addAssociation('order');
 
         try {
             $orderTransactions = $this->orderTransactionRepository->search($criteria, $context);
@@ -95,3 +95,4 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
         }
     }
 }
+

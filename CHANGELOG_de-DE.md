@@ -1,3 +1,8 @@
+# 7.1.4
+* **Wichtiger Hotfix**
+* Dieser Hotfix behebt ein Problem, bei dem einige Webhooks in Shopware 6.7 nicht korrekt registriert wurden.
+* Installieren Sie diesen Hotfix, um ein Problem zu beheben, das in der vorherigen Version v7.1.3 gefunden wurde.
+
 # 7.1.3
 * Fehler behoben, bei dem die AGB nicht bis zum Akzeptieren-Häkchen gescrollt wurden
 * Falsche UI-Komponente für B2B-Rechnung korrigiert
@@ -16,8 +21,8 @@
 # 7.1.0
 * Migration von Unzer UI Component V1 zu Unzer UI Component V2
 * Express-Checkout für Apple Pay, Google Pay und PayPal wurde hinzugefügt
-* EAA-Unterstützung, siehe https://docs.unzer.com/online-payments/compliance/eaa/￼
-* Veraltete Zahlungsmethoden wurden durch neue ersetzt, entfernt oder umbenannt. Die vollständige Liste befindet sich unter https://docs.unzer.com/plugins/shopware-6/shop6-migrate-v1-v2/￼
+* EAA-Unterstützung, siehe https://docs.unzer.com/online-payments/compliance/eaa/
+* Veraltete Zahlungsmethoden wurden durch neue ersetzt, entfernt oder umbenannt. Die vollständige Liste befindet sich unter https://docs.unzer.com/plugins/shopware-6/shop6-migrate-v1-v2/
 
 # 7.0.0
 * Support for Shopware 6.7

@@ -1,3 +1,8 @@
+# 7.1.4
+* **Important hotfix**
+* This hotfix will fix an issue where some webhooks were not correctly registered in Shopware 6.7.
+* Install this hotfix to solve an issue found in previous release v7.1.3
+
 # 7.1.3
 * Fix for Terms and Conditions no scroll to accept checkmark
 * Fix incorrect UI Comp. for B2B invoice
