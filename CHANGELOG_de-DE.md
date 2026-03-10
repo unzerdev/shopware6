@@ -1,3 +1,8 @@
+# 6.5.3
+* **Wichtiger Hotfix**
+* Dieser Hotfix behebt ein Problem, bei dem einige Webhooks in Shopware 6.6 nicht korrekt registriert wurden.
+* Installieren Sie diesen Hotfix, um ein Problem zu beheben, das in der vorherigen Version v6.5.2 gefunden wurde.
+
 # 6.5.2
 * Fehler behoben, bei dem die AGB nicht bis zum Akzeptieren-Häkchen gescrollt wurden
 * Falsche UI-Komponente für B2B-Rechnung korrigiert
