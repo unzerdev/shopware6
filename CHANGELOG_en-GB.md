@@ -1,4 +1,7 @@
-# 5.12.2
+# 5.12.3
+* Updated iDEAL Payment naming
+
+* # 5.12.2
 * Fix for Terms and Conditions no scroll to accept checkmark
 * Fix incorrect UI Comp. for B2B invoice
 * Fix for incorrect customer data for UPL

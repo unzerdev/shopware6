@@ -1,3 +1,6 @@
+# 5.12.3
+* Aktualisierung iDEAL Payment Naming
+
 # 5.12.2
 * Fehler behoben, bei dem die AGB nicht bis zum Akzeptieren-Häkchen gescrollt wurden
 * Falsche UI-Komponente für B2B-Rechnung korrigiert
