@@ -1,3 +1,6 @@
+# 7.1.5
+* Updated iDEAL Payment naming
+
 # 7.1.4
 * **Important hotfix**
 * This hotfix will fix an issue where some webhooks were not correctly registered in Shopware 6.7.
