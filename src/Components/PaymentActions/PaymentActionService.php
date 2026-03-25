@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace UnzerPayment6\Components\PaymentActions;
 
-use Kiener\MolliePayments\Components\RefundManager\DAL\RefundItem\RefundItemEntity;
 use Psr\Log\LoggerInterface;
 use Shopware\Commercial\ReturnManagement\Entity\OrderReturn\OrderReturnEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
@@ -13,7 +12,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Throwable;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\PaymentActions\Struct\RefundItem;
@@ -24,34 +22,33 @@ use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
-class PaymentActionService{
+class PaymentActionService
+{
     public function __construct(
-        protected EntityRepository                 $orderTransactionRepository,
-        protected ClientFactoryInterface           $clientFactory,
+        protected EntityRepository $orderTransactionRepository,
+        protected ClientFactoryInterface $clientFactory,
         protected TransactionStateHandlerInterface $transactionStateHandler,
-        protected CancelServiceInterface           $cancelService,
-        private EntityRepository                   $productRepository,
-        private EntityRepository                   $orderLineItemRepository,
-        protected LoggerInterface                  $logger,
-        protected UnzerTransactionUtil              $unzerTransactionUtil,
+        protected CancelServiceInterface $cancelService,
+        private EntityRepository $productRepository,
+        private EntityRepository $orderLineItemRepository,
+        protected LoggerInterface $logger,
+        protected UnzerTransactionUtil $unzerTransactionUtil,
         protected ?EntityRepository $orderReturnRepository = null
-    )
-    {
+    ) {
     }
-
 
     /**
      * @throws \Exception
      */
     public function captureOrder(OrderEntity $order, Context $context): bool
     {
-        $this->logger->info('Capturing order', ['order' => $order->getId()]);
         $orderTransaction = $this->unzerTransactionUtil->getOrderTransactionFromOrder($order, $context);
 
         if ($orderTransaction === null) {
             return false;
         }
 
+        $this->logger->info('Capturing order', ['order' => $order->getId()]);
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($orderTransaction));
         try {
             $charge = $client->performChargeOnPayment($orderTransaction->getId(), new Charge($orderTransaction->getAmount()->getTotalPrice()));
@@ -67,21 +64,18 @@ class PaymentActionService{
         return true;
     }
 
-
-
-
     /**
      * @throws \Exception
      */
     public function refundOrder(OrderEntity $order, Context $context): void
     {
-        $this->logger->info('Refunding order', ['order' => $order->getId()]);
         $orderTransaction = $this->unzerTransactionUtil->getOrderTransactionFromOrder($order, $context);
 
         if ($orderTransaction === null) {
             return;
         }
 
+        $this->logger->info('Refunding order', ['order' => $order->getId()]);
         $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($orderTransaction));
         try {
             $payment = $client->fetchPayment($orderTransaction->getId());
@@ -98,7 +92,7 @@ class PaymentActionService{
                         null,
                         $context
                     );
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     $this->logger->error('Error while refunding charge', ['charge' => $charge->getId(), 'error' => $e->getMessage()]);
                 }
             }
@@ -113,7 +107,7 @@ class PaymentActionService{
                         $authorization->getAmount() - $authorization->getCancelledAmount(),
                         $context
                     );
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     $this->logger->error('Error while refunding authorization', ['authorization' => $authorization->getId(), 'error' => $e->getMessage()]);
                 }
             }
@@ -127,14 +121,11 @@ class PaymentActionService{
         }
     }
 
-
-
     public function executeReturnRefunds(OrderEntity $order, Context $context): void
     {
-        $this->logger->info('Refunding order based on returns', ['order' => $order->getId()]);
-
-        if($this->orderReturnRepository === null) {
+        if ($this->orderReturnRepository === null) {
             $this->logger->warning('Returns repository does not exist');
+
             return;
         }
 
@@ -144,9 +135,10 @@ class PaymentActionService{
             return;
         }
 
+        $this->logger->info('Refunding order based on returns', ['order' => $order->getId()]);
         $returnsToProcess = $this->getUnprocessedReturns($orderTransaction, $context);
 
-        foreach($returnsToProcess as $returnEntity) {
+        foreach ($returnsToProcess as $returnEntity) {
             $items = new RefundItemCollection();
             foreach ($returnEntity->getLineItems() as $lineItem) {
                 $refundItem = new RefundItem(
@@ -163,8 +155,8 @@ class PaymentActionService{
                 amount: $returnEntity->getAmountTotal(),
                 context: $context,
                 items: $items,
-                comment: 'SW Auto Refund from order #'.$order->getOrderNumber().' return #'.$returnEntity->getReturnNumber(),
-                referenceText: $order->getOrderNumber().'/'.$returnEntity->getReturnNumber()
+                comment: 'SW Auto Refund from order #' . $order->getOrderNumber() . ' return #' . $returnEntity->getReturnNumber(),
+                referenceText: $order->getOrderNumber() . '/' . $returnEntity->getReturnNumber()
             );
 
             $transactionCustomFields = $orderTransaction->getCustomFields() ?? [];
@@ -191,7 +183,40 @@ class PaymentActionService{
                 ],
             ], $context);
         }
+    }
 
+    public function doUnifiedRefund(OrderTransactionEntity $orderTransaction, float $amount, Context $context, ?RefundItemCollection $items = null, string $comment = '', string $referenceText = ''): string
+    {
+        $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($orderTransaction));
+        $payment = UnzerTransactionUtil::fetchPaymentFromOrderTransaction($orderTransaction, $client);
+        $charges = $payment->getCharges();
+        $charge = reset($charges); // TODO
+
+        $cancellation = $this->cancelService->cancelChargeById($orderTransaction->getId(), $charge->getId(), $amount, null, $context, $referenceText);
+
+        $transactionCustomFields = $orderTransaction->getCustomFields() ?? [];
+        if (!isset($transactionCustomFields['unzerRefundDetails'])) {
+            $transactionCustomFields['unzerRefundDetails'] = [];
+        }
+
+        $transactionCustomFields['unzerRefundDetails'][$cancellation->getId()] = [
+            'items' => $items ? $items->jsonSerialize() : [],
+            'comment' => $comment,
+            'cancellation' => $cancellation->expose(),
+        ];
+
+        $this->unzerTransactionUtil->updateOrderTransaction([
+            'id' => $orderTransaction->getId(),
+            'customFields' => $transactionCustomFields,
+        ], $context);
+
+        $orderTransaction->setCustomFields($transactionCustomFields);
+
+        if ($items !== null && $items->count() > 0) {
+            $this->processRefundItems($items, $context);
+        }
+
+        return $cancellation->getId();
     }
 
     /**
@@ -225,42 +250,7 @@ class PaymentActionService{
         return $unprocessedReturns;
     }
 
-    public function doUnifiedRefund(OrderTransactionEntity $orderTransaction, float $amount, Context $context, ?RefundItemCollection $items = null, string $comment = '', string $referenceText = ''): string
-    {
-        $client = $this->clientFactory->createClient(KeyPairContext::createFromOrderTransaction($orderTransaction));
-        $payment = UnzerTransactionUtil::fetchPaymentFromOrderTransaction($orderTransaction, $client);
-        $charges = $payment->getCharges();
-        $charge = reset($charges);//TODO
-
-        $cancellation = $this->cancelService->cancelChargeById($orderTransaction->getId(), $charge->getId(), $amount, null, $context, $referenceText);
-
-        $transactionCustomFields = $orderTransaction->getCustomFields() ?? [];
-        if (!isset($transactionCustomFields['unzerRefundDetails'])) {
-            $transactionCustomFields['unzerRefundDetails'] = [];
-        }
-
-        $transactionCustomFields['unzerRefundDetails'][$cancellation->getId()] = [
-            'items' => $items?$items->jsonSerialize():[],
-            'comment' => $comment,
-            'cancellation' => $cancellation->expose(),
-        ];
-
-        $this->unzerTransactionUtil->updateOrderTransaction([
-            'id' => $orderTransaction->getId(),
-            'customFields' => $transactionCustomFields,
-        ], $context);
-
-        $orderTransaction->setCustomFields($transactionCustomFields);
-
-        if($items !== null && $items->count() > 0) {
-            $this->processRefundItems($items, $context);
-        }
-
-        return $cancellation->getId();
-    }
-
-
-    protected function processRefundItems(RefundItemCollection $items, Context $context)
+    protected function processRefundItems(RefundItemCollection $items, Context $context): void
     {
         foreach ($items->getElements() as $item) {
             $lineItemId = $item->getId();
@@ -292,7 +282,7 @@ class PaymentActionService{
             }
             if ($quantity > 0) {
                 $customFields = $lineItem->getCustomFields();
-                if (!is_array($customFields)) {
+                if (!\is_array($customFields)) {
                     $customFields = [];
                 }
 

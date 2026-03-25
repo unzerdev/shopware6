@@ -8,16 +8,13 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class RefundItem extends Struct
 {
-
-
     public function __construct(
         protected string $id,
         protected int $quantity = 0,
         protected float $amount = 0.0,
         protected int $resetStockQuantity = 0,
         protected ?string $label = null
-    )
-    {
+    ) {
     }
 
     public static function fromArray(array $data): self
