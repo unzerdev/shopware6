@@ -1,3 +1,6 @@
+# 6.5.4
+* Aktualisierung iDEAL Payment Naming
+
 # 6.5.3
 * **Wichtiger Hotfix**
 * Dieser Hotfix behebt ein Problem, bei dem einige Webhooks in Shopware 6.6 nicht korrekt registriert wurden.
@@ -69,7 +72,7 @@
 * EPS: Entfernung Bank Feld
 
 # 6.2.1
-* Cardholder Name in Kreditkarten-Checkout hinzugefügt 
+* Cardholder Name in Kreditkarten-Checkout hinzugefügt
 
 # 6.2.0
 * TWINT als weitere Zahlungsart hinzugefügt

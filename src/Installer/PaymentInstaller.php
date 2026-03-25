@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\Installer;
 
 use League\Flysystem\Filesystem;
+use Shopware\Core\Checkout\Payment\Aggregate\PaymentMethodTranslation\PaymentMethodTranslationEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -153,16 +154,16 @@ class PaymentInstaller implements InstallerInterface
         [
             'id' => self::PAYMENT_ID_IDEAL,
             'handlerIdentifier' => UnzerIdealPaymentHandler::class,
-            'name' => 'iDEAL',
+            'name' => 'iDEAL | Wero',
             'technicalName' => 'unzer_ideal',
             'translations' => [
                 'de-DE' => [
-                    'name' => 'iDEAL',
-                    'description' => 'iDEAL Zahlungen mit Unzer payments',
+                    'name' => 'iDEAL | Wero',
+                    'description' => 'iDEAL | Wero Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name' => 'iDEAL',
-                    'description' => 'iDEAL payments with Unzer payments',
+                    'name' => 'iDEAL | Wero',
+                    'description' => 'iDEAL | Wero payments with Unzer payments',
                 ],
             ],
         ],
@@ -511,6 +512,55 @@ class PaymentInstaller implements InstallerInterface
         }
         $this->removeOldPaymentMethods($context);
         $this->deprecatePaymentMethods($context);
+        $this->renameIdeal($context->getContext());
+    }
+
+    private function renameIdeal(Context $context): void
+    {
+        $criteria = new Criteria([self::PAYMENT_ID_IDEAL]);
+        $criteria->addAssociation('translations.language.locale');
+        /** @var PaymentMethodEntity $existingPaymentMethod */
+        $existingPaymentMethod = $this->paymentMethodRepository->search($criteria, $context)->first();
+        if ($existingPaymentMethod === null) {
+            return;
+        }
+        $translations = [];
+        /** @var PaymentMethodTranslationEntity $translation */
+        foreach ($existingPaymentMethod->getTranslations()->getElements() as $uniqueId => $translation) {
+            $newName = null;
+            $newDescription = null;
+            if (stripos($translation->getName(), 'wero') === false) {
+                $newName = str_replace('iDEAL', 'iDEAL | Wero', $translation->getName());
+            }
+            if (stripos($translation->getDescription(), 'wero') === false) {
+                $newDescription = str_replace('iDEAL', 'iDEAL | Wero', $translation->getDescription());
+            }
+
+            if ($newName === null && $newDescription === null) {
+                continue;
+            }
+
+            $localeCode = $translation->getLanguage()->getLocale()->getCode();
+
+            $translations[$localeCode] = [
+                'languageId' => $translation->getLanguageId(),
+            ];
+            if ($newName !== null) {
+                $translations[$localeCode]['name'] = $newName;
+            }
+            if ($newDescription !== null) {
+                $translations[$localeCode]['description'] = $newDescription;
+            }
+        }
+
+        if (empty($translations)) {
+            return;
+        }
+
+        $this->paymentMethodRepository->update([[
+            'id' => $existingPaymentMethod->getId(),
+            'translations' => $translations,
+        ]], $context);
     }
 
     private function deprecatePaymentMethods(InstallContext $context): void

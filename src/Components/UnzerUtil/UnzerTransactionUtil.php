@@ -10,7 +10,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Throwable;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerPayment6\Installer\PaymentInstaller;
@@ -35,11 +34,10 @@ readonly class UnzerTransactionUtil
     ];
 
     public function __construct(
-        protected EntityRepository                 $orderTransactionRepository,
+        protected EntityRepository $orderTransactionRepository,
         protected TransactionStateHandlerInterface $transactionStateHandler,
-        protected LoggerInterface                  $logger,
-    )
-    {
+        protected LoggerInterface $logger,
+    ) {
     }
 
     public function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
@@ -73,7 +71,6 @@ readonly class UnzerTransactionUtil
         return $this->orderTransactionRepository->search($criteria, $context)->last();
     }
 
-
     public static function fetchPaymentFromOrderTransaction(OrderTransactionEntity $orderTransaction, Unzer $client): Payment
     {
         try {
@@ -101,7 +98,7 @@ readonly class UnzerTransactionUtil
                 $payment,
                 $context
             );
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('error updating transaction state from util: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
         }
     }
@@ -110,6 +107,4 @@ readonly class UnzerTransactionUtil
     {
         $this->orderTransactionRepository->update([$data], $context);
     }
-
-
 }

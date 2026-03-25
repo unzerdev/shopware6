@@ -22,7 +22,6 @@ use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Event\AutomaticShippingNotificationEvent;
 use UnzerPayment6\Components\PaymentActions\PaymentActionService;
 use UnzerPayment6\Components\ShipService\ShipServiceInterface;
-use UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil;
 use UnzerPayment6\Components\Validator\AutomaticShippingValidatorInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 
@@ -118,7 +117,6 @@ readonly class TransitionEventListener implements EventSubscriberInterface
         }
 
         if (\is_array($autoCaptureStatus) && \in_array($event->getToPlace()->getId(), $autoCaptureStatus, true)) {
-            $this->logger->info(\sprintf('Automatic capture for order [%s] was triggered', $order->getOrderNumber()));
             try {
                 $this->paymentActionService->captureOrder($order, $event->getContext());
             } catch (\Throwable $exception) {
@@ -157,8 +155,6 @@ readonly class TransitionEventListener implements EventSubscriberInterface
                 ]);
             }
         }
-
-
     }
 
     protected function setCustomFields(

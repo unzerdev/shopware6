@@ -95,6 +95,7 @@ class CancelService implements CancelServiceInterface
         }
 
         $this->updateOrderStatus($client, $transaction, $context);
+
         return $responseCancellation;
     }
 
@@ -123,6 +124,11 @@ class CancelService implements CancelServiceInterface
         $this->updateOrderStatus($client, $transaction, $context);
     }
 
+    public function isPaylaterPaymentMethod(string $paymentMethodId): bool
+    {
+        return \in_array($paymentMethodId, self::PAYLATER_PAYMENT_METHODS, true);
+    }
+
     protected function getOrderTransaction(string $orderTransactionId, Context $context): ?OrderTransactionEntity
     {
         $criteria = new Criteria([$orderTransactionId]);
@@ -139,11 +145,6 @@ class CancelService implements CancelServiceInterface
     protected function getCancelReasonCode(?string $reasonCode): string
     {
         return $reasonCode ?? CancelReasonCodes::REASON_CODE_CANCEL;
-    }
-
-    public function isPaylaterPaymentMethod(string $paymentMethodId): bool
-    {
-        return \in_array($paymentMethodId, self::PAYLATER_PAYMENT_METHODS, true);
     }
 
     private function updateOrderStatus(Unzer $client, OrderTransactionEntity $orderTransaction, Context $context): void

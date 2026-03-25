@@ -93,26 +93,24 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
      * @param MetadataResourceHydrator $metadataHydrator
      */
     public function __construct(
-        protected readonly ResourceHydratorInterface         $basketHydrator,
+        protected readonly ResourceHydratorInterface $basketHydrator,
         protected readonly CustomerResourceHydratorInterface $customerHydrator,
-        protected readonly ResourceHydratorInterface         $metadataHydrator,
-        protected readonly EntityRepository                  $transactionRepository,
-        protected readonly ConfigReaderInterface             $configReader,
-        protected readonly TransactionStateHandlerInterface  $transactionStateHandler,
-        protected readonly ClientFactoryInterface            $clientFactory,
-        protected readonly RequestStack                      $requestStack,
-        protected readonly LoggerInterface                   $logger,
-        protected readonly CustomFieldsHelperInterface       $customFieldsHelper
-    )
-    {
+        protected readonly ResourceHydratorInterface $metadataHydrator,
+        protected readonly EntityRepository $transactionRepository,
+        protected readonly ConfigReaderInterface $configReader,
+        protected readonly TransactionStateHandlerInterface $transactionStateHandler,
+        protected readonly ClientFactoryInterface $clientFactory,
+        protected readonly RequestStack $requestStack,
+        protected readonly LoggerInterface $logger,
+        protected readonly CustomFieldsHelperInterface $customFieldsHelper
+    ) {
     }
 
     public function pay(
         AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag                $dataBag,
-        SalesChannelContext           $salesChannelContext
-    ): RedirectResponse
-    {
+        RequestDataBag $dataBag,
+        SalesChannelContext $salesChannelContext
+    ): RedirectResponse {
         $this->logger->debug('Starting pay() base method in ' . static::class);
         $currentRequest = $this->getCurrentRequestFromStack($transaction->getOrderTransaction()->getId());
 
@@ -169,10 +167,9 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
 
     public function finalize(
         AsyncPaymentTransactionStruct $transaction,
-        Request                       $request,
-        SalesChannelContext           $salesChannelContext
-    ): void
-    {
+        Request $request,
+        SalesChannelContext $salesChannelContext
+    ): void {
         $this->logger->debug('Starting finalize() base method in ' . static::class);
         try {
             $this->pluginConfig = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
@@ -259,7 +256,7 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     protected function getUnzerCustomer(string $unzerCustomerId, string $paymentMethodId, OrderTransactionEntity $orderTransaction, SalesChannelContext $salesChannelContext): AbstractUnzerResource
     {
         $customer = $salesChannelContext->getCustomer();
-        if(empty($orderTransaction->getOrder())){
+        if (empty($orderTransaction->getOrder())) {
             $orderTransaction = $this->fetchTransactionById($orderTransaction->getId(), $salesChannelContext->getContext());
         }
         $fetchedCustomer = null;

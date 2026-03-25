@@ -136,7 +136,8 @@
             "webhookButton": "Webhooks registrieren",
             "privateKey": "Private Key",
             "publicKey": "Public Key",
-            "additionalKeys": "API Keys für weitere Zahlungsarten"
+            "additionalKeys": "API Keys für weitere Zahlungsarten",
+            "additionalKeysHelpText": "Wenn die Felder für zusätzliche Schlüsselpaare leer sind, werden standardmäßig die Hauptschlüsselpaare übernommen."
         },
         "modal": {
             "close": "Schließen",

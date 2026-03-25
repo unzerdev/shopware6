@@ -31,16 +31,15 @@ use UnzerSDK\Resources\TransactionTypes\Charge;
 class UnzerPaymentTransactionController extends AbstractController
 {
     public function __construct(
-        private readonly ClientFactoryInterface           $clientFactory,
-        private readonly UnzerTransactionUtil             $unzerTransactionUtil,
-        private readonly PaymentActionService             $paymentTransactionService,
+        private readonly ClientFactoryInterface $clientFactory,
+        private readonly UnzerTransactionUtil $unzerTransactionUtil,
+        private readonly PaymentActionService $paymentTransactionService,
         private readonly PaymentResourceHydratorInterface $hydrator,
-        private readonly CancelServiceInterface           $cancelService,
-        private readonly ShipServiceInterface             $shipService,
-        private readonly BasketConverterInterface         $basketConverter,
-        private readonly LoggerInterface                  $logger
-    )
-    {
+        private readonly CancelServiceInterface $cancelService,
+        private readonly ShipServiceInterface $shipService,
+        private readonly BasketConverterInterface $basketConverter,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/details', name: 'api.action.unzer.transaction.details', methods: ['GET'])]
@@ -84,8 +83,7 @@ class UnzerPaymentTransactionController extends AbstractController
         try {
             $payment = UnzerTransactionUtil::fetchPaymentFromOrderTransaction($transaction, $client);
 
-
-            //TODO: kill the overhead
+            // TODO: kill the overhead
             $data = $this->hydrator->hydrateArray($payment, $transaction, $client);
             $transactions = $data['transactions'];
             $refunds = array_filter($transactions, function (array $transaction) {
@@ -102,7 +100,7 @@ class UnzerPaymentTransactionController extends AbstractController
             $charges = $payment->getCharges();
             // TODO: currently the unified refunds run on the first charge only
             /** @var Charge $charge */
-            $charge = reset($charges);//TODO
+            $charge = reset($charges); // TODO
             if ($charge) {
                 $amounts['charged'] = $charge->isSuccess() ? $charge->getAmount() : 0;
                 if ($this->cancelService->isPaylaterPaymentMethod($transaction->getPaymentMethodId())) {
@@ -189,25 +187,27 @@ class UnzerPaymentTransactionController extends AbstractController
             }
         } catch (\Throwable $exception) {
             $exceptionReturnValues = $this->handleException($exception, 'no order transaction found for unifiedRefund', $exception->getMessage());
+
             return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
         }
 
-        $amount = (float)$request->get('amount', 0);
-        $referenceText = (string)$request->get('referenceText', '');
-        $items = RefundItemCollection::fromArray((array)$request->get('items', []));
-        $comment = (string)$request->get('comment', '');
+        $amount = (float) $request->get('amount', 0);
+        $referenceText = (string) $request->get('referenceText', '');
+        $items = RefundItemCollection::fromArray((array) $request->get('items', []));
+        $comment = (string) $request->get('comment', '');
 
         try {
-           $this->paymentTransactionService->doUnifiedRefund(
-               orderTransaction: $orderTransaction,
-               amount: $amount,
-               context: $context,
-               items: $items,
-               comment: $comment,
-               referenceText: $referenceText
-           );
+            $this->paymentTransactionService->doUnifiedRefund(
+                orderTransaction: $orderTransaction,
+                amount: $amount,
+                context: $context,
+                items: $items,
+                comment: $comment,
+                referenceText: $referenceText
+            );
         } catch (UnzerApiException|\Throwable $exception) {
             $exceptionReturnValues = $this->handleException($exception, \sprintf('Error while executing refund transaction for order transaction [%s]: %s', $orderTransaction->getId(), $exception->getMessage()));
+
             return new JsonResponse($exceptionReturnValues[0], $exceptionReturnValues[1]);
         }
 
@@ -289,5 +289,4 @@ class UnzerPaymentTransactionController extends AbstractController
 
         return $invoiceNumber;
     }
-
 }

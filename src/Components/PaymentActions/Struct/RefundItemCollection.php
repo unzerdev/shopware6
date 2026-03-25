@@ -30,12 +30,13 @@ class RefundItemCollection extends Collection
         return $collection;
     }
 
-    public function jsonSerialize():array
+    public function jsonSerialize(): array
     {
         $return = [];
         foreach ($this->getElements() as $item) {
             $return[] = $item->jsonSerialize();
         }
+
         return $return;
     }
 
