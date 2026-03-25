@@ -95,4 +95,3 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
         }
     }
 }
-

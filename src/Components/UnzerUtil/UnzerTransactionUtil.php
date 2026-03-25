@@ -184,8 +184,7 @@ readonly class UnzerTransactionUtil
                 $context
             );
         } catch (\Throwable $e) {
-            $this->logger->error('error updating transaction state from util: ' . $e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+            $this->logger->error('error updating transaction state from util: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
         }
     }
-
 }
