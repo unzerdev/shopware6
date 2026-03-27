@@ -15,6 +15,7 @@ Component.register('unzer-payment-tab', {
             paymentResources: [],
             loadedResources: 0,
             isLoading: true,
+            order: null,
         };
     },
 

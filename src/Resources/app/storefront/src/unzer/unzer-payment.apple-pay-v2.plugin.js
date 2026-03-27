@@ -17,21 +17,8 @@ export default class UnzerPaymentApplePayPlugin extends UnzerPaymentBaseParent {
 
     init() {
         super.init();
-        if (this._hasCapability()) {
-            this._createForm();
-            // this._registerEvents();
-            this._hideBuyButton();
-        } else {
-            this._disableApplePay();
-        }
-    }
-
-    _hasCapability() {
-        return (
-            window.ApplePaySession &&
-            window.ApplePaySession.canMakePayments() &&
-            window.ApplePaySession.supportsVersion(6)
-        );
+        this._createForm();
+        this._hideBuyButton();
     }
 
     _disableApplePay() {
@@ -89,6 +76,7 @@ export default class UnzerPaymentApplePayPlugin extends UnzerPaymentBaseParent {
             },
         };
     }
+
     /**
      * @private
      */

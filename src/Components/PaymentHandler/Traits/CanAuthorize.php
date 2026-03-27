@@ -35,6 +35,9 @@ trait CanAuthorize
         );
 
         $authorization->setOrderId($this->unzerBasket->getOrderId());
+        if (!empty($this->unzerMetadata) && !empty($this->unzerMetadata->getMetadata('shopwareOrderNumber'))) {
+            $authorization->setInvoiceId($this->unzerMetadata->getMetadata('shopwareOrderNumber'));
+        }
         $authorization->setCard3ds(true);
 
         if ($recurrenceType !== null) {

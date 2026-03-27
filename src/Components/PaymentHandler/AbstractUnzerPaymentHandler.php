@@ -105,7 +105,7 @@ abstract class AbstractUnzerPaymentHandler extends AbstractPaymentHandler
             );
 
             $this->unzerBasket = $this->basketHydrator->hydrateObject($orderTransaction);
-            $this->unzerMetadata = $this->metadataHydrator->hydrateObject($context);
+            $this->unzerMetadata = $this->metadataHydrator->hydrateObject($context, $orderTransaction);
             $this->metadataHydrator->setIsExpress($this->unzerMetadata, $this->isExpress);
 
             $this->unzerCustomer = $this->getUnzerCustomer($request->get('unzerCustomerId', ''), $orderTransaction->getPaymentMethodId(), $orderTransaction, $context);
