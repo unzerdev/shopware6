@@ -38,6 +38,9 @@ trait CanCharge
         );
 
         $charge->setOrderId($this->unzerBasket->getOrderId());
+        if (!empty($this->unzerMetadata) && !empty($this->unzerMetadata->getMetadata('shopwareOrderNumber'))) {
+            $charge->setInvoiceId($this->unzerMetadata->getMetadata('shopwareOrderNumber'));
+        }
         $charge->setCard3ds(true);
 
         if ($recurrenceType !== null) {

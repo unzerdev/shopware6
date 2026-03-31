@@ -174,12 +174,12 @@ class PaymentInstaller implements InstallerInterface
             'technicalName' => 'unzer_installment',
             'translations' => [
                 'de-DE' => [
-                    'name' => 'Ratenkauf',
-                    'description' => 'Unzer Ratenkauf',
+                    'name' => 'Ratenzahlung',
+                    'description' => 'Ratenzahlung mit Unzer payments',
                 ],
                 'en-GB' => [
                     'name' => 'Installment',
-                    'description' => 'Unzer Installment',
+                    'description' => 'Installment with Unzer payments',
                 ],
             ],
         ],
@@ -302,8 +302,8 @@ class PaymentInstaller implements InstallerInterface
             'technicalName' => 'unzer_invoice',
             'translations' => [
                 'de-DE' => [
-                    'name' => 'Rechnungskauf',
-                    'description' => 'Rechnungskauf mit Unzer payments',
+                    'name' => 'Rechnung',
+                    'description' => 'Zahlung auf Rechnung mit Unzer payments',
                 ],
                 'en-GB' => [
                     'name' => 'Invoice',

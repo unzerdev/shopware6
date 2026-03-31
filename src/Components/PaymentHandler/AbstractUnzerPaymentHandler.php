@@ -121,7 +121,8 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             $this->unzerClient = $this->clientFactory->createClientFromSalesChannelContext($salesChannelContext, $currentRequest);
 
             $this->unzerBasket = $this->basketHydrator->hydrateObject($salesChannelContext, $transaction);
-            $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $transaction);
+            $orderTransaction = $this->fetchTransactionById($transaction->getOrderTransaction()->getId(), $salesChannelContext->getContext());
+            $this->unzerMetadata = $this->metadataHydrator->hydrateObject($salesChannelContext, $orderTransaction);
             $this->metadataHydrator->setIsExpress($this->unzerMetadata, $this->isExpress);
 
             $this->unzerCustomer = $this->getUnzerCustomer($currentRequest->get('unzerCustomerId', ''), $transaction->getOrderTransaction()->getPaymentMethodId(), $transaction->getOrderTransaction(), $salesChannelContext);
