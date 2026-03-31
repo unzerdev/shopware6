@@ -1,3 +1,8 @@
+# 7.1.6
+* Verbesserung: Shopware-Bestellnummer wird nun in den Zahlungsdetails gespeichert, um das Tracking von Unzer Paylater-Zahlungen zu verbessern
+* Fehlerbehebung: Zahlungsarten für Rechnung und Ratenzahlung wurden auf die neuen offiziellen Bezeichnungen aktualisiert (nur Deutsch). Betrifft nur Neuinstallationen
+* Fehlerbehebung: In einigen Fällen wurde bei erfolgreichen Click-to-Pay-Zahlungen fälschlicherweise eine Fehlermeldung angezeigt
+
 # 7.1.5
 * Aktualisierung iDEAL Payment Naming
 

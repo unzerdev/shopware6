@@ -1,3 +1,8 @@
+# 7.1.6
+* Improvement: Save Shopware Order Number in payment details for Unzer Paylater payment tracking
+* Fix: Changed payment method names for Invoice and Installment to the new official brands (German only). This will only affect new installs
+* Fix: Sometimes Click to pay payments would display an error for succesfull payments.
+
 # 7.1.5
 * Updated iDEAL Payment naming
 

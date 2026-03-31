@@ -9,6 +9,7 @@ use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\PaymentTransitionMapper\Traits\IsBasicPaymentMethodTransitionMapperWithBookingMode;
 use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Card;
+use UnzerSDK\Resources\PaymentTypes\Clicktopay;
 
 class CreditCardTransitionMapper extends AbstractTransitionMapper
 {
@@ -19,7 +20,7 @@ class CreditCardTransitionMapper extends AbstractTransitionMapper
 
     public function supports(BasePaymentType $paymentType): bool
     {
-        return $paymentType instanceof Card;
+        return $paymentType instanceof Card || $paymentType instanceof Clicktopay;
     }
 
     protected function getResourceName(): string

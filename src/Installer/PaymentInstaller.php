@@ -154,16 +154,16 @@ class PaymentInstaller implements InstallerInterface
         [
             'id' => self::PAYMENT_ID_IDEAL,
             'handlerIdentifier' => UnzerIdealPaymentHandler::class,
-            'name' => 'iDEAL',
+            'name' => 'iDEAL | Wero',
             'technicalName' => 'unzer_ideal',
             'translations' => [
                 'de-DE' => [
-                    'name' => 'iDEAL',
-                    'description' => 'iDEAL Zahlungen mit Unzer payments',
+                    'name' => 'iDEAL | Wero',
+                    'description' => 'iDEAL | Wero Zahlungen mit Unzer payments',
                 ],
                 'en-GB' => [
-                    'name' => 'iDEAL',
-                    'description' => 'iDEAL payments with Unzer payments',
+                    'name' => 'iDEAL | Wero',
+                    'description' => 'iDEAL | Wero payments with Unzer payments',
                 ],
             ],
         ],
@@ -174,12 +174,12 @@ class PaymentInstaller implements InstallerInterface
             'technicalName' => 'unzer_installment',
             'translations' => [
                 'de-DE' => [
-                    'name' => 'Ratenkauf',
-                    'description' => 'Unzer Ratenkauf',
+                    'name' => 'Ratenzahlung',
+                    'description' => 'Ratenzahlung mit Unzer payments',
                 ],
                 'en-GB' => [
                     'name' => 'Installment',
-                    'description' => 'Unzer Installment',
+                    'description' => 'Installment with Unzer payments',
                 ],
             ],
         ],
@@ -302,8 +302,8 @@ class PaymentInstaller implements InstallerInterface
             'technicalName' => 'unzer_invoice',
             'translations' => [
                 'de-DE' => [
-                    'name' => 'Rechnungskauf',
-                    'description' => 'Rechnungskauf mit Unzer payments',
+                    'name' => 'Rechnung',
+                    'description' => 'Zahlung auf Rechnung mit Unzer payments',
                 ],
                 'en-GB' => [
                     'name' => 'Invoice',
