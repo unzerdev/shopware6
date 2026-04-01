@@ -339,6 +339,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
         $unzerClient->updateBasket($unzerBasket);
 
         $orderTransaction = $this->fetchTransactionById($transaction->getOrderTransaction()->getId(), $salesChannelContext->getContext());
+
         // this does implicitly update the customer object
         $this->getUnzerCustomer($payment->getCustomer()?->getId() ?? '', $transaction->getOrderTransaction()->getPaymentMethodId(), $orderTransaction, $salesChannelContext);
 
@@ -348,6 +349,8 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 $unzerBasket->getCurrencyCode(),
                 $transaction->getReturnUrl()
             );
+            $authorization->setInvoiceId($orderTransaction->getOrder()->getOrderNumber());
+            $authorization->setOrderId($orderTransaction->getId());
             $unzerClient->updateAuthorization($payment->getId(), $authorization);
         } else {
             $charge = new Charge(
@@ -355,6 +358,8 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 $unzerBasket->getCurrencyCode(),
                 $transaction->getReturnUrl()
             );
+            $charge->setInvoiceId($orderTransaction->getOrder()->getOrderNumber());
+            $charge->setOrderId($orderTransaction->getId());
             $unzerClient->updateCharge($payment->getId(), $charge);
         }
         $this->persistPaymentInformation(

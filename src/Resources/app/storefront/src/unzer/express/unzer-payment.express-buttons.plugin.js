@@ -114,7 +114,7 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
             allowedCardNetworks: this.options.googlePay.allowedCardNetworks,
             allowCreditCards: this.options.googlePay.allowCreditCards,
             allowPrepaidCards: this.options.googlePay.allowPrepaidCards,
-            billingAddressParameters: {format: 'MIN'},
+            billingAddressParameters: { format: 'MIN' },
             billingAddressRequired: true,
             emailRequired: true,
             onPaymentDataChangedCallback: () => {
