@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\ResourceHydrator;
 
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -42,6 +44,10 @@ class MetadataResourceHydrator implements ResourceHydratorInterface
         $unzerMetadata->setShopType('Shopware 6');
         $unzerMetadata->setShopVersion($this->shopwareVersion);
         $unzerMetadata->addMetadata('pluginType', 'unzerdev/shopware6');
+
+        if ($transaction instanceof OrderTransactionEntity && $transaction->getOrder() instanceof OrderEntity) {
+            $unzerMetadata->addMetadata('shopwareOrderNumber', $transaction->getOrder()->getOrderNumber());
+        }
 
         if ($pluginData !== null) {
             $unzerMetadata->addMetadata('pluginVersion', $pluginData->getVersion());

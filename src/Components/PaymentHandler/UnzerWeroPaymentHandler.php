@@ -21,6 +21,6 @@ class UnzerWeroPaymentHandler extends AbstractUnzerPaymentHandler
     protected function setBookingMode(): void
     {
         $this->bookingMode = BookingMode::CHARGE;
-        #$this->bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_WERO, BookingMode::CHARGE);
+        // $this->bookingMode = $this->pluginConfig->get(ConfigReader::CONFIG_KEY_BOOKING_MODE_WERO, BookingMode::CHARGE);
     }
 }
