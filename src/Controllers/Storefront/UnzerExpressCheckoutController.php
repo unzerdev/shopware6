@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace UnzerPayment6\Controllers\Storefront;
 
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,11 +26,7 @@ use UnzerSDK\Resources\Metadata;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
-/**
- * @RouteScope(scopes={"storefront"})
- *
- * @Route(defaults={"_routeScope": {"storefront"}})
- */
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class UnzerExpressCheckoutController extends StorefrontController
 {
     /**
@@ -45,9 +40,7 @@ class UnzerExpressCheckoutController extends StorefrontController
     ) {
     }
 
-    /**
-     * @Route("/unzer/paypal-express", name="frontend.unzer.paypal-express", methods={"POST", "GET"}, defaults={"csrf_protected": false})
-     */
+    #[Route(path: '/unzer/paypal-express', name: 'frontend.unzer.paypal-express', defaults: ['csrf_protected' => false], methods: ['POST', 'GET'])]
     public function paypalExpress(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         $paymentTypeId = $request->get('paymentTypeId');
@@ -100,9 +93,7 @@ class UnzerExpressCheckoutController extends StorefrontController
         ]);
     }
 
-    /**
-     * @Route("/unzer/paypal-express-return", name="frontend.unzer.paypal-express-return", methods={"POST", "GET"}, defaults={"csrf_protected": false})
-     */
+    #[Route(path: '/unzer/paypal-express-return', name: 'frontend.unzer.paypal-express-return', defaults: ['csrf_protected' => false], methods: ['POST', 'GET'])]
     public function paypalExpressReturn(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         $paymentId = $request->getSession()->get('paypal-express-checkout-payment-id');
@@ -128,9 +119,7 @@ class UnzerExpressCheckoutController extends StorefrontController
         return $this->redirectToRoute('frontend.checkout.confirm.page', ['isExpressCheckout' => 'true']);
     }
 
-    /**
-     * @Route("/unzer/google-pay-express", name="frontend.unzer.google-express", methods={"POST", "GET"}, defaults={"csrf_protected": false})
-     */
+    #[Route(path: '/unzer/google-pay-express', name: 'frontend.unzer.google-express', defaults: ['csrf_protected' => false], methods: ['POST', 'GET'])]
     public function googleExpress(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         $paymentTypeId = $request->get('paymentTypeId');
@@ -150,9 +139,7 @@ class UnzerExpressCheckoutController extends StorefrontController
         ]);
     }
 
-    /**
-     * @Route("/unzer/applepay-express", name="frontend.unzer.applepay-express", methods={"POST", "GET"}, defaults={"csrf_protected": false})
-     */
+    #[Route(path: '/unzer/applepay-express', name: 'frontend.unzer.applepay-express', defaults: ['csrf_protected' => false], methods: ['POST', 'GET'])]
     public function applepayExpress(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         $paymentTypeId = $request->get('paymentTypeId');

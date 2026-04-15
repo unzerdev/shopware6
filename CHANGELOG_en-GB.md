@@ -1,3 +1,8 @@
+# 5.12.5
+* Fix: Missing translation of new payment methods could display an error in Frontend after updating
+* Removed legacy RouteScope/Annotation-classes for SW6.4
+* Fix: UI-JS test URL removed
+
 # 5.12.4
 * Improvement: Save Shopware Order Number in payment details for Unzer Paylater payment tracking
 * Fix: Changed payment method names for Invoice and Installment to the new official brands (German only). This will only affect new installs

@@ -8,11 +8,10 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use UnzerPayment6\Components\BackwardsCompatibility\InvoiceGenerator;
 use UnzerPayment6\Components\BasketConverter\BasketConverterInterface;
 use UnzerPayment6\Components\CancelService\CancelServiceInterface;
@@ -25,11 +24,7 @@ use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
-/**
- * @RouteScope(scopes={"api"})
- *
- * @Route(defaults={"_routeScope": {"api"}})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class UnzerPaymentTransactionController extends AbstractController
 {
     /**
@@ -82,10 +77,7 @@ class UnzerPaymentTransactionController extends AbstractController
         $this->logger = $logger;
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/details", name="api.action.unzer.transaction.details", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/details", name="api.action.unzer.transaction.details.version", methods={"GET"})
-     */
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/details', name: 'api.action.unzer.transaction.details', methods: ['GET'])]
     public function fetchTransactionDetails(string $orderTransactionId, Context $context): JsonResponse
     {
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
@@ -133,10 +125,8 @@ class UnzerPaymentTransactionController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/charge/{amount}", name="api.action.unzer.transaction.charge", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/charge/{amount}", name="api.action.unzer.transaction.charge.version", methods={"GET"})
-     */
+    // TODO: evaluate if GET is the correct method here
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/charge/{amount}', name: 'api.action.unzer.transaction.charge', methods: ['GET'])]
     public function chargeTransaction(string $orderTransactionId, float $amount, Context $context): JsonResponse
     {
         $transaction = $this->getOrderTransaction($orderTransactionId, $context);
@@ -189,12 +179,9 @@ class UnzerPaymentTransactionController extends AbstractController
         return new JsonResponse(['status' => true]);
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund", methods={"GET"})
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}/{reasonCode}", name="api.action.unzer.transaction.refund.reason", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}", name="api.action.unzer.transaction.refund.version", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}/{reasonCode}", name="api.action.unzer.transaction.refund.version.reason", methods={"GET"})
-     */
+    // TODO: evaluate if GET is the correct method here
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}', name: 'api.action.unzer.transaction.refund', methods: ['GET'])]
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/refund/{chargeId}/{amount}/{reasonCode}', name: 'api.action.unzer.transaction.refund.reason', methods: ['GET'])]
     public function refundTransaction(string $orderTransactionId, string $chargeId, float $amount, ?string $reasonCode, Context $context): JsonResponse
     {
         try {
@@ -228,10 +215,8 @@ class UnzerPaymentTransactionController extends AbstractController
         return new JsonResponse(['status' => true]);
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/cancel/{authorizationId}/{amount}", name="api.action.unzer.transaction.cancel", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/cancel/{authorizationId}/{amount}", name="api.action.unzer.transaction.cancel.version", methods={"GET"})
-     */
+    // TODO: evaluate if GET is the correct method here
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/cancel/{authorizationId}/{amount}', name: 'api.action.unzer.transaction.cancel', methods: ['GET'])]
     public function cancelTransaction(string $orderTransactionId, string $authorizationId, float $amount, Context $context): JsonResponse
     {
         try {
@@ -265,10 +250,8 @@ class UnzerPaymentTransactionController extends AbstractController
         return new JsonResponse(['status' => true]);
     }
 
-    /**
-     * @Route("/api/_action/unzer-payment/transaction/{orderTransactionId}/ship", name="api.action.unzer.transaction.ship", methods={"GET"})
-     * @Route("/api/v{version}/_action/unzer-payment/transaction/{orderTransactionId}/ship", name="api.action.unzer.transaction.ship.version", methods={"GET"})
-     */
+    // TODO: evaluate if GET is the correct method here
+    #[Route(path: '/api/_action/unzer-payment/transaction/{orderTransactionId}/ship', name: 'api.action.unzer.transaction.ship', methods: ['GET'])]
     public function shipTransaction(string $orderTransactionId, Context $context): JsonResponse
     {
         try {
