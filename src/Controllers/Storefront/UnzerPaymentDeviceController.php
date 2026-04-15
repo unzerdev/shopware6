@@ -4,19 +4,14 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Storefront;
 
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 
-/**
- * @RouteScope(scopes={"storefront"})
- *
- * @Route(defaults={"_routeScope": {"storefront"}})
- */
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class UnzerPaymentDeviceController extends StorefrontController
 {
     /**
@@ -29,9 +24,8 @@ class UnzerPaymentDeviceController extends StorefrontController
         $this->deviceRepository = $deviceRepository;
     }
 
-    /**
-     * @Route("/unzer/deleteDevice", name="frontend.unzer.device.delete", methods={"GET"})
-     */
+    // TODO: evaluate if GET is the correct method for this route
+    #[Route(path: '/unzer/deleteDevice', name: 'frontend.unzer.device.delete', methods: ['GET'])]
     public function deleteDevice(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {
         if (!$salesChannelContext->getCustomer()) {

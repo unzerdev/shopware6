@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Controllers\Storefront;
 
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\CheckoutController;
@@ -12,11 +11,10 @@ use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 use UnzerPayment6\Components\PaymentHandler\Exception\UnzerPaymentProcessException;
 
-/**
- * @RouteScope(scopes={"storefront"})
- */
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class UnzerCheckoutController extends CheckoutController
 {
     /**

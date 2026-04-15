@@ -1,3 +1,8 @@
+# 5.12.5
+* Fix: Fehlende Übersetzungen neuer Zahlungsarten konnten nach einem Update im Frontend zu einer Fehlermeldung führen
+* Entfernung von legacy RouteScope/Annotation-Klassen für SW6.4
+* Fix: UI-JS test URL entfernt
+
 # 5.12.4
 * Verbesserung: Shopware-Bestellnummer wird nun in den Zahlungsdetails gespeichert, um das Tracking von Unzer Paylater-Zahlungen zu verbessern
 * Fehlerbehebung: Zahlungsarten für Rechnung und Ratenzahlung wurden auf die neuen offiziellen Bezeichnungen aktualisiert (nur Deutsch). Betrifft nur Neuinstallationen

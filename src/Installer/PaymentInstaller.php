@@ -529,10 +529,10 @@ class PaymentInstaller implements InstallerInterface
         foreach ($existingPaymentMethod->getTranslations()->getElements() as $uniqueId => $translation) {
             $newName = null;
             $newDescription = null;
-            if (stripos($translation->getName(), 'wero') === false) {
+            if ($translation->getName() !== null && stripos($translation->getName(), 'wero') === false) {
                 $newName = str_replace('iDEAL', 'iDEAL | Wero', $translation->getName());
             }
-            if (stripos($translation->getDescription(), 'wero') === false) {
+            if ($translation->getDescription() !== null && stripos($translation->getDescription(), 'wero') === false) {
                 $newDescription = str_replace('iDEAL', 'iDEAL | Wero', $translation->getDescription());
             }
 
