@@ -1,0 +1,8 @@
+{% sw_extends '@Storefront/storefront/layout/meta.html.twig' %}
+
+{% block layout_head_stylesheet %}
+    {{ parent() }}
+    {% if app.request.attributes.get('_route') == 'frontend.checkout.confirm.page' %}
+        <link rel="modulepreload" href="{{ constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::JS_LIBRARY_URL") }}" as="script">
+    {% endif %}
+{% endblock %}
