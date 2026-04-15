@@ -11,6 +11,7 @@ use UnzerSDK\Resources\Customer;
 class UnzerDataPageExtension extends Struct
 {
     public const EXTENSION_NAME = 'unzerPaymentData';
+    public const JS_LIBRARY_URL = 'https://static-v2.unzer.com/v2/ui-components/index.js';
 
     private string $publicKey;
 

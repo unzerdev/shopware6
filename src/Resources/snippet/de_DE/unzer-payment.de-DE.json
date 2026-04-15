@@ -87,6 +87,8 @@
         },
         "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Zahlung ändern</a>",
         "birthdayInvalid": "Sie müssen mindestens 18 Jahre alt sein.",
+        "errorNotReady": "Die Zahlungsart ist noch nicht vollständig geladen. Bitte warten Sie einen Moment.",
+        "generalError": "Es gab einen Fehler. Bitte versuchen Sie es erneut.",
         "companyType": {
             "label": "Art des Unternehmens",
             "placeholder": "Bitte auswählen",

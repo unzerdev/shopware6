@@ -87,7 +87,7 @@ export default class UnzerPaymentGooglePayPlugin extends UnzerPaymentBaseParent 
                             response.submitResponse.data.id
                         );
                     } else {
-                        console.log('ERROR', response);
+                        console.error(response);
                     }
                 };
             }

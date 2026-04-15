@@ -126,16 +126,9 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
                 approve,
                 reject
             ) => {
-                console.log('paymentData:', paymentData);
                 // You can create customer here based on paymentData
                 const response = await unzerExpressPayment.submit();
                 const paymentTypeId = response.submitResponse.data.id;
-                console.log(
-                    response,
-                    '--- success paymentTypeId',
-                    paymentTypeId
-                );
-                console.log('submit response: ', response);
 
                 fetch('/unzer/google-pay-express', {
                     method: 'POST',
@@ -149,7 +142,6 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
                 })
                     .then((response) => response.json())
                     .then((json) => {
-                        console.log(JSON.stringify(json));
                         location.href = json.redirectUrl;
                     });
             },
@@ -187,12 +179,8 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
                 reject,
                 event
             ) => {
-                console.log('paymentData:', paymentData);
                 let shippingContact = event.payment.shippingContact; // Store the shipping contact data for express checkout
                 let billingContact = event.payment.billingContact; // Store the billing contact data for express checkout
-
-                console.log(shippingContact);
-                console.log(billingContact);
 
                 // You can create customer here based on paymentData
                 const response = await unzerExpressPayment.submit();
@@ -202,12 +190,6 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
                     reject();
                 }
                 const paymentTypeId = response.submitResponse.data.id;
-                console.log(
-                    response,
-                    '--- success paymentTypeId',
-                    paymentTypeId
-                );
-                console.log('submit response: ', response);
 
                 fetch('/unzer/applepay-express', {
                     method: 'POST',
@@ -223,7 +205,6 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
                 })
                     .then((response) => response.json())
                     .then((json) => {
-                        console.log(JSON.stringify(json));
                         location.href = json.redirectUrl;
                     });
             },
