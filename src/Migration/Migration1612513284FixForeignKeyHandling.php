@@ -54,23 +54,23 @@ SQL
 
     private function migratePaymentDevices(Connection $connection): void
     {
-            $this->dropForeignKey($connection, 'unzer_payment_payment_device', 'fk.heidelpay_payment_device.customer_id');
-            $this->dropForeignKey($connection, 'unzer_payment_payment_device', 'fk.unzer_payment_payment_device.customer_id');
-            $this->dropIndex($connection, 'unzer_payment_payment_device', 'fk.heidelpay_payment_device.customer_id');
+        $this->dropForeignKey($connection, 'unzer_payment_payment_device', 'fk.heidelpay_payment_device.customer_id');
+        $this->dropForeignKey($connection, 'unzer_payment_payment_device', 'fk.unzer_payment_payment_device.customer_id');
+        $this->dropIndex($connection, 'unzer_payment_payment_device', 'fk.heidelpay_payment_device.customer_id');
 
-            try {
-                $connection->executeStatement(
-                    <<<SQL
+        try {
+            $connection->executeStatement(
+                <<<SQL
                 ALTER TABLE unzer_payment_payment_device
                 ADD CONSTRAINT `fk.unzer_payment_payment_device.customer_id`
                     FOREIGN KEY (`customer_id`)
                     REFERENCES `customer` (`id`)
                     ON DELETE RESTRICT ON UPDATE CASCADE
 SQL
-                );
-            } catch (\Throwable $t) {
-                //                silentfail - already created
-            }
+            );
+        } catch (\Throwable $t) {
+            //                silentfail - already created
+        }
     }
 
     private function dropForeignKey(Connection $connection, string $table, string $keyName): void

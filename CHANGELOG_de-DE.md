@@ -1,3 +1,10 @@
+# 7.1.7
+* Fix: Fehlende Übersetzungen neuer Zahlungsarten konnten nach einem Update im Frontend zu einer Fehlermeldung führen
+* Fix: Dateien veralteter Zahlungsarten wurden nicht korrekt entfernt und konnten in einigen Fällen Probleme verursachen
+* Optimierung: Umstellung auf Preloading der Zahlungskomponenten für ein besseres Checkout-Erlebnis
+* Fix: Korrekte Fehlerbehandlung, wenn Kunden auf „Bezahlen“ klickten, bevor die Zahlungskomponente vollständig geladen war
+* Optimierung: Caching von Schlüsselpaaren für ein schnelleres Laden der Zahlungskomponenten
+
 # 7.1.6
 * Verbesserung: Shopware-Bestellnummer wird nun in den Zahlungsdetails gespeichert, um das Tracking von Unzer Paylater-Zahlungen zu verbessern
 * Fehlerbehebung: Zahlungsarten für Rechnung und Ratenzahlung wurden auf die neuen offiziellen Bezeichnungen aktualisiert (nur Deutsch). Betrifft nur Neuinstallationen

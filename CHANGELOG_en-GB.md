@@ -1,3 +1,10 @@
+# 7.1.7
+* Fix: Missing translation of new payment methods could display an error in Frontend after updating
+* Fix: Files from deprecated payment methods was not properly removed and could in some cases create issues
+* Optimizing: Switch to preloading of payment components for better checkout experience
+* Fix: Correct error handling if customer clicked pay before payment component was fully loaded
+* Optimizing: Cache of key pairs for faster loading payment components
+
 # 7.1.6
 * Improvement: Save Shopware Order Number in payment details for Unzer Paylater payment tracking
 * Fix: Changed payment method names for Invoice and Installment to the new official brands (German only). This will only affect new installs

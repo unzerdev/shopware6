@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace UnzerPayment6\Components\Storefront;
 
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
@@ -20,7 +22,8 @@ class ExtensionFactory
     public function __construct(
         private readonly ConfigReaderInterface $configReader,
         private readonly ClientFactoryInterface $clientFactory,
-        private readonly SystemConfigService $systemConfigService
+        private readonly SystemConfigService $systemConfigService,
+        private readonly CacheInterface $cache,
     ) {
     }
 
@@ -62,11 +65,16 @@ class ExtensionFactory
         $this->configData = $this->configReader->read($salesChannelId);
     }
 
-    private function fetchGooglePayChannelId($salesChannelId = null)
+    private function fetchGooglePayChannelId($salesChannelId = null, int $cacheTtl = 7200): string
     {
-        $publicKey = $this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY);
-        $client = $this->clientFactory->createClientFromPublicKey($publicKey, (string) $salesChannelId);
+        $cacheKey = 'UnzerGooglePayChannelId_' . ($salesChannelId ?? 'main');
 
-        return UnzerGooglePayPaymentHandler::fetchChannelId($client);
+        return $this->cache->get($cacheKey, function (ItemInterface $item) use ($salesChannelId, $cacheTtl) {
+            $item->expiresAfter($cacheTtl);
+            $publicKey = $this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY);
+            $client = $this->clientFactory->createClientFromPublicKey($publicKey, (string) $salesChannelId);
+
+            return UnzerGooglePayPaymentHandler::fetchChannelId($client);
+        });
     }
 }
