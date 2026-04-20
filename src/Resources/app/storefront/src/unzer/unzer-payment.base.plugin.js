@@ -14,6 +14,8 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         errorContentSelector:
             '.unzer-payment--error-wrapper .alert-content-container',
         errorShouldNotBeEmpty: '%field% should not be empty',
+        errorNotReady: 'Payment method is not loaded yet. Please wait.',
+        generalError: 'Error! Please try again.',
         isOrderEdit: false,
         savedDeviceRadioButtonSelector: '*[name="savedPaymentDevice"]',
         savedDeviceRadioButtonNewAccountId: 'device-new',
@@ -63,10 +65,6 @@ export default class UnzerPaymentBasePlugin extends Plugin {
                         'unzer-payment-component'
                     );
                     if (unzerPaymentElement) {
-                        console.log(
-                            'set customer data',
-                            this.options.unzerCustomer
-                        );
                         unzerPaymentElement.setCustomerData(
                             this.options.unzerCustomer
                         );
@@ -113,6 +111,12 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         this.setSubmitButtonActive(true);
         this.submitButton.click();
         this.setSubmitButtonActive(false);
+    }
+
+    showNotLoadedError() {
+        this.showError({
+            message: this.options.errorNotReady,
+        });
     }
 
     /**
@@ -200,27 +204,41 @@ export default class UnzerPaymentBasePlugin extends Plugin {
                 this.submitButton.click();
                 this.setSubmitButtonActive(false);
             } else {
+                if (typeof unzerPaymentComponent.submit === 'undefined') {
+                    this.showNotLoadedError();
+                    return;
+                }
+
                 try {
                     const response = await unzerPaymentComponent.submit();
 
                     if (response.submitResponse) {
                         if (response.submitResponse.success === true) {
-                            console.log(
-                                'submit response: ',
-                                response.submitResponse
-                            );
+                            // in some cases it can happen that threatmetrix was not yet ready when submitting
+                            if (
+                                typeof unzerPaymentComponent.currentPaymentMethod ===
+                                    'object' &&
+                                unzerPaymentComponent.currentPaymentMethod.tagName
+                                    .toLowerCase()
+                                    .includes('-paylater') &&
+                                !response.threatMetrixId
+                            ) {
+                                this.showNotLoadedError();
+                                return;
+                            }
+
                             this.submitTypeId(
                                 response.submitResponse.data.id,
                                 response.threatMetrixId || null
                             );
                         } else {
                             this.showError({
-                                message: 'GENERAL ERROR',
+                                message: this.options.generalError,
                             });
                         }
                     } else {
                         this.showError({
-                            message: 'EXCEPTIONAL ERROR',
+                            message: this.options.generalError,
                         });
                     }
                 } catch (err) {

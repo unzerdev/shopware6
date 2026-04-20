@@ -32,7 +32,9 @@
                      "publicKey": "{{ page.extensions.unzerPaymentData.publicKey }}",
                      "shopLocale": "{{ page.extensions.unzerPaymentData.locale }}",
                      "unzerCustomer": {% if page.extensions.unzerPaymentData.getUnzerCustomer() is not empty %}{{ page.extensions.unzerPaymentData.getUnzerCustomer().expose()|json_encode }}{% else %}null{% endif %},
-                     "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}"
+                     "errorShouldNotBeEmpty": "{{ "error.VIOLATION::IS_BLANK_ERROR" | trans }}",
+                     "errorNotReady": "{{ "UnzerPayment.errorNotReady" | trans }}",
+                     "generalError": "{{ "UnzerPayment.generalError" | trans }}"
                  }'>
                         <div class="unzer-payment-base-body">
                             {% block unzer_payment_checkout_confirm_frame_card_body %}

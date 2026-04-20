@@ -87,6 +87,8 @@
         },
         "finishPaymentFailed": "<a href=\"%editOrderUrl%\">Change payment method</a>",
         "birthdayInvalid": "You need to be at least 18 years old.",
+        "errorNotReady": "Payment method is not loaded yet. Please wait.",
+        "generalError": "Error! Please try again.",
         "companyType": {
             "label": "Type of company",
             "placeholder": "Please select",

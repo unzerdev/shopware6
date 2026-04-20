@@ -21,7 +21,6 @@ use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\ConfigReader\KeyPairConfigReader;
 use UnzerPayment6\Components\ExpressCheckout\ExpressCheckoutService;
 use UnzerPayment6\Components\PaymentFrame\PaymentFrameFactoryInterface;
-use UnzerPayment6\Components\PaymentHandler\UnzerGooglePayPaymentHandler;
 use UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydratorInterface;
 use UnzerPayment6\Components\Storefront\ExtensionFactory;
 use UnzerPayment6\Components\Struct\Configuration;
@@ -311,13 +310,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $publicConfig['paymentTypeId'] = $event->getRequest()->getSession()->get(ExpressCheckoutService::SESSION_GOOGLE_PAYMENT_TYPE_ID);
         $extension->setPublicConfig($publicConfig);
         $event->getPage()->addExtension(GooglePayPageExtension::EXTENSION_NAME, $extension);
-    }
-
-    private function fetchGooglePayChannelId(PageLoadedEvent $event): string
-    {
-        $client = $this->clientFactory->createClientFromSalesChannelContext($event->getSalesChannelContext(), $event->getRequest());
-
-        return UnzerGooglePayPaymentHandler::fetchChannelId($client);
     }
 
     private function addPaylaterInstallmentExtension(PageLoadedEvent $event): void
