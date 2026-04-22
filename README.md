@@ -48,21 +48,18 @@ Version 5.12.0 is a breaking change - please see https://docs.unzer.com/plugins/
 
 ## Installation
 
-### For production
+### via ZIP package
 
-1. Upload the plugin files into the `custom/plugins` folder in your shopware installation.
-2. Inside the plugin directory `custom/plugins/UnzerPayment6` run `composer install --no-dev`
-3. Switch to admin and install the plugin using the Shopware plugin manager and configure it as you need.
+1. Download the latest release from https://github.com/unzerdev/shopware6/releases
+2. Switch to admin and install the plugin using the Shopware plugin manager and configure it as you need.
 
-### For development
+### via composer
 
-1. Clone the plugin repository into the `custom/plugins` folder in your shopware installation.
-2. Inside the plugin directory run `composer install`
-3. Go to the plugin manager and install/activate the plugin.
-4. Run the following commands inside the Shopware folder:
-   > `./psh.phar administration:build`
+1. Inside the shopware root directory run `composer require unzerdev/shopware6`
+2. Run the following commands inside the Shopware folder:
+   > `bin/build-administration.sh`
 
-   > `./psh.phar storefront:build`
+   > `bin/build-storefront.sh`
 
 This will automatically generate all files required for the plugin to work correctly
 
@@ -81,3 +78,4 @@ For any issues or questions please get in touch with our support.
 **Twitter**: [@UnzerTech](https://twitter.com/UnzerTech)
 
 **Webpage**: https://unzer.com/
+
