@@ -65,25 +65,6 @@ class Authorization extends AbstractTransactionType
     /**
      * @return float|null
      */
-    public function getAmount(): ?float
-    {
-        return $this->amount;
-    }
-
-    /**
-     * @param float|null $amount
-     *
-     * @return self
-     */
-    public function setAmount(?float $amount): self
-    {
-        $this->amount = $amount !== null ? round($amount, 4) : null;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
     public function getCancelledAmount(): ?float
     {
         $amount = 0.0;

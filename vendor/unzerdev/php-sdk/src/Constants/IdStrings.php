@@ -16,6 +16,7 @@ class IdStrings
     public const CHARGEBACK = 'cbk';
     public const PAYOUT = 'out';
     public const PREAUTHORIZE = 'preaut';
+    public const SCA = 'sca';
     public const SHIPMENT = 'shp';
 
     // Payment Types

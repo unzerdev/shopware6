@@ -24,6 +24,7 @@ use UnzerSDK\Resources\PaymentTypes\Paypage;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Payout;
+use UnzerSDK\Resources\TransactionTypes\Sca;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
 
 interface PaymentServiceInterface
@@ -389,4 +390,20 @@ interface PaymentServiceInterface
      * @return PaylaterInstallmentPlans
      */
     public function fetchPaylaterInstallmentPlans(InstallmentPlansQuery $plansRequest): PaylaterInstallmentPlans;
+
+    /**
+     * Perform an SCA transaction.
+     *
+     * @param Sca $sca The SCA object.
+     * @param BasePaymentType|string $paymentType The payment type object or ID.
+     * @param Customer|string|null $customer The customer object or ID.
+     * @param Metadata|null $metadata The metadata object.
+     * @param Basket|null $basket The basket object.
+     *
+     * @return Sca The resulting SCA object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function performSca(Sca $sca, $paymentType, $customer = null, ?Metadata $metadata = null, ?Basket $basket = null): Sca;
 }

@@ -42,14 +42,6 @@ class DummyAdapter implements HttpAdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function close(): void
-    {
-        // do nothing
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setHeaders(array $headers): void
     {
         // do nothing

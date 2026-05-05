@@ -20,8 +20,8 @@
         }
     },
     "require": {
-        "php": ">=8.2 || <=8.4",
-        "unzerdev/php-sdk": "~3.13.0",
+        "php": ">=8.2 <8.6",
+        "unzerdev/php-sdk": "^4.0",
         "shopware/core": "~6.7.0",
         "shopware/administration": "*",
         "shopware/storefront": "*"

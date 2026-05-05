@@ -33,6 +33,7 @@ use UnzerSDK\Resources\TransactionTypes\Cancellation;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Chargeback;
 use UnzerSDK\Resources\TransactionTypes\Payout;
+use UnzerSDK\Resources\TransactionTypes\Sca;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
 use UnzerSDK\Resources\V2\Paypage as PaypageV2;
 use UnzerSDK\Resources\Webhook;
@@ -58,7 +59,7 @@ class Unzer implements
     public const BASE_URL = 'api.unzer.com';
     public const API_VERSION = ApiVersions::V1;
     public const SDK_TYPE = 'UnzerPHP';
-    public const SDK_VERSION = '3.13.1';
+    public const SDK_VERSION = '4.0.0';
 
     /** @var string $key */
     private $key;
@@ -810,6 +811,146 @@ class Unzer implements
     public function performChargeOnPayment($payment, Charge $charge): Charge
     {
         return $this->paymentService->performChargeOnPayment($payment, $charge);
+    }
+
+    /**
+     * Perform an SCA transaction.
+     *
+     * @param Sca $sca The SCA object.
+     * @param BasePaymentType|string $paymentType The payment type object or ID.
+     * @param Customer|string|null $customer The customer object or ID.
+     * @param Metadata|null $metadata The metadata object.
+     * @param Basket|null $basket The basket object.
+     *
+     * @return Sca The resulting SCA object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function performSca(Sca $sca, $paymentType, $customer = null, ?Metadata $metadata = null, ?Basket $basket = null): Sca
+    {
+        return $this->paymentService->performSca($sca, $paymentType, $customer, $metadata, $basket);
+    }
+
+    /**
+     * Fetch an SCA transaction.
+     *
+     * @param Sca $sca The SCA object to fetch.
+     *
+     * @return Sca The fetched SCA object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function fetchSca(Sca $sca): Sca
+    {
+        return $this->resourceService->fetchSca($sca);
+    }
+
+    /**
+     * Fetch an SCA transaction by payment ID and SCA ID.
+     *
+     * @param Payment|string $payment The payment object or payment ID.
+     * @param string $scaId The SCA transaction ID.
+     *
+     * @return Sca The fetched SCA object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function fetchScaById($payment, string $scaId): Sca
+    {
+        return $this->resourceService->fetchScaById($payment, $scaId);
+    }
+
+    /**
+     * Charge an SCA transaction.
+     *
+     * @param Payment|string $payment The payment object or payment ID.
+     * @param Charge $charge The Charge object to process.
+     * @param Customer|string|null $customer The customer object or customer ID.
+     * @param Metadata|null $metadata The metadata object.
+     * @param Basket|null $basket The basket object.
+     *
+     * @return Charge The resulting Charge object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function chargeScaTransaction(
+        $payment,
+        Charge $charge,
+        $customer = null,
+        ?Metadata $metadata = null,
+        ?Basket $basket = null): Charge
+    {
+        $paymentObject = $this->resourceService->getPaymentResource($payment);
+        $sca = $paymentObject->getSca(true);
+
+        if (!$sca instanceof Sca) {
+            throw new RuntimeException('SCA transaction not found.');
+        }
+
+        // Set Sca object without id as a parent to match the URI path.
+        $scaParent = new Sca();
+        $scaParent->setParentResource($paymentObject);
+
+        $paymentObject->addCharge($charge)
+            ->setCustomer($customer)
+            ->setMetadata($metadata)
+            ->setBasket($basket);
+
+        $charge->setPayment($paymentObject);
+        $charge->setParentResource($scaParent);
+
+        $this->resourceService->createResource($charge);
+
+        return $charge;
+    }
+
+    /**
+     * Authorize an SCA transaction.
+     *
+     * @param Payment|string $payment The payment object or payment ID.
+     * @param Authorization $authorization The Authorization object to process.
+     * @param Customer|string|null $customer The customer object or customer ID.
+     * @param Metadata|null $metadata The metadata object.
+     * @param Basket|null $basket The basket object.
+     *
+     * @return Authorization The resulting Authorization object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function authorizeScaTransaction(
+        $payment,
+        Authorization $authorization,
+        $customer = null,
+        ?Metadata $metadata = null,
+        ?Basket $basket = null): Authorization
+    {
+        $paymentObject = $this->resourceService->getPaymentResource($payment);
+        $sca = $paymentObject->getSca(true);
+
+        if (!$sca instanceof Sca) {
+            throw new RuntimeException('SCA transaction not found.');
+        }
+
+        // Set Sca object without id as a parent to match the URI path.
+        $scaParent = new Sca();
+        $scaParent->setParentResource($paymentObject);
+
+        $paymentObject->setAuthorization($authorization)
+            ->setCustomer($customer)
+            ->setMetadata($metadata)
+            ->setBasket($basket);
+
+        $authorization->setPayment($paymentObject);
+        $authorization->setParentResource($scaParent);
+
+        $this->resourceService->createResource($authorization);
+
+        return $authorization;
     }
 
     /**

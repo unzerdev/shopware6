@@ -8,9 +8,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
     strategy:
       matrix:
-        php: [ '7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ]
+        php: [ '8.1', '8.2', '8.3', '8.4', '8.5' ]
     name: PHP ${{ matrix.php }} unit tests
     steps:
       - uses: actions/checkout@v3
@@ -18,7 +21,16 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          ini-values: error_reporting=E_ALL, display_errors=On, display_startup_errors=On
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
       - name: Run unit tests
-        run: php ./vendor/bin/phpunit test/unit
+        run: php ./vendor/bin/phpunit --log-junit test-results/junit-${{ matrix.php }}.xml test/unit
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: failure()
+        with:
+          report_paths: 'test-results/junit-${{ matrix.php }}.xml'
+          check_name: 'Unit Test Report (PHP ${{ matrix.php }})'
+          detailed_summary: true
+          fail_on_failure: true

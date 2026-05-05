@@ -3,25 +3,37 @@
 namespace UnzerSDK\Resources\TransactionTypes;
 
 use UnzerSDK\Adapter\HttpAdapterInterface;
+use UnzerSDK\Traits\HasAccountInformation;
+use UnzerSDK\Traits\HasDescriptor;
 
 /**
- * This represents the payout transaction.
+ * This represents the SCA (Strong Customer Authentication) transaction.
  *
  * @link  https://docs.unzer.com/
  *
  */
-class Payout extends AbstractTransactionType
+class Sca extends AbstractTransactionType
 {
-    /** @var string|null $currency */
+    use HasAccountInformation;
+    use HasDescriptor;
+
+    /** @var string $currency */
     protected $currency;
 
-    /** @var string|null $returnUrl */
+    /** @var string $returnUrl */
     protected $returnUrl;
 
     /** @var string $paymentReference */
     protected $paymentReference;
 
-    public function __construct(?float $amount = null, ?string $currency = null, $returnUrl = null)
+    /**
+     * Sca constructor.
+     *
+     * @param float|null $amount
+     * @param string|null $currency
+     * @param string|null $returnUrl
+     */
+    public function __construct(?float $amount = null, ?string $currency = null, ?string $returnUrl = null)
     {
         $this->setAmount($amount);
         $this->setCurrency($currency);
@@ -58,9 +70,9 @@ class Payout extends AbstractTransactionType
     /**
      * @param string|null $returnUrl
      *
-     * @return Payout
+     * @return self
      */
-    public function setReturnUrl(?string $returnUrl): Payout
+    public function setReturnUrl(?string $returnUrl): self
     {
         $this->returnUrl = $returnUrl;
         return $this;
@@ -75,11 +87,11 @@ class Payout extends AbstractTransactionType
     }
 
     /**
-     * @param $referenceText
+     * @param string|null $referenceText
      *
-     * @return Payout
+     * @return Sca
      */
-    public function setPaymentReference($referenceText): Payout
+    public function setPaymentReference(?string $referenceText): Sca
     {
         $this->paymentReference = $referenceText;
         return $this;
@@ -90,6 +102,6 @@ class Payout extends AbstractTransactionType
      */
     protected function getResourcePath(string $httpMethod = HttpAdapterInterface::REQUEST_GET): string
     {
-        return 'payouts';
+        return 'sca';
     }
 }

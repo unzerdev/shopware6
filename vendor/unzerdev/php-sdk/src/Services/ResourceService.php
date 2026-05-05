@@ -59,6 +59,7 @@ use UnzerSDK\Resources\TransactionTypes\Cancellation;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Chargeback;
 use UnzerSDK\Resources\TransactionTypes\Payout;
+use UnzerSDK\Resources\TransactionTypes\Sca;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
 use UnzerSDK\Resources\V2\Customer as CustomerV2;
 use UnzerSDK\Resources\V2\Paypage as PaypageV2;
@@ -209,8 +210,24 @@ class ResourceService implements ResourceServiceInterface
                 }
                 $resource = $unzer->fetchReversal($paymentId, $resourceId);
                 break;
+            case $resourceType === IdStrings::CHARGEBACK:
+                $paymentId = IdService::getResourceIdFromUrl($url, IdStrings::PAYMENT);
+                $chargeId = IdService::getResourceIdOrNullFromUrl($url, IdStrings::CHARGE);
+
+                $resource = $this->fetchChargebackById(
+                    $paymentId,
+                    $resourceId,
+                    $chargeId
+                );
+                break;
             case $resourceType === IdStrings::PAYOUT:
                 $resource = $unzer->fetchPayout(IdService::getResourceIdFromUrl($url, IdStrings::PAYMENT));
+                break;
+            case $resourceType === IdStrings::SCA:
+                $resource = $unzer->fetchScaById(
+                    IdService::getResourceIdFromUrl($url, IdStrings::PAYMENT),
+                    $resourceId
+                );
                 break;
             case $resourceType === IdStrings::PAYMENT:
                 $resource = $unzer->fetchPayment($resourceId);
@@ -969,5 +986,45 @@ class ResourceService implements ResourceServiceInterface
                 break;
         }
         return $paymentType;
+    }
+
+    /**
+     * Fetches an SCA transaction.
+     *
+     * @param Sca $sca The SCA object to fetch.
+     *
+     * @return Sca The fetched SCA object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function fetchSca(Sca $sca): Sca
+    {
+        $this->fetchResource($sca);
+        return $sca;
+    }
+
+    /**
+     * Fetches an SCA transaction by payment ID and SCA ID.
+     *
+     * @param Payment|string $payment The payment object or payment ID.
+     * @param string $scaId The SCA transaction ID.
+     *
+     * @return Sca The fetched SCA object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function fetchScaById($payment, string $scaId): Sca
+    {
+        $paymentObject = $this->fetchPayment($payment);
+        $sca = $paymentObject->getSca($scaId, true);
+
+        if (!$sca instanceof Sca) {
+            throw new RuntimeException('The SCA object could not be found.');
+        }
+
+        $this->fetchResource($sca);
+        return $sca;
     }
 }

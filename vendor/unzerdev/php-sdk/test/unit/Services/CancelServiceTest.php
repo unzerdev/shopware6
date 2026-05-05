@@ -11,6 +11,7 @@
 
 namespace UnzerSDK\test\unit\Services;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use UnzerSDK\Constants\ApiResponseCodes;
 use UnzerSDK\Exceptions\UnzerApiException;
 use UnzerSDK\Resources\EmbeddedResources\Amount;
@@ -24,7 +25,6 @@ use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Services\CancelService;
 use UnzerSDK\Services\ResourceService;
 use UnzerSDK\test\BasePaymentTest;
-use PHPUnit\Framework\MockObject\MockObject;
 
 class CancelServiceTest extends BasePaymentTest
 {
@@ -119,7 +119,6 @@ class CancelServiceTest extends BasePaymentTest
         $cancelSrvMock = new CancelService($this->unzer);
         $reflection = new \ReflectionClass(get_class($cancelSrvMock));
         $method = $reflection->getMethod('calculateMaxReversalAmount');
-        $method->setAccessible(true);
 
         $chargeAmount = 12.3;
         $receiptAmount = 10.0;
