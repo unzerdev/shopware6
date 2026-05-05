@@ -1,3 +1,8 @@
+# 7.2.0
+* Compatibility: PHP 8.5 support
+* Update: Unzer PHP SDK upgraded to 4.x
+* Deprecation notice: Giropay is deprecated in the Unzer PHP SDK 4.x and will be removed in a future release. Merchants should disable the Giropay payment method and migrate customers to alternative methods.
+
 # 7.1.7
 * Fix: Missing translation of new payment methods could display an error in Frontend after updating
 * Fix: Files from deprecated payment methods was not properly removed and could in some cases create issues

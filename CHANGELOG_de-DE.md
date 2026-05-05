@@ -1,3 +1,8 @@
+# 7.2.0
+* Kompatibilität: Unterstützung für PHP 8.5
+* Update: Unzer PHP SDK auf Version 4.x aktualisiert
+* Hinweis zur Abkündigung: Giropay ist im Unzer PHP SDK 4.x als veraltet markiert und wird in einer zukünftigen Version entfernt. Händler sollten die Zahlungsart Giropay deaktivieren und Kunden auf alternative Zahlungsarten umstellen.
+
 # 7.1.7
 * Fix: Fehlende Übersetzungen neuer Zahlungsarten konnten nach einem Update im Frontend zu einer Fehlermeldung führen
 * Fix: Dateien veralteter Zahlungsarten wurden nicht korrekt entfernt und konnten in einigen Fällen Probleme verursachen
