@@ -1,3 +1,22 @@
+> [!WARNING]
+> ## ⚠️ This Branch is Deprecated (Shopware 6.4 / 6.5)
+>
+> **This branch targets Shopware 6.4 and 6.5, which have both reached end of life. It is no longer actively maintained and will not receive further updates, new features, or security fixes.**
+>
+> We strongly recommend upgrading your store to **Shopware 6.6 or later** to continue receiving the latest payment features, security updates, and full Unzer plugin support.
+>
+> ### Upgrade to Shopware 6.6+
+>
+> Our actively maintained Unzer plugin supports Shopware 6.6 and above. Full installation and configuration instructions are available in our documentation:
+>
+> 👉 **Unzer Shopware 6 Plugin Documentation:** [docs.unzer.com/plugins/shopware-6/](https://docs.unzer.com/plugins/shopware-6/)
+>
+> ### Need Help?
+>
+> If you have questions about upgrading or need migration support, please contact us:
+> - **Email:** support@unzer.com
+> - **Phone:** +49 (0)6221/6471-100
+
 # Unzer Payment plugin for Shopware 6
 
 Use Unzer Payment plugin for Shopware 6 to provide an easy-to-install payment gateway integration for all your online payments.
