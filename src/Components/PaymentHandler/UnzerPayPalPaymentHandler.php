@@ -257,6 +257,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 $transaction->getReturnUrl()
             );
             $authorization->setInvoiceId($orderTransaction->getOrder()->getOrderNumber());
+            $authorization->setOrderId($orderTransaction->getId());
             $unzerClient->updateAuthorization($payment->getId(), $authorization);
         } else {
             $charge = new Charge(
@@ -265,6 +266,7 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 $transaction->getReturnUrl()
             );
             $charge->setInvoiceId($orderTransaction->getOrder()->getOrderNumber());
+            $charge->setOrderId($orderTransaction->getId());
             $unzerClient->updateCharge($payment->getId(), $charge);
         }
         $this->persistPaymentInformation(
