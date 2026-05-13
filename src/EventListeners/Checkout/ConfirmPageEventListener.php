@@ -36,6 +36,7 @@ use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaylaterInsta
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PaymentFramePageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\PayPalPageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\UnzerDataPageExtension;
+use UnzerPayment6\Components\UnzerUtil\UnzerApiUtil;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
 use UnzerPayment6\Installer\PaymentInstaller;
@@ -55,6 +56,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         private readonly KeyPairConfigReader $keyPairConfigReader,
         private readonly ExtensionFactory $extensionFactory,
         private readonly CustomerResourceHydratorInterface $customerResourceHydrator,
+        private readonly UnzerApiUtil $unzerApiUtil,
     ) {
     }
 
@@ -126,11 +128,13 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         $context = $event->getSalesChannelContext()->getContext();
 
         $extension = new UnzerDataPageExtension();
-        $extension->setPublicKey($this->getPublicKey($event->getSalesChannelContext()));
+        $publicKey = $this->getPublicKey($event->getSalesChannelContext());
+        $extension->setPublicKey($publicKey);
         $extension->setLocale($this->getLocaleByLanguageId($context->getLanguageId(), $context));
         $extension->setShowTestData((bool) $this->configData->get(ConfigReader::CONFIG_KEY_TEST_DATA));
+        $extension->setBlockButtonOnLoad((bool) $this->configData->get(ConfigReader::CONFIG_KEY_BLOCK_CONFIRM_BUTTON_ON_LOAD));
         $extension->setUnzerCustomer($this->getUnzerCustomer($event));
-
+        $extension->setKeyPairConfig($this->unzerApiUtil->getCachedKeypairConfig($publicKey));
         $event->getPage()->addExtension(UnzerDataPageExtension::EXTENSION_NAME, $extension);
     }
 

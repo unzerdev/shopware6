@@ -89,6 +89,7 @@
         "birthdayInvalid": "You need to be at least 18 years old.",
         "errorNotReady": "Payment method is not loaded yet. Please wait.",
         "generalError": "Error! Please try again.",
+        "blockedButtonMessage": "We are preparing your secure payment. Please wait a moment.",
         "companyType": {
             "label": "Type of company",
             "placeholder": "Please select",

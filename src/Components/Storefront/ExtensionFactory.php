@@ -67,7 +67,7 @@ class ExtensionFactory
 
     private function fetchGooglePayChannelId($salesChannelId = null, int $cacheTtl = 7200): string
     {
-        $cacheKey = 'UnzerGooglePayChannelId_' . ($salesChannelId ?? 'main');
+        $cacheKey = 'UnzerGooglePayChannelId_' . ($salesChannelId ?? 'main') . '_' . $this->configData->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY);
 
         return $this->cache->get($cacheKey, function (ItemInterface $item) use ($salesChannelId, $cacheTtl) {
             $item->expiresAfter($cacheTtl);

@@ -117,5 +117,9 @@
             <argument type="service" id="order_return.repository" on-invalid="null"/>
         </service>
 
+        <service id="UnzerPayment6\Components\UnzerUtil\UnzerApiUtil">
+            <argument type="service" id="cache.object"/>
+        </service>
+
     </services>
 </container>
