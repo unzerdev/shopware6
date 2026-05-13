@@ -20,11 +20,12 @@
 
 {% set expressCheckoutOptions = {
     googlePay:googlePayOptions,
-    applePay:applePayOptions
+    applePay:applePayOptions,
+    keyPairConfig:expressExtension.keyPairConfig
 } %}
 
 <div class="unzer-express-buttons" data-unzer-payment-express-buttons="true" data-unzer-payment-express-buttons-options="{{ expressCheckoutOptions|json_encode }}">
-    <unzer-payment class="unzer-express-payment" publicKey="{{ expressExtension.publicKey }}">
+    <unzer-payment class="unzer-express-payment" publicKey="{{ expressExtension.publicKey }}" {% if expressCheckoutOptions.keyPairConfig %}skipFetchingMerchantConfig{% endif %}>
         {% if expressExtension.usePaypal %}
             <div class="unzer-paypal-express-container mt-1">
                 <unzer-paypal-express class="unzer-paypal-express"></unzer-paypal-express>

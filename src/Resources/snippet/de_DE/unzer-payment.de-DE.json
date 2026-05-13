@@ -89,6 +89,7 @@
         "birthdayInvalid": "Sie müssen mindestens 18 Jahre alt sein.",
         "errorNotReady": "Die Zahlungsart ist noch nicht vollständig geladen. Bitte warten Sie einen Moment.",
         "generalError": "Es gab einen Fehler. Bitte versuchen Sie es erneut.",
+        "blockedButtonMessage": "Wir bereiten Ihre sichere Zahlung vor. Bitte haben Sie etwas Geduld.",
         "companyType": {
             "label": "Art des Unternehmens",
             "placeholder": "Bitte auswählen",
