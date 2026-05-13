@@ -1,3 +1,11 @@
+# 7.1.8 
+* Zuverlässigerer Checkout: Der „Bezahlen“-Button wartet jetzt, bis alle erforderlichen Komponenten vollständig geladen sind, wodurch fehlgeschlagene Bestellungen verhindert werden.
+* Leistungsverbesserung: Ein redundanter Abruf der Händlerkonfiguration wurde entfernt, wenn die Konfiguration bereits vorhanden ist.
+* Bugfix – PayPal Express: Nutzer werden nach der Erstellung der Zahlungsart nun korrekt zum Checkout zurückgeleitet, anstatt eine Fehlerseite zu sehen.
+* UI-Fix – Express-Checkout-Buttons: Einheitliche Abstände zwischen den Buttons für Checkout, PayPal Express, Google Pay und Apple Pay auf der Warenkorbseite sowie im Seitenmenü.
+* Neu – Transaktionsstatus im Zahlungsverlauf: Eine Status-Spalte wurde im Zahlungsverlauf der Shopware-Bestelldetails (Unzer-Bereich) hinzugefügt und wird mit Webhook-Updates synchron gehalten.
+* Bugfix – Express Checkout mit Gutscheinen: Wenn im Warenkorb-Seitenmenü ein Gutschein angewendet und direkt danach Google Pay, Apple Pay oder PayPal Express angeklickt wird, schlägt die Zahlung nicht mehr fehl.
+
 # 7.1.7
 * Fix: Fehlende Übersetzungen neuer Zahlungsarten konnten nach einem Update im Frontend zu einer Fehlermeldung führen
 * Fix: Dateien veralteter Zahlungsarten wurden nicht korrekt entfernt und konnten in einigen Fällen Probleme verursachen

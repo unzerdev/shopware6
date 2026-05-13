@@ -114,7 +114,7 @@ class ExpressCheckoutService
     {
         $data = new DataBag();
         $password = Uuid::randomHex();
-        $name = $paymentData['paymentMethodData']['info']['billingAddress']['name'] ?? '---- ----';
+        $name = $paymentData['paymentMethodData']['info']['billingAddress']['name'] ?? self::ADDRESS_PART_PLACEHOLDER . ' ' . self::ADDRESS_PART_PLACEHOLDER;
         $names = $this->separateName($name);
 
         $shippingAddress = $this->getAddressFromGoogleData($paymentData['shippingAddress'] ?? [], $salesChannelContext->getContext());
@@ -260,6 +260,9 @@ class ExpressCheckoutService
         }
         if (empty($address->getStreet())) {
             $address->setStreet(self::ADDRESS_PART_PLACEHOLDER);
+        }
+        if (empty($address->getName())) {
+            $address->setName(self::ADDRESS_PART_PLACEHOLDER . ' ' . self::ADDRESS_PART_PLACEHOLDER);
         }
 
         $nameParts = $this->separateName($address->getName());

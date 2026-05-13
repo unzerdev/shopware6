@@ -4,6 +4,7 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
     static options = {
         googlePay: {},
         applePay: {},
+        keyPairConfig: null,
     };
 
     /**
@@ -39,6 +40,11 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
             const unzerExpressPayment = this.el.querySelector(
                 '.unzer-express-payment'
             );
+            if (this.options.keyPairConfig) {
+                unzerExpressPayment.setMerchantConfigData(
+                    this.options.keyPairConfig
+                );
+            }
             const unzerPaypalExpress = this.el.querySelector(
                 '.unzer-paypal-express'
             );
@@ -58,6 +64,9 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
 
             if (unzerGooglePay) {
                 this.registerGooglePay(unzerGooglePay, unzerExpressPayment);
+                const container = unzerGooglePay.parentNode;
+                unzerGooglePay.remove();
+                container.appendChild(unzerGooglePay);
             }
 
             if (unzerApplePay) {

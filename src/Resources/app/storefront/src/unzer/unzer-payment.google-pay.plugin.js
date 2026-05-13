@@ -32,7 +32,10 @@ export default class UnzerPaymentGooglePayPlugin extends UnzerPaymentBaseParent 
      * @private
      */
     _registerGooglePayButton() {
-        Promise.all([customElements.whenDefined('unzer-payment')]).then(() => {
+        Promise.all([
+            customElements.whenDefined('unzer-payment'),
+            customElements.whenDefined('unzer-checkout'),
+        ]).then(() => {
             const unzerPaymentElement = document.getElementById(
                 'unzer-payment-component'
             );

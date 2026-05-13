@@ -7,7 +7,8 @@
                 "column": {
                     "type": "Type",
                     "amount": "Amount",
-                    "date": "Date"
+                    "date": "Date",
+                    "state": "State"
                 },
                 "type": {
                     "authorization": "Authorization",

@@ -365,6 +365,8 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
         $state = 'success';
         if ($item->isError()) {
             $state = 'error';
+        } elseif ($item->isPending()) {
+            $state = 'pending';
         }
 
         return [

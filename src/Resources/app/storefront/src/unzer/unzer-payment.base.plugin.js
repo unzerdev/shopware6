@@ -5,6 +5,7 @@ export default class UnzerPaymentBasePlugin extends Plugin {
         publicKey: null,
         shopLocale: null,
         unzerCustomer: null,
+        keyPairConfig: null,
         submitButtonId: 'confirmFormSubmit',
         disabledClass: 'disabled',
         resourceIdElementId: 'unzerResourceId',
@@ -58,19 +59,42 @@ export default class UnzerPaymentBasePlugin extends Plugin {
             'click',
             this._onSubmitButtonClick.bind(this)
         );
-        if (this.options.unzerCustomer) {
-            Promise.all([customElements.whenDefined('unzer-payment')]).then(
-                () => {
-                    const unzerPaymentElement = document.getElementById(
-                        'unzer-payment-component'
-                    );
-                    if (unzerPaymentElement) {
-                        unzerPaymentElement.setCustomerData(
-                            this.options.unzerCustomer
-                        );
-                    }
-                }
+
+        customElements.whenDefined('unzer-payment').then(() => {
+            const unzerPaymentElement = document.getElementById(
+                'unzer-payment-component'
             );
+            if (unzerPaymentElement) {
+                if (this.options.unzerCustomer) {
+                    unzerPaymentElement.setCustomerData(
+                        this.options.unzerCustomer
+                    );
+                }
+                if (this.options.keyPairConfig) {
+                    unzerPaymentElement.setMerchantConfigData(
+                        this.options.keyPairConfig
+                    );
+                }
+            }
+        });
+
+        if (!document.querySelector('unzer-payment')) {
+            this.unblockButton();
+        } else {
+            customElements.whenDefined('unzer-payment').then(() => {
+                this.unblockButton();
+            });
+        }
+    }
+
+    unblockButton() {
+        const blockedButton = document.querySelector(
+            '[data-unzer-blocked-button="true"]'
+        );
+        if (blockedButton) {
+            blockedButton.removeAttribute('disabled');
+            blockedButton.removeAttribute('data-unzer-blocked-button');
+            document.querySelector('.unzer-blocked-button-message')?.remove();
         }
     }
 
