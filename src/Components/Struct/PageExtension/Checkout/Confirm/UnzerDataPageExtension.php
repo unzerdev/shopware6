@@ -19,6 +19,10 @@ class UnzerDataPageExtension extends Struct
 
     private bool $showTestData;
 
+    private bool $blockButtonOnLoad = true;
+
+    private ?array $keyPairConfig = null;
+
     private ?Customer $unzerCustomer;
 
     public function getPublicKey(): string
@@ -49,6 +53,26 @@ class UnzerDataPageExtension extends Struct
     public function setShowTestData(bool $showTestData): void
     {
         $this->showTestData = $showTestData;
+    }
+
+    public function getBlockButtonOnLoad(): bool
+    {
+        return $this->blockButtonOnLoad;
+    }
+
+    public function setBlockButtonOnLoad(bool $blockButtonOnLoad): void
+    {
+        $this->blockButtonOnLoad = $blockButtonOnLoad;
+    }
+
+    public function getKeyPairConfig(): ?array
+    {
+        return $this->keyPairConfig;
+    }
+
+    public function setKeyPairConfig(?array $keyPairConfig): void
+    {
+        $this->keyPairConfig = $keyPairConfig;
     }
 
     public function getUnzerCustomer(): ?Customer

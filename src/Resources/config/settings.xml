@@ -314,6 +314,14 @@
         <title>Advanced settings</title>
         <title lang="de-DE">Erweiterte Einstellungen</title>
 
+        <input-field type="bool">
+            <name>blockConfirmButtonOnLoad</name>
+            <label>Disable confirm button until JS is loaded</label>
+            <label lang="de-DE">Kaufen-Button deaktivieren bis das JS geladen ist</label>
+            <helpText lang="de-DE"></helpText>
+            <helpText></helpText>
+        </input-field>
+
         <component name="unzer-entity-single-select-delivery-status">
             <name>statusForAutomaticShippingNotification</name>
             <entity>state_machine_state</entity>
