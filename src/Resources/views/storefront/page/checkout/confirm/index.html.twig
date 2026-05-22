@@ -68,7 +68,6 @@
     {% endif %}
 {% endblock %}
 
-
 {% block page_checkout_confirm_form_submit %}
     {% if page.extensions.unzerPaymentData and page.extensions.unzerPaymentData.blockButtonOnLoad and page.extensions.unzerPaymentFrame and page.extensions.unzerPaymentFrame.paymentFrame %}
         {% block page_checkout_confirm_form_submit_unzer_block_message %}

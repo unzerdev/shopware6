@@ -21,9 +21,6 @@ class UnzerPaymentDeviceController extends StorefrontController
 
     // TODO: evaluate if GET is the correct method for this route
     #[Route(path: '/unzer/deleteDevice', name: 'frontend.unzer.device.delete', methods: ['GET'])]
-    /**
-     * @Route("/unzer/deleteDevice", name="frontend.unzer.device.delete", methods={"GET"})
-     */
     public function deleteDevice(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {
         if (!$salesChannelContext->getCustomer()) {

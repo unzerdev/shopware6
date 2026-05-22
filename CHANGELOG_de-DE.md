@@ -1,3 +1,5 @@
+# 7.1.9
+
 # 7.1.8 
 * Zuverlässigerer Checkout: Der „Bezahlen“-Button wartet jetzt, bis alle erforderlichen Komponenten vollständig geladen sind, wodurch fehlgeschlagene Bestellungen verhindert werden.
 * Leistungsverbesserung: Ein redundanter Abruf der Händlerkonfiguration wurde entfernt, wenn die Konfiguration bereits vorhanden ist.
