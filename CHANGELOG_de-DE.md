@@ -1,4 +1,5 @@
 # 7.1.9
+* Anpassungen für Unzer Shopware 6.7 plugin zur Unterstützung des Unzer Refund Manager
 
 # 7.1.8 
 * Zuverlässigerer Checkout: Der „Bezahlen“-Button wartet jetzt, bis alle erforderlichen Komponenten vollständig geladen sind, wodurch fehlgeschlagene Bestellungen verhindert werden.
