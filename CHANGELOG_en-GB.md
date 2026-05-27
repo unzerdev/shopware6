@@ -1,3 +1,6 @@
+# 7.1.9
+* Changes for Unzer Shopware 6.7 plugin to support Unzer Refund Manager
+
 # 7.1.8
 * More reliable checkout: The "Pay" button now waits until all required components are fully loaded, preventing failed orders.
 * Performance improvement: Eliminated a redundant merchant config fetch when the config is already provided.

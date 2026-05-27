@@ -56,6 +56,8 @@ Component.register('unzer-payment-tab', {
             const orderId = this.$route.params.id;
             const criteria = new Criteria();
             criteria
+                .addAssociation('currency')
+                .addAssociation('lineItems.promotion')
                 .getAssociation('transactions')
                 .addSorting(Criteria.sort('createdAt', 'DESC'));
 

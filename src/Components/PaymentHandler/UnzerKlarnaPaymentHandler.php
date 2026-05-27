@@ -21,8 +21,6 @@ class UnzerKlarnaPaymentHandler extends AbstractUnzerPaymentHandler
     use CanAuthorize;
     use CanCharge;
 
-    protected BasePaymentType $paymentType;
-
     /**
      * {@inheritdoc}
      */
