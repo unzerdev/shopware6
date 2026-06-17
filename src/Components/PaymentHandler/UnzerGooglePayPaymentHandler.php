@@ -61,7 +61,7 @@ class UnzerGooglePayPaymentHandler extends AbstractUnzerPaymentHandler
         }
     }
 
-    public static function fetchChannelId(Unzer $client, bool $cached = true): string
+    public static function fetchChannelId(Unzer $client): string
     {
         try {
             $keyPair = $client->fetchKeyPair(true);

@@ -7,7 +7,8 @@
                 "column": {
                     "type": "Typ",
                     "amount": "Betrag",
-                    "date": "Datum"
+                    "date": "Datum",
+                    "state": "Status"
                 },
                 "type": {
                     "authorization": "Reservierung",

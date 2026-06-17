@@ -314,6 +314,14 @@
         <title>Advanced settings</title>
         <title lang="de-DE">Erweiterte Einstellungen</title>
 
+        <input-field type="bool">
+            <name>blockConfirmButtonOnLoad</name>
+            <label>Disable confirm button until JS is loaded</label>
+            <label lang="de-DE">Kaufen-Button deaktivieren bis das JS geladen ist</label>
+            <helpText lang="de-DE"></helpText>
+            <helpText></helpText>
+        </input-field>
+
         <component name="unzer-entity-single-select-delivery-status">
             <name>statusForAutomaticShippingNotification</name>
             <entity>state_machine_state</entity>
@@ -339,6 +347,15 @@
             <label lang="de-DE">Versandstatus zum Auslösen der automatischen Rückzahlung</label>
             <helpText>Leave blank, if you don't want to use automatic refund</helpText>
             <helpText lang="de-DE">Leer lassen, um keine automatische Rückzahlung auszulösen</helpText>
+        </component>
+
+        <component name="unzer-entity-multi-select-delivery-status">
+            <name>deliveryStatusForAutomaticReturnsRefund</name>
+            <entityName>state_machine_state</entityName>
+            <label>Delivery status for triggering automatic cancel/refund on all created returns</label>
+            <label lang="de-DE">Versandstatus zum Auslösen der automatischen Rückzahlung für angelegte Retouren</label>
+            <helpText>only with Shopware Commercial Plugin; Leave blank, if you don't want to use automatic refund</helpText>
+            <helpText lang="de-DE">nur mit Shopware Commercial Plugin; Leer lassen, um keine automatische Rückzahlung auszulösen</helpText>
         </component>
     </card>
 

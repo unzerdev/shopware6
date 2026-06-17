@@ -21,6 +21,7 @@
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\KeyPairConfigReader"/>
             <argument type="service" id="UnzerPayment6\Components\Storefront\ExtensionFactory"/>
             <argument type="service" id="UnzerPayment6\Components\ResourceHydrator\CustomerResourceHydrator\CustomerResourceHydrator"/>
+            <argument type="service" id="UnzerPayment6\Components\UnzerUtil\UnzerApiUtil"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -52,7 +53,7 @@
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="UnzerPayment6\Components\ShipService\ShipService"/>
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil"/>
+            <argument type="service" id="UnzerPayment6\Components\PaymentActions\PaymentActionService"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -68,6 +69,7 @@
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="UnzerPayment6\Components\Storefront\ExtensionFactory"/>
             <argument type="service" id="sales_channel.repository" />
+            <argument type="service" id="UnzerPayment6\Components\UnzerUtil\UnzerApiUtil"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

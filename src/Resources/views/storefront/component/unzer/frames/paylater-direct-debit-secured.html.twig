@@ -20,6 +20,7 @@
             <unzer-payment
                     id="unzer-payment-component"
                     publicKey="{{ page.extensions.unzerPaymentData.publicKey }}"
+                    {% if page.extensions.unzerPaymentData.keyPairConfig %}skipFetchingMerchantConfig{% endif %}
                     locale="{{ page.extensions.unzerPaymentData.locale }}">
                 <unzer-paylater-direct-debit></unzer-paylater-direct-debit>
             </unzer-payment>

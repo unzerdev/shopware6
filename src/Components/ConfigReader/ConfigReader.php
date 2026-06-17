@@ -18,6 +18,7 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_PRIVATE_KEY = 'privateKey';
     public const CONFIG_KEY_TEST_DATA = 'testData';
     public const CONFIG_KEY_EXTENDED_LOGGING = 'extendedLogging';
+    public const CONFIG_KEY_BLOCK_CONFIRM_BUTTON_ON_LOAD = 'blockConfirmButtonOnLoad';
 
     public const CONFIG_KEY_BOOKING_MODE_CARD = 'bookingModeCreditCard';
     public const CONFIG_KEY_BOOKING_MODE_PAYPAL = 'bookingModePayPal';
@@ -43,6 +44,7 @@ class ConfigReader implements ConfigReaderInterface
     public const CONFIG_KEY_PAYPAL_SHOW_SAVE_ACCOUNT = 'paypalShowSaveAccount';
     public const CONFIG_KEY_DELIVERY_STATUS_FOR_CAPTURE = 'deliveryStatusForAutomaticCapture';
     public const CONFIG_KEY_DELIVERY_STATUS_FOR_REFUND = 'deliveryStatusForAutomaticRefund';
+    public const CONFIG_KEY_DELIVERY_STATUS_FOR_RETURNS_REFUND = 'deliveryStatusForAutomaticReturnsRefund';
 
     public const CONFIG_KEY_USE_EXPRESS_PAYPAL = 'usePaypalExpress';
     public const CONFIG_KEY_USE_EXPRESS_GOOGLE = 'useGooglePayExpress';

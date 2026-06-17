@@ -365,11 +365,14 @@ readonly class PaymentResourceHydrator implements PaymentResourceHydratorInterfa
         $state = 'success';
         if ($item->isError()) {
             $state = 'error';
+        } elseif ($item->isPending()) {
+            $state = 'pending';
         }
 
         return [
             'id' => $item->getId(),
             'shortId' => $item->getShortId(),
+            'reference' => method_exists($item, 'getPaymentReference') ? $item->getPaymentReference() : '',
             'state' => $state,
             'date' => $item->getDate(),
             'type' => $type,

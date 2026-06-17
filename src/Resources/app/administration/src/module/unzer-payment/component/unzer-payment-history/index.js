@@ -83,6 +83,7 @@ Component.register('unzer-payment-history', {
                         type: this.transactionTypeRenderer(transaction.type),
                         amount: amount,
                         date: date,
+                        state: transaction.state || '',
                         resource: transaction,
                     });
                 }
@@ -111,6 +112,13 @@ Component.register('unzer-payment-history', {
                     property: 'date',
                     label: this.$tc(
                         'unzer-payment.paymentDetails.history.column.date'
+                    ),
+                    rawData: true,
+                },
+                {
+                    property: 'state',
+                    label: this.$tc(
+                        'unzer-payment.paymentDetails.history.column.state'
                     ),
                     rawData: true,
                 },

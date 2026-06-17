@@ -19,6 +19,7 @@ use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\Storefront\ExtensionFactory;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\ApplePayV2PageExtension;
 use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\GooglePayPageExtension;
+use UnzerPayment6\Components\UnzerUtil\UnzerApiUtil;
 use UnzerPayment6\Installer\PaymentInstaller;
 
 class ExpressButtonsEventListener implements EventSubscriberInterface
@@ -26,7 +27,8 @@ class ExpressButtonsEventListener implements EventSubscriberInterface
     public function __construct(
         private ConfigReaderInterface $configReader,
         private ExtensionFactory $extensionFactory,
-        private EntityRepository $salesChannelRepository
+        private EntityRepository $salesChannelRepository,
+        private UnzerApiUtil $unzerApiUtil
     ) {
     }
 
@@ -50,6 +52,7 @@ class ExpressButtonsEventListener implements EventSubscriberInterface
 
         $event->getPage()->addExtension('UnzerExpressButtons', new ArrayStruct([
             'publicKey' => $config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY),
+            'keyPairConfig' => $this->unzerApiUtil->getCachedKeypairConfig($config->get(ConfigReader::CONFIG_KEY_PUBLIC_KEY)),
             'usePaypal' => $config->get(ConfigReader::CONFIG_KEY_USE_EXPRESS_PAYPAL) && $this->isPaymentMethodActive(PaymentInstaller::PAYMENT_ID_PAYPAL, $event->getSalesChannelContext()),
             'useGooglePay' => $config->get(ConfigReader::CONFIG_KEY_USE_EXPRESS_GOOGLE) && $this->isPaymentMethodActive(PaymentInstaller::PAYMENT_ID_GOOGLE_PAY, $event->getSalesChannelContext()),
             'useApplePay' => $config->get(ConfigReader::CONFIG_KEY_USE_EXPRESS_APPLEPAY) && $this->isPaymentMethodActive(PaymentInstaller::PAYMENT_ID_APPLE_PAY_V2, $event->getSalesChannelContext()),

@@ -3,6 +3,17 @@
 * Update: Unzer PHP SDK upgraded to 4.x
 * Deprecation notice: Giropay is deprecated in the Unzer PHP SDK 4.x and will be removed in a future release. Merchants should disable the Giropay payment method and migrate customers to alternative methods.
 
+# 7.1.9
+* Changes for Unzer Shopware 6.7 plugin to support Unzer Refund Manager
+
+# 7.1.8
+* More reliable checkout: The "Pay" button now waits until all required components are fully loaded, preventing failed orders.
+* Performance improvement: Eliminated a redundant merchant config fetch when the config is already provided.
+* Bugfix – PayPal Express: Users are now correctly returned to checkout after payment type creation instead of seeing an error page.
+* UI fix – Express Checkout buttons: Consistent spacing between Checkout, PayPal Express, Google Pay, and Apple Pay buttons on the cart page and side menu.
+* New – Transaction status in payment history: Added a Status column to the payment history in Shopware Order Details (Unzer section), kept in sync with webhook updates.
+* Bugfix – Express Checkout with vouchers: Applying a voucher in the cart side menu and immediately clicking Google Pay / Apple Pay / PayPal Express no longer causes the payment to fail.
+
 # 7.1.7
 * Fix: Missing translation of new payment methods could display an error in Frontend after updating
 * Fix: Files from deprecated payment methods was not properly removed and could in some cases create issues
