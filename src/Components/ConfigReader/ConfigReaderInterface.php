@@ -9,4 +9,6 @@ use UnzerPayment6\Components\Struct\Configuration;
 interface ConfigReaderInterface
 {
     public function read(string $salesChannelId = '', bool $fallback = true): Configuration;
+
+    public function getSingleValue(string $key, ?string $salesChannelId = null): mixed;
 }

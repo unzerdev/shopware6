@@ -10,6 +10,7 @@
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="unzer_payment.logger" />
             <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
 
             <tag name="unzer.webhook_handler" />
         </service>

@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace UnzerPayment6\EventListeners\Checkout;
 
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
@@ -39,11 +36,14 @@ use UnzerPayment6\Components\Struct\PageExtension\Checkout\Confirm\UnzerDataPage
 use UnzerPayment6\Components\UnzerUtil\UnzerApiUtil;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 use UnzerPayment6\DataAbstractionLayer\Repository\PaymentDevice\UnzerPaymentDeviceRepositoryInterface;
+use UnzerPayment6\EventListeners\Traits\HasLocaleTrait;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Resources\Customer;
 
 class ConfirmPageEventListener implements EventSubscriberInterface
 {
+    use HasLocaleTrait;
+
     private ?Configuration $configData = null;
 
     public function __construct(
@@ -342,21 +342,6 @@ class ConfirmPageEventListener implements EventSubscriberInterface
         }
 
         $event->getPage()->addExtension(PaylaterDirectDebitSecuredPageExtension::EXTENSION_NAME, $extension);
-    }
-
-    private function getLocaleByLanguageId(string $languageId, Context $context): string
-    {
-        $criteria = new Criteria([$languageId]);
-        $criteria->addAssociation('locale');
-
-        /** @var LanguageEntity|null $searchResult */
-        $searchResult = $this->languageRepository->search($criteria, $context)->first();
-
-        if ($searchResult === null || $searchResult->getLocale() === null) {
-            return ClientFactoryInterface::DEFAULT_LOCALE;
-        }
-
-        return $searchResult->getLocale()->getCode();
     }
 
     private function getPublicKey(SalesChannelContext $salesChannelContext): string

@@ -1,3 +1,13 @@
+# 7.1.10
+* PayPal Express funktioniert im Checkout unter Shopware 6.7 wieder korrekt
+* Klarna-Zahlungen schlagen unter Shopware 6.7 nicht mehr mit dem Fehler „Zahlungsmethode nicht gefunden“ fehl
+* Beim Express-Checkout wird nun eine verständliche Fehlermeldung angezeigt, wenn die Erstellung der Zahlung fehlschlägt, anstatt den Kunden kommentarlos weiterzuleiten
+* Bestellbestätigungen werden nun in der korrekten Sprache versendet und gehen nicht mehr verloren
+* Benutzer ohne Berechtigung für die Erweiterung können die Plugin-Einstellungen nicht mehr anzeigen oder bearbeiten
+* Produktbilder im Warenkorb werden nun automatisch in einer geeigneten Größe verarbeitet und verursachen keine Gateway-Fehler mehr
+* Bestell- und Zahlungsstatus für Direktüberweisung werden nun zuverlässig anhand des Zahlungs- und Transaktionsstatus aktualisiert
+* Die Hinweise zur Lastschriftzahlung wurden aus dem Checkout entfernt, da sie nicht mehr erforderlich sind
+
 # 7.1.9
 * Anpassungen für Unzer Shopware 6.7 plugin zur Unterstützung des Unzer Refund Manager
 

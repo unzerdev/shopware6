@@ -54,6 +54,7 @@ Component.register('unzer-payment-actions', {
             return (
                 this.transactionResource.type === 'charge' &&
                 this.transactionResource.state !== 'error' &&
+                this.transactionResource.state !== 'pending' &&
                 !(
                     this.transactionResource.isFirst &&
                     this.paymentResource.paymentMethodId ===

@@ -24,6 +24,9 @@ class UnzerPaymentDeviceEntity extends Entity
 
     protected array $data;
 
+    /**
+     * @deprecated To be removed in future release
+     */
     protected string $addressHash;
 
     public function getCustomerId(): string
