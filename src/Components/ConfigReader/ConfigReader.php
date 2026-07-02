@@ -77,4 +77,9 @@ class ConfigReader implements ConfigReaderInterface
 
         return new Configuration($config);
     }
+
+    public function getSingleValue(string $key, ?string $salesChannelId = null): mixed
+    {
+        return $this->systemConfigService->get($key, $salesChannelId);
+    }
 }

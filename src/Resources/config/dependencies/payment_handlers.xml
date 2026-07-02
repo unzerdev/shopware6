@@ -19,6 +19,7 @@
             <argument type="service" id="UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelper"/>
             <argument type="service" id="UnzerPayment6\Components\UnzerUtil\UnzerTransactionUtil"/>
             <argument type="service" id="customer.repository"/>
+            <argument type="service" id="router.default"/>
         </service>
 
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerAlipayPaymentHandler"
@@ -93,6 +94,10 @@
             <tag name="shopware.payment.method"/>
         </service>
         <service id="UnzerPayment6\Components\PaymentHandler\UnzerWeroPaymentHandler"
+                 parent="UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler">
+            <tag name="shopware.payment.method"/>
+        </service>
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerKlarnaPaymentHandler"
                  parent="UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler">
             <tag name="shopware.payment.method"/>
         </service>

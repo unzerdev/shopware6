@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Struct\Struct;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Router;
 use UnzerPayment6\Components\BookingMode;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
@@ -77,7 +78,8 @@ abstract class AbstractUnzerPaymentHandler extends AbstractPaymentHandler
         protected readonly CustomFieldsHelperInterface $customFieldsHelper,
         protected readonly UnzerTransactionUtil $transactionUtil,
         protected readonly EntityRepository $customerRepository,
-        protected ?UnzerPaymentDeviceRepositoryInterface $deviceRepository = null
+        protected readonly Router $router,
+        protected ?UnzerPaymentDeviceRepositoryInterface $deviceRepository = null,
     ) {
     }
 

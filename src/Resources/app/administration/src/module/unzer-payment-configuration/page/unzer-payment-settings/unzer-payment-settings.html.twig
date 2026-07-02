@@ -50,6 +50,26 @@
                     </template>
 
                     <template #afterElements="{index}">
+                        <mt-banner
+                            v-if="webhookStatus && webhookStatus.needsUpdate"
+                            variant="attention"
+                            appearance="default"
+                            :showIcon="true"
+                            :closable="false"
+                        >
+                            {{ $tc('unzer-payment-settings.webhook.needsUpdate') }}
+                            :
+                            <br/>
+                            {{ webhookStatus.url }}
+                            <div>
+                                <mt-button
+                                    :isLoading="updateWebhookIsLoading"
+                                    @click="updateWebhook(webhookStatus.privateKey, webhookStatus.webhook)"
+                                >
+                                    {{ $tc('unzer-payment-settings.webhook.doUpdate') }}
+                                </mt-button>
+                            </div>
+                        </mt-banner>
                         <template v-if="index == 0">
                             <mt-button
                                 @click="openModalKeyPair = defaultKeyPair"

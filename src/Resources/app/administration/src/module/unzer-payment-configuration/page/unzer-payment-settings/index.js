@@ -23,6 +23,8 @@ Component.register('unzer-payment-settings', {
             isSaveSuccessful: false,
             config: {},
             webhooks: [],
+            webhookStatus: null,
+            updateWebhookIsLoading: false,
             loadedWebhooksPrivateKey: false,
             selectedSalesChannelId: null,
             keyPairSettings: [
@@ -246,6 +248,7 @@ Component.register('unzer-payment-settings', {
             this.config = config;
             this.isLoading = false;
             this.syncKeyPairConfig();
+            this.fetchWebhookStatus();
         },
 
         onLoadingChanged(value) {
@@ -258,10 +261,104 @@ Component.register('unzer-payment-settings', {
             }
 
             this.selectedSalesChannelId = salesChannelId;
+            this.fetchWebhookStatus();
         },
 
         onWebhookRegistered(privateKey) {
             this.loadWebhooks(privateKey);
+        },
+
+        fetchWebhookStatus() {
+            this.webhookStatus = null;
+
+            const privateKey = this.getConfigValue('privateKey');
+
+            if (!privateKey) {
+                return Promise.resolve(false);
+            }
+
+            const criteria = new Shopware.Data.Criteria();
+            criteria.addAssociation('domains');
+
+            // With a selected sales channel we only inspect that one,
+            // otherwise we scan every sales channel for a webhook that
+            // needs an update.
+            if (this.selectedSalesChannelId) {
+                criteria.setIds([this.selectedSalesChannelId]);
+            }
+
+            return Promise.all([
+                this.repositoryFactory
+                    .create('sales_channel')
+                    .search(criteria, Context.api),
+                this.UnzerPaymentConfigurationService.getWebhooks(privateKey),
+            ]).then(([salesChannels, webhooks]) => {
+                if (
+                    !salesChannels ||
+                    !salesChannels.length ||
+                    !webhooks ||
+                    !webhooks.length
+                ) {
+                    return false;
+                }
+
+                for (const salesChannel of salesChannels) {
+                    const domains = salesChannel.domains || [];
+
+                    for (const domain of domains) {
+                        const webhook = webhooks.find(
+                            (item) =>
+                                item.url.indexOf(domain.url) > -1 &&
+                                item.event !== 'all'
+                        );
+
+                        if (webhook) {
+                            this.webhookStatus = {
+                                needsUpdate: true,
+                                webhook: webhook,
+                                privateKey: privateKey,
+                                url: webhook.url,
+                            };
+
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            });
+        },
+
+        updateWebhook(privateKey, webhook) {
+            this.updateWebhookIsLoading = true;
+            const data = {
+                privateKey: privateKey,
+                selection: {},
+            };
+            data.selection[webhook.id] = {
+                url: webhook.url || '',
+            };
+
+            this.UnzerPaymentConfigurationService.clearWebhooks(data)
+                .then((response) => {
+                    const newWebhook = {
+                        url: webhook.url,
+                        privateKey: privateKey,
+                    };
+
+                    this.UnzerPaymentConfigurationService.registerWebhookDirectly(
+                        newWebhook
+                    )
+                        .then((response) => {
+                            this.fetchWebhookStatus();
+                        })
+                        .finally(() => {
+                            this.updateWebhookIsLoading = false;
+                        });
+                })
+                .catch((error) => {
+                    this.updateWebhookIsLoading = false;
+                });
         },
 
         loadWebhooks(privateKey) {
