@@ -59,7 +59,6 @@ Component.register('unzer-payment-tab', {
                 .addAssociation('currency')
                 .addAssociation('lineItems.promotion')
                 .getAssociation('transactions')
-
                 .addSorting(Criteria.sort('createdAt', 'DESC'));
 
             this.orderRepository

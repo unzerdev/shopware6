@@ -32,6 +32,7 @@ const configuration = {
             path: 'settings',
             meta: {
                 parentPath: 'sw.settings.index',
+                privilege: 'system_config.viewer',
             },
         },
     },
@@ -42,6 +43,7 @@ const configuration = {
         group: 'plugins',
         iconComponent: 'unzer-payment-plugin-icon',
         backgroundEnabled: false,
+        privilege: 'system_config.viewer',
     },
 };
 

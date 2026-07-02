@@ -12,6 +12,8 @@ class Webhook
 
     private string $retrieveUrl;
 
+    private string $paymentId;
+
     public function __construct(string $jsonData)
     {
         $this->fromJson($jsonData);
@@ -24,6 +26,7 @@ class Webhook
         $this->event = $webhookData['event'] ?? '';
         $this->publicKey = $webhookData['publicKey'] ?? '';
         $this->retrieveUrl = $webhookData['retrieveUrl'] ?? '';
+        $this->paymentId = $webhookData['paymentId'] ?? '';
     }
 
     public function getEvent(): string
@@ -58,6 +61,18 @@ class Webhook
     public function setRetrieveUrl(string $retrieveUrl): self
     {
         $this->retrieveUrl = $retrieveUrl;
+
+        return $this;
+    }
+
+    public function getPaymentId(): string
+    {
+        return $this->paymentId;
+    }
+
+    public function setPaymentId(string $paymentId): self
+    {
+        $this->paymentId = $paymentId;
 
         return $this;
     }

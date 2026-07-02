@@ -18,9 +18,6 @@ readonly class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransfe
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function create(
         TransferInformation $transferInformation,
         Context $context
@@ -28,9 +25,6 @@ readonly class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransfe
         return $this->entityRepository->create([$transferInformation->getEntityData()], $context);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function remove(string $id, Context $context): EntityWrittenContainerEvent
     {
         return $this->entityRepository->delete([
@@ -38,9 +32,6 @@ readonly class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransfe
         ], $context);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function exists(string $transactionId, Context $context): bool
     {
         $criteria = new Criteria();
@@ -51,9 +42,6 @@ readonly class UnzerPaymentTransferInfoRepository implements UnzerPaymentTransfe
         return $this->entityRepository->search($criteria, $context)->getTotal() > 0;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function read(string $transactionId, Context $context): ?UnzerPaymentTransferInfoEntity
     {
         $criteria = new Criteria();

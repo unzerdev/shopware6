@@ -77,6 +77,9 @@
                 "remember": "Mein PayPal Account für die nächste Bestellung speichern"
             }
         },
+        "expressCheckout": {
+            "generalError": "Es gab einen Fehler. Bitte versuchen Sie es erneut."
+        },
         "accountPayment": {
             "delete": "Löschen",
             "creditCard": "Kreditkarte",

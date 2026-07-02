@@ -42,9 +42,6 @@ class UnzerPayment6 extends Plugin
         parent::build($container);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function install(InstallContext $installContext): void
     {
         /** @var EntityRepository $paymentRepository */
@@ -60,9 +57,6 @@ class UnzerPayment6 extends Plugin
         (new CustomFieldInstaller($customFieldSetRepository))->install($installContext);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function update(UpdateContext $updateContext): void
     {
         /** @var EntityRepository $paymentRepository */
@@ -78,9 +72,6 @@ class UnzerPayment6 extends Plugin
         (new CustomFieldInstaller($customFieldSetRepository))->update($updateContext);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function activate(ActivateContext $activateContext): void
     {
         /** @var EntityRepository $paymentRepository */
@@ -96,9 +87,6 @@ class UnzerPayment6 extends Plugin
         (new CustomFieldInstaller($customFieldSetRepository))->activate($activateContext);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deactivate(DeactivateContext $deactivateContext): void
     {
         /** @var EntityRepository $paymentRepository */
@@ -114,9 +102,6 @@ class UnzerPayment6 extends Plugin
         (new CustomFieldInstaller($customFieldSetRepository))->deactivate($deactivateContext);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function uninstall(UninstallContext $uninstallContext): void
     {
         /** @var EntityRepository $paymentRepository */

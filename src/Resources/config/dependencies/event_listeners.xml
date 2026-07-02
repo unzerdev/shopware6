@@ -70,6 +70,7 @@
             <argument type="service" id="UnzerPayment6\Components\Storefront\ExtensionFactory"/>
             <argument type="service" id="sales_channel.repository" />
             <argument type="service" id="UnzerPayment6\Components\UnzerUtil\UnzerApiUtil"/>
+            <argument type="service" id="language.repository"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

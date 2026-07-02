@@ -108,15 +108,6 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $basketItem->setTitle($label);
             $basketItem->setQuantity($lineItem->getQuantity());
             $basketItem->setType($lineItem->getUnitPrice() < 0 ? BasketItemTypes::VOUCHER : BasketItemTypes::GOODS);
-            if (!empty($lineItem->getCover()?->getUrl()) && !str_contains($lineItem->getCover()?->getUrl(), '.ddev.site')) {
-                try {
-                    $media = $lineItem->getCover();
-                    $url = $media?->getThumbnails()?->first()?->getUrl() ?? $media?->getUrl();
-                    $basketItem->setImageUrl($url);
-                } catch (\Exception $e) {
-                    $basketItem->setImageUrl($lineItem->getCover()?->getUrl());
-                }
-            }
 
             $taxCounter = 0;
             $amountTax = 0.0;
@@ -169,14 +160,12 @@ class BasketResourceHydrator implements ResourceHydratorInterface
             $amountPerUnit = round($shippingCosts->getUnitPrice(), $currencyPrecision);
         } else {
             $priceGross = 0.00;
-            $amountVat = 0.00;
             $taxRate = 0;
             $taxCounter = 0;
 
             /** @var CalculatedTax $tax */
             foreach ($shippingCosts->getCalculatedTaxes() as $tax) {
                 $priceGross += $tax->getPrice();
-                $amountVat += $tax->getTax();
                 $taxRate += $tax->getTaxRate();
                 ++$taxCounter;
 

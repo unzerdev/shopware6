@@ -12,32 +12,22 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
-use UnzerPayment6\Components\AddressHashGenerator\AddressHashGeneratorInterface;
 use UnzerPayment6\DataAbstractionLayer\Entity\PaymentDevice\UnzerPaymentDeviceEntity;
 
 readonly class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceRepositoryInterface
 {
+    public const DEFAULT_ADDRESS_HASH = 'no_hash';
+
     public function __construct(
-        private EntityRepository $entityRepository,
-        private AddressHashGeneratorInterface $addressHashService
+        private EntityRepository $entityRepository
     ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCollectionByCustomer(CustomerEntity $customer, Context $context, ?string $deviceType = null): EntitySearchResult
     {
-        if ($customer->getActiveBillingAddress() === null || $customer->getActiveShippingAddress() === null) {
-            throw new \RuntimeException('Customer has no active billing or shipping address');
-        }
-
-        $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
-
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter('customerId', $customer->getId()),
-            new EqualsFilter('addressHash', $addressHash)
+            new EqualsFilter('customerId', $customer->getId())
         );
 
         if ($deviceType) {
@@ -47,9 +37,6 @@ readonly class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceReposit
         return $this->entityRepository->search($criteria, $context);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function create(
         CustomerEntity $customer,
         string $deviceType,
@@ -57,19 +44,13 @@ readonly class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceReposit
         array $data,
         Context $context
     ): EntityWrittenContainerEvent {
-        if ($customer->getActiveBillingAddress() === null || $customer->getActiveShippingAddress() === null) {
-            throw new \RuntimeException('Customer has no active billing or shipping address');
-        }
-
-        $addressHash = $this->addressHashService->generateHash($customer->getActiveBillingAddress(), $customer->getActiveShippingAddress());
-
         $createData = [
             'id' => Uuid::randomHex(),
             'deviceType' => $deviceType,
             'typeId' => $typeId,
             'data' => $data,
             'customerId' => $customer->getId(),
-            'addressHash' => $addressHash,
+            'addressHash' => self::DEFAULT_ADDRESS_HASH,
         ];
 
         return $this->entityRepository->create([
@@ -77,9 +58,6 @@ readonly class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceReposit
         ], $context);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function remove(string $id, Context $context): EntityWrittenContainerEvent
     {
         return $this->entityRepository->delete([
@@ -87,9 +65,6 @@ readonly class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceReposit
         ], $context);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function exists(string $typeId, Context $context): bool
     {
         $criteria = new Criteria();
@@ -100,9 +75,6 @@ readonly class UnzerPaymentDeviceRepository implements UnzerPaymentDeviceReposit
         return $this->entityRepository->search($criteria, $context)->getTotal() > 0;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function read(string $id, Context $context): ?UnzerPaymentDeviceEntity
     {
         $criteria = new Criteria([$id]);

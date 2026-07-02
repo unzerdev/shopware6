@@ -21,11 +21,22 @@
 {% set expressCheckoutOptions = {
     googlePay:googlePayOptions,
     applePay:applePayOptions,
-    keyPairConfig:expressExtension.keyPairConfig
+    keyPairConfig:expressExtension.keyPairConfig,
+    urls:{
+        paypal: path('frontend.unzer.paypal-express'),
+        googlePay: path('frontend.unzer.google-express'),
+        applePay: path('frontend.unzer.applepay-express')
+    }
 } %}
 
 <div class="unzer-express-buttons" data-unzer-payment-express-buttons="true" data-unzer-payment-express-buttons-options="{{ expressCheckoutOptions|json_encode }}">
-    <unzer-payment class="unzer-express-payment" publicKey="{{ expressExtension.publicKey }}" {% if expressCheckoutOptions.keyPairConfig %}skipFetchingMerchantConfig{% endif %}>
+    <div class="unzer-express-buttons-error" hidden>
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            type: 'danger',
+            content: "UnzerPayment.expressCheckout.generalError"|trans|striptags,
+        } %}
+    </div>
+    <unzer-payment class="unzer-express-payment" publicKey="{{ expressExtension.publicKey }}" {% if expressCheckoutOptions.keyPairConfig %}skipFetchingMerchantConfig{% endif %} locale="{{ expressExtension.locale }}">
         {% if expressExtension.usePaypal %}
             <div class="unzer-paypal-express-container mt-1">
                 <unzer-paypal-express class="unzer-paypal-express"></unzer-paypal-express>

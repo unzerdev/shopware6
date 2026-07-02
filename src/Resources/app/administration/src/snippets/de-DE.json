@@ -176,7 +176,9 @@
                 "message": "Bitte kontaktieren sie uns für mehr Informationen"
             },
             "empty": "Für diesen Private Key sind keine Webhooks registriert. Bitte prüfen Sie ob dieser valide ist und ob Konfigurationen für dedizierte Verkaufskanäle vorgenommen wurden.",
-            "show": "Webhooks anzeigen"
+            "show": "Webhooks anzeigen",
+            "needsUpdate": "Der Webhook benötigt ein Update, um für alle Zahlungsprozesse kompatibel zu sein",
+            "doUpdate": "Jetzt Update durchführen"
         }
     },
     "sw-payment-card": {

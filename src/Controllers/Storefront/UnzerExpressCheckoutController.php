@@ -18,25 +18,21 @@ use UnzerPayment6\Components\ConfigReader\ConfigReader;
 use UnzerPayment6\Components\ConfigReader\ConfigReaderInterface;
 use UnzerPayment6\Components\ExpressCheckout\ExpressCheckoutService;
 use UnzerPayment6\Components\ResourceHydrator\MetadataResourceHydrator;
-use UnzerPayment6\Components\ResourceHydrator\ResourceHydratorInterface;
 use UnzerPayment6\Installer\PaymentInstaller;
 use UnzerSDK\Resources\Basket;
 use UnzerSDK\Resources\EmbeddedResources\BasketItem;
-use UnzerSDK\Resources\Metadata;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 
 #[Route(defaults: ['_routeScope' => ['storefront']])]
 class UnzerExpressCheckoutController extends StorefrontController
 {
-    /**
-     * @param MetadataResourceHydrator $metadataResourceHydrator
-     */
     public function __construct(
         private readonly ExpressCheckoutService $expressCheckoutService,
-        private readonly ResourceHydratorInterface $metadataResourceHydrator,
+        private readonly MetadataResourceHydrator $metadataResourceHydrator,
         protected readonly ConfigReaderInterface $configReader,
         protected readonly LoggerInterface $logger,
+        protected readonly ClientFactory $clientFactory,
     ) {
     }
 
@@ -44,9 +40,7 @@ class UnzerExpressCheckoutController extends StorefrontController
     public function paypalExpress(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         $paymentTypeId = $request->get('paymentTypeId');
-        /** @var ClientFactory $clientFactory */
-        $clientFactory = $this->container->get(ClientFactory::class);
-        $client = $clientFactory->createClientFromSalesChannelId($salesChannelContext->getSalesChannelId(), $request);
+        $client = $this->clientFactory->createClientFromSalesChannelId($salesChannelContext->getSalesChannelId(), $request);
 
         $shopwareCart = $this->expressCheckoutService->getCart($salesChannelContext);
         $basket = (new Basket())
@@ -59,7 +53,6 @@ class UnzerExpressCheckoutController extends StorefrontController
         $basket->addBasketItem($basketItem);
 
         $basketResult = $client->createBasket($basket);
-        /** @var Metadata $metaData */
         $metaData = $this->metadataResourceHydrator->hydrateObject($salesChannelContext);
         $this->metadataResourceHydrator->setIsExpress($metaData, true);
 
@@ -102,9 +95,8 @@ class UnzerExpressCheckoutController extends StorefrontController
 
             return $this->redirectToRoute('frontend.checkout.cart.page'); // TODO
         }
-        /** @var ClientFactory $clientFactory */
-        $clientFactory = $this->container->get(ClientFactory::class);
-        $client = $clientFactory->createClientFromSalesChannelId($salesChannelContext->getSalesChannelId(), $request);
+
+        $client = $this->clientFactory->createClientFromSalesChannelId($salesChannelContext->getSalesChannelId(), $request);
         $payment = $client->fetchPayment($paymentId);
 
         try {

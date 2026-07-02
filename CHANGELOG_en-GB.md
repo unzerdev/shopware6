@@ -1,3 +1,11 @@
+# 6.5.8
+* Express checkout no longer fails in Shopware 6.6, including PayPal and Apple Pay
+* Express checkout now shows a clear error message when payment creation fails, instead of silently redirecting
+* Order confirmation emails are sent in the correct language and no longer go missing
+* Users without extension permissions can no longer view or edit the plugin settings
+* Basket item images are resized so they no longer cause gateway errors
+* Order and payment status for Direct Bank Transfer now update correctly based on payment and transaction state
+
 # 6.5.7
 * More reliable checkout: The "Pay" button now waits until all required components are fully loaded, preventing failed orders.
 * Performance improvement: Eliminated a redundant merchant config fetch when the config is already provided.
