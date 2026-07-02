@@ -44,6 +44,26 @@
                     domain="UnzerPayment6.settings"
                 >
                     <template #afterElements="{index}">
+                        <sw-alert
+                            v-if="webhookStatus && webhookStatus.needsUpdate"
+                            variant="warning"
+                            appearance="default"
+                            :showIcon="true"
+                            :closable="false"
+                        >
+                            {{ $tc('unzer-payment-settings.webhook.needsUpdate') }}
+                            :
+                            <br/>
+                            {{ webhookStatus.url }}
+                            <div>
+                                <sw-button
+                                    :isLoading="updateWebhookIsLoading"
+                                    @click="updateWebhook(webhookStatus.privateKey, webhookStatus.webhook)"
+                                >
+                                    {{ $tc('unzer-payment-settings.webhook.doUpdate') }}
+                                </sw-button>
+                            </div>
+                        </sw-alert>
                         <template v-if="index == 0">
                             <sw-button
                                 @click="openModalKeyPair = defaultKeyPair"

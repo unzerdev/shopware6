@@ -33,7 +33,7 @@ class UnzerPaymentTransactionController extends AbstractController
     public function __construct(
         private readonly ClientFactoryInterface $clientFactory,
         private readonly UnzerTransactionUtil $unzerTransactionUtil,
-        private readonly PaymentActionService $paymentTransactionService,
+        private readonly PaymentActionService $paymentActionService,
         private readonly PaymentResourceHydratorInterface $hydrator,
         private readonly CancelServiceInterface $cancelService,
         private readonly ShipServiceInterface $shipService,
@@ -197,7 +197,7 @@ class UnzerPaymentTransactionController extends AbstractController
         $comment = (string) $request->get('comment', '');
 
         try {
-            $this->paymentTransactionService->doUnifiedRefund(
+            $this->paymentActionService->doUnifiedRefund(
                 orderTransaction: $orderTransaction,
                 amount: $amount,
                 context: $context,

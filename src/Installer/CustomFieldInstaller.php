@@ -60,41 +60,26 @@ readonly class CustomFieldInstaller implements InstallerInterface
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function install(InstallContext $context, ?object $publicFileSystem = null): void
     {
         $this->customFieldSetRepository->upsert(self::CUSTOM_FIELDS, $context->getContext());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function update(UpdateContext $context, ?object $publicFileSystem = null): void
     {
         $this->customFieldSetRepository->upsert(self::CUSTOM_FIELDS, $context->getContext());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function uninstall(UninstallContext $context): void
     {
         $this->customFieldSetRepository->delete(self::CUSTOM_FIELDS, $context->getContext());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function activate(ActivateContext $context): void
     {
         // Nothing to do here
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deactivate(DeactivateContext $context): void
     {
         // Nothing to do here

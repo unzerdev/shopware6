@@ -257,9 +257,9 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
     protected function getUnzerCustomer(string $unzerCustomerId, string $paymentMethodId, OrderTransactionEntity $orderTransaction, SalesChannelContext $salesChannelContext): AbstractUnzerResource
     {
         $customer = $salesChannelContext->getCustomer();
-        if (empty($orderTransaction->getOrder())) {
-            $orderTransaction = $this->fetchTransactionById($orderTransaction->getId(), $salesChannelContext->getContext());
-        }
+        // re-fetch to make sure all necessary fields are filled
+        $orderTransaction = $this->fetchTransactionById($orderTransaction->getId(), $salesChannelContext->getContext());
+
         $fetchedCustomer = null;
 
         if (!empty($unzerCustomerId)) {

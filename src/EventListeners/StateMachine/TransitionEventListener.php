@@ -117,6 +117,7 @@ readonly class TransitionEventListener implements EventSubscriberInterface
         }
 
         if (\is_array($autoCaptureStatus) && \in_array($event->getToPlace()->getId(), $autoCaptureStatus, true)) {
+            $this->logger->info(\sprintf('Automatic capture for order [%s] was triggered', $order->getOrderNumber()));
             try {
                 $this->paymentActionService->captureOrder($order, $event->getContext());
             } catch (\Throwable $exception) {

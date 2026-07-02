@@ -19,8 +19,6 @@
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
         </service>
 
-        <service id="UnzerPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
-
         <service id="UnzerPayment6\Components\Validator\AutomaticShippingValidator">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelper"/>
@@ -40,7 +38,7 @@
             <argument type="service" id="unzer_payment.logger"/>
         </service>
 
-        <service id="UnzerPayment6\Components\ClientFactory\ClientFactory" public="true"> <!-- TODO: change back to not public -->
+        <service id="UnzerPayment6\Components\ClientFactory\ClientFactory">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="UnzerPayment6\Components\UnzerPaymentDebugHandler"/>
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\KeyPairConfigReader"/>

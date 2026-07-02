@@ -35,6 +35,48 @@ class WebhookRegistrator implements WebhookRegistratorInterface
     ) {
     }
 
+    public function registerWebhookDirectly(RequestDataBag $requestDataBag): array
+    {
+        $returnData = [];
+        $url = $requestDataBag->get('url', '');
+        $privateKey = $requestDataBag->get('privateKey');
+        try {
+            $relativePath = $this->router->generate('frontend.unzer.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_PATH);
+            if (!str_contains($url, $relativePath)) {
+                $url .= $relativePath;
+            }
+            $result = $this->clientFactory
+                ->createClientFromPrivateKey($privateKey)
+                ->createWebhook($url, 'all');
+
+            $returnData = [
+                'success' => true,
+                'url' => $url,
+                'data' => $result,
+                'message' => 'unzer-payment-settings.webhook.register.done',
+            ];
+
+            $this->logger->info(\sprintf('Webhooks registered for domain %s', $url));
+        } catch (UnzerApiException|\Throwable $exception) {
+            $returnData[$url] = [
+                'success' => false,
+                'message' => 'unzer-payment-settings.webhook.register.error',
+            ];
+
+            $this->logger->error(
+                \sprintf('Webhook registration failed for domain %s', $url),
+                [
+                    'message' => $exception->getMessage(),
+                    'code' => $exception->getCode(),
+                    'file' => $exception->getFile(),
+                    'trace' => $exception->getTraceAsString(),
+                ]
+            );
+        }
+
+        return $returnData;
+    }
+
     public function registerWebhook(RequestDataBag $salesChannelDomains): array
     {
         $returnData = [];
@@ -54,7 +96,9 @@ class WebhookRegistrator implements WebhookRegistratorInterface
 
             try {
                 $relativePath = $this->router->generate('frontend.unzer.webhook.execute', [], UrlGeneratorInterface::ABSOLUTE_PATH);
-                $url = $domainUrl . $relativePath;
+                if (!str_contains($domainUrl, $relativePath)) {
+                    $url = $domainUrl . $relativePath;
+                }
 
                 $result = $this->clientFactory
                     ->createClientFromPrivateKey($privateKey, $salesChannelId)

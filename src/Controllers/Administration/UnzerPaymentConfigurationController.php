@@ -104,6 +104,15 @@ class UnzerPaymentConfigurationController extends AbstractController
         );
     }
 
+    #[Route(path: '/api/_action/unzer-payment/register-webhook-directly', name: 'api.action.unzer.webhook.register-directly', methods: ['POST'])]
+    public function registerWebhookDirectly(RequestDataBag $dataBag): JsonResponse
+    {
+        return new JsonResponse(
+            $this->webhookRegistrator->registerWebhookDirectly($dataBag),
+            200
+        );
+    }
+
     #[Route(path: '/api/_action/unzer-payment/clear-webhooks', name: 'api.action.unzer.webhooks.clear', methods: ['POST'])]
     public function clearWebhooks(RequestDataBag $dataBag): JsonResponse
     {

@@ -28,34 +28,35 @@
                 >
                     {{ $tc('unzer-payment-settings.modal.webhook.httpsInfo') }}
                 </sw-alert>
-                <sw-card
-                    v-for="salesChannel in salesChannels"
-                    v-if="!selectedSalesChannelId || selectedSalesChannelId === salesChannel.id"
-                    :isLoading="isDataLoading"
-                    :key="salesChannel.id"
-                    :title="salesChannel.translated.name"
-                    :large="true"
-                >
-                    <sw-entity-single-select
-                        v-if="!isWebhookRegisteredForSalesChannel(salesChannel.id)"
-                        v-model:value="selection[salesChannel.id]"
-                        :placeholder="$tc(`unzer-payment-settings.modal.webhook.placeholder`)"
-                        :criteria="getSalesChannelDomainCriteria(salesChannel.id)"
-                        entity="sales_channel_domain"
-                        label-property="url"
-                        @update:value="onSelectItem"
+                <div v-for="salesChannel in salesChannels">
+                    <sw-card
+                        v-if="salesChannel && salesChannel.id  && (!selectedSalesChannelId || selectedSalesChannelId === salesChannel.id)"
+                        :isLoading="isDataLoading"
+                        :key="salesChannel.id"
+                        :title="salesChannel.translated.name"
+                        :large="true"
                     >
-                        </sw-entity-single-select>
-                    <sw-alert
-                        v-else
-                        variant="success"
-                        appearance="default"
-                        :showIcon="true"
-                        :closable="false"
-                    >
-                        {{ $tc('unzer-payment-settings.modal.webhook.registered') }}
-                    </sw-alert>
-                </sw-card>
+                        <sw-entity-single-select
+                            v-if="!isWebhookRegisteredForSalesChannel(salesChannel.id)"
+                            v-model:value="selection[salesChannel.id]"
+                            :placeholder="$tc(`unzer-payment-settings.modal.webhook.placeholder`)"
+                            :criteria="getSalesChannelDomainCriteria(salesChannel.id)"
+                            entity="sales_channel_domain"
+                            label-property="url"
+                            @update:value="onSelectItem"
+                        >
+                            </sw-entity-single-select>
+                        <sw-alert
+                            v-else
+                            variant="success"
+                            appearance="default"
+                            :showIcon="true"
+                            :closable="false"
+                        >
+                            {{ $tc('unzer-payment-settings.modal.webhook.registered') }}
+                        </sw-alert>
+                    </sw-card>
+                </div>
                 <sw-pagination
                     :total="salesChannels.total"
                     :limit="salesChannels.total"

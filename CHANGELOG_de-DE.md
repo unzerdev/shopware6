@@ -1,3 +1,11 @@
+# 6.5.8
+* Der Express-Checkout funktioniert unter Shopware 6.6 wieder zuverlässig, einschließlich PayPal und Apple Pay
+* Beim Express-Checkout wird nun eine verständliche Fehlermeldung angezeigt, wenn die Erstellung der Zahlung fehlschlägt, anstatt den Kunden kommentarlos weiterzuleiten
+* Bestellbestätigungen werden nun in der korrekten Sprache versendet und gehen nicht mehr verloren
+* Benutzer ohne Berechtigung für die Erweiterung können die Plugin-Einstellungen nicht mehr anzeigen oder bearbeiten
+* Produktbilder im Warenkorb werden nun automatisch in einer geeigneten Größe verarbeitet und verursachen keine Gateway-Fehler mehr
+* Bestell- und Zahlungsstatus für Direktüberweisung werden nun zuverlässig anhand des Zahlungs- und Transaktionsstatus aktualisiert
+
 # 6.5.7
 * Zuverlässigerer Checkout: Der „Bezahlen“-Button wartet jetzt, bis alle erforderlichen Komponenten vollständig geladen sind, wodurch fehlgeschlagene Bestellungen verhindert werden.
 * Leistungsverbesserung: Ein redundanter Abruf der Händlerkonfiguration wurde entfernt, wenn die Konfiguration bereits vorhanden ist.
