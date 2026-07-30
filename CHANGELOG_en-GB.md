@@ -3,6 +3,16 @@
 * Update: Unzer PHP SDK upgraded to 4.x
 * Deprecation notice: Giropay is deprecated in the Unzer PHP SDK 4.x and will be removed in a future release. Merchants should disable the Giropay payment method and migrate customers to alternative methods.
 
+# 7.1.10
+* PayPal Express now works correctly at checkout in Shopware 6.7
+* Klarna payments no longer fail with a “payment method not found” error in Shopware 6.7
+* Express checkout now shows a clear error message when payment creation fails, instead of silently redirecting
+* Order confirmation emails are sent in the correct language and no longer go missing
+* Users without extension permissions can no longer view or edit the plugin settings
+* Basket item images are resized so they no longer cause gateway errors
+* Order and payment status for Direct Bank Transfer now update correctly based on payment and transaction state
+* Direct Debit payment instructions have been removed from the checkout flow, as they’re no longer needed
+
 # 7.1.9
 * Changes for Unzer Shopware 6.7 plugin to support Unzer Refund Manager
 

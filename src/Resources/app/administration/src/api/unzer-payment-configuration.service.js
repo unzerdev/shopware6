@@ -30,6 +30,20 @@ class UnzerPaymentConfigurationService extends ApiService {
             });
     }
 
+    registerWebhookDirectly(data) {
+        return this.httpClient
+            .post(
+                `_action/${this.getApiBasePath()}/register-webhook-directly`,
+                data,
+                {
+                    headers: this.getBasicHeaders(),
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     clearWebhooks(data) {
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/clear-webhooks`, data, {

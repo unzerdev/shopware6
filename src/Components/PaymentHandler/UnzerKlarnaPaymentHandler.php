@@ -9,9 +9,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Struct;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanAuthorize;
 use UnzerPayment6\Components\PaymentHandler\Traits\CanCharge;
-use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 use UnzerSDK\Resources\PaymentTypes\Klarna;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Charge;
@@ -39,9 +39,13 @@ class UnzerKlarnaPaymentHandler extends AbstractUnzerPaymentHandler
         );
 
         try {
-            $transactionModifier = function (Authorization|Charge $authorization): void {
-                $authorization->setTermsAndConditionUrl('https://unzer.com');
-                $authorization->setPrivacyPolicyUrl('https://unzer.com');
+            $orderTransaction = $this->transactionUtil->getOrderTransaction($transaction->getOrderTransactionId(), $context);
+            $salesChannelId = $orderTransaction->getOrder()->getSalesChannelId();
+            $transactionModifier = function (Authorization|Charge $authorization) use ($salesChannelId): void {
+                $termsUrl = $this->router->generate('frontend.cms.page.full', ['id' => $this->configReader->getSingleValue('core.basicInformation.tosPage', $salesChannelId)], UrlGeneratorInterface::ABSOLUTE_URL);
+                $privacyUrl = $this->router->generate('frontend.cms.page.full', ['id' => $this->configReader->getSingleValue('core.basicInformation.privacyPage', $salesChannelId)], UrlGeneratorInterface::ABSOLUTE_URL);
+                $authorization->setTermsAndConditionUrl($termsUrl);
+                $authorization->setPrivacyPolicyUrl($privacyUrl);
             };
 
             $returnUrl = $this->authorize(

@@ -168,11 +168,15 @@ class UnzerPayPalPaymentHandler extends AbstractUnzerPaymentHandler
                 && $this->paymentType instanceof Paypal
                 && $this->paymentType->getEmail() !== null
             ) {
-                $this->saveToDeviceVault(
-                    $customer,
-                    UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL,
-                    $context
-                );
+                try {
+                    $this->saveToDeviceVault(
+                        $customer,
+                        UnzerPaymentDeviceEntity::DEVICE_TYPE_PAYPAL,
+                        $context
+                    );
+                } catch (\Throwable $e) {
+                    $this->logger->warning('Could not save to device vault: ' . $e->getMessage());
+                }
             }
 
             $this->transactionStateHandler->transformTransactionState(

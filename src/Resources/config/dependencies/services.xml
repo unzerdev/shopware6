@@ -19,8 +19,6 @@
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
         </service>
 
-        <service id="UnzerPayment6\Components\AddressHashGenerator\AddressHashGenerator"/>
-
         <service id="UnzerPayment6\Components\Validator\AutomaticShippingValidator">
             <argument type="service" id="UnzerPayment6\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelper"/>

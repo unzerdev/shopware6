@@ -5,7 +5,7 @@
 
     {% block page_checkout_finish_details_unzer_paymenttransfer_information %}
         {% for transaction in page.order.transactions %}
-            {% if transaction.paymentMethodId == constant('UnzerPayment6\\Installer\\PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE') %}
+            {% if transaction.paymentMethodId == constant('UnzerPayment6\\Installer\\PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE') or transaction.paymentMethodId == constant('UnzerPayment6\\Installer\\PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED') %}
                 {% continue %}
             {% endif %}
             {% if transaction.extensions.unzerTransferInfo is defined and transaction.extensions.unzerTransferInfo is not null %}

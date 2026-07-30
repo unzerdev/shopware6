@@ -99,15 +99,6 @@ class BasketResourceHydrator
             $basketItem->setTitle($label);
             $basketItem->setQuantity($lineItem->getQuantity());
             $basketItem->setType($lineItem->getUnitPrice() < 0 ? BasketItemTypes::VOUCHER : BasketItemTypes::GOODS);
-            if (!empty($lineItem->getCover()?->getUrl()) && !str_contains($lineItem->getCover()?->getUrl(), '.ddev.site')) {
-                try {
-                    $media = $lineItem->getCover();
-                    $url = $media?->getThumbnails()?->first()?->getUrl() ?? $media?->getUrl();
-                    $basketItem->setImageUrl($url);
-                } catch (\Exception $e) {
-                    $basketItem->setImageUrl($lineItem->getCover()?->getUrl());
-                }
-            }
 
             $taxCounter = 0;
             $amountTax = 0.0;

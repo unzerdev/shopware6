@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\WebhookHandler;
 
+use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Uuid\Exception\InvalidUuidException;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
 use UnzerPayment6\Components\CustomFieldsHelper\CustomFieldsHelperInterface;
@@ -27,19 +30,25 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
         private readonly ClientFactoryInterface $clientFactory,
         private readonly EntityRepository $orderTransactionRepository,
         private readonly LoggerInterface $logger,
-        private readonly CustomFieldsHelperInterface $customFieldsHelper
+        private readonly CustomFieldsHelperInterface $customFieldsHelper,
+        private readonly Connection $connection
     ) {
     }
 
     public function supports(Webhook $webhook, SalesChannelContext $context): bool
     {
-        return stripos($webhook->getEvent(), 'payment.') !== false;
+        return stripos($webhook->getEvent(), 'payment.') !== false || stripos($webhook->getEvent(), 'charge.succeeded') !== false;
     }
 
     public function execute(Webhook $webhook, SalesChannelContext $context): void
     {
         $client = $this->clientFactory->createClientFromPublicKey($webhook->getPublicKey(), $context->getSalesChannelId());
-        $payment = $client->getResourceService()->fetchResourceByUrl($webhook->getRetrieveUrl());
+
+        if (stripos($webhook->getEvent(), 'charge.') !== false) {
+            $payment = $client->fetchPayment($webhook->getPaymentId());
+        } else {
+            $payment = $client->getResourceService()->fetchResourceByUrl($webhook->getRetrieveUrl());
+        }
 
         if (!$payment instanceof Payment) {
             $this->logger->error(
@@ -65,7 +74,7 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
             return;
         }
 
-        $context->getContext()->assign(['languageIdChain' => [$transaction->getOrder()->getLanguageId()]]);
+        $context->getContext()->assign(['languageIdChain' => $this->getLanguageChain($transaction->getOrder()->getLanguageId())]);
         $this->customFieldsHelper->setOrderTransactionCustomFields($transaction, $context->getContext());
 
         $this->transactionStateHandler->transformTransactionState(
@@ -93,5 +102,16 @@ class PaymentStatusWebhookHandler implements WebhookHandlerInterface
 
             return null;
         }
+    }
+
+    private function getLanguageChain(string $languageId): array
+    {
+        $parent = $this->connection->fetchOne(
+            'SELECT LOWER(HEX(language.parent_id)) FROM language WHERE language.id = :languageId',
+            ['languageId' => Uuid::fromHexToBytes($languageId)]
+        );
+        $chain = array_filter(array_unique([$languageId, $parent, Defaults::LANGUAGE_SYSTEM]));
+
+        return $chain;
     }
 }

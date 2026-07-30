@@ -5,6 +5,7 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
         googlePay: {},
         applePay: {},
         keyPairConfig: null,
+        urls: {},
     };
 
     /**
@@ -27,6 +28,15 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
             script.src =
                 'https://static-v2.unzer.com/v2/ui-components/index.js';
             document.head.appendChild(script);
+        }
+    }
+
+    showError() {
+        const errorElement = this.el.querySelector(
+            '.unzer-express-buttons-error'
+        );
+        if (errorElement) {
+            errorElement.removeAttribute('hidden');
         }
     }
 
@@ -71,6 +81,9 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
 
             if (unzerApplePay) {
                 this.registerApplePay(unzerApplePay, unzerExpressPayment);
+                const container = unzerApplePay.parentNode;
+                unzerApplePay.remove();
+                container.appendChild(unzerApplePay);
             }
         });
     }
@@ -81,24 +94,28 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
         paypalButton.addEventListener('click', async (event) => {
             event.stopPropagation();
             const response = await unzerExpressPayment.submit();
-            if (response.submitResponse && response.submitResponse.success) {
-                const paymentTypeId = response.submitResponse.data.id;
-                fetch('/unzer/paypal-express', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        paymentTypeId: paymentTypeId,
-                    }),
-                })
-                    .then((response) => response.json())
-                    .then((json) => {
-                        location.href = json.redirectUrl;
-                    });
-            } else {
-                /* Handle resource creation error */
+
+            if (!response?.submitResponse?.success) {
+                this.showError();
+                return;
             }
+            const paymentTypeId = response.submitResponse.data.id;
+            fetch(this.options.urls.paypal, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    paymentTypeId: paymentTypeId,
+                }),
+            })
+                .then((response) => response.json())
+                .then((json) => {
+                    location.href = json.redirectUrl;
+                })
+                .catch(() => {
+                    this.showError();
+                });
         });
     }
 
@@ -137,9 +154,13 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
             ) => {
                 // You can create customer here based on paymentData
                 const response = await unzerExpressPayment.submit();
+                if (!response?.submitResponse?.success) {
+                    this.showError();
+                    return;
+                }
                 const paymentTypeId = response.submitResponse.data.id;
 
-                fetch('/unzer/google-pay-express', {
+                fetch(this.options.urls.googlePay, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -152,6 +173,9 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
                     .then((response) => response.json())
                     .then((json) => {
                         location.href = json.redirectUrl;
+                    })
+                    .catch(() => {
+                        this.showError();
                     });
             },
             shippingAddressRequired: true,
@@ -160,6 +184,7 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
     }
 
     registerApplePay(applePayButton, unzerExpressPayment) {
+        console.log('register amount', this.options.applePay.amount);
         const applePayPaymentRequest = {
             countryCode: this.options.applePay.countryCode,
             currencyCode: this.options.applePay.currency,
@@ -197,10 +222,12 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
                     approve();
                 } else {
                     reject();
+                    this.showError();
+                    return;
                 }
                 const paymentTypeId = response.submitResponse.data.id;
 
-                fetch('/unzer/applepay-express', {
+                fetch(this.options.urls.applePay, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -215,6 +242,9 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
                     .then((response) => response.json())
                     .then((json) => {
                         location.href = json.redirectUrl;
+                    })
+                    .catch(() => {
+                        this.showError();
                     });
             },
         };
