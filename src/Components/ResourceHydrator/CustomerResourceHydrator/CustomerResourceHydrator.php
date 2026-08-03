@@ -103,6 +103,9 @@ readonly class CustomerResourceHydrator implements CustomerResourceHydratorInter
             }
         }
 
+        $billingAddress = $this->prepareAddress($billingAddress);
+        $shippingAddress = $this->prepareAddress($shippingAddress);
+
         if (empty($billingAddress->getCompany()) || !\in_array($paymentMethodId, self::B2B_CUSTOMERS_ALLOWED, true)) {
             $unzerCustomer = CustomerFactory::createCustomer(
                 $billingAddress->getFirstName(),
@@ -149,6 +152,8 @@ readonly class CustomerResourceHydrator implements CustomerResourceHydratorInter
         if (!$billingAddress) {
             throw new \RuntimeException(\sprintf('Could not determine the address for customer with number %s', $customer->getCustomerNumber()));
         }
+
+        $billingAddress = $this->prepareAddress($billingAddress);
 
         return $this->updateAdditionalDataToCustomer($unzerCustomer, $customer, $billingAddress, $orderTransaction);
     }
@@ -314,5 +319,24 @@ readonly class CustomerResourceHydrator implements CustomerResourceHydratorInter
         $unzerShippingAddress->setShippingType($shippingType);
 
         $unzerCustomer->setShippingAddress($unzerShippingAddress);
+    }
+
+    protected function prepareAddress(OrderAddressEntity|CustomerAddressEntity|null $address):OrderAddressEntity|CustomerAddressEntity|null{
+        if($address === null){
+            return null;
+        }
+
+        $address = clone $address;
+
+        $address->setFirstName(trim($address->getFirstName()));
+        $address->setLastName(trim($address->getLastName()));
+        $address->setStreet(trim($address->getStreet()));
+        $address->setZipcode(trim($address->getZipcode()));
+        $address->setCity(trim($address->getCity()));
+        if(!empty($address->getCompany())){
+            $address->setCompany(trim($address->getCompany()));
+        }
+
+        return $address;
     }
 }

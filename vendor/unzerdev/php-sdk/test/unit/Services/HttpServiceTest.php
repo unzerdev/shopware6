@@ -112,7 +112,6 @@ class HttpServiceTest extends BasePaymentTest
         $adapterMock->expects($this->once())->method('setHeaders')->with($headers);
         $adapterMock->expects($this->once())->method('execute')->willReturn('myResponseString');
         $adapterMock->expects($this->once())->method('getResponseCode')->willReturn('399');
-        $adapterMock->expects($this->once())->method('close');
 
         $httpServiceMock->method('getAdapter')->willReturn($adapterMock);
 

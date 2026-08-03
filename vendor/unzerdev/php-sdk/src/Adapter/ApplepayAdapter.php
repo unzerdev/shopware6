@@ -42,7 +42,6 @@ class ApplepayAdapter
         $this->setOption(CURLOPT_POSTFIELDS, $payload);
 
         $sessionResponse = $this->execute();
-        $this->close();
         return $sessionResponse;
     }
 
@@ -129,14 +128,6 @@ class ApplepayAdapter
                 break;
         }
         throw new ApplepayMerchantValidationException($errorMessage);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function close(): void
-    {
-        curl_close($this->request);
     }
 
     /**

@@ -98,14 +98,6 @@ class CurlAdapter implements HttpAdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function close(): void
-    {
-        curl_close($this->request);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setHeaders(array $headers): void
     {
         array_walk($headers, static function (&$value, $key) {

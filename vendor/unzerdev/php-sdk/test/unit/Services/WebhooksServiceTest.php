@@ -11,16 +11,18 @@
 
 namespace UnzerSDK\test\unit\Services;
 
-use UnzerSDK\Unzer;
+use RuntimeException;
+use stdClass;
 use UnzerSDK\Interfaces\ResourceServiceInterface;
+use UnzerSDK\Resources\TransactionTypes\Charge;
+use UnzerSDK\Resources\TransactionTypes\Chargeback;
 use UnzerSDK\Resources\Webhook;
 use UnzerSDK\Resources\Webhooks;
 use UnzerSDK\Services\ResourceService;
 use UnzerSDK\Services\WebhookService;
 use UnzerSDK\test\BasePaymentTest;
 use UnzerSDK\test\unit\DummyResource;
-use RuntimeException;
-use stdClass;
+use UnzerSDK\Unzer;
 
 class WebhooksServiceTest extends BasePaymentTest
 {
@@ -326,6 +328,54 @@ class WebhooksServiceTest extends BasePaymentTest
 
         /** @var WebhookService $webhookService */
         $webhookService->fetchResourceFromEvent();
+    }
+
+    /**
+     * Verify that a chargeback is returned from a webhook event.
+     *
+     * @test
+     */
+    public function fetchChargebackByEventShouldReturnChargeback(): void
+    {
+        // given
+        $unzer = new Unzer('s-priv-1234');
+        $webhookService = new WebhookService($unzer);
+
+        $paymentId = 's-pay-42';
+        $chargeId = 's-chg-1';
+        $chargebackId = 's-cbk-1';
+        $retrieveUrl = "https://api.unzer.com/v1/payments/{$paymentId}/charges/{$chargeId}/chargebacks/{$chargebackId}";
+
+        // Partial mock: keep original behavior except fetchChargebackById which we want to intercept
+        $resourceServiceMock = $this->getMockBuilder(ResourceService::class)
+            ->setConstructorArgs([$unzer])
+            ->setMethods(['fetchChargebackById'])
+            ->getMock();
+
+        $chargeback = (new Chargeback(10.0))
+            ->setId($chargebackId)
+            ->setParentResource((new Charge())->setId($chargeId));
+
+        $resourceServiceMock->expects($this->once())
+            ->method('fetchChargebackById')
+            ->with($paymentId, $chargebackId, $chargeId)
+            ->willReturn($chargeback);
+
+        $webhookService->setResourceService($resourceServiceMock);
+
+        $eventJson = json_encode([
+            'event' => 'chargeback',
+            'publicKey' => 's-pub-xyz',
+            'retrieveUrl' => $retrieveUrl,
+            'paymentId' => $paymentId
+        ]);
+
+        // when
+        $fetchedChargeback = $webhookService->fetchResourceFromEvent($eventJson);
+
+        // then
+        $this->assertSame($chargeback, $fetchedChargeback);
+        $this->assertNotNull($fetchedChargeback);
     }
 
     /**

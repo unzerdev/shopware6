@@ -14,15 +14,15 @@ namespace UnzerSDK\test\unit\Resources;
 use UnzerSDK\Constants\CompanyCommercialSectorItems;
 use UnzerSDK\Constants\CompanyRegistrationTypes;
 use UnzerSDK\Constants\Salutations;
-use UnzerSDK\Resources\EmbeddedResources\CompanyOwner;
-use UnzerSDK\Unzer;
 use UnzerSDK\Interfaces\ResourceServiceInterface;
 use UnzerSDK\Resources\Customer;
 use UnzerSDK\Resources\EmbeddedResources\Address;
 use UnzerSDK\Resources\EmbeddedResources\CompanyInfo;
+use UnzerSDK\Resources\EmbeddedResources\CompanyOwner;
 use UnzerSDK\Resources\EmbeddedResources\GeoLocation;
 use UnzerSDK\Services\ResourceService;
 use UnzerSDK\test\BasePaymentTest;
+use UnzerSDK\Unzer;
 
 class CustomerTest extends BasePaymentTest
 {
@@ -121,6 +121,7 @@ class CustomerTest extends BasePaymentTest
             ->setCity('shipping_city')
             ->setZip('shipping_zip')
             ->setStreet('shipping_street')
+            ->setCompany('shipping_company')
             ->setShippingType('shipping_type');
 
         $customer = new Customer();
@@ -132,6 +133,7 @@ class CustomerTest extends BasePaymentTest
         $this->assertNull($shippingAddress->getZip());
         $this->assertNull($shippingAddress->getStreet());
         $this->assertNull($shippingAddress->getShippingType());
+        $this->assertNull($shippingAddress->getCompany());
 
         $customer->setShippingAddress($address);
         $shippingAddress = $customer->getShippingAddress();
@@ -142,6 +144,7 @@ class CustomerTest extends BasePaymentTest
         $this->assertEquals('shipping_zip', $shippingAddress->getZip());
         $this->assertEquals('shipping_street', $shippingAddress->getStreet());
         $this->assertEquals('shipping_type', $shippingAddress->getShippingType());
+        $this->assertEquals('shipping_company', $shippingAddress->getCompany());
     }
 
     /**

@@ -16,13 +16,6 @@ use function in_array;
  */
 class Cancellation extends AbstractTransactionType
 {
-    /**
-     * The cancellation amount will be transferred as grossAmount in case of Installment Secured payment type.
-     *
-     * @var float $amount
-     */
-    protected $amount;
-
     /** @var string $reasonCode */
     protected $reasonCode;
 
@@ -51,29 +44,6 @@ class Cancellation extends AbstractTransactionType
     public function __construct(?float $amount = null)
     {
         $this->setAmount($amount);
-    }
-
-    /**
-     * Returns the cancellationAmount (equals grossAmount in case of Installment Secured).
-     *
-     * @return float|null
-     */
-    public function getAmount(): ?float
-    {
-        return $this->amount;
-    }
-
-    /**
-     * Sets the cancellationAmount (equals grossAmount in case of Installment Secured).
-     *
-     * @param float|null $amount
-     *
-     * @return Cancellation
-     */
-    public function setAmount(?float $amount): self
-    {
-        $this->amount = $amount !== null ? round($amount, 4) : null;
-        return $this;
     }
 
     /**

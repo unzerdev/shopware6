@@ -1,3 +1,7 @@
+# 7.1.11
+* Update: Unzer PHP SDK 4.0.1
+* Entfernung von individuellem Plugin-php Requirement in composer.json
+
 # 7.1.10
 * PayPal Express funktioniert im Checkout unter Shopware 6.7 wieder korrekt
 * Klarna-Zahlungen schlagen unter Shopware 6.7 nicht mehr mit dem Fehler „Zahlungsmethode nicht gefunden“ fehl
