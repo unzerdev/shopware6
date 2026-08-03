@@ -334,7 +334,6 @@ abstract class AbstractUnzerPaymentHandler implements AsynchronousPaymentHandler
             'order.deliveries.shippingOrderAddress.country',
             'order.lineItems.product.manufacturer',
             'order.lineItems.cover.url',
-            'order.lineItems.calculatedPrices.taxes',
         ]);
 
         $transactionSearchResult = $this->transactionRepository->search($transactionCriteria, $context);

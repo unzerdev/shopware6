@@ -30,7 +30,6 @@ readonly class UnzerTransactionUtil
         'order.deliveries.shippingOrderAddress.country',
         'order.lineItems.product.manufacturer',
         'order.lineItems.cover.url',
-        'order.lineItems.calculatedPrices.taxes',
     ];
 
     public function __construct(
