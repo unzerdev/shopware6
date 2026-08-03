@@ -5,6 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres
 to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.0.1](https://github.com/unzerdev/php-sdk/compare/4.0.0..4.0.1)
+
+### Changed
+
+* `\UnzerSDK\Unzer` can now be initialised with a public key (`s-pub-*` / `p-pub-*`), enabling `fetchConfig()` to be called without a private key.
+
+## [4.0.0](https://github.com/unzerdev/php-sdk/compare/3.15.0..4.0.0)
+
+### Added
+
+* Add `company` field to `\UnzerSDK\Resources\EmbeddedResources\Address` class.
+* Add PHP 8.5 to supported versions in `composer.json`.
+
+### Changed
+
+* Allow `null` return for `getCompany()` in `\UnzerSDK\Resources\EmbeddedResources\Address`.
+* Remove deprecated `curl_close` and `\ReflectionMethod::setAccessible` calls to address PHP 8.5 deprecation warnings.
+* Drop support for PHP 7.4 and PHP 8.0.
+
+### Deprecated
+
+* Mark `\UnzerSDK\Resources\PaymentTypes\Giropay` as deprecated.
+
+## [3.15.0](https://github.com/unzerdev/php-sdk/compare/3.14.0..3.15.0)
+
+### Added
+
+* Add the SCA (Strong Customer Authentication) transaction type.
+    * Add class `\UnzerSDK\Resources\TransactionTypes\Sca`.
+    * Add methods in `\UnzerSDK\Unzer` class:
+        * `performSca(Sca $sca, $paymentType, $customer = null, ?Metadata $metadata = null, ?Basket $basket = null): Sca` -
+        Perform an SCA transaction.
+        * `fetchSca(Sca $sca): Sca` - Fetch an SCA transaction.
+        * `fetchScaById($payment, string $scaId): Sca` - Fetch an SCA transaction by ID.
+        * `chargeScaTransaction($payment, Charge $charge, $customer = null, ?Metadata $metadata = null, ?Basket $basket = null): Charge` -
+        Charge an SCA transaction.
+        * `authorizeScaTransaction($payment, Authorization $authorization, $customer = null, ?Metadata $metadata = null, ?Basket $basket = null): Authorization` -
+        Authorize an SCA transaction.
+    * Add methods in `\UnzerSDK\Resources\Payment` class:
+        * `getSca(bool $lazy = false): ?Sca` - Get the SCA transaction.
+        * `setSca(Sca $sca): self` - Set the SCA transaction.
+
+## [3.14.0](https://github.com/unzerdev/php-sdk/compare/3.13.2..3.14.0)
+
+### Changed
+
+* Add `subscriptionAgreement` property for v2 Paypage creation to `\UnzerSDK\Resources\EmbeddedResources\Paypage\Urls`
+
+## [3.13.2](https://github.com/unzerdev/php-sdk/compare/3.13.1..3.13.2)
+
+### Changed
+
+* Added chargeback handling for `fetchResourceFromEvent()` method.
+
 ## [3.13.1](https://github.com/unzerdev/php-sdk/compare/3.13.0..3.13.1)
 
 ### Added

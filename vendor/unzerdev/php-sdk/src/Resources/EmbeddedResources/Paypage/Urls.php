@@ -11,11 +11,15 @@ class Urls extends AbstractUnzerResource
     protected ?string $imprint = null;
     protected ?string $help = null;
     protected ?string $contact = null;
+    /** @deprecated Use Style::$favicon instead.
+     * @see Style::$favicon
+     */
     protected ?string $favicon = null;
     protected ?string $returnSuccess = null;
     protected ?string $returnPending = null;
     protected ?string $returnFailure = null;
     protected ?string $returnCancel = null;
+    protected ?string $subscriptionAgreement = null;
 
     public function getTermsAndCondition(): ?string
     {
@@ -124,6 +128,17 @@ class Urls extends AbstractUnzerResource
     public function setReturnCancel(?string $returnCancel): Urls
     {
         $this->returnCancel = $returnCancel;
+        return $this;
+    }
+
+    public function getSubscriptionAgreement(): ?string
+    {
+        return $this->subscriptionAgreement;
+    }
+
+    public function setSubscriptionAgreement(?string $subscriptionAgreement): Urls
+    {
+        $this->subscriptionAgreement = $subscriptionAgreement;
         return $this;
     }
 }

@@ -135,7 +135,6 @@ class HttpService
         $httpAdapter = $this->getAdapter();
         $response = $httpAdapter->execute();
         $responseCode = $httpAdapter->getResponseCode();
-        $httpAdapter->close();
 
         // handle response
         try {

@@ -1,3 +1,7 @@
+# 7.1.11
+* Update: Unzer PHP SDK 4.0.1
+* Removed individual php requirement in composer.json
+
 # 7.1.10
 * PayPal Express now works correctly at checkout in Shopware 6.7
 * Klarna payments no longer fail with a “payment method not found” error in Shopware 6.7

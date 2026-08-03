@@ -41,6 +41,7 @@ class ApiResponseCodes
     public const API_ERROR_CUSTOMER_DOES_NOT_EXIST                     = 'API.410.100.100';
     public const API_ERROR_CUSTOMER_ID_ALREADY_EXISTS                  = 'API.410.200.010';
     public const API_ERROR_ADDRESS_NAME_TO_LONG                        = 'API.410.200.031';
+    public const API_CANNOT_CHARGE_UNSUCCESSFUL_SCA_TRANSACTION = 'API.500.100.060';
     public const API_ERROR_CUSTOMER_CAN_NOT_BE_FOUND                   = 'API.500.100.100';
     public const API_ERROR_REQUEST_DATA_IS_INVALID                     = 'API.500.300.999';
     public const API_ERROR_RECURRING_PAYMENT_NOT_SUPPORTED             = 'API.500.550.004';

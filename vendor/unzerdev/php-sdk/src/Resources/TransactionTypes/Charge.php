@@ -25,9 +25,6 @@ class Charge extends AbstractTransactionType
     use HasDescriptor;
     use HasChargebacks;
 
-    /** @var float $amount */
-    protected $amount;
-
     /** @var string $currency */
     protected $currency;
 
@@ -52,25 +49,6 @@ class Charge extends AbstractTransactionType
         $this->setAmount($amount);
         $this->setCurrency($currency);
         $this->setReturnUrl($returnUrl);
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getAmount(): ?float
-    {
-        return $this->amount;
-    }
-
-    /**
-     * @param float|null $amount
-     *
-     * @return self
-     */
-    public function setAmount(?float $amount): self
-    {
-        $this->amount = $amount !== null ? round($amount, 4) : null;
-        return $this;
     }
 
     /**
