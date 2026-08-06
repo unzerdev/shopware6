@@ -1391,7 +1391,8 @@ class ResourceServiceTest extends BasePaymentTest
             'v2Customer' => ['fetchCustomer', ['s-cst-123e4567-e89b-12d3-a456-426614174000'], 'https://api.unzer.com/v2/customers/s-cst-123e4567-e89b-12d3-a456-426614174000'],
             'v1Basket' => ['fetchBasket', ['s-bsk-1254'], 'https://api.unzer.com/v1/baskets/s-bsk-1254/'],
             'v2Basket' => ['fetchBasket', ['s-bsk-1254'], 'https://api.unzer.com/v2/baskets/s-bsk-1254/'],
-            'Payout' => ['fetchPayout', ['s-pay-100746'], 'https://api.unzer.com/v1/payments/s-pay-100746/payout/s-out-1/']
+            'Payout' => ['fetchPayout', ['s-pay-100746'], 'https://api.unzer.com/v1/payments/s-pay-100746/payout/s-out-1/'],
+            'Sca' => ['fetchScaById', ['s-pay-100746', 's-sca-1'], 'https://api.unzer.com/v1/payments/s-pay-100746/sca/s-sca-1/']
         ];
     }
 

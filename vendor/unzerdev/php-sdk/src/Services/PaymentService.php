@@ -22,6 +22,7 @@ use UnzerSDK\Resources\PaymentTypes\Paypage;
 use UnzerSDK\Resources\TransactionTypes\Authorization;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Payout;
+use UnzerSDK\Resources\TransactionTypes\Sca;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
 use UnzerSDK\Unzer;
 
@@ -87,7 +88,10 @@ class PaymentService implements PaymentServiceInterface
         $paymentType = $payment->getPaymentType();
         $authorization->setSpecialParams($paymentType !== null ? $paymentType->getTransactionParams() : []);
 
-        $payment->setAuthorization($authorization)->setCustomer($customer)->setMetadata($metadata)->setBasket($basket);
+        $payment->setAuthorization($authorization)
+            ->setCustomer($customer)
+            ->setMetadata($metadata)
+            ->setBasket($basket);
 
         $this->getResourceService()->createResource($authorization);
         return $authorization;
@@ -391,5 +395,33 @@ class PaymentService implements PaymentServiceInterface
     private function createPayment($paymentType): AbstractUnzerResource
     {
         return (new Payment($this->unzer))->setPaymentType($paymentType);
+    }
+
+    /**
+     * Perform an SCA transaction.
+     *
+     * @param Sca $sca The SCA object to be executed.
+     * @param BasePaymentType|string $paymentType The payment type object or its ID.
+     * @param Customer|string|null $customer The customer object or ID.
+     * @param Metadata|null $metadata The metadata object.
+     * @param Basket|null $basket The basket object.
+     *
+     * @return Sca The resulting SCA object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function performSca(Sca $sca, $paymentType, $customer = null, ?Metadata $metadata = null, ?Basket $basket = null): Sca
+    {
+        $payment = $this->createPayment($paymentType);
+        $paymentType = $payment->getPaymentType();
+
+        /** @var Sca $sca */
+        $sca->setSpecialParams($paymentType->getTransactionParams() ?? []);
+        $payment->setSca($sca)->setCustomer($customer)->setMetadata($metadata)->setBasket($basket);
+
+        $this->getResourceService()->createResource($sca);
+
+        return $sca;
     }
 }

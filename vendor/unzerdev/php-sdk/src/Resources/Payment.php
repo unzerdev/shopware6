@@ -19,6 +19,7 @@ use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Chargeback;
 use UnzerSDK\Resources\TransactionTypes\Payout;
 use UnzerSDK\Resources\TransactionTypes\PreAuthorization;
+use UnzerSDK\Resources\TransactionTypes\Sca;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
 use UnzerSDK\Services\IdService;
 use UnzerSDK\Traits\HasInvoiceId;
@@ -57,6 +58,9 @@ class Payment extends AbstractUnzerResource
 
     /** @var Chargeback[] $chargebacks */
     private $chargebacks = [];
+
+    /** @var Sca|null $sca */
+    private $sca;
 
 
     /**
@@ -335,6 +339,33 @@ class Payment extends AbstractUnzerResource
             }
         }
         return $resource;
+    }
+
+    /**
+     * Returns the SCA transaction of this Payment.
+     */
+    public function getSca(bool $lazy = false): ?Sca
+    {
+        $sca = $this->sca;
+        if (!$lazy && $sca !== null) {
+            /** @var Sca */
+            return $this->getResource($sca);
+        }
+        return $sca;
+    }
+
+    /**
+     * Adds an SCA object to this Payment.
+     *
+     * @param Sca $sca
+     *
+     * @return $this
+     */
+    public function setSca(Sca $sca): self
+    {
+        $sca->setPayment($this);
+        $this->sca = $sca;
+        return $this;
     }
 
     /**
@@ -924,6 +955,9 @@ class Payment extends AbstractUnzerResource
                 case TransactionTypes::CHARGEBACK:
                     $this->updateChargebackTransaction($transaction);
                     break;
+                case TransactionTypes::SCA:
+                    $this->updateScaTransaction($transaction);
+                    break;
                 default:
                     // skip
                     break;
@@ -1190,5 +1224,26 @@ class Payment extends AbstractUnzerResource
         }
 
         $chargeback->handleResponse($transaction);
+    }
+
+    /**
+     * This updates the local SCA object referenced by this Payment with the given SCA transaction
+     * from the Payment response.
+     *
+     * @param stdClass $transaction The transaction from the Payment response containing the SCA data.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    private function updateScaTransaction(stdClass $transaction): void
+    {
+        $transactionId = IdService::getResourceIdFromUrl($transaction->url, IdStrings::SCA);
+        $sca = $this->sca;
+        if (!$sca instanceof Sca) {
+            $sca = (new Sca())->setPayment($this)->setId($transactionId);
+            $this->setSca($sca);
+        }
+
+        $sca->handleResponse($transaction);
     }
 }

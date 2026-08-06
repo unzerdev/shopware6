@@ -1,3 +1,7 @@
+# 6.5.9
+* Update: Unzer PHP SDK 4.0.1
+* Removed individual php requirement in composer.json
+
 # 6.5.8
 * Express checkout no longer fails in Shopware 6.6, including PayPal and Apple Pay
 * Express checkout now shows a clear error message when payment creation fails, instead of silently redirecting

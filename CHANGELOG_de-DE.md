@@ -1,3 +1,7 @@
+# 6.5.9
+* Update: Unzer PHP SDK 4.0.1
+* Entfernung von individuellem Plugin-php Requirement in composer.json
+
 # 6.5.8
 * Der Express-Checkout funktioniert unter Shopware 6.6 wieder zuverlässig, einschließlich PayPal und Apple Pay
 * Beim Express-Checkout wird nun eine verständliche Fehlermeldung angezeigt, wenn die Erstellung der Zahlung fehlschlägt, anstatt den Kunden kommentarlos weiterzuleiten

@@ -39,6 +39,9 @@ abstract class AbstractTransactionType extends AbstractUnzerResource
     use HasAdditionalTransactionData;
     use HasDate;
 
+    /** @var float $amount */
+    protected $amount;
+
 
     /** @var Payment $payment */
     private $payment;
@@ -241,5 +244,24 @@ abstract class AbstractTransactionType extends AbstractUnzerResource
             $weroTransactionData->handleResponse($wero);
             $this->setWeroTransactionData($weroTransactionData);
         }
+    }
+
+    /**
+     * @param float|null $amount
+     *
+     * @return self
+     */
+    public function setAmount(?float $amount): self
+    {
+        $this->amount = $amount !== null ? round($amount, 4) : null;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getAmount(): ?float
+    {
+        return $this->amount;
     }
 }

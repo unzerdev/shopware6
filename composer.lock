@@ -4,29 +4,29 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "77faa31f3f2fcd92913239eaa2b9f06d",
+    "content-hash": "1e39f897b51ce95492ef8ab6ccc46258",
     "packages": [
         {
             "name": "unzerdev/php-sdk",
-            "version": "3.11.0",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unzerdev/php-sdk.git",
-                "reference": "274650b6120b8665c8867627210cd8adab65406b"
+                "reference": "a9344b823fbf5374cd49e07ab6352d385578299e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/274650b6120b8665c8867627210cd8adab65406b",
-                "reference": "274650b6120b8665c8867627210cd8adab65406b",
+                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/a9344b823fbf5374cd49e07ab6352d385578299e",
+                "reference": "a9344b823fbf5374cd49e07ab6352d385578299e",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "~7.4.0|~8.0.0|~8.1.0|~8.2.0|~8.3.0|~8.4.0"
+                "php": "~8.1.0|~8.2.0|~8.3.0|~8.4.0|~8.5.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
-                "phpunit/phpunit": ">6.5 <10.0"
+                "phpunit/phpunit": "^9.6"
             },
             "suggest": {
                 "ext-curl": "*"
@@ -45,9 +45,9 @@
             "description": "This is the php sdk to connect to the Unzer rest API.",
             "support": {
                 "email": "support@unzer.com",
-                "source": "https://github.com/unzerdev/php-sdk/tree/3.11.0"
+                "source": "https://github.com/unzerdev/php-sdk/tree/4.0.1"
             },
-            "time": "2024-12-04T08:14:47+00:00"
+            "time": "2026-05-15T13:48:06+00:00"
         }
     ],
     "packages-dev": [
@@ -99,16 +99,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.17",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "7027b3b0270bf392de0cfba12825979768d728bf"
-            },
+            "version": "1.12.34",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/7027b3b0270bf392de0cfba12825979768d728bf",
-                "reference": "7027b3b0270bf392de0cfba12825979768d728bf",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/4dd89ca7aa30fdc6760be21550d583bcc32e8476",
+                "reference": "4dd89ca7aa30fdc6760be21550d583bcc32e8476",
                 "shasum": ""
             },
             "require": {
@@ -153,17 +148,15 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-02-07T15:01:57+00:00"
+            "time": "2026-07-28T10:04:39+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": {
-        "php": ">=8.2 || <=8.3"
-    },
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }

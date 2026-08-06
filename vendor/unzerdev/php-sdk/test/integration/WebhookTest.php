@@ -14,6 +14,7 @@ namespace UnzerSDK\test\integration;
 use UnzerSDK\Constants\ApiResponseCodes;
 use UnzerSDK\Constants\WebhookEvents;
 use UnzerSDK\Exceptions\UnzerApiException;
+use UnzerSDK\Resources\TransactionTypes\Chargeback;
 use UnzerSDK\Resources\Webhook;
 use UnzerSDK\test\BaseIntegrationTest;
 use function count;
@@ -22,6 +23,7 @@ use function in_array;
 class WebhookTest extends BaseIntegrationTest
 {
     //<editor-fold desc="Webhook tests">
+    const CHARGEDBACK_PAYMENT_ID = 's-pay-341196';
 
     /**
      * Verify Webhook resource can be registered and fetched.
@@ -219,6 +221,27 @@ class WebhookTest extends BaseIntegrationTest
 
         $this->assertEquals(WebhookEvents::AUTHORIZE, $webhook->getEvent());
         $this->assertEquals($url, $webhook->getUrl());
+    }
+
+    /**
+     * @test
+     */
+    public function testFetchResourceFromEvent(): void
+    {
+        $webhookNotification = [
+            'event' => 'chargebacks',
+            'publicKey' => 's-pub-xyz',
+            'retrieveUrl' => 'https://sbx-api.unzer.com/v1/payments/' . self::CHARGEDBACK_PAYMENT_ID . '/charges/s-chg-1/chargebacks/s-cbk-1',
+            'paymentId' => self::CHARGEDBACK_PAYMENT_ID
+        ];
+
+        // when
+        $chargeback = $this->unzer->fetchResourceFromEvent(json_encode($webhookNotification));
+
+        // then
+        $this->assertInstanceOf(Chargeback::class, $chargeback);
+        $this->assertNotNull($chargeback);
+        $this->assertEquals('s-cbk-1', $chargeback->getId());
     }
 
     //</editor-fold>
