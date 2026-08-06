@@ -44,11 +44,6 @@ interface HttpAdapterInterface
     public function getResponseCode(): string;
 
     /**
-     * Closes the connection of the request.
-     */
-    public function close(): void;
-
-    /**
      * Sets the headers for the request.
      * Expects an associative array with $key being the header name and $value being the header value.
      *

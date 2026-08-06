@@ -7,7 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInitf95eb65f29edce7a2336b2687d62b002
 {
     public static $prefixLengthsPsr4 = array (
-        'U' => 
+        'U' =>
         array (
             'UnzerSDK\\examples\\' => 18,
             'UnzerSDK\\' => 9,
@@ -16,15 +16,15 @@ class ComposerStaticInitf95eb65f29edce7a2336b2687d62b002
     );
 
     public static $prefixDirsPsr4 = array (
-        'UnzerSDK\\examples\\' => 
+        'UnzerSDK\\examples\\' =>
         array (
             0 => __DIR__ . '/..' . '/unzerdev/php-sdk/examples',
         ),
-        'UnzerSDK\\' => 
+        'UnzerSDK\\' =>
         array (
             0 => __DIR__ . '/..' . '/unzerdev/php-sdk/src',
         ),
-        'UnzerPayment6\\' => 
+        'UnzerPayment6\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

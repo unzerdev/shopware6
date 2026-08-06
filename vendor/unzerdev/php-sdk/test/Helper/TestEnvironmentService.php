@@ -16,6 +16,10 @@ class TestEnvironmentService extends EnvironmentService
     public const ENV_VAR_TEST_PRIVATE_KEY_DEFAULT = 'UNZER_PAPI_TEST_PRIVATE_KEY_DEFAULT';
     public const ENV_VAR_TEST_PUBLIC_KEY_DEFAULT = 'UNZER_PAPI_TEST_PUBLIC_KEY_DEFAULT';
 
+    /** Primary testing Keypair used as default for most payment types. */
+    public const ENV_VAR_TEST_PRIVATE_KEY_UNZER_ONE = 'UNZER_PAPI_TEST_PRIVATE_KEY_UNZER_ONE';
+    public const ENV_VAR_TEST_PUBLIC_KEY_UNZER_ONE = 'UNZER_PAPI_TEST_PUBLIC_KEY_UNZER_ONE';
+
     /** Secondary keypair mainly used for payment methods that need a second configuration to be tested. */
     public const ENV_VAR_TEST_PRIVATE_KEY_ALTERNATIVE = 'UNZER_PAPI_TEST_PRIVATE_KEY_ALTERNATIVE';
     public const ENV_VAR_TEST_PUBLIC_KEY_ALTERNATIVE = 'UNZER_PAPI_TEST_PUBLIC_KEY_ALTERNATIVE';
@@ -105,5 +109,10 @@ class TestEnvironmentService extends EnvironmentService
     public static function getLegacyTestPrivateKey(): string
     {
         return stripslashes($_SERVER[self::ENV_VAR_TEST_PRIVATE_KEY_LEGACY] ?? '');
+    }
+
+    public static function getUnzerOneTestPrivateKey(): string
+    {
+        return stripslashes($_SERVER[self::ENV_VAR_TEST_PRIVATE_KEY_UNZER_ONE] ?? '');
     }
 }

@@ -25,6 +25,7 @@ use UnzerSDK\Resources\TransactionTypes\Cancellation;
 use UnzerSDK\Resources\TransactionTypes\Charge;
 use UnzerSDK\Resources\TransactionTypes\Chargeback;
 use UnzerSDK\Resources\TransactionTypes\Payout;
+use UnzerSDK\Resources\TransactionTypes\Sca;
 use UnzerSDK\Resources\TransactionTypes\Shipment;
 
 interface ResourceServiceInterface
@@ -452,4 +453,29 @@ interface ResourceServiceInterface
      * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
      */
     public function fetchConfig(BasePaymentType $paymentType, ?Config $config = null): Config;
+
+    /**
+     * Fetches an SCA transaction.
+     *
+     * @param Sca $sca The SCA object to fetch.
+     *
+     * @return Sca The fetched SCA object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function fetchSca(Sca $sca): Sca;
+
+    /**
+     * Fetches an SCA transaction by payment ID and SCA ID.
+     *
+     * @param Payment|string $payment The payment object or payment ID.
+     * @param string $scaId The SCA transaction ID.
+     *
+     * @return Sca The fetched SCA object.
+     *
+     * @throws UnzerApiException An UnzerApiException is thrown if there is an error returned on API-request.
+     * @throws RuntimeException  A RuntimeException is thrown when there is an error while using the SDK.
+     */
+    public function fetchScaById($payment, string $scaId): Sca;
 }

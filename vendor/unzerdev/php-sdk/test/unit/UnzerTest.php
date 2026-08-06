@@ -12,7 +12,8 @@
 namespace UnzerSDK\test\unit;
 
 use DateTime;
-use UnzerSDK\Unzer;
+use PHPUnit\Framework\MockObject\MockObject;
+use RuntimeException;
 use UnzerSDK\Resources\Basket;
 use UnzerSDK\Resources\Customer;
 use UnzerSDK\Resources\Metadata;
@@ -30,8 +31,7 @@ use UnzerSDK\Services\ResourceService;
 use UnzerSDK\Services\WebhookService;
 use UnzerSDK\test\BasePaymentTest;
 use UnzerSDK\test\unit\Services\DummyDebugHandler;
-use PHPUnit\Framework\MockObject\MockObject;
-use RuntimeException;
+use UnzerSDK\Unzer;
 
 class UnzerTest extends BasePaymentTest
 {
@@ -56,6 +56,12 @@ class UnzerTest extends BasePaymentTest
 
         $unzerGerman = new Unzer('s-priv-1234', 'de-DE');
         $this->assertEquals('de-DE', $unzerGerman->getLocale());
+
+        $unzerPub = new Unzer('s-pub-1234');
+        $this->assertEquals('s-pub-1234', $unzerPub->getKey());
+
+        $unzerProdPub = new Unzer('p-pub-1234');
+        $this->assertEquals('p-pub-1234', $unzerProdPub->getKey());
     }
 
     /**
@@ -75,8 +81,13 @@ class UnzerTest extends BasePaymentTest
             $unzer->setKey('this is not a valid key');
             $this->assertTrue(false, 'This exception should have been thrown');
         } catch (RuntimeException $e) {
-            $this->assertEquals('Illegal key: Use a valid private key with this SDK!', $e->getMessage());
+            $this->assertEquals('Illegal key: Use a valid private or public key with this SDK!', $e->getMessage());
         }
+
+        $unzer->setKey('s-pub-1234');
+        $this->assertEquals('s-pub-1234', $unzer->getKey());
+        $unzer->setKey('p-pub-1234');
+        $this->assertEquals('p-pub-1234', $unzer->getKey());
 
         $httpService = new HttpService();
         $this->assertNotSame($httpService, $unzer->getHttpService());

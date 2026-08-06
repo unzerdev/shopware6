@@ -12,28 +12,6 @@ use UnzerSDK\Adapter\HttpAdapterInterface;
  */
 class Shipment extends AbstractTransactionType
 {
-    /** @var float|null $amount */
-    protected $amount;
-
-    /**
-     * @return float|null
-     */
-    public function getAmount(): ?float
-    {
-        return $this->amount;
-    }
-
-    /**
-     * @param float|null $amount
-     *
-     * @return Shipment
-     */
-    public function setAmount(?float $amount): self
-    {
-        $this->amount = $amount !== null ? round($amount, 4) : null;
-        return $this;
-    }
-
     /**
      * {@inheritDoc}
      */

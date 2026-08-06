@@ -153,6 +153,7 @@ trait CustomerFixtureTrait
             ->setZip('60386')
             ->setCity('Frankfurt am Main')
             ->setCountry('DE')
+            ->setCompany('Your Company Name')
             ->setState('DE-BO');
     }
 
@@ -170,6 +171,7 @@ trait CustomerFixtureTrait
             ->setCity('Frankfurt am Main')
             ->setCountry('DE')
             ->setState('DE-BO')
+            ->setCompany('Your Company Name')
             ->setShippingType(ShippingTypes::EQUALS_BILLING);
     }
 }

@@ -146,7 +146,6 @@ class PaypageV2Test extends BaseIntegrationTest
 
     /**
      * @test
-     * @group skip
      */
     public function createPaypageWithUrls()
     {
@@ -156,11 +155,11 @@ class PaypageV2Test extends BaseIntegrationTest
         $urls->setImprint('https://imprint.com');
         $urls->setHelp('https://help.com');
         $urls->setContact('https://contact.com');
-        $urls->setFavicon('https://favicon.com');
         $urls->setReturnSuccess('https://returnsuccess.com');
         $urls->setReturnPending('https://returnpending.com');
         $urls->setReturnFailure('https://returnfailure.com');
         $urls->setReturnCancel('https://returncancel.com');
+        $urls->setSubscriptionAgreement('https://subscriptionagreement.com');
 
         $paypage = new Paypage(9.99, 'EUR', 'charge');
         $paypage->setUrls($urls);
