@@ -30,6 +30,7 @@ use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterDirectDebitSecuredPayme
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInstallmentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPaylaterInvoicePaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPayPalPaymentHandler;
+use UnzerPayment6\Components\PaymentHandler\UnzerPayuPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrePaymentPaymentHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerPrzelewyHandler;
 use UnzerPayment6\Components\PaymentHandler\UnzerTwintPaymentHandler;
@@ -66,6 +67,7 @@ class PaymentInstaller implements InstallerInterface
     public const PAYMENT_ID_OPEN_BANKING = '105932c2e56b11ef9cd003e762195b4d';
     public const PAYMENT_ID_KLARNA = '21e0875e4d5b11f09349578ade9d62d8';
     public const PAYMENT_ID_WERO = 'e9d326149a3f11f082ea6b21179cd920';
+    public const PAYMENT_ID_PAYU = 'fe2664a8ad5011f192fdc79ad161e1c5';
 
     public const PAYMENT_METHOD_IDS = [
         self::PAYMENT_ID_ALIPAY,
@@ -87,6 +89,7 @@ class PaymentInstaller implements InstallerInterface
         self::PAYMENT_ID_OPEN_BANKING,
         self::PAYMENT_ID_KLARNA,
         self::PAYMENT_ID_WERO,
+        self::PAYMENT_ID_PAYU,
     ];
 
     public const DEPRECATED_PAYMENT_METHOD_IDS = [];
@@ -404,6 +407,22 @@ class PaymentInstaller implements InstallerInterface
                 'en-GB' => [
                     'name' => 'Wero',
                     'description' => 'Wero payments with Unzer payments',
+                ],
+            ],
+        ],
+        [
+            'id' => self::PAYMENT_ID_PAYU,
+            'handlerIdentifier' => UnzerPayuPaymentHandler::class,
+            'name' => 'PayU',
+            'technicalName' => 'unzer_payu',
+            'translations' => [
+                'de-DE' => [
+                    'name' => 'PayU',
+                    'description' => 'PayU Zahlungen mit Unzer payments',
+                ],
+                'en-GB' => [
+                    'name' => 'PayU',
+                    'description' => 'PayU payments with Unzer payments',
                 ],
             ],
         ],

@@ -9,6 +9,7 @@
 namespace UnzerSDK\Resources;
 
 use DateTime;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 use RuntimeException;
@@ -495,10 +496,25 @@ abstract class AbstractUnzerResource implements UnzerParentInterface
      */
     private function exposeProperties(): array
     {
-        $properties = get_object_vars($this);
-        foreach ($properties as $property => $value) {
-            if (self::propertyShouldBeSkipped($property, $value)) {
-                unset($properties[$property]);
+        $reflectionClass = new ReflectionClass(static::class);
+        $reflectionProperties = $reflectionClass->getProperties(ReflectionProperty::IS_PROTECTED); // only send protected properties
+
+        $properties = [];
+        foreach ($reflectionProperties as $propertyObject) {
+            if ($propertyObject->isStatic()) {
+                continue;
+            }
+
+            $property = $propertyObject->getName();
+            $value = $propertyObject->getValue($this);
+
+            // do not send properties that are set to null
+            if ($value === null) {
+                continue;
+            }
+
+            // do not send id property if it is empty
+            if ($property === 'id' && empty($value)) {
                 continue;
             }
 
@@ -516,7 +532,6 @@ abstract class AbstractUnzerResource implements UnzerParentInterface
             // handle additional values
             if ($property === 'additionalAttributes') {
                 if (!is_array($value) || empty($value)) {
-                    unset($properties[$property]);
                     continue;
                 }
                 $value = $this->exposeAdditionalAttributes($value);

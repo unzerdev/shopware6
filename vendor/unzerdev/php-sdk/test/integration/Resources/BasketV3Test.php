@@ -220,7 +220,7 @@ class BasketV3Test extends BaseIntegrationTest
 
         /** @var Paypal $paypal */
         $paypal = $this->unzer->createPaymentType(new Paypal());
-        $authorize = $paypal->authorize(123.4, 'EUR', 'https://unzer.com', null, null, null, $basket);
+        $authorize = $paypal->authorize(99.99, 'EUR', 'https://unzer.com', null, null, null, $basket);
 
         $fetchedPayment = $this->unzer->fetchPayment($authorize->getPaymentId());
         $this->assertEquals($basket->expose(), $fetchedPayment->getBasket()->expose());
@@ -248,7 +248,7 @@ class BasketV3Test extends BaseIntegrationTest
 
         /** @var Paypal $paypal */
         $paypal = $this->unzer->createPaymentType(new Paypal());
-        $authorize = $paypal->authorize(123.4, 'EUR', 'https://unzer.com', null, null, null, $basket);
+        $authorize = $paypal->authorize(99.99, 'EUR', 'https://unzer.com', null, null, null, $basket);
         $this->assertNotEmpty($basket->getId());
 
         $fetchedPayment = $this->unzer->fetchPayment($authorize->getPaymentId());
@@ -277,7 +277,7 @@ class BasketV3Test extends BaseIntegrationTest
 
         /** @var Paypal $paypal */
         $paypal = $this->unzer->createPaymentType(new Paypal());
-        $charge = $paypal->charge(123.4, 'EUR', 'https://unzer.com', null, null, null, $basket);
+        $charge = $paypal->charge(99.99, 'EUR', 'https://unzer.com', null, null, null, $basket);
         $this->assertNotEmpty($basket->getId());
 
         $fetchedPayment = $this->unzer->fetchPayment($charge->getPaymentId());

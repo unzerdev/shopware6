@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres
 to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.0.2](https://github.com/unzerdev/php-sdk/compare/4.0.1..4.0.2)
+
+### Changed
+
+* Change `\UnzerSDK\Resources\Keypair` properties from `private` to `protected`, fixing them being silently omitted when the resource is serialized into a request payload.
+* Add a null check for the payment type in `performCharge()` and `performSca()` in `\UnzerSDK\Unzer` to avoid a null pointer error.
+
 ## [4.0.1](https://github.com/unzerdev/php-sdk/compare/4.0.0..4.0.1)
 
 ### Changed

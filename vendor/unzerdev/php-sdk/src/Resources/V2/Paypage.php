@@ -22,7 +22,7 @@ class Paypage extends AbstractUnzerResource
 {
     public const URI = '/merchant/paypage';
 
-    protected static $keyClassMap = [
+    private static $keyClassMap = [
         'urls' => Urls::class,
         'style' => Style::class,
         'resources' => Resources::class,

@@ -1,3 +1,11 @@
+# 6.5.10
+* Neue Zahlungsart PayU hinzugefügt
+* Laden der UI-Komponenten optimiert für ein schnelleres und besseres Checkout-Erlebnis
+* Fehler bei getClientMessage() behoben
+* Fehler durch Mehrfachklick auf den PayPal-Express-Checkout-Button behoben
+* Ungültige order.lineItems.calculatedPrices.taxes-Association entfernt
+* Länderbeschränkungen für Wero entfernt
+
 # 6.5.9
 * Update: Unzer PHP SDK 4.0.1
 * Entfernung von individuellem Plugin-php Requirement in composer.json

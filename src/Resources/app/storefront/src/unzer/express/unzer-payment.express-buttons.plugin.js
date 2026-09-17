@@ -1,3 +1,5 @@
+import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
+
 const Plugin = window.PluginBaseClass;
 
 export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
@@ -32,6 +34,7 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
     }
 
     showError() {
+        PageLoadingIndicatorUtil.remove();
         const errorElement = this.el.querySelector(
             '.unzer-express-buttons-error'
         );
@@ -41,12 +44,7 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
     }
 
     registerActions() {
-        Promise.all([
-            customElements.whenDefined('unzer-payment'),
-            customElements.whenDefined('unzer-google-pay'),
-            customElements.whenDefined('unzer-paypal-express'),
-            customElements.whenDefined('unzer-apple-pay'),
-        ]).then(() => {
+        customElements.whenDefined('unzer-payment').then(() => {
             const unzerExpressPayment = this.el.querySelector(
                 '.unzer-express-payment'
             );
@@ -93,7 +91,15 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
             'unzer-paypal-button-' + Math.floor(Math.random() * 10000);
         paypalButton.addEventListener('click', async (event) => {
             event.stopPropagation();
-            const response = await unzerExpressPayment.submit();
+            PageLoadingIndicatorUtil.create();
+
+            let response;
+            try {
+                response = await unzerExpressPayment.submit();
+            } catch (error) {
+                this.showError();
+                return;
+            }
 
             if (!response?.submitResponse?.success) {
                 this.showError();
@@ -153,7 +159,14 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
                 reject
             ) => {
                 // You can create customer here based on paymentData
-                const response = await unzerExpressPayment.submit();
+                let response;
+                try {
+                    response = await unzerExpressPayment.submit();
+                } catch (error) {
+                    this.showError();
+                    return;
+                }
+
                 if (!response?.submitResponse?.success) {
                     this.showError();
                     return;
@@ -217,8 +230,16 @@ export default class UnzerPaymentExpressButtonsPlugin extends Plugin {
                 let billingContact = event.payment.billingContact; // Store the billing contact data for express checkout
 
                 // You can create customer here based on paymentData
-                const response = await unzerExpressPayment.submit();
-                if (response.submitResponse.success) {
+                let response;
+                try {
+                    response = await unzerExpressPayment.submit();
+                } catch (error) {
+                    reject();
+                    this.showError();
+                    return;
+                }
+
+                if (response?.submitResponse?.success) {
                     approve();
                 } else {
                     reject();

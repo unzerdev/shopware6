@@ -220,6 +220,10 @@ readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterf
             $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_WERO;
         }
 
+        if (!\in_array($salesChannelContext->getCurrency()->getIsoCode(), ['CZK', 'PLN'], true)) {
+            $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_PAYU;
+        }
+
         $customer = $salesChannelContext->getCustomer();
 
         if ($customer === null) {
@@ -236,9 +240,6 @@ readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterf
 
         if ($invoiceCountry !== null && $invoiceCountry->getIso() !== 'DE' && $invoiceCountry->getIso() !== 'AT') {
             $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_PAYLATER_DIRECT_DEBIT_SECURED;
-        }
-        if ($invoiceCountry !== null && $invoiceCountry->getIso() !== 'DE') {
-            $paymentMethodIdsToBeRemoved[] = PaymentInstaller::PAYMENT_ID_WERO;
         }
 
         if (!empty($customer->getActiveBillingAddress()?->getCompany())) {

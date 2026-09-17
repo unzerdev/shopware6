@@ -29,7 +29,8 @@
             :isLoading="isLoadingWebhooks || isClearing"
             :processSuccess="isClearingSuccessful"
             :disabled="isLoadingWebhooks || isClearing || webhookSelectionLength == 0"
-            variant="danger"
+            variant="critical"
+            ghost
         >
             {{ $tc('unzer-payment-settings.modal.webhook.submit.clear', webhookSelectionLength, {count: webhookSelectionLength}) }}
         </sw-button-process>
