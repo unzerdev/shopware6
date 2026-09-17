@@ -34,7 +34,7 @@ export default class UnzerPaymentApplePayPlugin extends UnzerPaymentBaseParent {
      * @private
      */
     _createForm() {
-        Promise.all([customElements.whenDefined('unzer-payment')]).then(() => {
+        customElements.whenDefined('unzer-payment').then(() => {
             const unzerPaymentElement = document.getElementById(
                 'unzer-payment-component'
             );

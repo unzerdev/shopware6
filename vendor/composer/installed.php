@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'unzerdev/shopware6',
-        'pretty_version' => '7.1.11',
-        'version' => '7.1.11.0',
+        'pretty_version' => '7.1.12',
+        'version' => '7.1.12.0',
         'reference' => null,
         'type' => 'shopware-platform-plugin',
         'install_path' => __DIR__ . '/../../',
@@ -26,8 +26,8 @@
             'dev_requirement' => false,
         ),
         'unzerdev/shopware6' => array(
-            'pretty_version' => '7.1.11',
-            'version' => '7.1.11.0',
+            'pretty_version' => '7.1.12',
+            'version' => '7.1.12.0',
             'reference' => null,
             'type' => 'shopware-platform-plugin',
             'install_path' => __DIR__ . '/../../',

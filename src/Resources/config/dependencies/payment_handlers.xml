@@ -101,6 +101,9 @@
                  parent="UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler">
             <tag name="shopware.payment.method"/>
         </service>
-
+        <service id="UnzerPayment6\Components\PaymentHandler\UnzerPayuPaymentHandler"
+                 parent="UnzerPayment6\Components\PaymentHandler\AbstractUnzerPaymentHandler">
+            <tag name="shopware.payment.method"/>
+        </service>
     </services>
 </container>

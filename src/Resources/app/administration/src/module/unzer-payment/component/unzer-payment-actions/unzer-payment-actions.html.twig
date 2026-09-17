@@ -64,6 +64,8 @@
                     :isLoading="isLoading"
                     :processSuccess="isSuccessful"
                     @click="refund"
+                    variant="critical"
+                    ghost
                 >
                     {{ $tc('unzer-payment.paymentDetails.actions.refundButton') }}
                 </sw-button-process>
