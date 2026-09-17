@@ -1,3 +1,11 @@
+# 6.5.10
+* New payment method PayU
+* Improved loading of UI Components for faster and better checkout experience
+* “getClientMessage()” bug solved
+* Fixed Paypal Express checkout button multi click bug
+* Remove invalid order.lineItems.calculatedPrices.taxes association
+* Removed country restrictions for Wero
+
 # 6.5.9
 * Update: Unzer PHP SDK 4.0.1
 * Removed individual php requirement in composer.json

@@ -414,6 +414,19 @@ class AbstractUnzerResourceTest extends BasePaymentTest
         $this->assertEquals(1234.567, $paypage->expose()['additionalAttributes']['effectiveInterestRate']);
     }
 
+    /**
+     * @test
+     */
+    public function parentPrivatePropertiesShouldNotCauseAnException(): void
+    {
+        $metadata = new Metadata();
+        $metadata->setParentResource(new Unzer('s-priv-123'));
+        $metadata->setSpecialParams(['something' => 'special']);
+
+        $result = $metadata->jsonSerialize();
+        $this->assertEquals('{"something":"special"}', $result);
+    }
+
     //<editor-fold desc="Data Providers">
 
     /**

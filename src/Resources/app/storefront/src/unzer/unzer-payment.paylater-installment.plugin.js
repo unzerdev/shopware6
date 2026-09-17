@@ -8,7 +8,7 @@ export default class UnzerPaymentPaylaterInstallmentPlugin extends UnzerPaymentB
     };
     init() {
         super.init();
-        Promise.all([customElements.whenDefined('unzer-payment')]).then(() => {
+        customElements.whenDefined('unzer-payment').then(() => {
             const unzerPaymentElement = document.getElementById(
                 'unzer-payment-component'
             );

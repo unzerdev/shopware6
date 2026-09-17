@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1e39f897b51ce95492ef8ab6ccc46258",
+    "content-hash": "a33eb6f686ce1c06d892693c08f63753",
     "packages": [
         {
             "name": "unzerdev/php-sdk",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unzerdev/php-sdk.git",
-                "reference": "a9344b823fbf5374cd49e07ab6352d385578299e"
+                "reference": "65ddfebbeca12e256759c9b35113b4cb8cf0275d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/a9344b823fbf5374cd49e07ab6352d385578299e",
-                "reference": "a9344b823fbf5374cd49e07ab6352d385578299e",
+                "url": "https://api.github.com/repos/unzerdev/php-sdk/zipball/65ddfebbeca12e256759c9b35113b4cb8cf0275d",
+                "reference": "65ddfebbeca12e256759c9b35113b4cb8cf0275d",
                 "shasum": ""
             },
             "require": {
@@ -45,9 +45,9 @@
             "description": "This is the php sdk to connect to the Unzer rest API.",
             "support": {
                 "email": "support@unzer.com",
-                "source": "https://github.com/unzerdev/php-sdk/tree/4.0.1"
+                "source": "https://github.com/unzerdev/php-sdk/tree/4.0.2"
             },
-            "time": "2026-05-15T13:48:06+00:00"
+            "time": "2026-08-17T09:39:03+00:00"
         }
     ],
     "packages-dev": [
@@ -153,10 +153,10 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": {},
-    "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
 }
