@@ -80,7 +80,7 @@ readonly class FinishPageEventListener implements EventSubscriberInterface
         } catch (\Throwable $exception) {
             $this->logger->error($exception->getMessage(), [
                 'code' => $exception->getCode(),
-                'clientMessage' => $exception->getClientMessage(),
+                'clientMessage' => method_exists($exception, 'getClientMessage') ? $exception->getClientMessage() : null,
                 'file' => $exception->getFile(),
                 'trace' => $exception->getTraceAsString(),
             ]);

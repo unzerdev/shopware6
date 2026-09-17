@@ -283,6 +283,26 @@ readonly class CustomerResourceHydrator implements CustomerResourceHydratorInter
         return $customer->getBirthday()?->format('Y-m-d');
     }
 
+    protected function prepareAddress(OrderAddressEntity|CustomerAddressEntity|null $address): OrderAddressEntity|CustomerAddressEntity|null
+    {
+        if ($address === null) {
+            return null;
+        }
+
+        $address = clone $address;
+
+        $address->setFirstName(trim($address->getFirstName()));
+        $address->setLastName(trim($address->getLastName()));
+        $address->setStreet(trim($address->getStreet()));
+        $address->setZipcode(trim($address->getZipcode()));
+        $address->setCity(trim($address->getCity()));
+        if (!empty($address->getCompany())) {
+            $address->setCompany(trim($address->getCompany()));
+        }
+
+        return $address;
+    }
+
     private function updateShippingAddress(UnzerCustomer $unzerCustomer, OrderAddressEntity|CustomerAddressEntity|null $shippingAddress, string $billingAddressId): void
     {
         $unzerShippingAddress = $unzerCustomer->getShippingAddress();
@@ -319,24 +339,5 @@ readonly class CustomerResourceHydrator implements CustomerResourceHydratorInter
         $unzerShippingAddress->setShippingType($shippingType);
 
         $unzerCustomer->setShippingAddress($unzerShippingAddress);
-    }
-
-    protected function prepareAddress(OrderAddressEntity|CustomerAddressEntity|null $address):OrderAddressEntity|CustomerAddressEntity|null{
-        if($address === null){
-            return null;
-        }
-
-        $address = clone $address;
-
-        $address->setFirstName(trim($address->getFirstName()));
-        $address->setLastName(trim($address->getLastName()));
-        $address->setStreet(trim($address->getStreet()));
-        $address->setZipcode(trim($address->getZipcode()));
-        $address->setCity(trim($address->getCity()));
-        if(!empty($address->getCompany())){
-            $address->setCompany(trim($address->getCompany()));
-        }
-
-        return $address;
     }
 }
