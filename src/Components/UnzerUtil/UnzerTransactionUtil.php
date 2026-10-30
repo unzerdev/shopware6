@@ -4,12 +4,15 @@ namespace UnzerPayment6\Components\UnzerUtil;
 
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use UnzerPayment6\Components\TransactionStateHandler\TransactionStateHandlerInterface;
 use UnzerPayment6\Installer\CustomFieldInstaller;
 use UnzerPayment6\Installer\PaymentInstaller;
@@ -55,7 +58,16 @@ readonly class UnzerTransactionUtil
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('orderId', $orderEntity->getId()));
         $criteria->addFilter(new EqualsAnyFilter('paymentMethodId', PaymentInstaller::PAYMENT_METHOD_IDS));
+        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [
+            new EqualsAnyFilter('stateMachineState.technicalName', [
+                OrderTransactionStates::STATE_FAILED,
+                OrderTransactionStates::STATE_CANCELLED,
+            ]),
+        ]));
         $criteria->addAssociations(self::ORDER_TRANSACTION_ASSOCIATIONS);
+        // without a sorting the row order depends on the MySQL query plan, so last() would not reliably be the newest transaction
+        $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));
+        $criteria->addSorting(new FieldSorting('id', FieldSorting::ASCENDING));
 
         return $this->orderTransactionRepository->search($criteria, $context)->last();
     }
@@ -66,6 +78,8 @@ readonly class UnzerTransactionUtil
         $criteria->addFilter(new EqualsFilter('order.orderNumber', $orderNumber));
         $criteria->addFilter(new EqualsAnyFilter('paymentMethodId', PaymentInstaller::PAYMENT_METHOD_IDS));
         $criteria->addAssociations(self::ORDER_TRANSACTION_ASSOCIATIONS);
+        $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));
+        $criteria->addSorting(new FieldSorting('id', FieldSorting::ASCENDING));
 
         return $this->orderTransactionRepository->search($criteria, $context)->last();
     }
