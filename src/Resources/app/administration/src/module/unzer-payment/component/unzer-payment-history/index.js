@@ -14,6 +14,11 @@ Component.register('unzer-payment-history', {
             showCancelModal: false,
             isCancelLoading: false,
             cancelAmount: 0,
+            showRefundModal: false,
+            isRefundLoading: false,
+            refundTransactionId: null,
+            refundAmount: 0,
+            refundReasonCode: null,
         };
     },
 
@@ -173,6 +178,62 @@ Component.register('unzer-payment-history', {
         closeCancelModal() {
             this.showCancelModal = false;
             this.cancelAmount = 0;
+        },
+
+        openRefundModal(item, refundAmount, refundReasonCode) {
+            this.showRefundModal = item.resource.id;
+            this.refundTransactionId = item.resource.id;
+            this.refundAmount = refundAmount;
+            this.refundReasonCode = refundReasonCode;
+        },
+
+        closeRefundModal() {
+            this.showRefundModal = false;
+            this.refundTransactionId = null;
+            this.refundAmount = 0;
+            this.refundReasonCode = null;
+        },
+
+        refund() {
+            this.isRefundLoading = true;
+
+            this.UnzerPaymentService.refundTransaction(
+                this.paymentResource.orderTransactionId,
+                this.refundTransactionId,
+                this.refundAmount,
+                this.refundReasonCode
+            )
+                .then(() => {
+                    this.createNotificationSuccess({
+                        title: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.refundSuccessTitle'
+                        ),
+                        message: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.refundSuccessMessage'
+                        ),
+                    });
+
+                    this.reload();
+                })
+                .catch((errorResponse) => {
+                    let message = errorResponse.response.data.errors[0];
+
+                    if (message === 'generic-error') {
+                        message = this.$tc(
+                            'unzer-payment.paymentDetails.notifications.genericErrorMessage'
+                        );
+                    }
+
+                    this.createNotificationError({
+                        title: this.$tc(
+                            'unzer-payment.paymentDetails.notifications.refundErrorTitle'
+                        ),
+                        message: message,
+                    });
+
+                    this.isRefundLoading = false;
+                    this.reload();
+                });
         },
 
         cancel() {

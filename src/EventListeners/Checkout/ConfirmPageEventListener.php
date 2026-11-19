@@ -101,6 +101,7 @@ class ConfirmPageEventListener implements EventSubscriberInterface
             case PaymentInstaller::PAYMENT_ID_APPLE_PAY_V2:
                 $this->addApplePayV2Extension($event);
                 break;
+            case PaymentInstaller::PAYMENT_ID_PAYLATER_INVOICE:
             case PaymentInstaller::PAYMENT_ID_PAYLATER_INSTALLMENT:
                 $this->addPaylaterInstallmentExtension($event);
                 break;

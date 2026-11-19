@@ -46,7 +46,10 @@ class BasketResourceHydrator
 
         $unzerBasket = new Basket();
         $unzerBasket->setOrderId($orderTransaction->getId());
-        $unzerBasket->setTotalValueGross(round($order->getAmountTotal(), $currencyPrecision));
+        $unzerBasket->setTotalValueGross(round(
+            $this->resolveTotalValueGross($orderTransaction, $order),
+            $currencyPrecision
+        ));
         $unzerBasket->setCurrencyCode($order->getCurrency()->getIsoCode());
 
         if ($order->getLineItems() !== null) {
@@ -90,6 +93,15 @@ class BasketResourceHydrator
                 continue;
             }
             $basketItem = new BasketItem();
+            $price = $lineItem->getPrice();
+
+            if ($price === null) {
+                throw new \RuntimeException(\sprintf(
+                    'Could not determine price for order line item "%s".',
+                    $lineItem->getId()
+                ));
+            }
+
             $label = $lineItem->getLabel();
             if (!empty($customProductLabels) && \array_key_exists($lineItem->getId(), $customProductLabels)) {
                 $label = $customProductLabels[$lineItem->getId()]
@@ -98,26 +110,24 @@ class BasketResourceHydrator
             }
             $basketItem->setTitle($label);
             $basketItem->setQuantity($lineItem->getQuantity());
-            $basketItem->setType($lineItem->getUnitPrice() < 0 ? BasketItemTypes::VOUCHER : BasketItemTypes::GOODS);
+            $basketItem->setType($price->getUnitPrice() < 0 ? BasketItemTypes::VOUCHER : BasketItemTypes::GOODS);
 
             $taxCounter = 0;
             $amountTax = 0.0;
             $taxRate = 0;
-            $unitPrice = $lineItem->getUnitPrice();
 
-            if ($lineItem->getPrice() !== null) {
-                /** @var CalculatedTax $tax */
-                foreach ($lineItem->getPrice()->getCalculatedTaxes() as $tax) {
-                    $amountTax += round($tax->getTax(), $currencyPrecision);
-                    $taxRate += $tax->getTaxRate();
-                    ++$taxCounter;
-                }
-                $amountGross = round($lineItem->getTotalPrice(), $currencyPrecision);
-                if ($taxStatus === CartPrice::TAX_STATE_NET) {
-                    $amountGross += $amountTax;
-                }
-                $unitPrice = $amountGross / $lineItem->getQuantity();
+            /** @var CalculatedTax $tax */
+            foreach ($price->getCalculatedTaxes() as $tax) {
+                $amountTax += round($tax->getTax(), $currencyPrecision);
+                $taxRate += $tax->getTaxRate();
+                ++$taxCounter;
             }
+
+            $amountGross = round($price->getTotalPrice(), $currencyPrecision);
+            if ($taxStatus === CartPrice::TAX_STATE_NET) {
+                $amountGross += $amountTax;
+            }
+            $unitPrice = $amountGross / $lineItem->getQuantity();
 
             $basketItem->setVat($taxCounter === 0 ? 0 : $taxRate / $taxCounter);
 
@@ -268,6 +278,16 @@ class BasketResourceHydrator
         }
 
         return false;
+    }
+
+    private function resolveTotalValueGross(OrderTransactionEntity $orderTransaction, OrderEntity $order): float
+    {
+        $transactionAmount = $orderTransaction->getAmount();
+        if ($transactionAmount !== null) {
+            return $transactionAmount->getTotalPrice();
+        }
+
+        return $order->getPrice()->getTotalPrice();
     }
 
     private function makeBasketValid(Basket $unzerBasket, int $currencyPrecision): void

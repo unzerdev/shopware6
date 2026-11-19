@@ -58,6 +58,9 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="UnzerPayment6\EventListeners\Document\ZugferdInvoiceGeneratedEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
 
         <service id="UnzerPayment6\EventListeners\DataAbstractionLayer\OrderTransactionEventListener">
             <argument type="service" id="UnzerPayment6\DataAbstractionLayer\Repository\TransferInfo\UnzerPaymentTransferInfoRepository"/>

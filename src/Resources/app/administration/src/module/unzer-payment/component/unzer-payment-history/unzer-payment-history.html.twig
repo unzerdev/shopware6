@@ -18,6 +18,7 @@
                         :decimalPrecision="decimalPrecision"
                         @reload="reload"
                         @cancel="(cancelAmount) => { openCancelModal(item, cancelAmount) }"
+                        @refund="(refundAmount, reasonCode) => { openRefundModal(item, refundAmount, reasonCode) }"
                     >
                                     </unzer-payment-actions>
                     {% endblock %}
@@ -34,7 +35,7 @@
                         <p>
                             {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.text') }}
                             <br/>
-                            {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.amountLabel') }}
+                            {{ $t('unzer-payment.paymentDetails.actions.confirmModal.amountLabel') }}
                             {{ formatCurrency(cancelAmount) }}
                         </p>
                         <template #modal-footer>
@@ -44,7 +45,7 @@
                                 size="small"
                                 @click="closeCancelModal"
                             >
-                                {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.noButton') }}
+                                {{ $t('unzer-payment.paymentDetails.actions.confirmModal.noButton') }}
                             </mt-button>
                             {% endblock %}
 
@@ -55,9 +56,38 @@
                                 size="small"
                                 @click="cancel"
                             >
-                                {{ $t('unzer-payment.paymentDetails.actions.confirmCancelModal.yesButton') }}
+                                {{ $t('unzer-payment.paymentDetails.actions.confirmModal.yesButton') }}
                             </mt-button>
                             {% endblock %}
+                        </template>
+                    </sw-modal>
+                    <sw-modal
+                        v-if="showRefundModal === item.resource.id"
+                        :showHeader="false"
+                        :isLoading="isRefundLoading"
+                    >
+                        <p>
+                            {{ $t('unzer-payment.paymentDetails.actions.confirmRefundModal.text') }}
+                            <br/>
+                            {{ $t('unzer-payment.paymentDetails.actions.confirmModal.amountLabel') }}
+                            {{ formatCurrency(refundAmount) }}
+                        </p>
+                        <template #modal-footer>
+                            <mt-button
+                                class="sw-confirm-modal__button-cancel"
+                                size="small"
+                                @click="closeRefundModal"
+                            >
+                                {{ $t('unzer-payment.paymentDetails.actions.confirmModal.noButton') }}
+                            </mt-button>
+                            <mt-button
+                                class="sw-confirm-modal__button-confirm"
+                                variant="danger"
+                                size="small"
+                                @click="refund"
+                            >
+                                {{ $t('unzer-payment.paymentDetails.actions.confirmModal.yesButton') }}
+                            </mt-button>
                         </template>
                     </sw-modal>
                 </template>

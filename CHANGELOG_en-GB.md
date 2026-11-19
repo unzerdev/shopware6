@@ -1,3 +1,12 @@
+# 7.1.13
+* Unzer payment details in ZUGFeRD electronic invoices
+* Payment method icons in the checkout
+* Automatic webhook check after plugin updates
+* Fix: Failed payment status on Invoice and Installment orders
+* Fix: Duplicate payment status updates causing double invoices
+* Fix: Basket data for Paylater Invoice and Direct Debit
+* Fix: Confirmation popup before refunds
+
 # 7.1.12
 * New payment method PayU
 * Improved loading of UI Components for faster and better checkout experience

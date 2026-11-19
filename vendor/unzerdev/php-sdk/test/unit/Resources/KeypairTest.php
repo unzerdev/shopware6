@@ -135,4 +135,42 @@ class KeypairTest extends BasePaymentTest
         $this->assertEquals('Unzer GmbH', $keypair->getMerchantName());
         $this->assertEquals('Vangerowstraße 18, 69115 Heidelberg', $keypair->getMerchantAddress());
     }
+
+    /**
+     * Verify expose() contains all relevant key data but excludes privateKey and detailed.
+     *
+     * @test
+     */
+    public function exposeContainsAllRelevantKeyDataExceptPrivateKeyAndDetailed(): void
+    {
+        $keypair = new Keypair();
+        $paymentTypes = [(object)['type' => 'card'], (object)['type' => 'paypal']];
+        $keypair->handleResponse((object)[
+            'publicKey'       => 's-pub-1234',
+            'privateKey'      => 's-priv-4321',
+            'paymentTypes'    => $paymentTypes,
+            'secureLevel'     => 'SAQ-D',
+            'alias'           => 'Readme.io user',
+            'merchantName'    => 'Unzer GmbH',
+            'merchantAddress' => 'Vangerowstraße 18, 69115 Heidelberg',
+            'cof'             => true,
+            'validateBasket'  => false,
+        ]);
+
+        $exposed = $keypair->expose();
+
+        // All relevant protected key data should be exposed with correct values
+        $this->assertEquals('s-pub-1234', $exposed['publicKey']);
+        $this->assertEquals($paymentTypes, $exposed['paymentTypes']);
+        $this->assertEquals('SAQ-D', $exposed['secureLevel']);
+        $this->assertEquals('Readme.io user', $exposed['alias']);
+        $this->assertEquals('Unzer GmbH', $exposed['merchantName']);
+        $this->assertEquals('Vangerowstraße 18, 69115 Heidelberg', $exposed['merchantAddress']);
+        $this->assertTrue($exposed['cof']);
+        $this->assertFalse($exposed['validateBasket']);
+
+        // privateKey (private) and detailed (private) must never be exposed
+        $this->assertArrayNotHasKey('privateKey', $exposed);
+        $this->assertArrayNotHasKey('detailed', $exposed);
+    }
 }

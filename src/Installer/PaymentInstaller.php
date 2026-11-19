@@ -7,6 +7,9 @@ namespace UnzerPayment6\Installer;
 use League\Flysystem\Filesystem;
 use Shopware\Core\Checkout\Payment\Aggregate\PaymentMethodTranslation\PaymentMethodTranslationEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\Content\Media\File\FileSaver;
+use Shopware\Core\Content\Media\File\MediaFile;
+use Shopware\Core\Content\Media\MediaEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -437,10 +440,20 @@ class PaymentInstaller implements InstallerInterface
 
     private PluginIdProvider $pluginIdProvider;
 
-    public function __construct(EntityRepository $paymentMethodRepository, PluginIdProvider $pluginIdProvider)
-    {
+    private ?EntityRepository $mediaRepository;
+
+    private ?FileSaver $fileSaver;
+
+    public function __construct(
+        EntityRepository $paymentMethodRepository,
+        PluginIdProvider $pluginIdProvider,
+        ?EntityRepository $mediaRepository = null,
+        ?FileSaver $fileSaver = null
+    ) {
         $this->paymentMethodRepository = $paymentMethodRepository;
         $this->pluginIdProvider = $pluginIdProvider;
+        $this->mediaRepository = $mediaRepository;
+        $this->fileSaver = $fileSaver;
     }
 
     public function install(InstallContext $context, ?object $publicFileSystem): void
@@ -513,11 +526,21 @@ class PaymentInstaller implements InstallerInterface
         $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(UnzerPayment6::class, $context->getContext());
 
         foreach (self::PAYMENT_METHODS as $paymentMethod) {
-            if (!$this->isPaymentMethodInstalled($paymentMethod['id'], $context->getContext())) {
+            /** @var PaymentMethodEntity|null $existingPaymentMethod */
+            $existingPaymentMethod = $this->paymentMethodRepository
+                ->search(new Criteria([$paymentMethod['id']]), $context->getContext())
+                ->first();
+
+            if ($existingPaymentMethod === null) {
                 // method does not exist > create with complete data
                 $paymentMethod['pluginId'] = $pluginId;
                 $paymentMethod['afterOrderEnabled'] = true;
                 $paymentMethod['active'] = true;
+
+                $mediaId = $this->getPaymentMethodLogoMediaId($paymentMethod, $context->getContext());
+                if ($mediaId !== null) {
+                    $paymentMethod['mediaId'] = $mediaId;
+                }
 
                 $this->paymentMethodRepository->upsert([$paymentMethod], $context->getContext());
             } else {
@@ -527,6 +550,14 @@ class PaymentInstaller implements InstallerInterface
                     'pluginId' => $pluginId,
                     'technicalName' => $paymentMethod['technicalName'],
                 ];
+
+                if ($existingPaymentMethod->getMediaId() === null) {
+                    $mediaId = $this->getPaymentMethodLogoMediaId($paymentMethod, $context->getContext());
+                    if ($mediaId !== null) {
+                        $upsertPayload['mediaId'] = $mediaId;
+                    }
+                }
+
                 $this->paymentMethodRepository->upsert([$upsertPayload], $context->getContext());
             }
         }
@@ -653,9 +684,51 @@ class PaymentInstaller implements InstallerInterface
         $this->paymentMethodRepository->upsert($upsertPayload, $context->getContext());
     }
 
-    private function isPaymentMethodInstalled(string $paymentMethodId, Context $context): bool
+    private function getPaymentMethodLogoMediaId(array $paymentMethod, Context $context): ?string
     {
-        return $this->paymentMethodRepository->searchIds(new Criteria([$paymentMethodId]), $context)->getTotal() > 0;
+        if ($this->mediaRepository === null || $this->fileSaver === null) {
+            return null;
+        }
+
+        $imagePath = __DIR__ . '/../Resources/public/storefront/img/' . $paymentMethod['technicalName'] . '.svg';
+        if (!is_file($imagePath)) {
+            return null;
+        }
+
+        $mediaId = md5('unzer_payment_method_media_' . $paymentMethod['technicalName']);
+
+        try {
+            /** @var MediaEntity|null $mediaEntity */
+            $mediaEntity = $this->mediaRepository->search(new Criteria([$mediaId]), $context)->first();
+            if ($mediaEntity !== null && $mediaEntity->getFileName() !== null) {
+                return $mediaId;
+            }
+
+            if ($mediaEntity === null) {
+                $this->mediaRepository->create([[
+                    'id' => $mediaId,
+                    'title' => $paymentMethod['name'] . ' Logo',
+                ]], $context);
+            }
+
+            $mediaFile = new MediaFile(
+                $imagePath,
+                'image/svg+xml',
+                'svg',
+                (int) filesize($imagePath)
+            );
+
+            $this->fileSaver->persistFileToMedia(
+                $mediaFile,
+                $paymentMethod['technicalName'],
+                $mediaId,
+                $context
+            );
+        } catch (\Exception) {
+            return null;
+        }
+
+        return $mediaId;
     }
 
     private function getPaymentMethod(string $paymentMethodId): ?array

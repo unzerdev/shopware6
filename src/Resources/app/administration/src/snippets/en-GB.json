@@ -32,11 +32,16 @@
                 "defaultButton": "Done",
                 "cancelButton": "Cancel",
                 "noActions": "No actions possible",
-                "confirmCancelModal": {
-                    "text": "Do you really want to cancel the authorization of the selected amount?",
+                "confirmModal": {
                     "amountLabel": "Amount:",
                     "yesButton": "Yes",
                     "noButton": "No"
+                },
+                "confirmCancelModal": {
+                    "text": "Do you really want to cancel the authorization of the selected amount?"
+                },
+                "confirmRefundModal": {
+                    "text": "Do you really want to refund the selected amount?"
                 }
             },
             "detail": {
@@ -177,8 +182,11 @@
             },
             "empty": "There are no webhooks registered for this private key. Make sure the private key is valid and check for other specific sales channel configurations.",
             "show": "Show webhooks",
-            "needsUpdate": "The webhook needs an update to be compatible with all payment processes",
-            "doUpdate": "Perform update now"
+            "needsUpdate": "The Unzer webhook needs an update to be compatible with all payment processes",
+            "doUpdate": "Perform update now",
+            "notification": {
+                "openSettings": "Open Unzer settings"
+            }
         }
     },
     "sw-payment-card": {
