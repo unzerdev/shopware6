@@ -76,7 +76,8 @@ class PaypageV2Test extends BaseIntegrationTest
 
         $this->assertNull($paypage->getUrls());
         $this->assertNull($paypage->getStyle());
-        $this->assertNull($paypage->getResources());
+        $this->assertNull($paypage->getResources()->getCustomerId());
+        $this->assertNull($paypage->getResources()->getBasketId());
         $this->assertNull($paypage->getPaymentMethodsConfigs());
         $this->assertNull($paypage->getRisk());
     }
@@ -271,6 +272,7 @@ class PaypageV2Test extends BaseIntegrationTest
     {
         $this->assertNotNull($paypage->getId());
         $this->assertNotNull($paypage->getRedirectUrl());
+        $this->assertNotNull($paypage->getResources()->getMetadataId());
         $this->assertStringContainsString($paypage->getId(), $paypage->getRedirectUrl());
     }
 

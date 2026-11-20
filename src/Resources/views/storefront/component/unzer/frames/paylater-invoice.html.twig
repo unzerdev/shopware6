@@ -1,12 +1,19 @@
 {% block unzer_payment_frame_paylater_invoice %}
-    {% block unzer_payment_frame_paylater_invoice_ui_element %}
-        <unzer-payment
-                id="unzer-payment-component"
-                publicKey="{{ page.extensions.unzerPaymentData.publicKey }}"
-                {% if page.extensions.unzerPaymentData.keyPairConfig %}skipFetchingMerchantConfig{% endif %}
-                locale="{{ page.extensions.unzerPaymentData.locale }}">
-            <unzer-paylater-invoice></unzer-paylater-invoice>
-        </unzer-payment>
-    {% endblock %}
+    <div data-unzer-payment-paylater-invoice="true"
+         data-unzer-payment-paylater-invoice-options="{{ {
+             amount: page.extensions.unzerPaylaterInstallment.amount,
+             currency: page.order.currency.isoCode ?? page.extensions.unzerPaylaterInstallment.currency,
+             countryIso: context.customer.activeBillingAddress.country.iso
+         }|json_encode|e('html_attr') }}">
+        {% block unzer_payment_frame_paylater_invoice_ui_element %}
+            <unzer-payment
+                    id="unzer-payment-component"
+                    publicKey="{{ page.extensions.unzerPaymentData.publicKey }}"
+                    {% if page.extensions.unzerPaymentData.keyPairConfig %}skipFetchingMerchantConfig{% endif %}
+                    locale="{{ page.extensions.unzerPaymentData.locale }}">
+                <unzer-paylater-invoice></unzer-paylater-invoice>
+            </unzer-payment>
+        {% endblock %}
+    </div>
 {% endblock %}
 

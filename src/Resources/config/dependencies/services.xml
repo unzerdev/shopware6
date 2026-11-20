@@ -54,6 +54,7 @@
             <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
             <argument type="service" id="UnzerPayment6\Components\DependencyInjection\Factory\PaymentTransitionMapperFactory"/>
             <argument type="service" id="unzer_payment.logger"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
         </service>
 
         <service id="UnzerPayment6\Components\TransactionSelectionHelper\TransactionSelectionHelper">

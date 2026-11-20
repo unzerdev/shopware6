@@ -101,7 +101,7 @@ readonly class PaymentMethodLoadedEventListener implements EventSubscriberInterf
     {
         $page = $pageLoadedEvent->getPage();
         $order = $page->getOrder();
-        $totalAmount = $order->getAmountTotal();
+        $totalAmount = $order->getPrice()->getTotalPrice();
 
         if ($this->isZeroAmount($totalAmount, $pageLoadedEvent->getSalesChannelContext()->getCurrency())) {
             $page->setPaymentMethods(

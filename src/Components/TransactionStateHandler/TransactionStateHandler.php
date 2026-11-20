@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnzerPayment6\Components\TransactionStateHandler;
 
+use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Framework\Context;
@@ -19,10 +20,18 @@ use UnzerSDK\Resources\PaymentTypes\BasePaymentType;
 
 readonly class TransactionStateHandler implements TransactionStateHandlerInterface
 {
+    /**
+     * Serializes concurrent transitions (e.g. checkout return vs. webhook) on the same transaction
+     */
+    private const LOCK_NAME_PREFIX = 'unzer_transaction_state_';
+
+    private const LOCK_ACQUIRE_TIMEOUT_SECONDS = 10;
+
     public function __construct(
         private StateMachineRegistry $stateMachineRegistry,
         private PaymentTransitionMapperFactory $transitionMapperFactory,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private Connection $connection
     ) {
     }
 
@@ -42,20 +51,29 @@ readonly class TransactionStateHandler implements TransactionStateHandlerInterfa
             return;
         }
 
-        $transition = $this->getTargetTransition($payment, $transactionId);
+        $lockName = self::LOCK_NAME_PREFIX . $transactionId;
+        $lockAcquired = $this->acquireLock($lockName);
 
-        if (empty($transition)) {
-            $this->logger->error('Due to an empty transition, the FAIL transition is executed');
+        try {
+            $transition = $this->getTargetTransition($payment, $transactionId);
 
-            $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_FAIL, $context);
+            if (empty($transition)) {
+                $this->logger->error('Due to an empty transition, the FAIL transition is executed');
 
-            throw new \RuntimeException('Invalid transition status');
-        }
-        $this->logger->debug('Transaction state transition for ' . $payment->getId() . ': ' . $transition, ['orderTransactionId' => $transactionId, 'payment' => $payment]);
+                $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_FAIL, $context);
 
-        $this->executeTransition($transactionId, $transition, $context);
-        if ($transition === StateMachineTransitionActions::ACTION_FAIL) {
-            throw new \RuntimeException('Payment ' . $payment->getId() . ' has a failed.');
+                throw new \RuntimeException('Invalid transition status');
+            }
+            $this->logger->debug('Transaction state transition for ' . $payment->getId() . ': ' . $transition, ['orderTransactionId' => $transactionId, 'payment' => $payment]);
+
+            $this->executeTransition($transactionId, $transition, $context);
+            if ($transition === StateMachineTransitionActions::ACTION_FAIL) {
+                throw new \RuntimeException('Payment ' . $payment->getId() . ' has a failed.');
+            }
+        } finally {
+            if ($lockAcquired) {
+                $this->releaseLock($lockName);
+            }
         }
     }
 
@@ -123,6 +141,41 @@ readonly class TransactionStateHandler implements TransactionStateHandlerInterfa
             );
 
             $this->executeTransition($transactionId, StateMachineTransitionActions::ACTION_PAID, $context);
+        }
+    }
+
+    private function acquireLock(string $lockName): bool
+    {
+        try {
+            $result = $this->connection->fetchOne(
+                'SELECT GET_LOCK(:lockName, :timeout)',
+                ['lockName' => $lockName, 'timeout' => self::LOCK_ACQUIRE_TIMEOUT_SECONDS]
+            );
+        } catch (\Throwable $exception) {
+            $this->logger->warning(
+                \sprintf('Could not acquire transaction state lock %s, proceeding without it: %s', $lockName, $exception->getMessage())
+            );
+
+            return false;
+        }
+
+        if ((int) $result !== 1) {
+            $this->logger->warning(
+                \sprintf('Could not acquire transaction state lock %s within %d seconds, proceeding without it', $lockName, self::LOCK_ACQUIRE_TIMEOUT_SECONDS)
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function releaseLock(string $lockName): void
+    {
+        try {
+            $this->connection->fetchOne('SELECT RELEASE_LOCK(:lockName)', ['lockName' => $lockName]);
+        } catch (\Throwable) {
+            // the lock is bound to the connection and released by MySQL on disconnect anyway
         }
     }
 }

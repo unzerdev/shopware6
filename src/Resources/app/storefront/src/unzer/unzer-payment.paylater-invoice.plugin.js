@@ -1,4 +1,4 @@
 const Plugin = window.PluginBaseClass;
-import UnzerPaymentBaseParent from './parents/unzer-payment.base-parent';
+import UnzerPaymentPaylaterParent from './parents/unzer-payment.paylater-parent';
 
-export default class UnzerPaymentPaylaterInvoicePlugin extends UnzerPaymentBaseParent {}
+export default class UnzerPaymentPaylaterInvoicePlugin extends UnzerPaymentPaylaterParent {}

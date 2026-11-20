@@ -172,51 +172,31 @@ Component.register('unzer-payment-actions', {
                 });
         },
 
-        refund() {
-            this.isLoading = true;
-
-            this.UnzerPaymentService.refundTransaction(
-                this.paymentResource.orderTransactionId,
-                this.transactionResource.id,
-                this.transactionAmount,
-                this.reasonCode
-            )
-                .then(() => {
-                    this.createNotificationSuccess({
-                        title: this.$tc(
-                            'unzer-payment.paymentDetails.notifications.refundSuccessTitle'
-                        ),
-                        message: this.$tc(
-                            'unzer-payment.paymentDetails.notifications.refundSuccessMessage'
-                        ),
-                    });
-
-                    this.isSuccessful = true;
-
-                    this.$emit('reload');
-                })
-                .catch((errorResponse) => {
-                    let message = errorResponse.response.data.errors[0];
-
-                    if (message === 'generic-error') {
-                        message = this.$tc(
-                            'unzer-payment.paymentDetails.notifications.genericErrorMessage'
-                        );
-                    }
-
-                    this.createNotificationError({
-                        title: this.$tc(
-                            'unzer-payment.paymentDetails.notifications.refundErrorTitle'
-                        ),
-                        message: message,
-                    });
-
-                    this.isLoading = false;
-                });
+        startRefund() {
+            this.closeContextMenu();
+            this.$emit('refund', this.transactionAmount, this.reasonCode);
         },
 
         startCancel() {
+            this.closeContextMenu();
             this.$emit('cancel', this.transactionAmount);
+        },
+
+        closeContextMenu() {
+            let parent = this.$parent;
+
+            while (parent) {
+                if (
+                    typeof parent.closeMenu === 'function' &&
+                    typeof parent.openMenu === 'function'
+                ) {
+                    parent.closeMenu();
+
+                    return;
+                }
+
+                parent = parent.$parent;
+            }
         },
     },
 });

@@ -1,3 +1,12 @@
+# 7.1.13
+* Unzer-Zahlungsdetails in elektronischen ZUGFeRD-Rechnungen
+* Zahlungsarten-Icons im Checkout
+* Automatische Webhook-Prüfung nach Plugin-Updates
+* Fix: Fehlerhafter Zahlungsstatus bei Rechnungs- und Ratenkaufbestellungen
+* Fix: Doppelte Rechnungserstellung durch mehrfache Zahlungsstatusaktualisierungen
+* Fix: Warenkorbdaten für Paylater Rechnungskauf und Lastschrift
+* Fix: Bestätigungsdialog vor Rückerstattungen
+
 # 7.1.12
 * Neue Zahlungsart PayU hinzugefügt
 * Laden der UI-Komponenten optimiert für ein schnelleres und besseres Checkout-Erlebnis

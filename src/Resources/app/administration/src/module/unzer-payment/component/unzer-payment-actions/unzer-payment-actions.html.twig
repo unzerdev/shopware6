@@ -63,7 +63,7 @@
                     :disabled="maxTransactionAmount <= 0 || transactionAmount <= 0"
                     :isLoading="isLoading"
                     :processSuccess="isSuccessful"
-                    @click="refund"
+                    @click="startRefund"
                     variant="critical"
                     ghost
                 >
