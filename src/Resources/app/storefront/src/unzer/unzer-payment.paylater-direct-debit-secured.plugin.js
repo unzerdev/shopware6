@@ -1,3 +1,3 @@
-import UnzerPaymentBaseParent from './parents/unzer-payment.base-parent';
+import UnzerPaymentPaylaterParent from './parents/unzer-payment.paylater-parent';
 
-export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends UnzerPaymentBaseParent {}
+export default class UnzerPaymentPaylaterDirectDebitSecuredPlugin extends UnzerPaymentPaylaterParent {}

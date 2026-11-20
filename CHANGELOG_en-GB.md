@@ -1,3 +1,9 @@
+# 6.5.11
+* Payment method icons in the checkout
+* Automatic webhook check after plugin updates
+* Fix: Duplicate payment status updates causing double invoices
+* Fix: Basket data for Paylater Invoice and Direct Debit
+
 # 6.5.10
 * New payment method PayU
 * Improved loading of UI Components for faster and better checkout experience
