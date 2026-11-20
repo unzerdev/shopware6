@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
 use UnzerPayment6\Components\ClientFactory\ClientFactoryInterface;
+use UnzerSDK\Constants\WebhookEvents;
 use UnzerSDK\Exceptions\UnzerApiException;
 
 class WebhookRegistrator implements WebhookRegistratorInterface
@@ -47,7 +48,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
             }
             $result = $this->clientFactory
                 ->createClientFromPrivateKey($privateKey)
-                ->createWebhook($url, 'all');
+                ->createWebhook($url, WebhookEvents::ALL);
 
             $returnData = [
                 'success' => true,
@@ -102,7 +103,7 @@ class WebhookRegistrator implements WebhookRegistratorInterface
 
                 $result = $this->clientFactory
                     ->createClientFromPrivateKey($privateKey, $salesChannelId)
-                    ->createWebhook($url, 'payment');
+                    ->createWebhook($url, WebhookEvents::ALL);
 
                 $returnData[$domainUrl] = [
                     'success' => true,
@@ -169,15 +170,28 @@ class WebhookRegistrator implements WebhookRegistratorInterface
 
     public function getWebhooks(string $privateKey): array
     {
-        $webhooks = $this->clientFactory->createClientFromPrivateKey($privateKey)->fetchAllWebhooks();
         $data = [];
 
-        foreach ($webhooks as $webhook) {
-            $data[] = [
-                'id' => $webhook->getId(),
-                'event' => $webhook->getEvent(),
-                'url' => $webhook->getUrl(),
-            ];
+        try {
+            $webhooks = $this->clientFactory->createClientFromPrivateKey($privateKey)->fetchAllWebhooks();
+
+            foreach ($webhooks as $webhook) {
+                $data[] = [
+                    'id' => $webhook->getId(),
+                    'event' => $webhook->getEvent(),
+                    'url' => $webhook->getUrl(),
+                ];
+            }
+        } catch (UnzerApiException|\Throwable $exception) {
+            $this->logger->error(
+                'Fetching webhooks failed, e.g. due to invalid or incomplete credentials',
+                [
+                    'message' => $exception->getMessage(),
+                    'code' => $exception->getCode(),
+                    'file' => $exception->getFile(),
+                    'trace' => $exception->getTraceAsString(),
+                ]
+            );
         }
 
         return $data;

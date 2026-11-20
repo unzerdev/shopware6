@@ -1,3 +1,9 @@
+# 6.5.11
+* Zahlungsarten-Icons im Checkout
+* Automatische Webhook-Prüfung nach Plugin-Updates
+* Fix: Doppelte Rechnungserstellung durch mehrfache Zahlungsstatusaktualisierungen
+* Fix: Warenkorbdaten für Paylater Rechnungskauf und Lastschrift
+
 # 6.5.10
 * Neue Zahlungsart PayU hinzugefügt
 * Laden der UI-Komponenten optimiert für ein schnelleres und besseres Checkout-Erlebnis

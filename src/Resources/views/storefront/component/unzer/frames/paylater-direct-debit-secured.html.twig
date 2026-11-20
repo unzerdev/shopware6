@@ -7,7 +7,11 @@
 
     <div class="unzer-payment-paylater-direct-debit-secured-wrapper"
          data-unzer-payment-paylater-direct-debit-secured="true"
-         data-unzer-payment-paylater-direct-debit-secured-options=''>
+         data-unzer-payment-paylater-direct-debit-secured-options="{{ {
+             amount: page.extensions.unzerPaylaterDirectDebitSecured.amount,
+             currency: page.order.currency.isoCode ?? page.extensions.unzerPaylaterDirectDebitSecured.currency,
+             countryIso: context.customer.activeBillingAddress.country.iso
+         }|json_encode|e('html_attr') }}">
 
         {% block unzer_payment_frame_installment_paylater_test_data %}
             {% set paymentDataExtensionName = constant("UnzerPayment6\\Components\\Struct\\PageExtension\\Checkout\\Confirm\\UnzerDataPageExtension::EXTENSION_NAME") %}
